@@ -24,11 +24,12 @@
 - Tier 1
   - Pure lambda calculus
   - `out` operator
-  - IEEE 754 for Number
+  - IEEE 754
 - Tier 2
   - Persistent z(t) support
     - May not necessary
   - Mutual recursion support
+  - DEC64
 
 ## Instructions
 

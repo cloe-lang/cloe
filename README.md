@@ -2,6 +2,7 @@
 
 Risp is a purely-functional, asynchronous programming language.
 
+
 ## FAQ
 
 ### Why another language?

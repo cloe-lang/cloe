@@ -49,7 +49,10 @@ func (t *Thunk) SaveResult(o types.Object) {
 }
 
 func (t *Thunk) compareAndSwapState(old, new State) bool {
-	return atomic.CompareAndSwapUint32((*uint32)(&t.state), uint32(old), uint32(new))
+	return atomic.CompareAndSwapUint32(
+		(*uint32)(&t.state),
+		uint32(old),
+		uint32(new))
 }
 
 func (t *Thunk) storeState(new State) {

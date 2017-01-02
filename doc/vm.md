@@ -13,11 +13,15 @@
 - Array (A)
   - Used to construct Lists
   - Copy for each operation to realize immutability
-- Dict (D)
+- Dictionary (D)
   - Used to construct Sets
   - Persistent data structure
 - None
   - Evil
+- Function
+  - Dictionary -> List
+  - `(\x x)` takes `{ "x": Object }` and returns `[x]`
+  - `(\x *x)` takes `{ "x": List-like }` and returns `x`
 
 ## Roadmap
 

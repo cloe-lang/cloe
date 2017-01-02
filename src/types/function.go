@@ -1,3 +1,7 @@
 package types
 
-type Function func(Dictionary) List
+type RawFunction func(Dictionary) Object
+
+func (f RawFunction) Call(args Dictionary) Object {
+	return f(args)
+}

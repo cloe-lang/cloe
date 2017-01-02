@@ -9,23 +9,45 @@ import (
 type State uint32
 
 const (
-	VALUE State = iota
+	ILLEGAL State = iota
+	VALUE
 	LOCKED
 	APP
 )
 
 type Thunk struct {
-	result, function, args types.Object
-	state                  State
-	blackHole              sync.WaitGroup
+	Result    types.Object
+	function  *Thunk
+	args      *Thunk
+	state     State
+	blackHole sync.WaitGroup
 }
 
 func NewValueThunk(v types.Object) *Thunk {
-	return &Thunk{result: v, state: VALUE}
+	return &Thunk{Result: v, state: VALUE}
 }
 
-func NewAppThunk(f types.Object, as types.Object) *Thunk {
-	return &Thunk{function: f, args: as, state: APP}
+func NewAppThunk(f *Thunk, args *Thunk) *Thunk {
+	return &Thunk{function: f, args: args, state: APP}
+}
+
+func (t *Thunk) Eval() { // into WHNF
+	go t.function.Eval()
+	go t.args.Eval()
+
+	f, ok := t.function.Result.(types.Callable)
+
+	if !ok {
+		panic("Something not callable was called.")
+	}
+
+	args, ok := t.args.Result.(types.Dictionary)
+
+	if !ok {
+		panic("Something which is not a dictionary was used as arguments.")
+	}
+
+	t.Result = f.Call(args)
 }
 
 func (t *Thunk) Wait() {
@@ -41,7 +63,7 @@ func (t *Thunk) SaveResult(o types.Object) {
 		panic("Thunk is not locked yet.")
 	}
 
-	t.result = o
+	t.Result = o
 	t.function = nil
 	t.args = nil
 

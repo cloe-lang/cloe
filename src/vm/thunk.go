@@ -28,12 +28,22 @@ func NewValueThunk(v types.Object) *Thunk {
 }
 
 func NewAppThunk(f *Thunk, args *Thunk) *Thunk {
-	return &Thunk{function: f, args: args, state: APP}
+	t := &Thunk{function: f, args: args, state: APP}
+	t.blackHole.Add(1)
+	return t
 }
 
 func (t *Thunk) Eval() { // into WHNF
+	if !t.compareAndSwapState(APP, LOCKED) {
+		// Some goroutine is evaluating this thunk or it has been evaluated already.
+		return
+	}
+
 	go t.function.Eval()
 	go t.args.Eval()
+
+	t.function.Wait()
+	t.args.Wait()
 
 	f, ok := t.function.Result.(types.Callable)
 
@@ -48,26 +58,16 @@ func (t *Thunk) Eval() { // into WHNF
 	}
 
 	t.Result = f.Call(args)
-}
-
-func (t *Thunk) Wait() {
-	t.blackHole.Wait()
-}
-
-func (t *Thunk) Lock() bool {
-	return t.compareAndSwapState(APP, LOCKED)
-}
-
-func (t *Thunk) SaveResult(o types.Object) {
-	if t.state != LOCKED {
-		panic("Thunk is not locked yet.")
-	}
-
-	t.Result = o
 	t.function = nil
 	t.args = nil
 
 	t.storeState(VALUE)
+
+	t.blackHole.Done()
+}
+
+func (t *Thunk) Wait() {
+	t.blackHole.Wait()
 }
 
 func (t *Thunk) compareAndSwapState(old, new State) bool {

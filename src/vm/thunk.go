@@ -20,8 +20,20 @@ type Thunk struct {
 	blackHole              sync.WaitGroup
 }
 
+func NewValueThunk(v types.Object) *Thunk {
+	return &Thunk{result: v, state: VALUE}
+}
+
+func NewAppThunk(f types.Object, as types.Object) *Thunk {
+	return &Thunk{function: f, args: as, state: APP}
+}
+
 func (t *Thunk) Wait() {
 	t.blackHole.Wait()
+}
+
+func (t *Thunk) Lock() bool {
+	return t.compareAndSwapState(APP, LOCKED)
 }
 
 func (t *Thunk) SaveResult(o types.Object) {
@@ -34,6 +46,10 @@ func (t *Thunk) SaveResult(o types.Object) {
 	t.args = nil
 
 	t.storeState(VALUE)
+}
+
+func (t *Thunk) compareAndSwapState(old, new State) bool {
+	return atomic.CompareAndSwapUint32((*uint32)(&t.state), uint32(old), uint32(new))
 }
 
 func (t *Thunk) storeState(new State) {

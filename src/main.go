@@ -3,6 +3,7 @@ package main
 import (
 	_ "./parse"
 	_ "./types"
+	_ "./vm"
 	"fmt"
 	"github.com/docopt/docopt-go"
 )

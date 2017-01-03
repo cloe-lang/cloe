@@ -1,5 +1,7 @@
-task :risp do
-  sh 'cd src/cmd/risp && go build main.go'
+%i(risp parse).each do |bin|
+  task bin do
+    sh "cd src/cmd/#{bin} && go build main.go"
+  end
 end
 
 task :lint do

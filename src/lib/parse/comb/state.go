@@ -9,8 +9,12 @@ func NewState(source string) *State {
 	return &State{source: ([]rune)(source)}
 }
 
+func (s State) Exhausted() bool {
+	return s.position >= len(s.source)
+}
+
 func (s State) currentRune() rune {
-	if s.position >= len(s.source) {
+	if s.Exhausted() {
 		return '\x00'
 	}
 

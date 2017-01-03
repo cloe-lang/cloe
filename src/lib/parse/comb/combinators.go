@@ -102,9 +102,10 @@ func (s *State) Many1(p Parser) Parser {
 	}
 }
 
-func (State) Or(ps ...Parser) Parser {
+func (s *State) Or(ps ...Parser) Parser {
 	return func() (interface{}, error) {
 		var err error
+		old := *s
 
 		for _, p := range ps {
 			var result interface{}
@@ -114,6 +115,8 @@ func (State) Or(ps ...Parser) Parser {
 			if err == nil {
 				return result, nil
 			}
+
+			*s = old
 		}
 
 		return nil, err

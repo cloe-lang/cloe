@@ -2,9 +2,29 @@ package parse
 
 import "testing"
 
-// func TestModule(t *testing.T) {
-// 	newState("").module()()
-// }
+func TestModule1(t *testing.T) {
+	for _, str := range []string{"", "()", "(foo bar)"} {
+		result, err := newState(str).module()()
+
+		if err == nil {
+			t.Log(result)
+		} else {
+			t.Error(err.Error())
+		}
+	}
+}
+
+func TestXFailModule(t *testing.T) {
+	for _, str := range []string{"(", "(()"} {
+		result, err := newState(str).module()()
+
+		if err == nil {
+			t.Error(result)
+		} else {
+			t.Log(err.Error())
+		}
+	}
+}
 
 func TestAtom(t *testing.T) {
 	s := newState("ident")

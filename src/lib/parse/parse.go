@@ -30,7 +30,7 @@ func (s *state) elem() comb.Parser {
 }
 
 func (s *state) atom() comb.Parser {
-	return s.Or(s.identifier(), s.stringLiteral())
+	return s.Or(s.stringLiteral(), s.identifier())
 }
 
 func (s *state) identifier() comb.Parser {

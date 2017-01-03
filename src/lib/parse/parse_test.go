@@ -21,14 +21,46 @@ func TestAtom(t *testing.T) {
 	t.Logf("%#v", toString(result))
 }
 
-// func TestElem(t *testing.T) {
-// 	result, err := newState("   ident  ").atom()()
+func TestStrip(t *testing.T) {
+	s := newState("  ident  ")
+	result, err := s.strip(s.atom())()
+
+	if !s.Exhausted() {
+		t.Error("Source is not exhausted.")
+	}
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	t.Logf("%#v", toString(result))
+}
+
+// func TestList(t *testing.T) {
+// 	s := newState("()")
+// 	result, err := s.list()()
+
+// 	if !s.Exhausted() {
+// 		t.Error("Source is not exhausted.")
+// 	}
 
 // 	if err != nil {
 // 		t.Error(err.Error())
 // 	}
 
-// 	t.Logf(`"%s"`, toString(result))
+// 	t.Logf("%#v", toString(result))
+// }
+
+// func TestElem(t *testing.T) {
+// 	for _, str := range []string{"ident", "  ident  "} {
+// 		result, err := newState(str).atom()()
+
+// 		if err != nil {
+// 			t.Error(err.Error())
+// 		}
+
+// 		t.Logf("%#v", toString(result))
+// 	}
 // }
 
 func TestBlank(t *testing.T) {

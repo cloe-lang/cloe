@@ -16,9 +16,9 @@ func TestAtom(t *testing.T) {
 
 	if err != nil {
 		t.Error(err.Error())
+	} else {
+		t.Logf("%#v", toString(result))
 	}
-
-	t.Logf("%#v", toString(result))
 }
 
 func TestStrip(t *testing.T) {
@@ -31,9 +31,24 @@ func TestStrip(t *testing.T) {
 
 	if err != nil {
 		t.Error(err.Error())
+	} else {
+		t.Logf("%#v", toString(result))
+	}
+}
+
+func TestWrapChars(t *testing.T) {
+	s := newState(" ; laskdfjsl \t  dkjf\n ( \tident \n)  ")
+	result, err := s.wrapChars('(', s.atom(), ')')()
+
+	if !s.Exhausted() {
+		t.Error("Source is not exhausted.")
 	}
 
-	t.Logf("%#v", toString(result))
+	if err != nil {
+		t.Error(err.Error())
+	} else {
+		t.Logf("%#v", toString(result))
+	}
 }
 
 // func TestList(t *testing.T) {
@@ -53,13 +68,16 @@ func TestStrip(t *testing.T) {
 
 // func TestElem(t *testing.T) {
 // 	for _, str := range []string{"ident", "  ident  "} {
-// 		result, err := newState(str).atom()()
+// 		t.Logf("source: %#v", str)
+
+// 		s := newState(str)
+// 		result, err := s.elem()()
 
 // 		if err != nil {
 // 			t.Error(err.Error())
+// 		} else {
+// 			t.Logf("%#v", toString(result))
 // 		}
-
-// 		t.Logf("%#v", toString(result))
 // 	}
 // }
 

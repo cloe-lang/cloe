@@ -18,7 +18,7 @@ func Parse(source string) types.Object {
 }
 
 func (s *state) module() comb.Parser {
-	return s.elems()
+	return s.Exhaust(s.elems())
 }
 
 func (s *state) elems() comb.Parser {

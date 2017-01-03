@@ -155,6 +155,20 @@ func (State) Void(p Parser) Parser {
 	}
 }
 
+func (s *State) Exhaust(p Parser) Parser {
+	return func() (interface{}, error) {
+		result, err := p()
+
+		if !s.exhausted() {
+			return nil, NewError(
+				"Some characters are left in source. %#v",
+				string(s.source[s.position:]))
+		}
+
+		return result, err
+	}
+}
+
 func stringToRuneSet(s string) map[rune]bool {
 	rs := make(map[rune]bool)
 

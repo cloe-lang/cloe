@@ -8,11 +8,7 @@ import "testing"
 
 func TestAtom(t *testing.T) {
 	s := newState("ident")
-	result, err := s.atom()()
-
-	if !s.Exhausted() {
-		t.Error("Source is not exhausted.")
-	}
+	result, err := s.Exhaust(s.atom())()
 
 	if err != nil {
 		t.Error(err.Error())
@@ -24,11 +20,7 @@ func TestAtom(t *testing.T) {
 func TestStringLiteral(t *testing.T) {
 	for _, str := range []string{`""`, `"sl"`, "\"   string literal  \n \""} {
 		s := newState(str)
-		result, err := s.stringLiteral()()
-
-		if !s.Exhausted() {
-			t.Error("Source is not exhausted.")
-		}
+		result, err := s.Exhaust(s.stringLiteral())()
 
 		if err != nil {
 			t.Error(err.Error())
@@ -40,11 +32,7 @@ func TestStringLiteral(t *testing.T) {
 
 func TestStrip(t *testing.T) {
 	s := newState("  ident  ")
-	result, err := s.strip(s.atom())()
-
-	if !s.Exhausted() {
-		t.Error("Source is not exhausted.")
-	}
+	result, err := s.Exhaust(s.strip(s.atom()))()
 
 	if err != nil {
 		t.Error(err.Error())
@@ -55,11 +43,7 @@ func TestStrip(t *testing.T) {
 
 func TestWrapChars(t *testing.T) {
 	s := newState(" ; laskdfjsl \t  dkjf\n ( \tident \n)  ")
-	result, err := s.wrapChars('(', s.atom(), ')')()
-
-	if !s.Exhausted() {
-		t.Error("Source is not exhausted.")
-	}
+	result, err := s.Exhaust(s.wrapChars('(', s.atom(), ')'))()
 
 	if err != nil {
 		t.Error(err.Error())
@@ -101,18 +85,16 @@ func TestWrapChars(t *testing.T) {
 func TestBlank(t *testing.T) {
 	for _, str := range []string{"", "   ", "\t", "\n\n", " ; laskdjf \n \t "} {
 		s := newState(str)
-		result, err := s.blank()()
+		result, err := s.Exhaust(s.blank())()
 
-		if !s.Exhausted() {
-			t.Error("Source is not exhausted.")
-		}
+		t.Log(result, err)
 
 		if result != nil {
-			t.Errorf("`result` should be null. (%#v)", result)
+			t.Errorf("`result` should be nil. (%#v)", result)
 		}
 
 		if err != nil {
-			t.Errorf("`err` should be null. (%#v)", result)
+			t.Errorf("`err` should be nil. (%#v)", result)
 		}
 	}
 }

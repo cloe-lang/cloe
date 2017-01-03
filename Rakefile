@@ -4,6 +4,12 @@
   end
 end
 
+task :parse_examples => :parse do
+  Dir.glob('examples/*.r').each do |file|
+    sh "bin/parse #{file}"
+  end
+end
+
 task :test do
   sh 'go test -test.v ./...'
 end

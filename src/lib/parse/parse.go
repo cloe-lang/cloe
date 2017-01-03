@@ -89,7 +89,7 @@ func (s *state) stringify(p comb.Parser) comb.Parser {
 			rs[i] = x.(rune)
 		}
 
-		return string(rs)
+		return types.NewString(string(rs))
 	}
 
 	return s.App(f, p)

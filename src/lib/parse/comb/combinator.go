@@ -148,6 +148,18 @@ func (s *State) And(ps ...Parser) Parser {
 	}
 }
 
+func (s *State) Lazy(f func() Parser) Parser {
+	p := Parser(nil)
+
+	return func() (interface{}, error) {
+		if p == nil {
+			p = f()
+		}
+
+		return p()
+	}
+}
+
 func (State) Void(p Parser) Parser {
 	return func() (interface{}, error) {
 		_, err := p()

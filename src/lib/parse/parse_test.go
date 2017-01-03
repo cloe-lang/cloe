@@ -52,20 +52,16 @@ func TestWrapChars(t *testing.T) {
 	}
 }
 
-// func TestList(t *testing.T) {
-// 	s := newState("()")
-// 	result, err := s.list()()
+func TestList(t *testing.T) {
+	s := newState("()")
+	result, err := s.Exhaust(s.list())()
 
-// 	if !s.Exhausted() {
-// 		t.Error("Source is not exhausted.")
-// 	}
+	if err != nil {
+		t.Error(err.Error())
+	}
 
-// 	if err != nil {
-// 		t.Error(err.Error())
-// 	}
-
-// 	t.Logf("%#v", toString(result))
-// }
+	t.Logf("%#v", result)
+}
 
 // func TestElem(t *testing.T) {
 // 	for _, str := range []string{"ident", "  ident  "} {

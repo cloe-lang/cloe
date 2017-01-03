@@ -62,11 +62,16 @@ func (s *State) NotInString(str string) Parser {
 }
 
 func (s *State) Wrap(l, m, r Parser) Parser {
+	p := s.And(l, m, r)
+
 	return func() (interface{}, error) {
-		l()
-		result, err := m()
-		r()
-		return result, err
+		results, err := p()
+
+		if results, ok := results.([]interface{}); ok {
+			return results[1], err
+		}
+
+		return results, err
 	}
 }
 

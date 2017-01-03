@@ -38,10 +38,13 @@ func (s *state) identifier() comb.Parser {
 }
 
 func (s *state) stringLiteral() comb.Parser {
-	return s.wrapChars(
-		'"',
+	b := s.blank()
+	c := s.Char('"')
+
+	return s.Wrap(
+		s.And(b, c),
 		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
-		'"')
+		s.And(c, b))
 }
 
 func (s *state) list() comb.Parser {

@@ -21,6 +21,23 @@ func TestAtom(t *testing.T) {
 	}
 }
 
+func TestStringLiteral(t *testing.T) {
+	for _, str := range []string{`""`, `"sl"`, "\"   string literal  \n \""} {
+		s := newState(str)
+		result, err := s.stringLiteral()()
+
+		if !s.Exhausted() {
+			t.Error("Source is not exhausted.")
+		}
+
+		if err != nil {
+			t.Error(err.Error())
+		} else {
+			t.Logf("%#v", toString(result))
+		}
+	}
+}
+
 func TestStrip(t *testing.T) {
 	s := newState("  ident  ")
 	result, err := s.strip(s.atom())()

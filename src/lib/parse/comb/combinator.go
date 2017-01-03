@@ -3,7 +3,7 @@ package comb
 func (s *State) Char(r rune) Parser {
 	return func() (interface{}, error) {
 		if s.currentRune() != r {
-			return nil, NewError("Invalid character. ('%c')", s.currentRune())
+			return nil, NewError("Invalid character. '%c'", s.currentRune())
 		}
 
 		s.increment()
@@ -15,7 +15,7 @@ func (s *State) Char(r rune) Parser {
 func (s *State) NotChar(r rune) Parser {
 	return func() (interface{}, error) {
 		if s.currentRune() == r {
-			return nil, NewError("Should not be %c.", r)
+			return nil, NewError("Should not be '%c'.", r)
 		}
 
 		defer s.increment()
@@ -44,7 +44,7 @@ func (s *State) InString(str string) Parser {
 			return s.currentRune(), nil
 		}
 
-		return nil, NewError("Invalid character. (%c)", s.currentRune())
+		return nil, NewError("Invalid character. '%c'", s.currentRune())
 	}
 }
 
@@ -57,7 +57,7 @@ func (s *State) NotInString(str string) Parser {
 			return s.currentRune(), nil
 		}
 
-		return nil, NewError("Invalid character. (%c)", s.currentRune())
+		return nil, NewError("Invalid character. '%c'", s.currentRune())
 	}
 }
 

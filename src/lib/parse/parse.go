@@ -38,17 +38,17 @@ func (s *state) atom() comb.Parser {
 }
 
 func (s *state) identifier() comb.Parser {
-	return s.Many1(s.NotInString("()[]'\x00" + SPACE_CHARS))
+	return s.stringify(s.Many1(s.NotInString("()[]'\x00" + SPACE_CHARS)))
 }
 
 func (s *state) stringLiteral() comb.Parser {
 	b := s.blank()
 	c := s.Char('"')
 
-	return s.Wrap(
+	return s.stringify(s.Wrap(
 		s.And(b, c),
 		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
-		s.And(c, b))
+		s.And(c, b)))
 }
 
 func (s *state) list() comb.Parser {
@@ -78,4 +78,19 @@ func (s *state) blank() comb.Parser {
 
 func (s *state) space() comb.Parser {
 	return s.Void(s.Many1(s.InString(SPACE_CHARS)))
+}
+
+func (s *state) stringify(p comb.Parser) comb.Parser {
+	f := func(any interface{}) interface{} {
+		xs := any.([]interface{})
+		rs := make([]rune, len(xs))
+
+		for i, x := range xs {
+			rs[i] = x.(rune)
+		}
+
+		return string(rs)
+	}
+
+	return s.App(f, p)
 }

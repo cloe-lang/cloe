@@ -181,6 +181,18 @@ func (s *State) Exhaust(p Parser) Parser {
 	}
 }
 
+func (s *State) App(f func(interface{}) interface{}, p Parser) Parser {
+	return func() (interface{}, error) {
+		result, err := p()
+
+		if result != nil {
+			return f(result), err
+		}
+
+		return result, err
+	}
+}
+
 func stringToRuneSet(s string) map[rune]bool {
 	rs := make(map[rune]bool)
 

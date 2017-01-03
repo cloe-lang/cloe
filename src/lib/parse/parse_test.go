@@ -13,7 +13,7 @@ func TestAtom(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	} else {
-		t.Logf("%#v", toString(result))
+		t.Logf("%#v", result)
 	}
 }
 
@@ -25,7 +25,7 @@ func TestStringLiteral(t *testing.T) {
 		if err != nil {
 			t.Error(err.Error())
 		} else {
-			t.Logf("%#v", toString(result))
+			t.Logf("%#v", result)
 		}
 	}
 }
@@ -37,7 +37,7 @@ func TestStrip(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	} else {
-		t.Logf("%#v", toString(result))
+		t.Logf("%#v", result)
 	}
 }
 
@@ -48,7 +48,7 @@ func TestWrapChars(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	} else {
-		t.Logf("%#v", toString(result))
+		t.Logf("%#v", result)
 	}
 }
 

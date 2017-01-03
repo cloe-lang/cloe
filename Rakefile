@@ -4,6 +4,10 @@
   end
 end
 
+task :test do
+  sh 'go test ./...'
+end
+
 task :lint do
   sh 'go vet ./...; golint ./...'
 end

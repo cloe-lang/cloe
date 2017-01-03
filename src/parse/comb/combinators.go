@@ -61,6 +61,15 @@ func (s *State) NotInString(str string) Parser {
 	}
 }
 
+func (s *State) Wrap(l, m, r Parser) Parser {
+	return func() (interface{}, error) {
+		l()
+		result, err := m()
+		r()
+		return result, err
+	}
+}
+
 func (s *State) Many(p Parser) Parser {
 	return func() (interface{}, error) {
 		results, err := s.Many1(p)()

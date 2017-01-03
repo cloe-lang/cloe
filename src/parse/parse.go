@@ -36,27 +36,22 @@ func (s *state) identifier() comb.Parser {
 }
 
 func (s *state) stringLiteral() comb.Parser {
-	return s.wrap(
+	return s.wrapChars(
 		'"',
 		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
 		'"')
 }
 
 func (s *state) list() comb.Parser {
-	return s.wrap('(', s.elems(), ')')
+	return s.wrapChars('(', s.elems(), ')')
 }
 
 func (s *state) comment() comb.Parser {
 	return s.Void(s.And(s.Char(';'), s.Many(s.NotChar('\n')), s.Char('\n')))
 }
 
-func (s *state) wrap(l rune, p comb.Parser, r rune) comb.Parser {
-	return func() (interface{}, error) {
-		s.strippedChar(l)()
-		result, err := p()
-		s.strippedChar(r)()
-		return result, err
-	}
+func (s *state) wrapChars(l rune, p comb.Parser, r rune) comb.Parser {
+	return s.Wrap(s.strippedChar(l), p, s.strippedChar(r))
 }
 
 func (s *state) strippedChar(r rune) comb.Parser {
@@ -64,12 +59,8 @@ func (s *state) strippedChar(r rune) comb.Parser {
 }
 
 func (s *state) strip(p comb.Parser) comb.Parser {
-	return func() (interface{}, error) {
-		s.blank()()
-		result, err := p()
-		s.blank()()
-		return result, err
-	}
+	b := s.blank()
+	return s.Wrap(b, p, b)
 }
 
 func (s *state) blank() comb.Parser {

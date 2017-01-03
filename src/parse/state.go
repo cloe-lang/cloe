@@ -1,22 +1,9 @@
 package parse
 
-type State struct {
-	source         []rune
-	line, position uint
-}
+import "./comb"
 
-func NewState(source string) *State {
-	return &State{source: ([]rune)(source)}
-}
+type state struct{ *comb.State }
 
-func (s State) currentRune() rune {
-	return s.source[s.position]
-}
-
-func (s *State) Increment() {
-	if s.currentRune() == '\n' {
-		s.line++
-	}
-
-	s.position++
+func newState(source string) *state {
+	return &state{comb.NewState(source)}
 }

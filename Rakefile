@@ -18,7 +18,7 @@ task :lint do
   sh 'go vet ./...; golint ./...'
 end
 
-task :default => %i(risp parse)
+task :default => %i(test risp parse)
 
 task :clean do
   sh 'git clean -dfx'

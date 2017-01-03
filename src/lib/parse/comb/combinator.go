@@ -128,14 +128,16 @@ func (s *State) Or(ps ...Parser) Parser {
 	}
 }
 
-func (State) And(ps ...Parser) Parser {
+func (s *State) And(ps ...Parser) Parser {
 	return func() (interface{}, error) {
 		results := make([]interface{}, len(ps))
+		old := *s
 
 		for i, p := range ps {
 			result, err := p()
 
 			if err != nil {
+				*s = old
 				return nil, err
 			}
 

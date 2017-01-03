@@ -5,6 +5,8 @@ import (
 	"./comb"
 )
 
+const SPACE_CHARS = " ,\t\n\r"
+
 func Parse(source string) types.Object {
 	o, err := newState(source).module()()
 
@@ -24,7 +26,7 @@ func (s *state) elems() comb.Parser {
 }
 
 func (s *state) elem() comb.Parser {
-	return s.Or(s.atom(), s.list())
+	return s.strip(s.Or(s.atom(), s.list()))
 }
 
 func (s *state) atom() comb.Parser {
@@ -32,7 +34,7 @@ func (s *state) atom() comb.Parser {
 }
 
 func (s *state) identifier() comb.Parser {
-	return s.Many1(s.NotInString("()[]',\x00"))
+	return s.Many1(s.NotInString("()[]'\x00" + SPACE_CHARS))
 }
 
 func (s *state) stringLiteral() comb.Parser {
@@ -68,5 +70,5 @@ func (s *state) blank() comb.Parser {
 }
 
 func (s *state) space() comb.Parser {
-	return s.Void(s.Many1(s.InString(" ,\t\n\r")))
+	return s.Void(s.Many1(s.InString(SPACE_CHARS)))
 }

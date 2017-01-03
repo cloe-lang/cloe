@@ -50,3 +50,30 @@ func TestMany1Nest(t *testing.T) {
 
 	t.Logf("%#v", result)
 }
+
+func testOr(str string) (interface{}, error) {
+	s := NewState(str)
+	return s.Or(s.Char('a'), s.Char('b'))()
+}
+
+func TestOr(t *testing.T) {
+	for _, str := range []string{"a", "b"} {
+		result, err := testOr(str)
+
+		if err != nil {
+			t.Error(err.Error())
+		}
+
+		t.Logf("'%c'", result)
+	}
+}
+
+func TestOrFail(t *testing.T) {
+	result, err := testOr("c")
+
+	if result != nil {
+		t.Errorf("`result` should be nil but %#v.", result)
+	}
+
+	t.Logf(err.Error())
+}

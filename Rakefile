@@ -7,3 +7,7 @@ task :lint do
 end
 
 task :default => :risp
+
+task :clean do
+  sh 'git clean -dfx'
+end

@@ -1,9 +1,9 @@
 package main
 
 import (
-	_ "./parse"
-	_ "./types"
-	_ "./vm"
+	_ "../../lib/parse"
+	_ "../../lib/types"
+	_ "../../lib/vm"
 	"fmt"
 	"github.com/docopt/docopt-go"
 )

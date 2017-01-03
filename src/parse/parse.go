@@ -1,7 +1,13 @@
-package parser
+package parse
 
 import "../types"
 
-func Parse(source types.Object) types.Object {
-	return nil
+func Parse(source string) types.Object {
+	o, err := NewState(source).Module()()
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return o
 }

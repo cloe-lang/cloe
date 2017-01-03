@@ -83,20 +83,26 @@ func TestList(t *testing.T) {
 	t.Logf("%#v", result)
 }
 
-// func TestElem(t *testing.T) {
-// 	for _, str := range []string{"ident", "  ident  "} {
-// 		t.Logf("source: %#v", str)
+func TestElem(t *testing.T) {
+	strs := []string{
+		"ident",
+		"  ident  ",
+		" (foo ; (this is) comment \n bar)  \t ; lsdfj\n ",
+	}
 
-// 		s := newState(str)
-// 		result, err := s.elem()()
+	for _, str := range strs {
+		t.Logf("source: %#v", str)
 
-// 		if err != nil {
-// 			t.Error(err.Error())
-// 		} else {
-// 			t.Logf("%#v", toString(result))
-// 		}
-// 	}
-// }
+		s := newState(str)
+		result, err := s.Exhaust(s.elem())()
+
+		if err == nil {
+			t.Logf("%#v", result)
+		} else {
+			t.Error(err.Error())
+		}
+	}
+}
 
 func TestBlank(t *testing.T) {
 	for _, str := range []string{"", "   ", "\t", "\n\n", " ; laskdjf \n \t "} {

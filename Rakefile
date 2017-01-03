@@ -1,6 +1,6 @@
 %i(risp parse).each do |bin|
   task bin do
-    sh "cd src/cmd/#{bin} && go build main.go"
+    sh "go build -o bin/#{bin} src/cmd/#{bin}/main.go"
   end
 end
 
@@ -12,7 +12,7 @@ task :lint do
   sh 'go vet ./...; golint ./...'
 end
 
-task :default => :risp
+task :default => %i(risp parse)
 
 task :clean do
   sh 'git clean -dfx'

@@ -146,7 +146,7 @@ func (State) Void(p Parser) Parser {
 }
 
 func stringToRuneSet(s string) map[rune]bool {
-	var rs map[rune]bool
+	rs := make(map[rune]bool)
 
 	for _, r := range s {
 		rs[r] = true

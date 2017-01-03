@@ -2,7 +2,7 @@ package comb
 
 type State struct {
 	source         []rune
-	line, position uint
+	line, position int
 }
 
 func NewState(source string) *State {
@@ -10,6 +10,10 @@ func NewState(source string) *State {
 }
 
 func (s State) currentRune() rune {
+	if s.position >= len(s.source) {
+		return '\x00'
+	}
+
 	return s.source[s.position]
 }
 

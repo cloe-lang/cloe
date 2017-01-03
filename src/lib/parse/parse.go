@@ -32,7 +32,7 @@ func (s *state) atom() comb.Parser {
 }
 
 func (s *state) identifier() comb.Parser {
-	return s.Many1(s.NotInString("()[]',"))
+	return s.Many1(s.NotInString("()[]',\x00"))
 }
 
 func (s *state) stringLiteral() comb.Parser {

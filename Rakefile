@@ -5,7 +5,7 @@
 end
 
 task :test do
-  sh 'go test ./...'
+  sh 'go test -test.v ./...'
 end
 
 task :lint do

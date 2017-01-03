@@ -39,3 +39,14 @@ func TestMany1Fail(t *testing.T) {
 
 	t.Log(err.Error())
 }
+
+func TestMany1Nest(t *testing.T) {
+	s := NewState("    ")
+	result, err := s.Many1(s.Many1(s.Char(' ')))()
+
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	t.Logf("%#v", result)
+}

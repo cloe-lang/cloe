@@ -38,7 +38,7 @@ func (s *state) atom() comb.Parser {
 }
 
 func (s *state) identifier() comb.Parser {
-	return s.stringify(s.Many1(s.NotInString("()[]'\x00" + SPACE_CHARS)))
+	return s.stringify(s.Many1(s.NotInString("()[]{}$'\x00" + SPACE_CHARS)))
 }
 
 func (s *state) stringLiteral() comb.Parser {

@@ -10,7 +10,7 @@ type State uint32
 
 const (
 	ILLEGAL State = iota
-	VALUE
+	NORMAL
 	LOCKED
 	APP
 )
@@ -24,7 +24,7 @@ type Thunk struct {
 }
 
 func NewValueThunk(v types.Object) *Thunk {
-	return &Thunk{Result: v, state: VALUE}
+	return &Thunk{Result: v, state: NORMAL}
 }
 
 func NewAppThunk(f *Thunk, args *Thunk) *Thunk {
@@ -61,7 +61,7 @@ func (t *Thunk) Eval() { // into WHNF
 	t.function = nil
 	t.args = nil
 
-	t.storeState(VALUE)
+	t.storeState(NORMAL)
 
 	t.blackHole.Done()
 }

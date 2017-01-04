@@ -1,7 +1,7 @@
 package main
 
 import (
-	f "../../lib/functions"
+	l "../../lib/lang"
 	_ "../../lib/parse"
 	"github.com/docopt/docopt-go"
 )
@@ -9,7 +9,7 @@ import (
 func main() {
 	getArgs()
 
-	f.Nil().Eval()
+	l.Nil().Eval()
 }
 
 func getArgs() map[string]interface{} {

@@ -1,18 +1,15 @@
 package main
 
 import (
+	f "../../lib/functions"
 	_ "../../lib/parse"
-	"../../lib/vm"
-	"fmt"
 	"github.com/docopt/docopt-go"
 )
 
 func main() {
-	args := getArgs()
+	getArgs()
 
-	fmt.Println(args)
-
-	vm.Main().Eval()
+	f.Nil().Eval()
 }
 
 func getArgs() map[string]interface{} {

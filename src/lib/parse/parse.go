@@ -4,7 +4,10 @@ import (
 	"./comb"
 )
 
-const spaceChars = " ,\t\n\r"
+const (
+	spaceChars  = " ,\t\n\r"
+	quoteString = "quote"
+)
 
 func Parse(source string) []interface{} {
 	m, err := newState(source).module()()
@@ -46,10 +49,14 @@ func (s *state) stringLiteral() comb.Parser {
 	b := s.blank()
 	c := s.Char('"')
 
-	return s.stringify(s.Wrap(
+	return s.App(prependQuote, s.stringify(s.Wrap(
 		c,
 		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
-		s.And(c, b)))
+		s.And(c, b))))
+}
+
+func prependQuote(x interface{}) interface{} {
+	return []interface{}{quoteString, x}
 }
 
 func (s *state) list() comb.Parser {
@@ -94,7 +101,7 @@ func (s *state) space() comb.Parser {
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {
-	return s.And(s.Replace("quote", s.Char('\'')), p)
+	return s.And(s.Replace(quoteString, s.Char('\'')), p)
 }
 
 func (s *state) quotes(ps ...comb.Parser) []comb.Parser {

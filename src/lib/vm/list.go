@@ -6,13 +6,13 @@ type List struct {
 }
 
 func NewList(ts ...*Thunk) *Thunk {
-	list := Cons(ts[len(ts)-1], Nil())
+	l := Cons(ts[len(ts)-1], Nil())
 
 	for i := len(ts) - 2; i >= 0; i-- {
-		list = Cons(ts[i], list)
+		l = Cons(ts[i], l)
 	}
 
-	return list
+	return l
 }
 
 func Cons(t1, t2 *Thunk) *Thunk {
@@ -38,11 +38,11 @@ func applyList(f func(List) *Thunk, t *Thunk) *Thunk {
 }
 
 func evalList(t *Thunk) Object {
-	list, ok := t.Eval().(List)
+	l, ok := t.Eval().(List)
 
 	if !ok {
 		return NewError("Expected List but %#v.", t.Result)
 	}
 
-	return list
+	return l
 }

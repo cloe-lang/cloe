@@ -12,3 +12,8 @@ Can be just sugar.
 (= (func 123 456 *list 789)
    (func * x (concat '(123 456) list '(789))))
 ```
+
+## Evaluation steps
+
+1. Parse source code: `string -> []interface{}`
+2. Eval source code: `[]interface{} -> *Thunk`

@@ -22,11 +22,11 @@ type Thunk struct {
 	blackHole sync.WaitGroup
 }
 
-func NewValueThunk(o Object) *Thunk {
+func Normal(o Object) *Thunk {
 	return &Thunk{Result: o, state: normal}
 }
 
-func NewAppThunk(f *Thunk, args *Thunk) *Thunk {
+func App(f *Thunk, args *Thunk) *Thunk {
 	t := &Thunk{function: f, args: args, state: app}
 	t.blackHole.Add(1)
 	return t

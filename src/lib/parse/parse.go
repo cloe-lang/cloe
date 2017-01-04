@@ -94,7 +94,7 @@ func (s *state) space() comb.Parser {
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {
-	return s.And(s.Char('\''), p)
+	return s.And(s.Replace("quote", s.Char('\'')), p)
 }
 
 func (s *state) quotes(ps ...comb.Parser) []comb.Parser {

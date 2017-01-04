@@ -193,6 +193,10 @@ func (s *State) App(f func(interface{}) interface{}, p Parser) Parser {
 	}
 }
 
+func (s *State) Replace(x interface{}, p Parser) Parser {
+	return s.App(func(_ interface{}) interface{} { return x }, p)
+}
+
 func stringToRuneSet(s string) map[rune]bool {
 	rs := make(map[rune]bool)
 

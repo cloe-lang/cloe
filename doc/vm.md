@@ -19,7 +19,7 @@
 - None
   - Evil
 - Function
-  - Dictionary -> List
+  - Dictionary -> Object
   - `(\x x)` takes `{ "x": Object }` and returns `[x]`
   - `(\x *x)` takes `{ "x": List-like }` and returns `x`
 

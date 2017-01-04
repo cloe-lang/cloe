@@ -2,14 +2,14 @@ package vm
 
 import "github.com/mediocregopher/seq"
 
-type List *seq.List
+type List struct{ *seq.List }
 
-func NewList(os ...Object) List {
-	new := make([]interface{}, len(os))
+func NewList(ts ...Thunk) List {
+	new := make([]interface{}, len(ts))
 
-	for i, o := range os {
-		new[i] = o
+	for i, t := range ts {
+		new[i] = t
 	}
 
-	return List(seq.NewList(new...))
+	return List{seq.NewList(new...)}
 }

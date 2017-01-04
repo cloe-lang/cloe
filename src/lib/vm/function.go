@@ -1,9 +1,18 @@
 package vm
 
-type RawFunction func(Dictionary) Object // Arguments | Environment -> Object
+type Function struct {
+	signature List
+	env       Dictionary
+	function  func(Dictionary) *Thunk // Environment -> Result
+}
 
-func (f RawFunction) Call(d Dictionary) Object {
-	return f(d)
+func (f Function) Call(args List) *Thunk {
+	return f.function(mapArgs(f.env, f.signature, args))
+}
+
+func mapArgs(env Dictionary, sig, args List) Dictionary {
+	// TODO
+	return NewDictionary().(Dictionary)
 }
 
 // func CompileFunction(o Object) (RawFunction, error) {

@@ -26,7 +26,7 @@ func Normal(o Object) *Thunk {
 	return &Thunk{Result: o, state: normal}
 }
 
-func NormalApp(f RawFunction, args *Dictionary) *Thunk {
+func NormalApp(f Function, args List) *Thunk {
 	return App(Normal(f), Normal(args))
 }
 
@@ -54,13 +54,17 @@ func (t *Thunk) Eval() { // into WHNF
 		panic("Something not callable was called.")
 	}
 
-	args, ok := t.args.Result.(Dictionary)
+	args, ok := t.args.Result.(List)
 
 	if !ok {
-		panic("Something which is not a dictionary was used as arguments.")
+		panic("Something which is not a list was used as arguments.")
 	}
 
-	t.Result = f.Call(args)
+	child := f.Call(args)
+	child.Eval()
+	child.Wait()
+	t.Result = child.Result
+
 	t.function = nil
 	t.args = nil
 

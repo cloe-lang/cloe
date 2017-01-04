@@ -30,11 +30,11 @@ func (s *state) strictElems() comb.Parser {
 }
 
 func (s *state) elem() comb.Parser {
-	return s.strip(s.Or(s.atom(), s.list()))
+	return s.strip(s.Or(s.atom(), s.list(), s.quote(s.list())))
 }
 
 func (s *state) atom() comb.Parser {
-	return s.Or(s.stringLiteral(), s.identifier())
+	return s.Or(s.stringLiteral(), s.quote(s.identifier()), s.identifier())
 }
 
 func (s *state) identifier() comb.Parser {

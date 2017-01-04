@@ -78,9 +78,9 @@ func TestList(t *testing.T) {
 
 	if err != nil {
 		t.Error(err.Error())
+	} else {
+		t.Logf("%#v", result)
 	}
-
-	t.Logf("%#v", result)
 }
 
 func TestElem(t *testing.T) {
@@ -117,6 +117,19 @@ func TestBlank(t *testing.T) {
 
 		if err != nil {
 			t.Errorf("`err` should be nil. (%#v)", result)
+		}
+	}
+}
+
+func TestQuote(t *testing.T) {
+	for _, str := range []string{"'foo", "'( foo ; lajdfs\n   bar )"} {
+		s := newState(str)
+		result, err := s.Exhaust(s.elem())()
+
+		if err != nil {
+			t.Error(err.Error())
+		} else {
+			t.Logf("%#v", result)
 		}
 	}
 }

@@ -46,7 +46,7 @@ func (s *state) stringLiteral() comb.Parser {
 	c := s.Char('"')
 
 	return s.stringify(s.Wrap(
-		s.And(b, c),
+		c,
 		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
 		s.And(c, b)))
 }
@@ -60,7 +60,7 @@ func (s *state) comment() comb.Parser {
 }
 
 func (s *state) wrapChars(l rune, p comb.Parser, r rune) comb.Parser {
-	return s.Wrap(s.strippedChar(l), p, s.strippedChar(r))
+	return s.Wrap(s.And(s.Char(l), s.blank()), p, s.strippedChar(r))
 }
 
 func (s *state) strippedChar(r rune) comb.Parser {

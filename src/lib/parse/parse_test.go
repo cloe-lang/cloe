@@ -62,7 +62,7 @@ func TestStrip(t *testing.T) {
 }
 
 func TestWrapChars(t *testing.T) {
-	s := newState(" ; laskdfjsl \t  dkjf\n ( \tident \n)  ")
+	s := newState("( \tident \n)  ; laskdfjsl \t  dkjf\n ")
 	result, err := s.Exhaust(s.wrapChars('(', s.atom(), ')'))()
 
 	if err != nil {

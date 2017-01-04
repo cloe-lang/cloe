@@ -2,8 +2,8 @@ package vm
 
 type RawFunction func(Dictionary) Object // Arguments | Environment -> Object
 
-func (f RawFunction) Call(args Dictionary) Object {
-	return f(args)
+func (f RawFunction) Call(d Dictionary) Object {
+	return f(d)
 }
 
 // func CompileFunction(o Object) (RawFunction, error) {

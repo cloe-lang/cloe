@@ -12,6 +12,8 @@ end
   end
 end
 
+task :examples => %i(parse_examples run_examples)
+
 task :test do
   sh 'go test -test.v ./...'
 end

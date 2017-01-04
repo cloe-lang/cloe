@@ -10,6 +10,12 @@ task :parse_examples => :parse do
   end
 end
 
+task :run_examples => :run do
+  Dir.glob('examples/*.r').each do |file|
+    sh "bin/risp #{file}"
+  end
+end
+
 task :test do
   sh 'go test -test.v ./...'
 end

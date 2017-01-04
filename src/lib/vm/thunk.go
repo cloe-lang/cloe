@@ -8,10 +8,10 @@ import (
 type State uint32
 
 const (
-	ILLEGAL State = iota
-	NORMAL
-	LOCKED
-	APP
+	illegal State = iota
+	normal
+	locked
+	abnormal
 )
 
 type Thunk struct {
@@ -23,17 +23,17 @@ type Thunk struct {
 }
 
 func NewValueThunk(v Object) *Thunk {
-	return &Thunk{Result: v, state: NORMAL}
+	return &Thunk{Result: v, state: normal}
 }
 
 func NewAppThunk(f *Thunk, args *Thunk) *Thunk {
-	t := &Thunk{function: f, args: args, state: APP}
+	t := &Thunk{function: f, args: args, state: abnormal}
 	t.blackHole.Add(1)
 	return t
 }
 
 func (t *Thunk) Eval() { // into WHNF
-	if !t.compareAndSwapState(APP, LOCKED) {
+	if !t.compareAndSwapState(abnormal, locked) {
 		// Some goroutine is evaluating this thunk or it has been evaluated already.
 		return
 	}
@@ -60,7 +60,7 @@ func (t *Thunk) Eval() { // into WHNF
 	t.function = nil
 	t.args = nil
 
-	t.storeState(NORMAL)
+	t.storeState(normal)
 
 	t.blackHole.Done()
 }

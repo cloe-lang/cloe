@@ -1,22 +1,50 @@
 package desugar
 
 func Desugar(x interface{}) interface{} {
-	return newState().desugar(x)
+	return newState().module(x)
 }
 
-func (s *state) desugar(x interface{}) interface{} {
-	if xs, ok := x.([]interface{}); ok && isApp(xs) {
-		return xs
-	} else if ok {
-		return mapFunc(s.desugar, xs)
+func (s *state) module(x interface{}) interface{} {
+	return mapFunc(s.statement, x.([]interface{}))
+}
+
+func (s *state) statement(x interface{}) interface{} {
+	xs := x.([]interface{})
+
+	if xs[0] == "let" {
+		return append(xs[:1], s.expr(xs[2]))
+	}
+
+	return s.app(xs)
+}
+
+func (s *state) expr(x interface{}) interface{} {
+	if app := toApp(x); app != nil {
+		return s.app(app)
 	}
 
 	return x
 }
 
-func isApp(xs []interface{}) bool {
-	head := xs[0]
-	return head != "\\" && head != "let" && head != "quote"
+func (s *state) app(xs []interface{}) interface{} {
+	// TODO
+	return xs
+}
+
+func toApp(x interface{}) []interface{} {
+	app, ok := x.([]interface{})
+
+	if !ok {
+		return nil
+	}
+
+	f := app[0]
+
+	if f == "\\" {
+		return nil
+	}
+
+	return app
 }
 
 func mapFunc(f func(interface{}) interface{}, xs []interface{}) []interface{} {

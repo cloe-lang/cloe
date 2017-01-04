@@ -108,16 +108,16 @@ func (s *state) quotes(ps ...comb.Parser) []comb.Parser {
 }
 
 func (s *state) stringify(p comb.Parser) comb.Parser {
-	f := func(any interface{}) interface{} {
-		xs := any.([]interface{})
-		rs := make([]rune, len(xs))
+	return s.App(stringifyChars, p)
+}
 
-		for i, x := range xs {
-			rs[i] = x.(rune)
-		}
+func stringifyChars(any interface{}) interface{} {
+	xs := any.([]interface{})
+	rs := make([]rune, len(xs))
 
-		return string(rs)
+	for i, x := range xs {
+		rs[i] = x.(rune)
 	}
 
-	return s.App(f, p)
+	return string(rs)
 }

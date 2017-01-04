@@ -80,6 +80,10 @@ func (s *state) space() comb.Parser {
 	return s.Void(s.Many1(s.InString(SPACE_CHARS)))
 }
 
+func (s *state) quote(p comb.Parser) comb.Parser {
+	return s.And(s.Char('\''), p)
+}
+
 func (s *state) stringify(p comb.Parser) comb.Parser {
 	f := func(any interface{}) interface{} {
 		xs := any.([]interface{})

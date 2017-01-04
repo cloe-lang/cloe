@@ -4,15 +4,11 @@
   end
 end
 
-task :parse_examples => :parse do
-  Dir.glob('examples/*.r').each do |file|
-    sh "bin/parse #{file}"
-  end
-end
-
-task :run_examples => :run do
-  Dir.glob('examples/*.r').each do |file|
-    sh "bin/risp #{file}"
+[%i(run_examples risp), %i(parse_examples parse)].each do |name, bin|
+  task name => bin do
+    Dir.glob('examples/*.r').each do |file|
+      sh "bin/#{bin} #{file}"
+    end
   end
 end
 

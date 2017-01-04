@@ -11,7 +11,7 @@ const (
 	illegal State = iota
 	normal
 	locked
-	abnormal
+	app
 )
 
 type Thunk struct {
@@ -27,13 +27,13 @@ func NewValueThunk(o Object) *Thunk {
 }
 
 func NewAppThunk(f *Thunk, args *Thunk) *Thunk {
-	t := &Thunk{function: f, args: args, state: abnormal}
+	t := &Thunk{function: f, args: args, state: app}
 	t.blackHole.Add(1)
 	return t
 }
 
 func (t *Thunk) Eval() { // into WHNF
-	if !t.compareAndSwapState(abnormal, locked) {
+	if !t.compareAndSwapState(app, locked) {
 		// Some goroutine is evaluating this thunk or it has been evaluated already.
 		return
 	}

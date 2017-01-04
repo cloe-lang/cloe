@@ -185,7 +185,7 @@ func (s *State) App(f func(interface{}) interface{}, p Parser) Parser {
 	return func() (interface{}, error) {
 		result, err := p()
 
-		if result != nil {
+		if err == nil {
 			return f(result), err
 		}
 

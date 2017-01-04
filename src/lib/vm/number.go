@@ -1,3 +1,7 @@
 package vm
 
-type Number int64
+type Number float64
+
+func NewNumber(n float64) Number {
+	return Number(n)
+}

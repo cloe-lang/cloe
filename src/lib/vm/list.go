@@ -38,10 +38,7 @@ func applyList(f func(List) *Thunk, t *Thunk) *Thunk {
 }
 
 func evalList(t *Thunk) Object {
-	t.Eval()
-	t.Wait()
-
-	list, ok := t.Result.(List)
+	list, ok := t.Eval().(List)
 
 	if !ok {
 		return NewError("Expected List but %#v.", t.Result)

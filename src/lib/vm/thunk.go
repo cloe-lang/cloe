@@ -36,45 +36,36 @@ func App(f *Thunk, args *Thunk) *Thunk {
 	return t
 }
 
-func (t *Thunk) Eval() { // into WHNF
-	if !t.compareAndSwapState(app, locked) {
-		// Some goroutine is evaluating this thunk or it has been evaluated already.
-		return
+func (t *Thunk) Eval() Object { // into WHNF
+	if t.compareAndSwapState(app, locked) {
+		go t.function.Eval()
+		go t.args.Eval()
+
+		f, ok := t.function.Eval().(Callable)
+
+		if !ok {
+			panic("Something not callable was called.")
+		}
+
+		args, ok := t.args.Eval().(List)
+
+		if !ok {
+			panic("Something which is not a list was used as arguments.")
+		}
+
+		t.Result = f.Call(args).Eval()
+
+		t.function = nil
+		t.args = nil
+
+		t.storeState(normal)
+
+		t.blackHole.Done()
+	} else {
+		t.blackHole.Wait()
 	}
 
-	go t.function.Eval()
-	go t.args.Eval()
-
-	t.function.Wait()
-	t.args.Wait()
-
-	f, ok := t.function.Result.(Callable)
-
-	if !ok {
-		panic("Something not callable was called.")
-	}
-
-	args, ok := t.args.Result.(List)
-
-	if !ok {
-		panic("Something which is not a list was used as arguments.")
-	}
-
-	child := f.Call(args)
-	child.Eval()
-	child.Wait()
-	t.Result = child.Result
-
-	t.function = nil
-	t.args = nil
-
-	t.storeState(normal)
-
-	t.blackHole.Done()
-}
-
-func (t *Thunk) Wait() {
-	t.blackHole.Wait()
+	return t.Result
 }
 
 func (t *Thunk) compareAndSwapState(old, new State) bool {

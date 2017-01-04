@@ -1,20 +1,19 @@
 package parse
 
 import (
-	"../vm"
 	"./comb"
 )
 
 const spaceChars = " ,\t\n\r"
 
-func Parse(source string) vm.Object {
-	o, err := newState(source).module()()
+func Parse(source string) []interface{} {
+	m, err := newState(source).module()()
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	return o
+	return m.([]interface{})
 }
 
 func (s *state) module() comb.Parser {
@@ -117,7 +116,7 @@ func (s *state) stringify(p comb.Parser) comb.Parser {
 			rs[i] = x.(rune)
 		}
 
-		return vm.NewString(string(rs))
+		return string(rs)
 	}
 
 	return s.App(f, p)

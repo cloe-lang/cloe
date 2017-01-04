@@ -1,4 +1,4 @@
-package types
+package vm
 
 // type Object interface {
 // 	methods() Dictionary

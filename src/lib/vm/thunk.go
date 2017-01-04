@@ -1,7 +1,6 @@
 package vm
 
 import (
-	"../types"
 	"sync"
 	"sync/atomic"
 )
@@ -16,14 +15,14 @@ const (
 )
 
 type Thunk struct {
-	Result    types.Object
+	Result    Object
 	function  *Thunk
 	args      *Thunk
 	state     State
 	blackHole sync.WaitGroup
 }
 
-func NewValueThunk(v types.Object) *Thunk {
+func NewValueThunk(v Object) *Thunk {
 	return &Thunk{Result: v, state: NORMAL}
 }
 
@@ -45,13 +44,13 @@ func (t *Thunk) Eval() { // into WHNF
 	t.function.Wait()
 	t.args.Wait()
 
-	f, ok := t.function.Result.(types.Callable)
+	f, ok := t.function.Result.(Callable)
 
 	if !ok {
 		panic("Something not callable was called.")
 	}
 
-	args, ok := t.args.Result.(types.Dictionary)
+	args, ok := t.args.Result.(Dictionary)
 
 	if !ok {
 		panic("Something which is not a dictionary was used as arguments.")

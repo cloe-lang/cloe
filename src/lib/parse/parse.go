@@ -1,13 +1,13 @@
 package parse
 
 import (
-	"../types"
+	"../vm"
 	"./comb"
 )
 
 const SPACE_CHARS = " ,\t\n\r"
 
-func Parse(source string) types.Object {
+func Parse(source string) vm.Object {
 	o, err := newState(source).module()()
 
 	if err != nil {
@@ -117,7 +117,7 @@ func (s *state) stringify(p comb.Parser) comb.Parser {
 			rs[i] = x.(rune)
 		}
 
-		return types.NewString(string(rs))
+		return vm.NewString(string(rs))
 	}
 
 	return s.App(f, p)

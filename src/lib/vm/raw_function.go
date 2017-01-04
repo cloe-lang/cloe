@@ -1,4 +1,4 @@
-package types
+package vm
 
 type RawFunction func(Dictionary) Object // Environment -> Object
 

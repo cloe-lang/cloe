@@ -2,7 +2,7 @@ package vm
 
 type Function struct {
 	signature List
-	env       Dictionary
+	env       Dictionary              // TODO: Remove env to release resources
 	function  func(Dictionary) *Thunk // Environment -> Result
 }
 

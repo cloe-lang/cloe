@@ -26,6 +26,10 @@ func Normal(o Object) *Thunk {
 	return &Thunk{Result: o, state: normal}
 }
 
+func NormalApp(f RawFunction, args *Dictionary) *Thunk {
+	return App(Normal(f), Normal(args))
+}
+
 func App(f *Thunk, args *Thunk) *Thunk {
 	t := &Thunk{function: f, args: args, state: app}
 	t.blackHole.Add(1)

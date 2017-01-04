@@ -1,0 +1,15 @@
+; (let func (\ (x (y 123)) (+ x y)))
+
+(let func$y 123)
+(def func (+ $0 $1))
+
+(print (func 123 $func$y))
+(print (func 123 456))
+
+
+; (let func (\ (x) (\ (y) (+ x y))))
+
+(def func$\0 (+ $0 $1))
+(def func (partial func$\0 $0))
+
+(print ((func 123) 456)) ; 579

@@ -30,11 +30,13 @@ func (s *state) strictElems() comb.Parser {
 }
 
 func (s *state) elem() comb.Parser {
-	return s.strip(s.Or(s.atom(), s.list(), s.quote(s.list())))
+	ps := []comb.Parser{s.atom(), s.list(), s.array(), s.dict()}
+
+	return s.strip(s.Or(append(ps, s.quotes(ps...)...)...))
 }
 
 func (s *state) atom() comb.Parser {
-	return s.Or(s.stringLiteral(), s.quote(s.identifier()), s.identifier())
+	return s.Or(s.stringLiteral(), s.identifier())
 }
 
 func (s *state) identifier() comb.Parser {
@@ -52,7 +54,19 @@ func (s *state) stringLiteral() comb.Parser {
 }
 
 func (s *state) list() comb.Parser {
-	return s.wrapChars('(', s.elems(), ')')
+	return s.sequence('(', ')')
+}
+
+func (s *state) array() comb.Parser {
+	return s.sequence('[', ']')
+}
+
+func (s *state) dict() comb.Parser {
+	return s.sequence('{', '}')
+}
+
+func (s *state) sequence(l, r rune) comb.Parser {
+	return s.wrapChars(l, s.elems(), r)
 }
 
 func (s *state) comment() comb.Parser {
@@ -82,6 +96,16 @@ func (s *state) space() comb.Parser {
 
 func (s *state) quote(p comb.Parser) comb.Parser {
 	return s.And(s.Char('\''), p)
+}
+
+func (s *state) quotes(ps ...comb.Parser) []comb.Parser {
+	qs := make([]comb.Parser, len(ps))
+
+	for i, p := range ps {
+		qs[i] = s.quote(p)
+	}
+
+	return qs
 }
 
 func (s *state) stringify(p comb.Parser) comb.Parser {

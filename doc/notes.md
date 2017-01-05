@@ -17,3 +17,7 @@ Can be just sugar.
 
 1. Parse source code: `string -> []interface{}`
 2. Eval source code: `[]interface{} -> *Thunk`
+
+## IR
+
+IR can be curried.

@@ -5,10 +5,10 @@ import (
 	"sync/atomic"
 )
 
-type State uint32
+type thunkState uint32
 
 const (
-	illegal State = iota
+	illegal thunkState = iota
 	normal
 	locked
 	app
@@ -18,7 +18,7 @@ type Thunk struct {
 	Result    Object
 	function  *Thunk
 	args      *Thunk
-	state     State
+	state     thunkState
 	blackHole sync.WaitGroup
 }
 
@@ -68,13 +68,13 @@ func (t *Thunk) Eval() Object { // into WHNF
 	return t.Result
 }
 
-func (t *Thunk) compareAndSwapState(old, new State) bool {
+func (t *Thunk) compareAndSwapState(old, new thunkState) bool {
 	return atomic.CompareAndSwapUint32(
 		(*uint32)(&t.state),
 		uint32(old),
 		uint32(new))
 }
 
-func (t *Thunk) storeState(new State) {
+func (t *Thunk) storeState(new thunkState) {
 	atomic.StoreUint32((*uint32)(&t.state), uint32(new))
 }

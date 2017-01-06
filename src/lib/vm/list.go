@@ -5,44 +5,38 @@ type List struct {
 	rest  *Thunk
 }
 
+var EmptyList = Normal(List{nil, nil})
+
 func NewList(ts ...*Thunk) *Thunk {
-	l := Cons(ts[len(ts)-1], Nil())
+	l := cons(ts[len(ts)-1], EmptyList)
 
 	for i := len(ts) - 2; i >= 0; i-- {
-		l = Cons(ts[i], l)
+		l = cons(ts[i], l)
 	}
 
 	return l
 }
 
-func Cons(t1, t2 *Thunk) *Thunk {
+func cons(t1, t2 *Thunk) *Thunk {
 	return Normal(List{t1, t2})
 }
 
-func First(t *Thunk) *Thunk {
-	return applyList(func(l List) *Thunk { return l.first }, t)
+func Prepend(args List) *Thunk {
+	return Normal(List{args.first, args.rest.Eval().(List).first})
 }
 
-func Rest(t *Thunk) *Thunk {
-	return applyList(func(l List) *Thunk { return l.rest }, t)
+func First(args List) *Thunk {
+	return args.first.Eval().(List).first
 }
 
-func applyList(f func(List) *Thunk, t *Thunk) *Thunk {
-	o := evalList(t)
+func Rest(args List) *Thunk {
+	l := args.first.Eval().(List)
 
-	if l, ok := o.(List); ok {
-		return f(l)
+	if l.first == nil {
+		return NewError("The list is empty. You cannot apply rest.")
+	} else if l.rest == nil {
+		return NewError("The list's length is 1. You cannot apply rest.")
 	}
 
-	return Normal(o)
-}
-
-func evalList(t *Thunk) Object {
-	l, ok := t.Eval().(List)
-
-	if !ok {
-		return NewError("Expected List but %#v.", t.Result)
-	}
-
-	return l
+	return l.rest
 }

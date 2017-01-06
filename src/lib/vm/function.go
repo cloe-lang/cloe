@@ -1,37 +1,7 @@
 package vm
 
-type Function struct {
-	signature List
-	env       Dictionary              // TODO: Remove env to release resources
-	function  func(Dictionary) *Thunk // Environment -> Result
+type Function func(List) *Thunk
+
+func (f Function) Call(l List) *Thunk {
+	return f(l)
 }
-
-func (f Function) Call(args List) *Thunk {
-	return f.function(mapArgs(f.env, f.signature, args))
-}
-
-func mapArgs(env Dictionary, sig, args List) Dictionary {
-	// TODO
-	return NewDictionary().(Dictionary)
-}
-
-// func CompileFunction(o Object) (RawFunction, error) {
-// 	os := o.(List).Slice()
-
-// 	if !len(os) != 3 {
-// 		return nil, Error(
-// 			"Invalid number of elements in a list representing a function. %#v", os)
-// 	}
-
-// 	args := os[1]
-// 	body := os[2]
-
-// 	return func(env Dictionary) Object {
-// 		if v, ok := Dictioanary.Get(); ok {
-
-// 		} else {
-// 		}
-
-// 		return
-// 	}
-// }

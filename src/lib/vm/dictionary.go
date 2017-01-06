@@ -4,16 +4,16 @@ import "github.com/mediocregopher/seq"
 
 type Dictionary struct{ *seq.HashMap }
 
-func NewDictionary(os ...Object) Object {
+func NewDictionary(ks []Object, vs []Thunk) *Thunk {
+	if len(ks) == len(vs) {
+		panic("Number of keys doesn't match with number of values .")
+	}
+
 	d := Dictionary{seq.NewHashMap()}
 
-	if len(os)%2 != 0 {
-		return NewError("Number of arguments is not even.")
+	for i, k := range ks {
+		d.Set(k, vs[i])
 	}
 
-	for i := 0; i < len(os); i += 2 {
-		d.Set(os[i], os[i+1])
-	}
-
-	return d
+	return Normal(d)
 }

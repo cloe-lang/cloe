@@ -39,7 +39,7 @@ func (t *Thunk) Eval() Object { // into WHNF
 		f, ok := t.function.Eval().(Callable)
 
 		if !ok {
-			panic("Something not callable was called.")
+			return NewError("Something not callable was called.").Eval()
 		}
 
 		t.Result = f.Call(t.args...).Eval()

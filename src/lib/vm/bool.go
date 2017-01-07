@@ -43,6 +43,21 @@ func Or(ts ...*Thunk) *Thunk { // With short circuit
 	return False
 }
 
+func Not(ts ...*Thunk) *Thunk {
+	if len(ts) != 1 {
+		return NumArgsError("not", "1")
+	}
+
+	o := ts[0].Eval()
+	b, ok := o.(Bool)
+
+	if !ok {
+		return notBoolError(o)
+	}
+
+	return NewBool(!bool(b))
+}
+
 func notBoolError(o Object) *Thunk {
 	return TypeError(o, "Bool")
 }

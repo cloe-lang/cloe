@@ -45,7 +45,7 @@ func Prepend(ts ...*Thunk) *Thunk {
 
 func First(ts ...*Thunk) *Thunk {
 	if len(ts) != 1 {
-		return NewError("Number of arguments of first must be 1.")
+		return NumArgsError("first", "1")
 	}
 
 	return ts[0].Eval().(List).first
@@ -53,7 +53,7 @@ func First(ts ...*Thunk) *Thunk {
 
 func Rest(ts ...*Thunk) *Thunk {
 	if len(ts) != 1 {
-		return NewError("Number of arguments of rest must be 1.")
+		return NumArgsError("rest", "1")
 	}
 
 	l := ts[0].Eval().(List)

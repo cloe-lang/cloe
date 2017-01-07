@@ -9,7 +9,15 @@ func NewError(s string, xs ...interface{}) *Thunk {
 }
 
 func NotCallableError(o Object) *Thunk {
-	return NewError("%#v is not callable.", o)
+	return TypeError(o, "Callable")
+}
+
+func TypeError(o Object, typ string) *Thunk {
+	return NewError("%#v is not %s", o, typ)
+}
+
+func NumArgsError(f, condition string) *Thunk {
+	return NewError("Number of arguments to %s must be %s.", f, condition)
 }
 
 func ChainError(e *Thunk, s string, xs ...interface{}) *Thunk {

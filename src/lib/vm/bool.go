@@ -14,12 +14,12 @@ func (b Bool) Equal(e Equalable) bool {
 }
 
 func And(ts ...*Thunk) *Thunk { // With short circuit
-	for i, t := range ts {
+	for _, t := range ts {
 		o := t.Eval()
 		b, ok := o.(Bool)
 
 		if !ok {
-			return NewError("%dth argument of and is not Bool but %T.", i, o)
+			return notBoolError(o)
 		} else if !bool(b) {
 			return False
 		}
@@ -29,16 +29,20 @@ func And(ts ...*Thunk) *Thunk { // With short circuit
 }
 
 func Or(ts ...*Thunk) *Thunk { // With short circuit
-	for i, t := range ts {
+	for _, t := range ts {
 		o := t.Eval()
 		b, ok := o.(Bool)
 
 		if !ok {
-			return NewError("%dth argument of or is not Bool but %T.", i, o)
+			return notBoolError(o)
 		} else if bool(b) {
 			return True
 		}
 	}
 
 	return False
+}
+
+func notBoolError(o Object) *Thunk {
+	return TypeError(o, "Bool")
 }

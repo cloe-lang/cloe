@@ -35,5 +35,5 @@ func Equal(ts ...*Thunk) *Thunk {
 }
 
 func notEqualableError(o Object) *Thunk {
-	return NewError("%T is not Equalable.", o)
+	return TypeError(o, "Equalable")
 }

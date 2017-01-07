@@ -18,7 +18,7 @@ func (c Closure) Call(ts ...*Thunk) *Thunk {
 
 func Partial(ts ...*Thunk) *Thunk {
 	if len(ts) == 0 {
-		return NewError("Number of arguments to partial must be >= 1.")
+		return NumArgsError("partial", ">= 1")
 	}
 
 	return Normal(Closure{ts[0], ts[1:]})

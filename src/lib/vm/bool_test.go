@@ -41,3 +41,11 @@ func TestOr(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestNot(t *testing.T) {
+	for _, b := range []bool{true, false} {
+		if bool(Not(NewBool(b)).Eval().(Bool)) == b {
+			t.Fail()
+		}
+	}
+}

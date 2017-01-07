@@ -51,10 +51,6 @@ func TestNot(t *testing.T) {
 }
 
 func TestBoolEqual(t *testing.T) {
-	equal := func(ts ...*Thunk) bool {
-		return bool(Equal(ts...).Eval().(Bool))
-	}
-
 	for _, ts := range [][]*Thunk{
 		{True},
 		{False},
@@ -62,7 +58,7 @@ func TestBoolEqual(t *testing.T) {
 		{False, False},
 		{True, True, True},
 	} {
-		if !equal(ts...) {
+		if !testEqual(ts...) {
 			t.Fail()
 		}
 	}
@@ -72,7 +68,7 @@ func TestBoolEqual(t *testing.T) {
 		{False, True},
 		{True, True, False},
 	} {
-		if equal(ts...) {
+		if testEqual(ts...) {
 			t.Fail()
 		}
 	}

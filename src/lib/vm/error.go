@@ -13,6 +13,8 @@ func NotCallableError(o Object) *Thunk {
 }
 
 func TypeError(o Object, typ string) *Thunk {
+	// TODO: Extend TypeError so that it checks if `o` is Error and then chain it
+	// with a new one.
 	return NewError("%#v is not %s", o, typ)
 }
 

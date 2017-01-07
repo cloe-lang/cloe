@@ -9,3 +9,7 @@ func NewString(s string) *Thunk {
 func (s String) Equal(e Equalable) bool {
 	return s == e.(String)
 }
+
+func (s String) Add(a Addable) Addable {
+	return s + a.(String)
+}

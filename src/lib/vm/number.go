@@ -9,3 +9,7 @@ func NewNumber(n float64) *Thunk {
 func (n Number) Equal(e Equalable) bool {
 	return n == e.(Number)
 }
+
+func (n Number) Add(a Addable) Addable {
+	return n + a.(Number)
+}

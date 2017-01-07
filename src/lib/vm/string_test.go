@@ -14,3 +14,12 @@ func TestStringEqual(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestStringAdd(t *testing.T) {
+	s := "foo"
+	ss := NewString(s)
+
+	if string(Add(ss, ss).Eval().(String)) != s+s {
+		t.Fail()
+	}
+}

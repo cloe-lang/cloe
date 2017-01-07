@@ -16,8 +16,8 @@ func cons(t1, t2 *Thunk) *Thunk {
 	return Normal(List{t1, t2})
 }
 
-func (l1 List) Equal(o Object) bool {
-	l2 := o.(List)
+func (l1 List) Equal(e Equalable) bool {
+	l2 := e.(List)
 
 	if l1 == rawEmptyList || l2 == rawEmptyList {
 		return l1 == l2

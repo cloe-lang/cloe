@@ -17,10 +17,11 @@ func Equal(ts ...*Thunk) *Thunk {
 		go t.Eval()
 	}
 
-	e0, ok := ts[0].Eval().(Equalable)
+	o := ts[0].Eval()
+	e0, ok := o.(Equalable)
 
 	if !ok {
-		return notEqualableError(e0)
+		return notEqualableError(o)
 	}
 
 	for _, t := range ts[1:] {
@@ -36,4 +37,33 @@ func Equal(ts ...*Thunk) *Thunk {
 
 func notEqualableError(o Object) *Thunk {
 	return TypeError(o, "Equalable")
+}
+
+type Addable interface {
+	Add(Addable) Addable
+}
+
+func Add(ts ...*Thunk) *Thunk {
+	for _, t := range ts {
+		go t.Eval()
+	}
+
+	o := ts[0].Eval()
+	a0, ok := o.(Addable)
+
+	if !ok {
+		return TypeError(o, "Addable")
+	}
+
+	for _, t := range ts[1:] {
+		o := t.Eval()
+
+		if typ := reflect.TypeOf(a0); typ != reflect.TypeOf(o) {
+			return TypeError(o, typ.Name())
+		}
+
+		a0 = a0.Add(o.(Addable))
+	}
+
+	return Normal(a0)
 }

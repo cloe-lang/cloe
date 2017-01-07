@@ -2,11 +2,11 @@ package vm
 
 import "github.com/mediocregopher/seq"
 
-type Dictionary struct{ *seq.HashMap }
+type Dictionary struct{ hashMap *seq.HashMap }
 
-func NewDictionary(ks []Object, vs []Thunk) *Thunk {
+func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
 	if len(ks) == len(vs) {
-		panic("Number of keys doesn't match with number of values .")
+		return NewError("Number of keys doesn't match with number of values.")
 	}
 
 	d := Dictionary{seq.NewHashMap()}
@@ -16,4 +16,19 @@ func NewDictionary(ks []Object, vs []Thunk) *Thunk {
 	}
 
 	return Normal(d)
+}
+
+func (d Dictionary) Set(k, v interface{}) Dictionary {
+	h, _ := d.hashMap.Set(k, v)
+	return Dictionary{h}
+}
+
+func (d1 Dictionary) Equal(o Object) *Thunk {
+	d2, ok := o.(Dictionary)
+
+	if !ok {
+		return False
+	}
+
+	return NewBool(d1.hashMap.Equal(d2.hashMap))
 }

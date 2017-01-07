@@ -5,37 +5,61 @@ type List struct {
 	rest  *Thunk
 }
 
-var EmptyList = Normal(List{nil, nil})
+var rawEmptyList = List{nil, nil}
+var EmptyList = Normal(rawEmptyList)
 
 func NewList(ts ...*Thunk) *Thunk {
-	l := cons(ts[len(ts)-1], EmptyList)
-
-	for i := len(ts) - 2; i >= 0; i-- {
-		l = cons(ts[i], l)
-	}
-
-	return l
+	return Prepend(append(ts, EmptyList)...)
 }
 
 func cons(t1, t2 *Thunk) *Thunk {
 	return Normal(List{t1, t2})
 }
 
-func Prepend(args List) *Thunk {
-	return Normal(List{args.first, args.rest.Eval().(List).first})
+func (l1 List) Equal(o Object) bool {
+	l2 := o.(List)
+
+	if l1 == rawEmptyList || l2 == rawEmptyList {
+		return l1 == l2
+	}
+
+	return bool(And(
+		Equal(l1.first, l2.first),
+		Equal(l1.rest, l2.rest)).Eval().(Bool))
 }
 
-func First(args List) *Thunk {
-	return args.first.Eval().(List).first
+func Prepend(ts ...*Thunk) *Thunk {
+	if len(ts) == 0 {
+		return NewError("Too few argument for prepend.")
+	}
+
+	last := len(ts) - 1
+	l := ts[last]
+
+	for i := last - 1; i >= 0; i-- {
+		l = cons(ts[i], l)
+	}
+
+	return l
 }
 
-func Rest(args List) *Thunk {
-	l := args.first.Eval().(List)
+func First(ts ...*Thunk) *Thunk {
+	if len(ts) != 1 {
+		return NewError("Number of arguments of first must be 1.")
+	}
 
-	if l.first == nil {
+	return ts[0].Eval().(List).first
+}
+
+func Rest(ts ...*Thunk) *Thunk {
+	if len(ts) != 1 {
+		return NewError("Number of arguments of rest must be 1.")
+	}
+
+	l := ts[0].Eval().(List)
+
+	if l == rawEmptyList {
 		return NewError("The list is empty. You cannot apply rest.")
-	} else if l.rest == nil {
-		return NewError("The list's length is 1. You cannot apply rest.")
 	}
 
 	return l.rest

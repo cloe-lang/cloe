@@ -17,7 +17,7 @@ const (
 type Thunk struct {
 	Result    Object
 	function  *Thunk
-	args      *Thunk
+	args      []*Thunk
 	state     thunkState
 	blackHole sync.WaitGroup
 }
@@ -26,11 +26,7 @@ func Normal(o Object) *Thunk {
 	return &Thunk{Result: o, state: normal}
 }
 
-func NormalApp(f Function, args List) *Thunk {
-	return App(Normal(f), Normal(args))
-}
-
-func App(f *Thunk, args *Thunk) *Thunk {
+func App(f *Thunk, args ...*Thunk) *Thunk {
 	t := &Thunk{function: f, args: args, state: app}
 	t.blackHole.Add(1)
 	return t
@@ -39,7 +35,6 @@ func App(f *Thunk, args *Thunk) *Thunk {
 func (t *Thunk) Eval() Object { // into WHNF
 	if t.compareAndSwapState(app, locked) {
 		go t.function.Eval()
-		go t.args.Eval()
 
 		f, ok := t.function.Eval().(Callable)
 
@@ -47,13 +42,7 @@ func (t *Thunk) Eval() Object { // into WHNF
 			panic("Something not callable was called.")
 		}
 
-		args, ok := t.args.Eval().(List)
-
-		if !ok {
-			panic("Something which is not a list was used as arguments.")
-		}
-
-		t.Result = f.Call(args).Eval()
+		t.Result = f.Call(t.args...).Eval()
 
 		t.function = nil
 		t.args = nil

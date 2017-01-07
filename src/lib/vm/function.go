@@ -1,7 +1,7 @@
 package vm
 
-type Function func(List) *Thunk
+type Function func(...*Thunk) *Thunk
 
-func (f Function) Call(l List) *Thunk {
-	return f(l)
+func (f Function) Call(ts ...*Thunk) *Thunk {
+	return f(ts...)
 }

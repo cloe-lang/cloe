@@ -8,6 +8,6 @@ func NewNil() *Thunk {
 	return nill
 }
 
-func (n Nil) Equal(e Equalable) *Thunk {
-	return True
+func (n Nil) Equal(e Equalable) bool {
+	return true
 }

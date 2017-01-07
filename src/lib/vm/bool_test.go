@@ -25,3 +25,19 @@ func TestAnd(t *testing.T) {
 		}
 	}
 }
+
+func TestOr(t *testing.T) {
+	or := func(ts ...*Thunk) bool {
+		return bool(Or(ts...).Eval().(Bool))
+	}
+
+	for _, ts := range [][]*Thunk{{True, True}, {True, False}, {False, True}} {
+		if !or(ts...) {
+			t.Fail()
+		}
+	}
+
+	if or(False, False) {
+		t.Fail()
+	}
+}

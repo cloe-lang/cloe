@@ -17,8 +17,11 @@ func (c Closure) Call(ts ...*Thunk) *Thunk {
 }
 
 func Partial(ts ...*Thunk) *Thunk {
-	if len(ts) == 0 {
+	switch len(ts) {
+	case 0:
 		return NumArgsError("partial", ">= 1")
+	case 1:
+		return ts[0]
 	}
 
 	return Normal(Closure{ts[0], ts[1:]})

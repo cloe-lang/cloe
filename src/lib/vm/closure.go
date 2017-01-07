@@ -6,10 +6,11 @@ type Closure struct {
 }
 
 func (c Closure) Call(ts ...*Thunk) *Thunk {
-	f, ok := c.function.Eval().(Callable)
+	o := c.function.Eval()
+	f, ok := o.(Callable)
 
 	if !ok {
-		return NewError("Something not callable was called.")
+		return NotCallableError(o)
 	}
 
 	return f.Call(append(c.freeVariables, ts...)...)

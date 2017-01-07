@@ -36,10 +36,11 @@ func (t *Thunk) Eval() Object { // into WHNF
 	if t.compareAndSwapState(app, locked) {
 		go t.function.Eval()
 
-		f, ok := t.function.Eval().(Callable)
+		o := t.function.Eval()
+		f, ok := o.(Callable)
 
 		if !ok {
-			return NewError("Something not callable was called.").Eval()
+			return NotCallableError(o).Eval()
 		}
 
 		t.Result = f.Call(t.args...).Eval()

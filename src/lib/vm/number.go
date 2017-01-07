@@ -6,6 +6,6 @@ func NewNumber(n float64) *Thunk {
 	return Normal(Number(n))
 }
 
-func (n Number) Equal(o Object) bool {
-	return n == o.(Number)
+func (n Number) Equal(e Equalable) bool {
+	return n == e.(Number)
 }

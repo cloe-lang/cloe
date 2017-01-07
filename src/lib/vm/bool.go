@@ -2,8 +2,7 @@ package vm
 
 type Bool bool
 
-var True = NewBool(true)
-var False = NewBool(false)
+var True, False = NewBool(true), NewBool(false)
 
 func NewBool(b bool) *Thunk {
 	return Normal(Bool(b))

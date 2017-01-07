@@ -23,6 +23,10 @@ type Thunk struct {
 }
 
 func Normal(o Object) *Thunk {
+	if f, ok := o.(func(...*Thunk) *Thunk); ok {
+		o = Function(f)
+	}
+
 	return &Thunk{Result: o, state: normal}
 }
 

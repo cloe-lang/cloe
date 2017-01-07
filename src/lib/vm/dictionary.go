@@ -24,11 +24,5 @@ func (d Dictionary) Set(k, v interface{}) Dictionary {
 }
 
 func (d1 Dictionary) Equal(o Object) *Thunk {
-	d2, ok := o.(Dictionary)
-
-	if !ok {
-		return False
-	}
-
-	return NewBool(d1.hashMap.Equal(d2.hashMap))
+	return NewBool(d1.hashMap.Equal(o.(Dictionary).hashMap))
 }

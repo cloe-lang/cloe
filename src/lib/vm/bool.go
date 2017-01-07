@@ -12,7 +12,7 @@ func (b Bool) Equal(e Equalable) bool {
 	return b == e.(Bool)
 }
 
-func And(ts ...*Thunk) *Thunk { // With short circuit
+func And(ts ...*Thunk) *Thunk { // with short circuit
 	for _, t := range ts {
 		o := t.Eval()
 		b, ok := o.(Bool)
@@ -27,7 +27,7 @@ func And(ts ...*Thunk) *Thunk { // With short circuit
 	return True
 }
 
-func Or(ts ...*Thunk) *Thunk { // With short circuit
+func Or(ts ...*Thunk) *Thunk { // with short circuit
 	for _, t := range ts {
 		o := t.Eval()
 		b, ok := o.(Bool)

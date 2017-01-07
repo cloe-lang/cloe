@@ -34,16 +34,14 @@ func App(f *Thunk, args ...*Thunk) *Thunk {
 
 func (t *Thunk) Eval() Object { // into WHNF
 	if t.compareAndSwapState(app, locked) {
-		go t.function.Eval()
-
 		o := t.function.Eval()
 		f, ok := o.(Callable)
 
-		if !ok {
-			return NotCallableError(o).Eval()
+		if ok {
+			t.Result = f.Call(t.args...).Eval()
+		} else {
+			t.Result = NotCallableError(o).Eval()
 		}
-
-		t.Result = f.Call(t.args...).Eval()
 
 		t.function = nil
 		t.args = nil

@@ -21,3 +21,18 @@ Can be just sugar.
 ## IR
 
 IR can be curried.
+
+## Closure
+
+```
+(let foo 123)
+(print (map (\ (x) (+ x foo)) list))
+```
+
+is equivalent to:
+
+```
+(let foo 123)
+(let f (\ (x y) (+ y x)))
+(print (map (partial f foo) list))
+```

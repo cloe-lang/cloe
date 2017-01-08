@@ -13,26 +13,44 @@ type Equalable interface {
 }
 
 func Equal(ts ...*Thunk) *Thunk {
+	switch len(ts) {
+	case 0:
+		return NumArgsError("equal", ">= 1")
+	case 1:
+		return True
+	}
+
+	bs := make([]*Thunk, len(ts)-1)
+
+	for i := range bs {
+		bs[i] = equalTwo(ts[0], ts[i+1])
+	}
+
+	return And(bs...)
+}
+
+func equalTwo(t1, t2 *Thunk) *Thunk {
+	ts := []*Thunk{t1, t2}
+
 	for _, t := range ts {
 		go t.Eval()
 	}
 
-	o := ts[0].Eval()
-	e0, ok := o.(Equalable)
+	var es [2]Equalable
 
-	if !ok {
-		return notEqualableError(o)
-	}
+	for i, t := range ts {
+		o := t.Eval()
+		e, ok := o.(Equalable)
 
-	for _, t := range ts[1:] {
-		if e, ok := t.Eval().(Equalable); !ok {
-			return notEqualableError(e)
-		} else if reflect.TypeOf(e0) != reflect.TypeOf(e) || !e0.Equal(e) {
-			return False
+		if !ok {
+			return notEqualableError(o)
 		}
+
+		es[i] = e
 	}
 
-	return True
+	return NewBool(
+		reflect.TypeOf(es[0]) == reflect.TypeOf(es[1]) && es[0].Equal(es[1]))
 }
 
 func notEqualableError(o Object) *Thunk {

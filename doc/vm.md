@@ -7,39 +7,43 @@
 
 ## Types
 
-- Number (N)
-  - Numbers in an Array construct a String.
+- Number
   - DEC64
-- Array (A)
-  - Used to construct Lists
-  - Copy for each operation to realize immutability
-- Dictionary (D)
-  - Used to construct Sets
+- String
+  - Compressed
+- List
+- Dictionary
   - Persistent data structure
-- None
-  - Evil
+- Nil
+  - is Evil
 - Function
-  - Dictionary -> Object
-  - `(\x x)` takes `{ "x": Object }` and returns `[x]`
-  - `(\x *x)` takes `{ "x": List-like }` and returns `x`
+  - [Thunk] -> Thunk
+- Closure
+  - May remove Function
+- Set?
 
 ## Roadmap
 
 - Tier 1
   - Pure lambda calculus
-  - `out` operator
-  - IEEE 754
 - Tier 2
-  - Persistent z(t) support
-    - May not necessary
   - Mutual recursion support
+  - Time sort
+  - IO
+- Tier 3
   - DEC64
+- Tier ?
+  - Persistent z(t) support
+    - Save objects in files
+    - May not necessary
 
 ## Instructions
 
-- + : Number -> Number -> Number
-- - : Number -> Number -> Number
-- * : Number -> Number -> Number
-- / : Number -> Number -> Number
-- // : Number -> Number -> Number (floor division)
-- ^ : Number -> Number -> Number
+- + :
+  - Number -> [Number] -> Number
+  - String -> [String] -> Number
+- - : Number -> [Number] -> Number
+- * : Number -> [Number] -> Number
+- / : Number -> [Number] -> Number
+- // : Number -> [Number] -> Number (floor division)
+- ^ : Number -> [Number] -> Number

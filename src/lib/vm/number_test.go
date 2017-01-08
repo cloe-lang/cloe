@@ -27,3 +27,9 @@ func TestNumberSub(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestNumberMult(t *testing.T) {
+	if float64(Mult(NewNumber(n1), NewNumber(n2)).Eval().(Number)) != n1*n2 {
+		t.Fail()
+	}
+}

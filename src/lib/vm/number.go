@@ -44,6 +44,32 @@ func Sub(ts ...*Thunk) *Thunk {
 	return Normal(n0)
 }
 
+func Mult(ts ...*Thunk) *Thunk {
+	if len(ts) == 0 {
+		// for symmetry with add while it can take no argument and return 1
+		return NumArgsError("mult", ">= 1")
+	}
+
+	for _, t := range ts {
+		go t.Eval()
+	}
+
+	n0 := Number(1)
+
+	for _, t := range ts {
+		o := t.Eval()
+		n, ok := o.(Number)
+
+		if !ok {
+			return notNumberError(o)
+		}
+
+		n0 = n0 * n
+	}
+
+	return Normal(n0)
+}
+
 func notNumberError(o Object) *Thunk {
 	return TypeError(o, "Number")
 }

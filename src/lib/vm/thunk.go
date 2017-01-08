@@ -46,6 +46,9 @@ func (t *Thunk) Eval() Object { // into WHNF
 		f, ok := o.(Callable)
 
 		if ok {
+			// Need to do something to eliminate tail calls here. Like this?
+			// t := f.Call(t.args)
+			// t.function.Eval().(Callable).Call(t.args)
 			t.Result = f.Call(t.args...).Eval()
 		} else {
 			t.Result = NotCallableError(o).Eval()

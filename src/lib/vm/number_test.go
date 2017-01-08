@@ -33,3 +33,9 @@ func TestNumberMult(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestNumberDiv(t *testing.T) {
+	if float64(Div(NewNumber(n1), NewNumber(n2)).Eval().(Number)) != n1/n2 {
+		t.Fail()
+	}
+}

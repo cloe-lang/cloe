@@ -70,6 +70,36 @@ func Mult(ts ...*Thunk) *Thunk {
 	return Normal(n0)
 }
 
+func Div(ts ...*Thunk) *Thunk {
+	if len(ts) == 0 {
+		return NumArgsError("div", ">= 1")
+	}
+
+	for _, t := range ts {
+		go t.Eval()
+	}
+
+	o := ts[0].Eval()
+	n0, ok := o.(Number)
+
+	if !ok {
+		return notNumberError(o)
+	}
+
+	for _, t := range ts[1:] {
+		o := t.Eval()
+		n, ok := o.(Number)
+
+		if !ok {
+			return notNumberError(o)
+		}
+
+		n0 = n0 / n
+	}
+
+	return Normal(n0)
+}
+
 func notNumberError(o Object) *Thunk {
 	return TypeError(o, "Number")
 }

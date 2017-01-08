@@ -28,7 +28,7 @@
   - Pure lambda calculus
 - Tier 2
   - Tail call elimination
-  - Mutual recursion support
+  - Recursion / mutual recursion support
   - Time sort
   - IO
 - Tier 3

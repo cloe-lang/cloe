@@ -2,4 +2,5 @@
 
 - `ir <filename>` bin
 - `def` desugarer
-- multiple desugarer
+- multiple desugarers
+- Make every `Object` stringable

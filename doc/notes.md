@@ -32,3 +32,8 @@ is equivalent to:
 (let f (\ (x y) (+ y x)))
 (print (map (partial f foo) list))
 ```
+
+## Evaluation of Thunks in functions
+
+- `(first list)` doesn't imply the program needs a value of the first element
+  in `list`.

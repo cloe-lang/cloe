@@ -3,6 +3,7 @@ package vm
 import "fmt"
 
 type Error struct {
+	// Errors should be lazy maybe.
 	name, message string
 	child         *Thunk
 }

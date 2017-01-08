@@ -13,3 +13,37 @@ func (n Number) Equal(e Equalable) bool {
 func (n Number) Add(a Addable) Addable {
 	return n + a.(Number)
 }
+
+func Sub(ts ...*Thunk) *Thunk {
+	if len(ts) == 0 {
+		return NumArgsError("sub", ">= 1")
+	}
+
+	for _, t := range ts {
+		go t.Eval()
+	}
+
+	o := ts[0].Eval()
+	n0, ok := o.(Number)
+
+	if !ok {
+		return notNumberError(o)
+	}
+
+	for _, t := range ts[1:] {
+		o := t.Eval()
+		n, ok := o.(Number)
+
+		if !ok {
+			return notNumberError(o)
+		}
+
+		n0 = n0 - n
+	}
+
+	return Normal(n0)
+}
+
+func notNumberError(o Object) *Thunk {
+	return TypeError(o, "Number")
+}

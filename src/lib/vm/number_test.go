@@ -2,6 +2,8 @@ package vm
 
 import "testing"
 
+var n1, n2 float64 = 123, 456
+
 func TestNumberEqual(t *testing.T) {
 	n := NewNumber(123)
 
@@ -15,9 +17,13 @@ func TestNumberEqual(t *testing.T) {
 }
 
 func TestNumberAdd(t *testing.T) {
-	var n1, n2 float64 = 123, 456
-
 	if float64(Add(NewNumber(n1), NewNumber(n2)).Eval().(Number)) != n1+n2 {
+		t.Fail()
+	}
+}
+
+func TestNumberSub(t *testing.T) {
+	if float64(Sub(NewNumber(n1), NewNumber(n2)).Eval().(Number)) != n1-n2 {
 		t.Fail()
 	}
 }

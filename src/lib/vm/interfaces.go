@@ -44,6 +44,10 @@ type Addable interface {
 }
 
 func Add(ts ...*Thunk) *Thunk {
+	if len(ts) == 0 {
+		return NumArgsError("add", ">= 1")
+	}
+
 	for _, t := range ts {
 		go t.Eval()
 	}

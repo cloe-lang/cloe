@@ -23,6 +23,6 @@ func (d Dictionary) Set(k, v interface{}) Dictionary {
 	return Dictionary{h}
 }
 
-func (d1 Dictionary) Equal(o Object) *Thunk {
-	return NewBool(d1.hashMap.Equal(o.(Dictionary).hashMap))
+func (d1 Dictionary) Equal(e Equalable) bool {
+	return d1.hashMap.Equal(e.(Dictionary).hashMap)
 }

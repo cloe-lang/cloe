@@ -27,6 +27,7 @@
 - Tier 1
   - Pure lambda calculus
 - Tier 2
+  - Tail call elimination
   - Mutual recursion support
   - Time sort
   - IO

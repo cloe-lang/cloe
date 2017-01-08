@@ -2,10 +2,21 @@ package vm
 
 import "fmt"
 
-type Error string
+type Error struct {
+	name, message string
+	child         *Thunk
+}
 
-func NewError(s string, xs ...interface{}) *Thunk {
-	return Normal(Error(fmt.Sprintf(s, xs...)))
+func NewError(n, m string, xs ...interface{}) *Thunk {
+	return ChainError(NewNil(), n, m, xs...)
+}
+
+func ChainError(e *Thunk, n, m string, xs ...interface{}) *Thunk {
+	return Normal(Error{
+		name:    n,
+		message: fmt.Sprintf(m, xs...),
+		child:   e,
+	})
 }
 
 func NotCallableError(o Object) *Thunk {
@@ -13,21 +24,21 @@ func NotCallableError(o Object) *Thunk {
 }
 
 func TypeError(o Object, typ string) *Thunk {
-	// TODO: Extend TypeError so that it checks if `o` is Error and then chain it
-	// with a new one.
-	return NewError("%#v is not %s", o, typ)
+	n, m := "TypeError", "%#v is not %s"
+
+	if e, ok := o.(Error); ok {
+		return ChainError(Normal(e), n, m, o, typ)
+	}
+
+	return NewError(n, m, o, typ)
 }
 
 func NumArgsError(f, condition string) *Thunk {
-	return NewError("Number of arguments to %s must be %s.", f, condition)
+	return NewError(
+		"NumArgsError",
+		"Number of arguments to %s must be %s.", f, condition)
 }
 
-func ChainError(e *Thunk, s string, xs ...interface{}) *Thunk {
-	// TODO: Error { name string, messsage string, child *Thunk }
-	return nil
-}
-
-func isError(o Object) bool {
-	_, ok := o.(Error)
-	return ok
+func ValueError(m string) *Thunk {
+	return NewError("ValueError", m)
 }

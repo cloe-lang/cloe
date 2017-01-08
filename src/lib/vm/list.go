@@ -30,7 +30,7 @@ func (l1 List) Equal(e Equalable) bool {
 
 func Prepend(ts ...*Thunk) *Thunk {
 	if len(ts) == 0 {
-		return NewError("Too few argument for prepend.")
+		return NumArgsError("prepend", "> 1")
 	}
 
 	last := len(ts) - 1
@@ -59,7 +59,7 @@ func Rest(ts ...*Thunk) *Thunk {
 	l := ts[0].Eval().(List)
 
 	if l == rawEmptyList {
-		return NewError("The list is empty. You cannot apply rest.")
+		return ValueError("The list is empty. You cannot apply rest.")
 	}
 
 	return l.rest

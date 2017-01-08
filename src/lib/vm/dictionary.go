@@ -6,7 +6,7 @@ type Dictionary struct{ hashMap *seq.HashMap }
 
 func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
 	if len(ks) == len(vs) {
-		return NewError("Number of keys doesn't match with number of values.")
+		return ValueError("Number of keys doesn't match with number of values.")
 	}
 
 	d := Dictionary{seq.NewHashMap()}

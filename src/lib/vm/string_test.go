@@ -18,7 +18,7 @@ func TestStringAdd(t *testing.T) {
 	s := "foo"
 	ss := StringThunk(s)
 
-	if string(Add(ss, ss).Eval().(String)) != s+s {
+	if string(Add(ss, ss).(String)) != s+s {
 		t.Fail()
 	}
 }

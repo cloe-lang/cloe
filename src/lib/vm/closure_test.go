@@ -3,11 +3,12 @@ package vm
 import "testing"
 
 func TestPartial(t *testing.T) {
-	and := func(ts ...*Thunk) bool {
-		return bool(App(Partial(Normal(And), True, True), ts...).Eval().(Bool))
+	ifFunc := func(ts ...*Thunk) bool {
+		f := Partial(Normal(If), Normal(False), Normal(True)).(Callable)
+		return bool(f.Call(ts...).(Bool))
 	}
 
-	if !and(True) {
+	if !ifFunc(Normal(True)) {
 		t.Fail()
 	}
 }

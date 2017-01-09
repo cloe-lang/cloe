@@ -7,7 +7,7 @@ func TestNilEqual(t *testing.T) {
 		t.Fail()
 	}
 
-	if testEqual(NilThunk(), True) {
+	if testEqual(NilThunk(), tTrue) {
 		t.Fail()
 	}
 }

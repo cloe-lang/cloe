@@ -68,6 +68,8 @@ func mult(os ...Object) Object {
 	return n0
 }
 
+var Div = NewStrictFunction(div)
+
 func div(os ...Object) Object {
 	if len(os) == 0 {
 		return NumArgsError("div", ">= 1")

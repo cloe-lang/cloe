@@ -5,20 +5,20 @@ import "testing"
 func TestListEqual(t *testing.T) {
 	for _, tss := range [][][]*Thunk{
 		{{}, {}},
-		{{True}, {True}},
-		{{True, False}, {True, False}},
+		{{tTrue}, {tTrue}},
+		{{tTrue, tFalse}, {tTrue, tFalse}},
 	} {
-		if !testEqual(NewList(tss[0]...), NewList(tss[1]...)) {
+		if !testEqual(ListThunk(tss[0]...), ListThunk(tss[1]...)) {
 			t.Fail()
 		}
 	}
 
 	for _, tss := range [][][]*Thunk{
-		{{}, {True}},
-		{{True}, {False}},
-		{{True, True}, {True, True, True}},
+		{{}, {tTrue}},
+		{{tTrue}, {tFalse}},
+		{{tTrue, tTrue}, {tTrue, tTrue, tTrue}},
 	} {
-		if testEqual(NewList(tss[0]...), NewList(tss[1]...)) {
+		if testEqual(ListThunk(tss[0]...), ListThunk(tss[1]...)) {
 			t.Fail()
 		}
 	}

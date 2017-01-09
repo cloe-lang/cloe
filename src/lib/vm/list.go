@@ -19,7 +19,7 @@ func (l1 List) Equal(e Equalable) Object {
 	l2 := e.(List)
 
 	if l1 == emptyList || l2 == emptyList {
-		return l1 == l2
+		return NewBool(l1 == l2)
 	}
 
 	for _, o := range []Object{
@@ -46,7 +46,7 @@ func prepend(ts ...*Thunk) Object {
 	case 0:
 		return NumArgsError("prepend", "> 1")
 	case 1:
-		return ts[0]
+		return ts[0].Eval()
 	}
 
 	last := len(ts) - 1

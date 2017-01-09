@@ -33,7 +33,6 @@ is equivalent to:
 (print (map (partial f foo) list))
 ```
 
-## Evaluation of Thunks in functions
+## Can I create Trampoline?
 
-- `(first list)` doesn't imply the program needs a value of the first element
-  in `list`.
+Or, where to return Thunks in Y?

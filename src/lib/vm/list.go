@@ -22,9 +22,8 @@ func (l1 List) Equal(e Equalable) Object {
 		return l1 == l2
 	}
 
-	var bs [2]Bool
-
-	for i, o := range []Object{
+	for _, o := range []Object{
+		// Don't evaluate these parallely for short circuit behavior.
 		Equal(l1.first, l2.first),
 		Equal(l1.rest, l2.rest),
 	} {
@@ -32,12 +31,12 @@ func (l1 List) Equal(e Equalable) Object {
 
 		if !ok {
 			return notBoolError(o)
+		} else if !b {
+			return False
 		}
-
-		bs[i] = b
 	}
 
-	return bs[0] && bs[1]
+	return True
 }
 
 var Prepend = NewLazyFunction(prepend)

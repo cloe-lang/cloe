@@ -6,4 +6,5 @@
 - Make every `Object` stringable
 - Add Keyable interface for String, Nil, Bool, Number
 - vm/functions.go with S, K, I, and Y and Ys (mutual recursion)
+  - Y and Ys should always be trampolined if possible.
 - s/vm/core/g?

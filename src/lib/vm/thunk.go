@@ -44,16 +44,27 @@ func App(f *Thunk, args ...*Thunk) *Thunk {
 
 func (t *Thunk) Eval() Object { // into WHNF
 	if t.compareAndSwapState(app, locked) {
-		o := t.function.Eval()
-		f, ok := o.(Callable)
+		for {
+			// This algorithm to eliminate tail calls is too hacky.
+			o := t.function.Eval()
+			f, ok := o.(Callable)
 
-		if ok {
-			// TODO: Need to do something to eliminate tail calls here. Like this?
-			// t := f.Call(t.args)
-			// t.Result = t.function.Eval().(Callable).Call(t.args)
+			if !ok {
+				t.Result = NotCallableError(o)
+				break
+			}
+
 			t.Result = f.Call(t.args...)
-		} else {
-			t.Result = NotCallableError(o)
+			child, ok := t.Result.(*Thunk)
+
+			if !ok {
+				break
+			}
+
+			// child.function and child.args can be extracted safely only if the
+			// child thunk has only 1 reference. (e.g. tail calls)
+			t.function = child.function
+			t.args = child.args
 		}
 
 		t.function = nil

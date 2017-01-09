@@ -6,13 +6,11 @@ func (f Function) Call(ts ...*Thunk) Object {
 	return f(ts...)
 }
 
-func NewLazyFunction(f func(...*Thunk) Object) func(...*Thunk) *Thunk {
-	return func(ts ...*Thunk) *Thunk {
-		return App(Normal(Function(f)), ts...)
-	}
+func NewLazyFunction(f func(...*Thunk) Object) Function {
+	return Function(f)
 }
 
-func NewStrictFunction(f func(...Object) Object) func(...*Thunk) *Thunk {
+func NewStrictFunction(f func(...Object) Object) Function {
 	return NewLazyFunction(func(ts ...*Thunk) Object {
 		for _, t := range ts {
 			go t.Eval()

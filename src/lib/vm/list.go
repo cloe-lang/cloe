@@ -24,11 +24,10 @@ func (l1 List) Equal(e Equalable) Object {
 
 	var bs [2]Bool
 
-	for i, t := range []*Thunk{
+	for i, o := range []Object{
 		Equal(l1.first, l2.first),
 		Equal(l1.rest, l2.rest),
 	} {
-		o := t.Eval()
 		b, ok := o.(Bool)
 
 		if !ok {

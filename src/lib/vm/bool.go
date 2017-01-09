@@ -4,47 +4,23 @@ type Bool bool
 
 var True, False = NewBool(true), NewBool(false)
 
-func NewBool(b bool) *Thunk {
-	return Normal(Bool(b))
+func NewBool(b bool) Bool {
+	return Bool(b)
 }
 
-func (b Bool) Equal(e Equalable) bool {
-	return b == e.(Bool)
+func BoolThunk(b bool) *Thunk {
+	return Normal(NewBool(b))
 }
 
-func And(ts ...*Thunk) *Thunk { // with short circuit
-	for _, t := range ts {
-		o := t.Eval()
-		b, ok := o.(Bool)
-
-		if !ok {
-			return notBoolError(o)
-		} else if !bool(b) {
-			return False
-		}
-	}
-
-	return True
+func (b Bool) Equal(e Equalable) Object {
+	return NewBool(b == e.(Bool))
 }
 
-func Or(ts ...*Thunk) *Thunk { // with short circuit
-	for _, t := range ts {
-		o := t.Eval()
-		b, ok := o.(Bool)
+var If = NewLazyFunction(ifFunc)
 
-		if !ok {
-			return notBoolError(o)
-		} else if bool(b) {
-			return True
-		}
-	}
-
-	return False
-}
-
-func Not(ts ...*Thunk) *Thunk {
-	if len(ts) != 1 {
-		return NumArgsError("not", "1")
+func ifFunc(ts ...*Thunk) Object {
+	if len(ts) != 3 {
+		return NumArgsError("if", "3")
 	}
 
 	o := ts[0].Eval()
@@ -54,9 +30,13 @@ func Not(ts ...*Thunk) *Thunk {
 		return notBoolError(o)
 	}
 
-	return NewBool(!bool(b))
+	if b {
+		return ts[1].Eval()
+	}
+
+	return ts[2].Eval()
 }
 
-func notBoolError(o Object) *Thunk {
+func notBoolError(o Object) Error {
 	return TypeError(o, "Bool")
 }

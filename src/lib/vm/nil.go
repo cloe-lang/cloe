@@ -2,12 +2,14 @@ package vm
 
 type Nil struct{}
 
-var nill = Normal(Nil{})
-
-func NewNil() *Thunk {
-	return nill
+func NewNil() Nil {
+	return Nil{}
 }
 
-func (n Nil) Equal(e Equalable) bool {
-	return true
+func NilThunk() *Thunk {
+	return Normal(NewNil())
+}
+
+func (n Nil) Equal(e Equalable) Object {
+	return True
 }

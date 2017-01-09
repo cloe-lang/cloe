@@ -2,12 +2,16 @@ package vm
 
 type String string
 
-func NewString(s string) *Thunk {
-	return Normal(String(s))
+func NewString(s string) String {
+	return String(s)
 }
 
-func (s String) Equal(e Equalable) bool {
-	return s == e.(String)
+func StringThunk(s string) *Thunk {
+	return Normal(NewString(s))
+}
+
+func (s String) Equal(e Equalable) Object {
+	return NewBool(s == e)
 }
 
 func (s String) Add(a Addable) Addable {

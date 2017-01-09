@@ -4,9 +4,9 @@ import "github.com/mediocregopher/seq"
 
 type Dictionary struct{ hashMap *seq.HashMap }
 
-func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
-	if len(ks) == len(vs) {
-		return ValueError("Number of keys doesn't match with number of values.")
+func NewDictionary(ks []Object, vs []*Thunk) Dictionary {
+	if len(ks) != len(vs) {
+		panic("Number of keys doesn't match with number of values.")
 	}
 
 	d := Dictionary{seq.NewHashMap()}
@@ -15,14 +15,15 @@ func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
 		d.Set(k, vs[i])
 	}
 
-	return Normal(d)
+	return d
 }
 
-func (d Dictionary) Set(k, v interface{}) Dictionary {
-	h, _ := d.hashMap.Set(k, v)
+func (d Dictionary) Set(k, v Object) Object {
+	h, _ := d.hashMap.Set((interface{})(k), (interface{})(v))
 	return Dictionary{h}
 }
 
-func (d1 Dictionary) Equal(e Equalable) bool {
-	return d1.hashMap.Equal(e.(Dictionary).hashMap)
+func (d1 Dictionary) Equal(e Equalable) Object {
+	// TODO: Use ToList and compare them as Lists
+	return NewBool(d1.hashMap.Equal(e.(Dictionary).hashMap))
 }

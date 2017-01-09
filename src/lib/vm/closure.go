@@ -5,7 +5,7 @@ type Closure struct {
 	freeVariables []*Thunk
 }
 
-func (c Closure) Call(ts ...*Thunk) *Thunk {
+func (c Closure) Call(ts ...*Thunk) Object {
 	o := c.function.Eval()
 	f, ok := o.(Callable)
 
@@ -16,7 +16,9 @@ func (c Closure) Call(ts ...*Thunk) *Thunk {
 	return f.Call(append(c.freeVariables, ts...)...)
 }
 
-func Partial(ts ...*Thunk) *Thunk {
+var Partial = NewLazyFunction(partial)
+
+func partial(ts ...*Thunk) Object {
 	switch len(ts) {
 	case 0:
 		return NumArgsError("partial", ">= 1")
@@ -24,5 +26,5 @@ func Partial(ts ...*Thunk) *Thunk {
 		return ts[0]
 	}
 
-	return Normal(Closure{ts[0], ts[1:]})
+	return Closure{ts[0], ts[1:]}
 }

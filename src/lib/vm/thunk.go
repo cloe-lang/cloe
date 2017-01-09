@@ -5,7 +5,7 @@ import (
 	"sync/atomic"
 )
 
-type thunkState uint32
+type thunkState int32
 
 const (
 	illegal thunkState = iota
@@ -27,8 +27,10 @@ type Thunk struct {
 }
 
 func Normal(o Object) *Thunk {
-	if f, ok := o.(func(...*Thunk) *Thunk); ok {
-		o = Function(f)
+	if f, ok := o.(func(...*Thunk) Object); ok {
+		o = NewLazyFunction(f)
+	} else if f, ok := o.(func(...Object) Object); ok {
+		o = NewStrictFunction(f)
 	}
 
 	return &Thunk{Result: o, state: normal}
@@ -46,12 +48,12 @@ func (t *Thunk) Eval() Object { // into WHNF
 		f, ok := o.(Callable)
 
 		if ok {
-			// Need to do something to eliminate tail calls here. Like this?
+			// TODO: Need to do something to eliminate tail calls here. Like this?
 			// t := f.Call(t.args)
-			// t.function.Eval().(Callable).Call(t.args)
-			t.Result = f.Call(t.args...).Eval()
+			// t.Result = t.function.Eval().(Callable).Call(t.args)
+			t.Result = f.Call(t.args...)
 		} else {
-			t.Result = NotCallableError(o).Eval()
+			t.Result = NotCallableError(o)
 		}
 
 		t.function = nil
@@ -68,12 +70,9 @@ func (t *Thunk) Eval() Object { // into WHNF
 }
 
 func (t *Thunk) compareAndSwapState(old, new thunkState) bool {
-	return atomic.CompareAndSwapUint32(
-		(*uint32)(&t.state),
-		uint32(old),
-		uint32(new))
+	return atomic.CompareAndSwapInt32((*int32)(&t.state), int32(old), int32(new))
 }
 
 func (t *Thunk) storeState(new thunkState) {
-	atomic.StoreUint32((*uint32)(&t.state), uint32(new))
+	atomic.StoreInt32((*int32)(&t.state), int32(new))
 }

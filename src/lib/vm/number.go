@@ -2,104 +2,97 @@ package vm
 
 type Number float64
 
-func NewNumber(n float64) *Thunk {
-	return Normal(Number(n))
+func NewNumber(n float64) Number {
+	return Number(n)
 }
 
-func (n Number) Equal(e Equalable) bool {
-	return n == e.(Number)
+func NumberThunk(n float64) *Thunk {
+	return Normal(NewNumber(n))
+}
+
+func (n Number) Equal(e Equalable) Object {
+	return NewBool(n == e.(Number))
 }
 
 func (n Number) Add(a Addable) Addable {
 	return n + a.(Number)
 }
 
-func Sub(ts ...*Thunk) *Thunk {
-	if len(ts) == 0 {
+var Sub = NewStrictFunction(sub)
+
+func sub(os ...Object) Object {
+	if len(os) == 0 {
 		return NumArgsError("sub", ">= 1")
 	}
 
-	for _, t := range ts {
-		go t.Eval()
-	}
-
-	o := ts[0].Eval()
+	o := os[0]
 	n0, ok := o.(Number)
 
 	if !ok {
 		return notNumberError(o)
 	}
 
-	for _, t := range ts[1:] {
-		o := t.Eval()
+	for _, o := range os[1:] {
 		n, ok := o.(Number)
 
 		if !ok {
 			return notNumberError(o)
 		}
 
-		n0 = n0 - n
+		n0 -= n
 	}
 
-	return Normal(n0)
+	return n0
 }
 
-func Mult(ts ...*Thunk) *Thunk {
-	if len(ts) == 0 {
-		// for symmetry with add while it can take no argument and return 1
-		return NumArgsError("mult", ">= 1")
-	}
+var Mult = NewStrictFunction(mult)
 
-	for _, t := range ts {
-		go t.Eval()
+func mult(os ...Object) Object {
+	if len(os) == 0 {
+		// for symmetry with add while it can take no argument and return 1.
+		return NumArgsError("mult", ">= 1")
 	}
 
 	n0 := Number(1)
 
-	for _, t := range ts {
-		o := t.Eval()
+	for _, o := range os {
 		n, ok := o.(Number)
 
 		if !ok {
 			return notNumberError(o)
 		}
 
-		n0 = n0 * n
+		n0 *= n
 	}
 
-	return Normal(n0)
+	return n0
 }
 
-func Div(ts ...*Thunk) *Thunk {
-	if len(ts) == 0 {
+func div(os ...Object) Object {
+	if len(os) == 0 {
 		return NumArgsError("div", ">= 1")
 	}
 
-	for _, t := range ts {
-		go t.Eval()
-	}
-
-	o := ts[0].Eval()
+	o := os[0]
 	n0, ok := o.(Number)
 
 	if !ok {
 		return notNumberError(o)
 	}
 
-	for _, t := range ts[1:] {
-		o := t.Eval()
+	for _, o := range os[1:] {
 		n, ok := o.(Number)
 
 		if !ok {
 			return notNumberError(o)
 		}
 
-		n0 = n0 / n
+		n0 /= n
 	}
 
-	return Normal(n0)
+	return n0
 }
 
-func notNumberError(o Object) *Thunk {
+func notNumberError(o Object) Error {
 	return TypeError(o, "Number")
 }

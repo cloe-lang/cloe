@@ -3,11 +3,11 @@ package vm
 import "testing"
 
 func TestNilEqual(t *testing.T) {
-	if !testEqual(NewNil(), NewNil()) {
+	if !testEqual(NilThunk(), NilThunk()) {
 		t.Fail()
 	}
 
-	if testEqual(NewNil(), True) {
+	if testEqual(NilThunk(), True) {
 		t.Fail()
 	}
 }

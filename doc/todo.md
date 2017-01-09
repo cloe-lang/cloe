@@ -8,3 +8,7 @@
 - vm/functions.go with S, K, I, and Y and Ys (mutual recursion)
   - Y and Ys should always be trampolined if possible.
 - s/vm/core/g?
+- Allow Functions to return Thunks for tail call elimination
+  - f : (...*Thunk) -> *Thunk
+  - f : (...Object) -> *Thunk
+  - NewTOFunction, NewOOFunction, NewTTFunction, NewOTFunction

@@ -1,16 +1,13 @@
 package vm
 
-import (
-	"fmt"
-	"testing"
-)
+import "testing"
 
 func TestY(t *testing.T) {
 	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 100} {
 		n1 := float64(Y(Normal(NewLazyFunction(lazyFactorial))).(Callable).Call(NumberThunk(n)).(Number))
 		n2 := strictFactorial(n)
 
-		fmt.Printf("%d: %f == %f?\n", int(n), n1, n2)
+		t.Logf("%d: %f == %f?\n", int(n), n1, n2)
 
 		if n1 != n2 {
 			t.Fail()

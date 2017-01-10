@@ -14,3 +14,4 @@
   - NewTOFunction, NewOOFunction, NewTTFunction, NewOTFunction
 - Add Thunk.EvalStrict() to evaluate Object(*Thunk)s and always return normal
   Objects
+- Trampoline last app like `(\ (x...) (trampoline ...))` in Y

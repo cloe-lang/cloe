@@ -8,7 +8,7 @@ func y(ts ...*Thunk) Object {
 	}
 
 	xfxx := Normal(Partial(Normal(fxx), ts[0]))
-	return App(xfxx, xfxx).Eval()
+	return App(xfxx, xfxx)
 }
 
 var fxx = NewLazyFunction(fxxImpl)

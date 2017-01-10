@@ -8,7 +8,7 @@ type List struct {
 var emptyList = List{nil, nil}
 
 func NewList(ts ...*Thunk) List {
-	return prepend(append(ts, Normal(emptyList))...).(List)
+	return App(Normal(Prepend), append(ts, Normal(emptyList))...).EvalStrictly().(List)
 }
 
 func ListThunk(ts ...*Thunk) *Thunk {
@@ -46,7 +46,7 @@ func prepend(ts ...*Thunk) Object {
 	case 0:
 		return NumArgsError("prepend", "> 1")
 	case 1:
-		return ts[0].Eval()
+		return ts[0]
 	}
 
 	last := len(ts) - 1
@@ -79,7 +79,7 @@ func first(os ...Object) Object {
 		return emptyListError()
 	}
 
-	return l.first.Eval()
+	return l.first
 }
 
 var Rest = NewStrictFunction(rest)
@@ -98,7 +98,7 @@ func rest(os ...Object) Object {
 		return emptyListError()
 	}
 
-	return l.rest.Eval()
+	return l.rest
 }
 
 func notListError(o Object) Error {

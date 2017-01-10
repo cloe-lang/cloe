@@ -15,15 +15,16 @@ const (
 )
 
 type Thunk struct {
-	Result   Object
+	result   Object
 	function *Thunk
 	// `args` is represented as a slice but not a List to let users optimize
 	// their functions. If you want to define functions with arguments fully
 	// lazy, just create a function which takes only a thunk of a List as a
 	// argument.
-	args      []*Thunk
-	state     thunkState
-	blackHole sync.WaitGroup
+	args         []*Thunk
+	state        thunkState
+	blackHole    sync.WaitGroup
+	trampoliners []*Thunk
 }
 
 func Normal(o Object) *Thunk {
@@ -33,51 +34,88 @@ func Normal(o Object) *Thunk {
 		o = NewStrictFunction(f)
 	}
 
-	return &Thunk{Result: o, state: normal}
+	return &Thunk{result: o, state: normal}
 }
 
 func App(f *Thunk, args ...*Thunk) *Thunk {
-	t := &Thunk{function: f, args: args, state: app}
+	t := &Thunk{function: f, args: args, state: app, trampoliners: make([]*Thunk, 0)}
 	t.blackHole.Add(1)
 	return t
 }
 
-func (t *Thunk) Eval() Object { // into WHNF
+func (t *Thunk) EvalStrictly() Object { // return WHNF
 	if t.compareAndSwapState(app, locked) {
-		for {
-			// This algorithm to eliminate tail calls is too hacky.
-			o := t.function.Eval()
-			f, ok := o.(Callable)
+		o := t.function.EvalStrictly()
+		f, ok := o.(Callable)
 
-			if !ok {
-				t.Result = NotCallableError(o)
-				break
+		if ok {
+			t.result = f.Call(t.args...)
+
+			for {
+				child, ok := t.result.(*Thunk)
+
+				if !ok {
+					break
+				}
+
+				t.result = child.Eval()
 			}
-
-			t.Result = f.Call(t.args...)
-			child, ok := t.Result.(*Thunk)
-
-			if !ok {
-				break
-			}
-
-			// child.function and child.args can be extracted safely only if the
-			// child thunk has only 1 reference. (e.g. tail calls)
-			t.function = child.function
-			t.args = child.args
+		} else {
+			t.result = NotCallableError(o)
 		}
 
-		t.function = nil
-		t.args = nil
-
-		t.storeState(normal)
-
-		t.blackHole.Done()
+		t.finalize()
 	} else {
 		t.blackHole.Wait()
 	}
 
-	return t.Result
+	return t.result
+}
+
+func (t *Thunk) Eval() Object { // return WHNF or *Thunk
+	if t.compareAndSwapState(app, locked) {
+		o := t.function.EvalStrictly()
+		f, ok := o.(Callable)
+
+		if ok {
+			t.result = f.Call(t.args...)
+			child, ok := t.result.(*Thunk)
+
+			if ok {
+				child.addTrampoliner(t)
+				return child
+			}
+		} else {
+			t.result = NotCallableError(o)
+		}
+
+		t.finalize()
+	} else {
+		t.blackHole.Wait()
+	}
+
+	return t.result
+}
+
+func (t *Thunk) storeResult(o Object) {
+	t.result = o
+	t.finalize()
+}
+
+func (t *Thunk) finalize() {
+	for _, tr := range t.trampoliners {
+		tr.storeResult(t.result)
+	}
+	t.trampoliners = nil
+
+	t.function = nil
+	t.args = nil
+	t.storeState(normal)
+	t.blackHole.Done()
+}
+
+func (t *Thunk) addTrampoliner(tr *Thunk) {
+	t.trampoliners = append(t.trampoliners, tr)
 }
 
 func (t *Thunk) compareAndSwapState(old, new thunkState) bool {

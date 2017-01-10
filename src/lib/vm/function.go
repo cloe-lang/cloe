@@ -13,13 +13,13 @@ func NewLazyFunction(f func(...*Thunk) Object) Function {
 func NewStrictFunction(f func(...Object) Object) Function {
 	return NewLazyFunction(func(ts ...*Thunk) Object {
 		for _, t := range ts {
-			go t.Eval()
+			go t.EvalStrictly()
 		}
 
 		os := make([]Object, len(ts))
 
 		for i, t := range ts {
-			os[i] = t.Eval()
+			os[i] = t.EvalStrictly()
 		}
 
 		return f(os...)

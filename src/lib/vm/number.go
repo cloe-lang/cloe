@@ -95,6 +95,6 @@ func div(os ...Object) Object {
 	return n0
 }
 
-func notNumberError(o Object) Error {
+func notNumberError(o Object) *Thunk {
 	return TypeError(o, "Number")
 }

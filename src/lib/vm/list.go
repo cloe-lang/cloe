@@ -102,10 +102,10 @@ func rest(os ...Object) Object {
 	return l.rest
 }
 
-func notListError(o Object) Error {
+func notListError(o Object) *Thunk {
 	return TypeError(o, "List")
 }
 
-func emptyListError() Error {
+func emptyListError() *Thunk {
 	return ValueError("The list is empty. You cannot apply rest.")
 }

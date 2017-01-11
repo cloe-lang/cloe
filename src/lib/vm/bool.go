@@ -37,6 +37,6 @@ func ifFunc(ts ...*Thunk) Object {
 	return ts[2]
 }
 
-func notBoolError(o Object) Error {
+func notBoolError(o Object) *Thunk {
 	return TypeError(o, "Bool")
 }

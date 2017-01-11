@@ -11,7 +11,7 @@ func StringThunk(s string) *Thunk {
 }
 
 func (s String) Equal(e Equalable) Object {
-	return NewBool(s == e)
+	return rawBool(s == e)
 }
 
 func (s String) Add(a Addable) Addable {

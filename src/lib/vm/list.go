@@ -19,15 +19,16 @@ func (l1 List) Equal(e Equalable) Object {
 	l2 := e.(List)
 
 	if l1 == emptyList || l2 == emptyList {
-		return NewBool(l1 == l2)
+		return rawBool(l1 == l2)
 	}
 
-	for _, o := range []Object{
+	for _, t := range []*Thunk{
 		// Don't evaluate these parallely for short circuit behavior.
-		Equal(l1.first, l2.first),
-		Equal(l1.rest, l2.rest),
+		App(Normal(Equal), l1.first, l2.first),
+		App(Normal(Equal), l1.rest, l2.rest),
 	} {
-		b, ok := o.(Bool)
+		o := t.Eval()
+		b, ok := o.(boolType)
 
 		if !ok {
 			return notBoolError(o)

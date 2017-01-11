@@ -25,5 +25,5 @@ func (d Dictionary) Set(k, v Object) Object {
 
 func (d1 Dictionary) Equal(e Equalable) Object {
 	// TODO: Use ToList and compare them as Lists
-	return NewBool(d1.hashMap.Equal(e.(Dictionary).hashMap))
+	return rawBool(d1.hashMap.Equal(e.(Dictionary).hashMap))
 }

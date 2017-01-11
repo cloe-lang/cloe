@@ -27,6 +27,8 @@ type Thunk struct {
 }
 
 func Normal(o Object) *Thunk {
+	checkObject("Normal's argument", o)
+
 	if f, ok := o.(func(...*Thunk) Object); ok {
 		o = NewLazyFunction(f)
 	} else if f, ok := o.(func(...Object) Object); ok {
@@ -72,6 +74,8 @@ func (t *Thunk) Eval() Object { // return WHNF
 			children = append(children, child)
 		}
 
+		checkObject("Thunk.result", t.result)
+
 		for _, child := range children {
 			child.result = t.result
 			child.finalize()
@@ -81,6 +85,8 @@ func (t *Thunk) Eval() Object { // return WHNF
 	} else {
 		t.blackHole.Wait()
 	}
+
+	checkObject("Thunk.result", t.result)
 
 	return t.result
 }
@@ -110,4 +116,10 @@ func (t *Thunk) compareAndSwapState(old, new thunkState) bool {
 
 func (t *Thunk) storeState(new thunkState) {
 	atomic.StoreInt32((*int32)(&t.state), int32(new))
+}
+
+func checkObject(s string, o Object) {
+	if _, ok := o.(*Thunk); ok {
+		panic(s + " is *Thunk.")
+	}
 }

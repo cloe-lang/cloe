@@ -11,7 +11,7 @@ func NumberThunk(n float64) *Thunk {
 }
 
 func (n Number) Equal(e Equalable) Object {
-	return NewBool(n == e.(Number))
+	return rawBool(n == e.(Number))
 }
 
 func (n Number) Add(a Addable) Addable {

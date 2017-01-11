@@ -2,12 +2,10 @@ package vm
 
 import "testing"
 
-var tTrue, tFalse = Normal(True), Normal(False)
-
 func TestBoolEqual(t *testing.T) {
 	for _, ts := range [][]*Thunk{
-		{tTrue, tTrue},
-		{tFalse, tFalse},
+		{True, True},
+		{False, False},
 	} {
 		if !testEqual(ts...) {
 			t.Fail()
@@ -15,8 +13,8 @@ func TestBoolEqual(t *testing.T) {
 	}
 
 	for _, ts := range [][]*Thunk{
-		{tTrue, tFalse},
-		{tFalse, tTrue},
+		{True, False},
+		{False, True},
 	} {
 		if testEqual(ts...) {
 			t.Fail()

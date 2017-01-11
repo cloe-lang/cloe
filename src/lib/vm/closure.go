@@ -6,7 +6,7 @@ type Closure struct {
 }
 
 func (c Closure) Call(ts ...*Thunk) Object {
-	o := c.function.EvalStrictly()
+	o := c.function.Eval()
 	f, ok := o.(Callable)
 
 	if !ok {

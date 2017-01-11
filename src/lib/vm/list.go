@@ -8,7 +8,7 @@ type List struct {
 var emptyList = List{nil, nil}
 
 func NewList(ts ...*Thunk) List {
-	return App(Normal(Prepend), append(ts, Normal(emptyList))...).EvalStrictly().(List)
+	return App(Normal(Prepend), append(ts, Normal(emptyList))...).Eval().(List)
 }
 
 func ListThunk(ts ...*Thunk) *Thunk {

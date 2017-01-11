@@ -23,7 +23,7 @@ func ifFunc(ts ...*Thunk) Object {
 		return NumArgsError("if", "3")
 	}
 
-	o := ts[0].EvalStrictly()
+	o := ts[0].Eval()
 	b, ok := o.(Bool)
 
 	if !ok {

@@ -21,10 +21,9 @@ type Thunk struct {
 	// their functions. If you want to define functions with arguments fully
 	// lazy, just create a function which takes only a thunk of a List as a
 	// argument.
-	args         []*Thunk
-	state        thunkState
-	blackHole    sync.WaitGroup
-	trampoliners []*Thunk
+	args      []*Thunk
+	state     thunkState
+	blackHole sync.WaitGroup
 }
 
 func Normal(o Object) *Thunk {
@@ -38,55 +37,44 @@ func Normal(o Object) *Thunk {
 }
 
 func App(f *Thunk, args ...*Thunk) *Thunk {
-	t := &Thunk{function: f, args: args, state: app, trampoliners: make([]*Thunk, 0)}
+	t := &Thunk{function: f, args: args, state: app}
 	t.blackHole.Add(1)
 	return t
 }
 
-func (t *Thunk) EvalStrictly() Object { // return WHNF
-	if t.compareAndSwapState(app, locked) {
-		o := t.function.EvalStrictly()
-		f, ok := o.(Callable)
+func (t *Thunk) Eval() Object { // return WHNF
+	if t.lock() {
+		children := make([]*Thunk, 0, 1) // TODO: best capacity?
 
-		if ok {
-			t.result = f.Call(t.args...)
+		for {
+			o := t.function.Eval()
+			f, ok := o.(Callable)
 
-			for {
-				child, ok := t.result.(*Thunk)
-
-				if !ok {
-					break
-				}
-
-				t.result = child.Eval()
+			if !ok {
+				t.result = NotCallableError(o)
+				break
 			}
-		} else {
-			t.result = NotCallableError(o)
-		}
 
-		t.finalize()
-	} else {
-		t.blackHole.Wait()
-	}
-
-	return t.result
-}
-
-func (t *Thunk) Eval() Object { // return WHNF or *Thunk
-	if t.compareAndSwapState(app, locked) {
-		o := t.function.EvalStrictly()
-		f, ok := o.(Callable)
-
-		if ok {
 			t.result = f.Call(t.args...)
 			child, ok := t.result.(*Thunk)
 
-			if ok {
-				child.addTrampoliner(t)
-				return child
+			if !ok {
+				break
 			}
-		} else {
-			t.result = NotCallableError(o)
+
+			t.function, t.args, ok = child.delegateEval()
+
+			if !ok {
+				t.result = child.Eval()
+				break
+			}
+
+			children = append(children, child)
+		}
+
+		for _, child := range children {
+			child.result = t.result
+			child.finalize()
 		}
 
 		t.finalize()
@@ -97,25 +85,23 @@ func (t *Thunk) Eval() Object { // return WHNF or *Thunk
 	return t.result
 }
 
-func (t *Thunk) storeResult(o Object) {
-	t.result = o
-	t.finalize()
+func (t *Thunk) lock() bool {
+	return t.compareAndSwapState(app, locked)
+}
+
+func (t *Thunk) delegateEval() (*Thunk, []*Thunk, bool) {
+	if t.lock() {
+		return t.function, t.args, true
+	}
+
+	return nil, nil, false
 }
 
 func (t *Thunk) finalize() {
-	for _, tr := range t.trampoliners {
-		tr.storeResult(t.result)
-	}
-	t.trampoliners = nil
-
 	t.function = nil
 	t.args = nil
 	t.storeState(normal)
 	t.blackHole.Done()
-}
-
-func (t *Thunk) addTrampoliner(tr *Thunk) {
-	t.trampoliners = append(t.trampoliners, tr)
 }
 
 func (t *Thunk) compareAndSwapState(old, new thunkState) bool {

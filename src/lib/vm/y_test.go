@@ -32,7 +32,7 @@ func strictFactorial(n float64) float64 {
 }
 
 func lazyFactorial(ts ...*Thunk) float64 {
-	return float64(App(App(Normal(Y), Normal(NewLazyFunction(lazyFactorialImpl))), ts...).EvalStrictly().(Number))
+	return float64(App(App(Normal(Y), Normal(NewLazyFunction(lazyFactorialImpl))), ts...).Eval().(Number))
 }
 
 func lazyFactorialImpl(ts ...*Thunk) Object {

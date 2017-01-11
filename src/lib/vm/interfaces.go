@@ -16,7 +16,7 @@ var Equal = NewStrictFunction(equal)
 
 func equal(os ...Object) Object {
 	if len(os) != 2 {
-		return NumArgsError("equal", "2")
+		return numArgsError("equal", "2")
 	}
 
 	var es [2]Equalable
@@ -25,7 +25,7 @@ func equal(os ...Object) Object {
 		e, ok := o.(Equalable)
 
 		if !ok {
-			return TypeError(o, "Equalable")
+			return typeError(o, "Equalable")
 		}
 
 		es[i] = e
@@ -49,19 +49,19 @@ var Add = NewStrictFunction(add)
 
 func add(os ...Object) Object {
 	if len(os) == 0 {
-		return NumArgsError("add", ">= 1")
+		return numArgsError("add", ">= 1")
 	}
 
 	o := os[0]
 	a0, ok := o.(Addable)
 
 	if !ok {
-		return TypeError(o, "Addable")
+		return typeError(o, "Addable")
 	}
 
 	for _, o := range os[1:] {
 		if typ := reflect.TypeOf(a0); typ != reflect.TypeOf(o) {
-			return TypeError(o, typ.Name())
+			return typeError(o, typ.Name())
 		}
 
 		a0 = a0.Add(o.(Addable))

@@ -4,7 +4,7 @@ var Y = NewLazyFunction(y)
 
 func y(ts ...*Thunk) Object {
 	if len(ts) != 1 {
-		return NumArgsError("y", "1")
+		return numArgsError("y", "1")
 	}
 
 	xfxx := Normal(Partial(Normal(fxx), ts[0]))

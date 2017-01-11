@@ -19,7 +19,7 @@ func chainedError(e *Thunk, n, m string, xs ...interface{}) *Thunk {
 	})
 }
 
-func TypeError(o Object, typ string) *Thunk {
+func typeError(o Object, typ string) *Thunk {
 	n, m := "TypeError", "%#v is not %s"
 
 	if e, ok := o.(errorType); ok {
@@ -29,16 +29,16 @@ func TypeError(o Object, typ string) *Thunk {
 	return internalError(n, m, o, typ)
 }
 
-func NotCallableError(o Object) *Thunk {
-	return TypeError(o, "Callable")
+func notCallableError(o Object) *Thunk {
+	return typeError(o, "Callable")
 }
 
-func NumArgsError(f, condition string) *Thunk {
+func numArgsError(f, condition string) *Thunk {
 	return internalError(
 		"NumArgsError",
 		"Number of arguments to %s must be %s.", f, condition)
 }
 
-func ValueError(m string) *Thunk {
+func valueError(m string) *Thunk {
 	return internalError("ValueError", m)
 }

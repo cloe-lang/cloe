@@ -22,7 +22,7 @@ var Sub = NewStrictFunction(sub)
 
 func sub(os ...Object) Object {
 	if len(os) == 0 {
-		return NumArgsError("sub", ">= 1")
+		return numArgsError("sub", ">= 1")
 	}
 
 	o := os[0]
@@ -50,7 +50,7 @@ var Mult = NewStrictFunction(mult)
 func mult(os ...Object) Object {
 	if len(os) == 0 {
 		// for symmetry with add while it can take no argument and return 1.
-		return NumArgsError("mult", ">= 1")
+		return numArgsError("mult", ">= 1")
 	}
 
 	n0 := Number(1)
@@ -72,7 +72,7 @@ var Div = NewStrictFunction(div)
 
 func div(os ...Object) Object {
 	if len(os) == 0 {
-		return NumArgsError("div", ">= 1")
+		return numArgsError("div", ">= 1")
 	}
 
 	o := os[0]
@@ -96,5 +96,5 @@ func div(os ...Object) Object {
 }
 
 func notNumberError(o Object) *Thunk {
-	return TypeError(o, "Number")
+	return typeError(o, "Number")
 }

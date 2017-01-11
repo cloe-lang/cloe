@@ -45,7 +45,7 @@ var Prepend = NewLazyFunction(prepend)
 func prepend(ts ...*Thunk) Object {
 	switch len(ts) {
 	case 0:
-		return NumArgsError("prepend", "> 1")
+		return numArgsError("prepend", "> 1")
 	case 1:
 		return ts[0]
 	}
@@ -68,7 +68,7 @@ var First = NewStrictFunction(first)
 
 func first(os ...Object) Object {
 	if len(os) != 1 {
-		return NumArgsError("first", "1")
+		return numArgsError("first", "1")
 	}
 
 	o := os[0]
@@ -87,7 +87,7 @@ var Rest = NewStrictFunction(rest)
 
 func rest(os ...Object) Object {
 	if len(os) != 1 {
-		return NumArgsError("rest", "1")
+		return numArgsError("rest", "1")
 	}
 
 	o := os[0]
@@ -103,9 +103,9 @@ func rest(os ...Object) Object {
 }
 
 func notListError(o Object) *Thunk {
-	return TypeError(o, "List")
+	return typeError(o, "List")
 }
 
 func emptyListError() *Thunk {
-	return ValueError("The list is empty. You cannot apply rest.")
+	return valueError("The list is empty. You cannot apply rest.")
 }

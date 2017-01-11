@@ -20,7 +20,7 @@ var If = NewLazyFunction(ifFunc)
 
 func ifFunc(ts ...*Thunk) Object {
 	if len(ts) != 3 {
-		return NumArgsError("if", "3")
+		return numArgsError("if", "3")
 	}
 
 	o := ts[0].Eval()
@@ -38,5 +38,5 @@ func ifFunc(ts ...*Thunk) Object {
 }
 
 func notBoolError(o Object) *Thunk {
-	return TypeError(o, "Bool")
+	return typeError(o, "Bool")
 }

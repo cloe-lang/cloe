@@ -4,7 +4,7 @@ import "github.com/mediocregopher/seq"
 
 type dictionaryType struct{ hashMap *seq.HashMap }
 
-func NewDictionary(ks []Object, vs []*Thunk) dictionaryType {
+func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
 	if len(ks) != len(vs) {
 		panic("Number of keys doesn't match with number of values.")
 	}
@@ -15,7 +15,7 @@ func NewDictionary(ks []Object, vs []*Thunk) dictionaryType {
 		d.Set(k, vs[i])
 	}
 
-	return d
+	return Normal(d)
 }
 
 func (d dictionaryType) Set(k, v Object) Object {

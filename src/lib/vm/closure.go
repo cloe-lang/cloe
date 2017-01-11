@@ -1,11 +1,11 @@
 package vm
 
-type Closure struct {
+type closureType struct {
 	function      *Thunk
 	freeVariables []*Thunk
 }
 
-func (c Closure) Call(ts ...*Thunk) Object {
+func (c closureType) Call(ts ...*Thunk) Object {
 	o := c.function.Eval()
 	f, ok := o.(Callable)
 
@@ -26,5 +26,5 @@ func partial(ts ...*Thunk) Object {
 		return ts[0]
 	}
 
-	return Closure{ts[0], ts[1:]}
+	return closureType{ts[0], ts[1:]}
 }

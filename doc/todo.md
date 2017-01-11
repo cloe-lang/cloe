@@ -16,3 +16,6 @@
   Objects
 - Trampoline last app like `(\ (x...) (trampoline ...))` in Y
 - `Thunk.Eval()` should return `TrampolinedThunk { thunk: *Thunk, trampoliner: *Thunk }`
+
+- Pattern match
+- Type system?

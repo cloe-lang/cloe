@@ -17,7 +17,7 @@ func TestY(t *testing.T) {
 	for _, ts := range [][]*Thunk{
 		{NumberThunk(7)},
 		{NumberThunk(13), StringThunk("foobarbaz")},
-		{NumberThunk(42), NilThunk(), NilThunk()},
+		{NumberThunk(42), Nil, Nil},
 	} {
 		t.Log(lazyFactorial(ts...))
 	}

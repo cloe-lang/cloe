@@ -29,12 +29,6 @@ type Thunk struct {
 func Normal(o Object) *Thunk {
 	checkObject("Normal's argument", o)
 
-	if f, ok := o.(func(...*Thunk) Object); ok {
-		o = NewLazyFunction(f)
-	} else if f, ok := o.(func(...Object) Object); ok {
-		o = NewStrictFunction(f)
-	}
-
 	return &Thunk{result: o, state: normal}
 }
 

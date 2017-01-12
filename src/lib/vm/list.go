@@ -7,12 +7,8 @@ type listType struct {
 
 var emptyList = listType{nil, nil}
 
-func NewList(ts ...*Thunk) listType {
-	return App(Prepend, append(ts, Normal(emptyList))...).Eval().(listType)
-}
-
-func ListThunk(ts ...*Thunk) *Thunk {
-	return Normal(NewList(ts...))
+func NewList(ts ...*Thunk) *Thunk {
+	return App(Prepend, append(ts, Normal(emptyList))...)
 }
 
 func (l1 listType) Equal(e Equalable) Object {

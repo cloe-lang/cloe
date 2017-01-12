@@ -8,7 +8,7 @@ func TestListEqual(t *testing.T) {
 		{{True}, {True}},
 		{{True, False}, {True, False}},
 	} {
-		if !testEqual(ListThunk(tss[0]...), ListThunk(tss[1]...)) {
+		if !testEqual(NewList(tss[0]...), NewList(tss[1]...)) {
 			t.Fail()
 		}
 	}
@@ -18,7 +18,7 @@ func TestListEqual(t *testing.T) {
 		{{True}, {False}},
 		{{True, True}, {True, True, True}},
 	} {
-		if testEqual(ListThunk(tss[0]...), ListThunk(tss[1]...)) {
+		if testEqual(NewList(tss[0]...), NewList(tss[1]...)) {
 			t.Fail()
 		}
 	}

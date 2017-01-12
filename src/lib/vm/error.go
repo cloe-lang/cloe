@@ -8,7 +8,7 @@ type errorType struct {
 }
 
 func internalError(n, m string, xs ...interface{}) *Thunk {
-	return chainedError(NilThunk(), n, m, xs...)
+	return chainedError(Nil, n, m, xs...)
 }
 
 func chainedError(e *Thunk, n, m string, xs ...interface{}) *Thunk {

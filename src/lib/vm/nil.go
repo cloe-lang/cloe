@@ -2,13 +2,7 @@ package vm
 
 type nilType struct{}
 
-func NewNil() nilType {
-	return nilType{}
-}
-
-func NilThunk() *Thunk {
-	return Normal(NewNil())
-}
+var Nil = Normal(nilType{})
 
 func (n nilType) Equal(e Equalable) Object {
 	return True

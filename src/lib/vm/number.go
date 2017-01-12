@@ -1,21 +1,17 @@
 package vm
 
-type Number float64
+type numberType float64
 
-func NewNumber(n float64) Number {
-	return Number(n)
+func NewNumber(n float64) *Thunk {
+	return Normal(numberType(n))
 }
 
-func NumberThunk(n float64) *Thunk {
-	return Normal(NewNumber(n))
+func (n numberType) Equal(e Equalable) Object {
+	return rawBool(n == e.(numberType))
 }
 
-func (n Number) Equal(e Equalable) Object {
-	return rawBool(n == e.(Number))
-}
-
-func (n Number) Add(a Addable) Addable {
-	return n + a.(Number)
+func (n numberType) Add(a Addable) Addable {
+	return n + a.(numberType)
 }
 
 var Sub = NewStrictFunction(sub)
@@ -26,14 +22,14 @@ func sub(os ...Object) Object {
 	}
 
 	o := os[0]
-	n0, ok := o.(Number)
+	n0, ok := o.(numberType)
 
 	if !ok {
 		return notNumberError(o)
 	}
 
 	for _, o := range os[1:] {
-		n, ok := o.(Number)
+		n, ok := o.(numberType)
 
 		if !ok {
 			return notNumberError(o)
@@ -53,10 +49,10 @@ func mult(os ...Object) Object {
 		return numArgsError("mult", ">= 1")
 	}
 
-	n0 := Number(1)
+	n0 := numberType(1)
 
 	for _, o := range os {
-		n, ok := o.(Number)
+		n, ok := o.(numberType)
 
 		if !ok {
 			return notNumberError(o)
@@ -76,14 +72,14 @@ func div(os ...Object) Object {
 	}
 
 	o := os[0]
-	n0, ok := o.(Number)
+	n0, ok := o.(numberType)
 
 	if !ok {
 		return notNumberError(o)
 	}
 
 	for _, o := range os[1:] {
-		n, ok := o.(Number)
+		n, ok := o.(numberType)
 
 		if !ok {
 			return notNumberError(o)

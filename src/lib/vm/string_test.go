@@ -3,22 +3,22 @@ package vm
 import "testing"
 
 func TestStringEqual(t *testing.T) {
-	n := StringThunk("foo")
+	n := NewString("foo")
 
 	if !testEqual(n, n) {
 		t.Fail()
 	}
 
-	if testEqual(n, StringThunk("bar")) {
+	if testEqual(n, NewString("bar")) {
 		t.Fail()
 	}
 }
 
 func TestStringAdd(t *testing.T) {
 	s := "foo"
-	st := StringThunk(s)
+	st := NewString(s)
 
-	if string(App(Add, st, st).Eval().(String)) != s+s {
+	if string(App(Add, st, st).Eval().(stringType)) != s+s {
 		t.Fail()
 	}
 }

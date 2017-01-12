@@ -1,19 +1,15 @@
 package vm
 
-type String string
+type stringType string
 
-func NewString(s string) String {
-	return String(s)
+func NewString(s string) *Thunk {
+	return Normal(stringType(s))
 }
 
-func StringThunk(s string) *Thunk {
-	return Normal(NewString(s))
-}
-
-func (s String) Equal(e Equalable) Object {
+func (s stringType) Equal(e Equalable) Object {
 	return rawBool(s == e)
 }
 
-func (s String) Add(a Addable) Addable {
-	return s + a.(String)
+func (s stringType) Add(a Addable) Addable {
+	return s + a.(stringType)
 }

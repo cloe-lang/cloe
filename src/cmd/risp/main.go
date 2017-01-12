@@ -1,15 +1,15 @@
 package main
 
 import (
-	l "../../lib/lang"
 	_ "../../lib/parse"
+	"../../lib/vm"
 	"github.com/docopt/docopt-go"
 )
 
 func main() {
 	getArgs()
 
-	l.Nil().Eval()
+	vm.Nil.Eval()
 }
 
 func getArgs() map[string]interface{} {

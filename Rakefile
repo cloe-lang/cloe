@@ -7,6 +7,8 @@ bins.each do |bin|
   end
 end
 
+task :build => bins
+
 examples.zip(bins).each do |name, bin|
   task name => bin do
     Dir.glob('examples/*.r').each do |file|
@@ -25,7 +27,7 @@ task :lint do
   sh 'go vet ./...; golint ./...'
 end
 
-task :default => [:test, *bins]
+task :default => %i(test build examples)
 
 task :clean do
   sh 'git clean -dfx'

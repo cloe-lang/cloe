@@ -1,5 +1,5 @@
 package vm
 
 func testEqual(ts ...*Thunk) bool {
-	return bool(App(Normal(Equal), ts...).Eval().(boolType))
+	return bool(App(Equal, ts...).Eval().(boolType))
 }

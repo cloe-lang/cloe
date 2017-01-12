@@ -32,16 +32,16 @@ func strictFactorial(n float64) float64 {
 }
 
 func lazyFactorial(ts ...*Thunk) float64 {
-	return float64(App(App(Normal(Y), Normal(NewLazyFunction(lazyFactorialImpl))), ts...).Eval().(Number))
+	return float64(App(App(Y, NewLazyFunction(lazyFactorialImpl)), ts...).Eval().(Number))
 }
 
 func lazyFactorialImpl(ts ...*Thunk) Object {
 	// fmt.Println(len(ts))
 
-	return App(Normal(If),
-		App(Normal(Equal), ts[1], NumberThunk(0)),
+	return App(If,
+		App(Equal, ts[1], NumberThunk(0)),
 		NumberThunk(1),
-		App(Normal(Mult),
+		App(Mult,
 			ts[1],
-			App(ts[0], append([]*Thunk{App(Normal(Sub), ts[1], NumberThunk(1))}, ts[2:]...)...)))
+			App(ts[0], append([]*Thunk{App(Sub, ts[1], NumberThunk(1))}, ts[2:]...)...)))
 }

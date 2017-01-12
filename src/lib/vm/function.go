@@ -1,16 +1,16 @@
 package vm
 
-type Function func(...*Thunk) Object
+type functionType func(...*Thunk) Object
 
-func (f Function) Call(ts ...*Thunk) Object {
+func (f functionType) Call(ts ...*Thunk) Object {
 	return f(ts...)
 }
 
-func NewLazyFunction(f func(...*Thunk) Object) Function {
-	return Function(f)
+func NewLazyFunction(f func(...*Thunk) Object) *Thunk {
+	return Normal(functionType(f))
 }
 
-func NewStrictFunction(f func(...Object) Object) Function {
+func NewStrictFunction(f func(...Object) Object) *Thunk {
 	return NewLazyFunction(func(ts ...*Thunk) Object {
 		for _, t := range ts {
 			go t.Eval()

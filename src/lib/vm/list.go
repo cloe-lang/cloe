@@ -8,7 +8,7 @@ type List struct {
 var emptyList = List{nil, nil}
 
 func NewList(ts ...*Thunk) List {
-	return App(Normal(Prepend), append(ts, Normal(emptyList))...).Eval().(List)
+	return App(Prepend, append(ts, Normal(emptyList))...).Eval().(List)
 }
 
 func ListThunk(ts ...*Thunk) *Thunk {
@@ -24,8 +24,8 @@ func (l1 List) Equal(e Equalable) Object {
 
 	for _, t := range []*Thunk{
 		// Don't evaluate these parallely for short circuit behavior.
-		App(Normal(Equal), l1.first, l2.first),
-		App(Normal(Equal), l1.rest, l2.rest),
+		App(Equal, l1.first, l2.first),
+		App(Equal, l1.rest, l2.rest),
 	} {
 		o := t.Eval()
 		b, ok := o.(boolType)

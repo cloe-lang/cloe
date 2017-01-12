@@ -7,12 +7,12 @@ func y(ts ...*Thunk) Object {
 		return numArgsError("y", "1")
 	}
 
-	xfxx := Normal(Partial(Normal(fxx), ts[0]))
+	xfxx := App(Partial, fxx, ts[0])
 	return App(xfxx, xfxx)
 }
 
 var fxx = NewLazyFunction(fxxImpl)
 
 func fxxImpl(ts ...*Thunk) Object {
-	return Partial(ts[0], App(ts[1], ts[1]))
+	return App(Partial, ts[0], App(ts[1], ts[1]))
 }

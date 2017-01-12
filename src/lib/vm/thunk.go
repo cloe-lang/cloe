@@ -44,14 +44,14 @@ func (t *Thunk) Eval() Object { // return WHNF
 
 		for {
 			o := t.function.Eval()
-			f, ok := o.(Callable)
+			f, ok := o.(callable)
 
 			if !ok {
 				t.result = notCallableError(o)
 				break
 			}
 
-			t.result = f.Call(t.args...)
+			t.result = f.call(t.args...)
 			child, ok := t.result.(*Thunk)
 
 			if !ok {

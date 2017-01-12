@@ -4,8 +4,8 @@ import "reflect"
 
 type Object interface{}
 
-type Callable interface {
-	Call(...*Thunk) Object
+type callable interface {
+	call(...*Thunk) Object
 }
 
 type Equalable interface {

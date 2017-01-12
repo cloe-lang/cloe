@@ -2,7 +2,7 @@ package vm
 
 type functionType func(...*Thunk) Object
 
-func (f functionType) Call(ts ...*Thunk) Object {
+func (f functionType) call(ts ...*Thunk) Object {
 	return f(ts...)
 }
 

@@ -5,15 +5,15 @@ type closureType struct {
 	freeVariables []*Thunk
 }
 
-func (c closureType) Call(ts ...*Thunk) Object {
+func (c closureType) call(ts ...*Thunk) Object {
 	o := c.function.Eval()
-	f, ok := o.(Callable)
+	f, ok := o.(callable)
 
 	if !ok {
 		return notCallableError(o)
 	}
 
-	return f.Call(append(c.freeVariables, ts...)...)
+	return f.call(append(c.freeVariables, ts...)...)
 }
 
 var Partial = NewLazyFunction(partial)

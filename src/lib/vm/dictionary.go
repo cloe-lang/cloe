@@ -23,7 +23,7 @@ func (d dictionaryType) Set(k, v Object) Object {
 	return dictionaryType{h}
 }
 
-func (d1 dictionaryType) Equal(e Equalable) Object {
+func (d1 dictionaryType) equal(e equalable) Object {
 	// TODO: Use ToList and compare them as Lists
 	return rawBool(d1.hashMap.Equal(e.(dictionaryType).hashMap))
 }

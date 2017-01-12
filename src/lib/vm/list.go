@@ -11,7 +11,7 @@ func NewList(ts ...*Thunk) *Thunk {
 	return App(Prepend, append(ts, Normal(emptyList))...)
 }
 
-func (l1 listType) Equal(e Equalable) Object {
+func (l1 listType) equal(e equalable) Object {
 	l2 := e.(listType)
 
 	if l1 == emptyList || l2 == emptyList {

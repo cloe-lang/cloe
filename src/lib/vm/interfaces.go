@@ -8,8 +8,8 @@ type callable interface {
 	call(...*Thunk) Object
 }
 
-type Equalable interface {
-	Equal(Equalable) Object
+type equalable interface {
+	equal(equalable) Object
 }
 
 var Equal = NewStrictFunction(equal)
@@ -19,10 +19,10 @@ func equal(os ...Object) Object {
 		return numArgsError("equal", "2")
 	}
 
-	var es [2]Equalable
+	var es [2]equalable
 
 	for i, o := range os {
-		e, ok := o.(Equalable)
+		e, ok := o.(equalable)
 
 		if !ok {
 			return typeError(o, "Equalable")
@@ -35,7 +35,7 @@ func equal(os ...Object) Object {
 		return False
 	}
 
-	return es[0].Equal(es[1])
+	return es[0].equal(es[1])
 }
 
 type Addable interface {

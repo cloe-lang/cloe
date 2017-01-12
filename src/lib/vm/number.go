@@ -6,7 +6,7 @@ func NewNumber(n float64) *Thunk {
 	return Normal(numberType(n))
 }
 
-func (n numberType) Equal(e Equalable) Object {
+func (n numberType) equal(e equalable) Object {
 	return rawBool(n == e.(numberType))
 }
 

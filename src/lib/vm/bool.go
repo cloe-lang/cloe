@@ -12,7 +12,7 @@ func rawBool(b bool) boolType {
 	return boolType(b)
 }
 
-func (b boolType) Equal(e Equalable) Object {
+func (b boolType) equal(e equalable) Object {
 	return rawBool(b == e.(boolType))
 }
 

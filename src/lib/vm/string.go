@@ -6,7 +6,7 @@ func NewString(s string) *Thunk {
 	return Normal(stringType(s))
 }
 
-func (s stringType) Equal(e Equalable) Object {
+func (s stringType) equal(e equalable) Object {
 	return rawBool(s == e)
 }
 

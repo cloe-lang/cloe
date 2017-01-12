@@ -1,15 +1,15 @@
 package vm
 
-type Nil struct{}
+type nilType struct{}
 
-func NewNil() Nil {
-	return Nil{}
+func NewNil() nilType {
+	return nilType{}
 }
 
 func NilThunk() *Thunk {
 	return Normal(NewNil())
 }
 
-func (n Nil) Equal(e Equalable) Object {
+func (n nilType) Equal(e Equalable) Object {
 	return True
 }

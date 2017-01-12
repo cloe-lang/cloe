@@ -10,6 +10,6 @@ func (s stringType) equal(e equalable) Object {
 	return rawBool(s == e)
 }
 
-func (s stringType) Add(a Addable) Addable {
+func (s stringType) add(a addable) addable {
 	return s + a.(stringType)
 }

@@ -10,7 +10,7 @@ func (n numberType) equal(e equalable) Object {
 	return rawBool(n == e.(numberType))
 }
 
-func (n numberType) Add(a Addable) Addable {
+func (n numberType) add(a addable) addable {
 	return n + a.(numberType)
 }
 

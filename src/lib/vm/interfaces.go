@@ -38,8 +38,8 @@ func equal(os ...Object) Object {
 	return es[0].equal(es[1])
 }
 
-type Addable interface {
-	Add(Addable) Addable
+type addable interface {
+	add(addable) addable
 }
 
 // Add should be lazy for list concatenation and dictionary merging.
@@ -53,10 +53,10 @@ func add(os ...Object) Object {
 	}
 
 	o := os[0]
-	a0, ok := o.(Addable)
+	a0, ok := o.(addable)
 
 	if !ok {
-		return typeError(o, "Addable")
+		return typeError(o, "addable")
 	}
 
 	for _, o := range os[1:] {
@@ -64,7 +64,7 @@ func add(os ...Object) Object {
 			return typeError(o, typ.Name())
 		}
 
-		a0 = a0.Add(o.(Addable))
+		a0 = a0.add(o.(addable))
 	}
 
 	return a0

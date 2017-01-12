@@ -1,22 +1,22 @@
 package vm
 
-type List struct {
+type listType struct {
 	first *Thunk
 	rest  *Thunk
 }
 
-var emptyList = List{nil, nil}
+var emptyList = listType{nil, nil}
 
-func NewList(ts ...*Thunk) List {
-	return App(Prepend, append(ts, Normal(emptyList))...).Eval().(List)
+func NewList(ts ...*Thunk) listType {
+	return App(Prepend, append(ts, Normal(emptyList))...).Eval().(listType)
 }
 
 func ListThunk(ts ...*Thunk) *Thunk {
 	return Normal(NewList(ts...))
 }
 
-func (l1 List) Equal(e Equalable) Object {
-	l2 := e.(List)
+func (l1 listType) Equal(e Equalable) Object {
+	l2 := e.(listType)
 
 	if l1 == emptyList || l2 == emptyList {
 		return rawBool(l1 == l2)
@@ -60,8 +60,8 @@ func prepend(ts ...*Thunk) Object {
 	return l
 }
 
-func cons(t1, t2 *Thunk) List {
-	return List{t1, t2}
+func cons(t1, t2 *Thunk) listType {
+	return listType{t1, t2}
 }
 
 var First = NewStrictFunction(first)
@@ -72,7 +72,7 @@ func first(os ...Object) Object {
 	}
 
 	o := os[0]
-	l, ok := o.(List)
+	l, ok := o.(listType)
 
 	if !ok {
 		return notListError(o)
@@ -91,7 +91,7 @@ func rest(os ...Object) Object {
 	}
 
 	o := os[0]
-	l, ok := o.(List)
+	l, ok := o.(listType)
 
 	if !ok {
 		return notListError(o)

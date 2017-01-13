@@ -10,11 +10,11 @@
 ; (let func (\ (x) (\ (y) (+ x y))))
 
 ($def func$\0 ($+ $0 $1))
-($def func (partial func$\0 $0))
+($let func ($partial func$\0 $0))
 
 ($stdout ((func 123) 456)) ; 579
 
 
 ; define a new output function
 
-($def stdout' ($stdout (increment $0)))
+($def stdout' ($stdout ($+ $0 1)))

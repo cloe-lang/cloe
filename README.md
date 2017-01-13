@@ -1,6 +1,6 @@
 # Risp (Recurrent Lisp)
 
-Risp is a purely-functional, asynchronous programming language.
+Risp is a purely-functional, inherently parallel, asynchronous programming language.
 
 
 ## FAQ

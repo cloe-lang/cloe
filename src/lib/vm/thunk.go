@@ -8,6 +8,8 @@ import (
 type thunkState int32
 
 const (
+	// States of illegal and locked are unnecessary and provided only for
+	// debuggability.
 	illegal thunkState = iota
 	normal
 	locked

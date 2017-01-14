@@ -2,7 +2,8 @@
 
 ## Mapping of arguments to names
 
-Can be just sugar.
+Can be just sugar because every variadic function has certain number of
+arguments.
 
 ```
 (let list '(123 456 789))
@@ -33,6 +34,16 @@ is equivalent to:
 (print (map (partial f foo) list))
 ```
 
-## Can I create Trampoline?
+## Module system
 
-Or, where to return Thunks in Y?
+```
+(let m (import "directory/module_name"))
+(print (m.calcAnswer 42))
+```
+
+### Nondeterminism module
+
+```
+(def nd.rally "Objects -> List. Sort by time when they are evaluated."
+  (objects...) (...))
+```

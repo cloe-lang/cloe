@@ -35,10 +35,6 @@ func ys(fs ...*Thunk) Object {
 		p := ps[0]
 
 		applyFs := NewLazyFunction(func(qs ...*Thunk) Object {
-			if len(qs) != 2 {
-				panic("applyFs takes just 2 arguments.")
-			}
-
 			return App(qs[0], append(App(p, p).Eval().([]*Thunk), qs[1:]...)...)
 		})
 

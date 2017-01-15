@@ -62,8 +62,8 @@ func TestYsSingleF(t *testing.T) {
 }
 
 func TestYsMultipleFs(t *testing.T) {
-	even := NewLazyFunction(func(ts ...*Thunk) Object {
-		n := ts[2]
+	evenWithExtraArg := NewLazyFunction(func(ts ...*Thunk) Object {
+		n := ts[3]
 
 		return App(If,
 			App(Equal, n, NewNumber(0)),
@@ -77,13 +77,13 @@ func TestYsMultipleFs(t *testing.T) {
 		return App(If,
 			App(Equal, n, NewNumber(0)),
 			False,
-			App(ts[0], App(Sub, n, NewNumber(1))))
+			App(ts[0], Nil, App(Sub, n, NewNumber(1))))
 	})
 
-	fs := App(Ys, even, odd).Eval().([]*Thunk)
+	fs := App(Ys, evenWithExtraArg, odd).Eval().([]*Thunk)
 
 	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100, 121, 256, 1023} {
-		b1 := bool(App(fs[0], NewNumber(n)).Eval().(boolType))
+		b1 := bool(App(fs[0], NewString("unused"), NewNumber(n)).Eval().(boolType))
 		b2 := bool(App(fs[1], NewNumber(n)).Eval().(boolType))
 
 		t.Logf("n = %v, even? %v, odd? %v\n", n, b1, b2)

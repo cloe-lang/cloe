@@ -17,7 +17,7 @@ func fxxImpl(ts ...*Thunk) Object {
 	return App(Partial, ts[0], App(ts[1], ts[1]))
 }
 
-var Ys = NewLazyFunction(ys) // TODO: Test Ys more.
+var Ys = NewLazyFunction(ys)
 
 func ys(fs ...*Thunk) Object {
 	// Note that ys returns []*Thunk. Results should not be applied to other

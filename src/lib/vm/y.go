@@ -33,14 +33,14 @@ func ys(fs ...*Thunk) Object {
 
 		p := ps[0]
 
-		applyFs := NewLazyFunction(func(qs ...*Thunk) Object {
+		applyF := NewLazyFunction(func(qs ...*Thunk) Object {
 			return App(qs[0], append(App(p, p).Eval().([]*Thunk), qs[1:]...)...)
 		})
 
 		newFs := make([]*Thunk, len(fs))
 
 		for i, f := range fs {
-			newFs[i] = App(Partial, applyFs, f)
+			newFs[i] = App(Partial, applyF, f)
 		}
 
 		return newFs

@@ -13,8 +13,8 @@ func internalError(n, m string, xs ...interface{}) *Thunk {
 
 func chainedError(e *Thunk, n, m string, xs ...interface{}) *Thunk {
 	return Normal(errorType{
-		name:    Normal(NewString(n)),
-		message: Normal(NewString(fmt.Sprintf(m, xs...))),
+		name:    NewString(n),
+		message: NewString(fmt.Sprintf(m, xs...)),
 		child:   e,
 	})
 }

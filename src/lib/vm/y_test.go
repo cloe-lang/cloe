@@ -3,7 +3,7 @@ package vm
 import "testing"
 
 func TestY(t *testing.T) {
-	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 100} {
+	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100} {
 		n1 := lazyFactorial(NewNumber(n))
 		n2 := strictFactorial(n)
 
@@ -49,7 +49,7 @@ func lazyFactorialImpl(ts ...*Thunk) Object {
 func TestYsSingleF(t *testing.T) {
 	fs := App(Ys, NewLazyFunction(lazyFactorialImpl)).Eval().([]*Thunk)
 
-	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 100} {
+	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100} {
 		n1 := float64(App(fs[0], NewNumber(n)).Eval().(numberType))
 		n2 := strictFactorial(n)
 
@@ -82,7 +82,7 @@ func TestYsMultipleFs(t *testing.T) {
 
 	fs := App(Ys, even, odd).Eval().([]*Thunk)
 
-	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 100, 121, 256, 1023} {
+	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100, 121, 256, 1023} {
 		b1 := bool(App(fs[0], NewNumber(n)).Eval().(boolType))
 		b2 := bool(App(fs[1], NewNumber(n)).Eval().(boolType))
 

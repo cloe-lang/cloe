@@ -45,3 +45,18 @@ func lazyFactorialImpl(ts ...*Thunk) Object {
 			ts[1],
 			App(ts[0], append([]*Thunk{App(Sub, ts[1], NewNumber(1))}, ts[2:]...)...)))
 }
+
+func TestYs(t *testing.T) {
+	fs := App(Ys, NewLazyFunction(lazyFactorialImpl)).Eval().([]*Thunk)
+
+	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 100} {
+		n1 := float64(App(fs[0], NewNumber(n)).Eval().(numberType))
+		n2 := strictFactorial(n)
+
+		t.Logf("%d: %f == %f?\n", int(n), n1, n2)
+
+		if n1 != n2 {
+			t.Fail()
+		}
+	}
+}

@@ -6,6 +6,7 @@
   - No subtyping
   - No generics (dynamic typing covers it.)
   - Interface support
+- Follow the zen of Python
 
 # OCaml style mutual recursion
 

@@ -7,6 +7,7 @@
 - Pattern match
 - Type system?
   - May be gradual one
+- Slab allocator for Thunks?
 
 ## vm
 

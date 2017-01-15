@@ -20,8 +20,6 @@ func fxxImpl(ts ...*Thunk) Object {
 var Ys = NewLazyFunction(ys)
 
 func ys(fs ...*Thunk) Object {
-	// TODO: consider wrap result functions with listType.
-
 	if len(fs) == 0 {
 		return numArgsError("ys", ">= 1")
 	}
@@ -46,7 +44,7 @@ func ys(fs ...*Thunk) Object {
 		return newFs
 	})
 
-	return App(xx, f)
+	return NewList(App(xx, f).Eval().([]*Thunk)...)
 }
 
 var xx = NewLazyFunction(xxImpl)

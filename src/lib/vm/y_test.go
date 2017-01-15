@@ -47,10 +47,10 @@ func lazyFactorialImpl(ts ...*Thunk) Object {
 }
 
 func TestYsSingleF(t *testing.T) {
-	fs := App(Ys, NewLazyFunction(lazyFactorialImpl)).Eval().([]*Thunk)
+	fs := App(Ys, NewLazyFunction(lazyFactorialImpl))
 
 	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100} {
-		n1 := float64(App(fs[0], NewNumber(n)).Eval().(numberType))
+		n1 := float64(App(App(First, fs), NewNumber(n)).Eval().(numberType))
 		n2 := strictFactorial(n)
 
 		t.Logf("%d: %f == %f?\n", int(n), n1, n2)
@@ -80,11 +80,11 @@ func TestYsMultipleFs(t *testing.T) {
 			App(ts[0], Nil, App(Sub, n, NewNumber(1))))
 	})
 
-	fs := App(Ys, evenWithExtraArg, odd).Eval().([]*Thunk)
+	fs := App(Ys, evenWithExtraArg, odd)
 
 	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100, 121, 256, 1023} {
-		b1 := bool(App(fs[0], NewString("unused"), NewNumber(n)).Eval().(boolType))
-		b2 := bool(App(fs[1], NewNumber(n)).Eval().(boolType))
+		b1 := bool(App(App(First, fs), NewString("unused"), NewNumber(n)).Eval().(boolType))
+		b2 := bool(App(App(First, App(Rest, fs)), NewNumber(n)).Eval().(boolType))
 
 		t.Logf("n = %v, even? %v, odd? %v\n", n, b1, b2)
 

@@ -28,7 +28,7 @@ func ys(fs ...*Thunk) Object {
 
 	f := NewLazyFunction(func(ps ...*Thunk) Object {
 		if len(ps) != 1 {
-			panic("f takes only a argument.")
+			panic("f takes only an argument.")
 		}
 
 		p := ps[0]
@@ -53,7 +53,7 @@ var xx = NewLazyFunction(xxImpl)
 
 func xxImpl(ts ...*Thunk) Object {
 	if len(ts) != 1 {
-		panic("xx takes only one argument.")
+		panic("xx takes only an argument.")
 	}
 
 	return App(ts[0], ts[0])

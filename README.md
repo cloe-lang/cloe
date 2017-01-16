@@ -19,6 +19,4 @@ There is no proof about how general this language is so far.
 
 ## License
 
-All files in this repository are under [The Unlicense](https://unlicense.org/)
-and in public domain.
-Binary distribution is under the BSD 2-clause license.
+[MIT](LICENSE)

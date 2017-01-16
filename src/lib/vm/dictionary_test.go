@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestDictionarySet(t *testing.T) {
+func TestDictionarySetMethod(t *testing.T) {
 	for _, th := range []*Thunk{
 		True, False, Nil, NewNumber(42), NewString("risp"),
 	} {
@@ -14,7 +14,7 @@ func TestDictionarySet(t *testing.T) {
 	}
 }
 
-func TestDictionaryGet(t *testing.T) {
+func TestDictionaryGetMethod(t *testing.T) {
 	for _, kvs := range [][][]*Thunk{
 		{{True, False}},
 		{{Nil, NewNumber(42)}},

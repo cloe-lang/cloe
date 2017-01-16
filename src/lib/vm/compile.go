@@ -20,7 +20,7 @@ func compileIR(args []*Thunk, ir interface{}) *Thunk {
 		}
 
 		return App(ts[0], ts[1:]...)
-	default:
-		panic(fmt.Sprintf("Invalid type is found in IR. {}", x))
 	}
+
+	panic(fmt.Sprintf("Invalid type is found in IR. {}", ir))
 }

@@ -89,6 +89,30 @@ func TestDictionaryToList(t *testing.T) {
 	}
 }
 
+func TestDictionaryWithDuplicateKeys(t *testing.T) {
+	ks := []*Thunk{
+		True, False, Nil, NewNumber(0), NewNumber(1), NewNumber(42),
+		NewNumber(2049), NewString("runner"), NewString("lisp"),
+	}
+
+	dups := []*Thunk{
+		ks[0], ks[1], ks[2], ks[2], ks[7], ks[3], ks[0], ks[4], ks[6], ks[1],
+		ks[1], ks[4], ks[5], ks[6], ks[0], ks[2], ks[8], ks[8],
+	}
+
+	d := EmptyDictionary
+
+	for _, k := range dups {
+		d = App(Set, d, k, k)
+	}
+
+	assert.Equal(t, len(ks), dictionarySize(d))
+
+	for _, k := range ks {
+		assert.True(t, testEqual(App(Get, d, k), k))
+	}
+}
+
 func dictionarySize(d *Thunk) int {
 	return int(d.Eval().(dictionaryType).hashMap.Size())
 }

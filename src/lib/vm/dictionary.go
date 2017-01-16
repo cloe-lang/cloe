@@ -43,9 +43,9 @@ func (d dictionaryType) Get(k Object) *Thunk {
 		"The key %v is not found in a dictionary.", k)
 }
 
-func (d1 dictionaryType) equal(e equalable) Object {
+func (d dictionaryType) equal(e equalable) Object {
 	// TODO: Use ToList and compare them as Lists
-	return rawBool(d1.hashMap.Equal(e.(dictionaryType).hashMap))
+	return rawBool(d.hashMap.Equal(e.(dictionaryType).hashMap))
 }
 
 func notSetableError(k Object) *Thunk {

@@ -26,17 +26,16 @@
 
 - Tier 1
   - Pure lambda calculus
+  - `sync` primitive
 - Tier 2
-  - Tail call elimination
-  - Recursion / mutual recursion support
-  - Time sort
   - IO
 - Tier 3
+  - Rally sort
   - DEC64
 - Tier ?
   - Persistent z(t) support
     - Save objects in files
-    - May not necessary
+    - May not necessary and covered by `sync` primitive
 
 ## Instructions
 

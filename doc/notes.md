@@ -47,3 +47,12 @@ is equivalent to:
 (def nd.rally "Objects -> List. Sort by time when they are evaluated."
   (objects...) (...))
 ```
+
+## Keeping purity of functions
+
+Every output function should return `OutputError`. And, the error is ignored by
+`sync` (`cause`?) and top-level call of `Thunk.Eval()`.
+
+```
+outputFunction : X1 -> X2 -> ... -> Xn -> Error (OutputError)
+```

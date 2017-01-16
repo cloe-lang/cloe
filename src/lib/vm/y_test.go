@@ -42,7 +42,7 @@ var lazyFactorialImpl = NewLazyFunction(func(ts ...*Thunk) Object {
 	return App(If,
 		App(Equal, ts[1], NewNumber(0)),
 		NewNumber(1),
-		App(Mult,
+		App(Mul,
 			ts[1],
 			App(ts[0], append([]*Thunk{App(Sub, ts[1], NewNumber(1))}, ts[2:]...)...)))
 })

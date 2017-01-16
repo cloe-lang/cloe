@@ -44,10 +44,10 @@ var Sub = NewStrictFunction(func(os ...Object) Object {
 	return n0
 })
 
-var Mult = NewStrictFunction(func(os ...Object) Object {
+var Mul = NewStrictFunction(func(os ...Object) Object {
 	if len(os) == 0 {
 		// for symmetry with add while it can take no argument and return 1.
-		return numArgsError("mult", ">= 1")
+		return numArgsError("mul", ">= 1")
 	}
 
 	n0 := numberType(1)

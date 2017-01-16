@@ -27,9 +27,9 @@ func TestNumberSub(t *testing.T) {
 		n1-n2)
 }
 
-func TestNumberMult(t *testing.T) {
+func TestNumberMul(t *testing.T) {
 	assert.Equal(t,
-		float64(App(Mult, NewNumber(n1), NewNumber(n2)).Eval().(numberType)),
+		float64(App(Mul, NewNumber(n1), NewNumber(n2)).Eval().(numberType)),
 		n1*n2)
 }
 

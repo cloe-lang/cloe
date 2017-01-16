@@ -8,10 +8,12 @@
 - Type system?
   - May be gradual one
 - Slab allocator for Thunks?
-- Make `errorType` somewhat strict
 
 ## vm
 
-- Add Keyable interface for String, Nil, Bool, Number
-- vm/functions.go with S, K, I, and Y and Ys (mutual recursion)
+- Make `errorType` somewhat strict
+- Split out `concat` function of `stringType` from `add` generic function.
+  - Then, `add` and `mul` for `numberType` can take no argument.
+- `listable` implementation for `stringType`
+
 - s/vm/core/g?

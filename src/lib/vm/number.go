@@ -112,6 +112,28 @@ var Mod = NewStrictFunction(func(os ...Object) Object {
 	return NewNumber(math.Mod(float64(n1), float64(n2)))
 })
 
+var Pow = NewStrictFunction(func(os ...Object) Object {
+	if len(os) != 2 {
+		return numArgsError("pow", "2")
+	}
+
+	o := os[0]
+	n1, ok := o.(numberType)
+
+	if !ok {
+		return notNumberError(o)
+	}
+
+	o = os[1]
+	n2, ok := o.(numberType)
+
+	if !ok {
+		return notNumberError(o)
+	}
+
+	return NewNumber(math.Pow(float64(n1), float64(n2)))
+})
+
 func notNumberError(o Object) *Thunk {
 	return typeError(o, "Number")
 }

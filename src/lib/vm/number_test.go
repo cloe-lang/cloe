@@ -44,3 +44,9 @@ func TestNumberMod(t *testing.T) {
 		float64(App(Mod, NewNumber(n1), NewNumber(n2)).Eval().(numberType)),
 		math.Mod(float64(n1), float64(n2)))
 }
+
+func TestNumberPow(t *testing.T) {
+	assert.Equal(t,
+		float64(App(Pow, NewNumber(n1), NewNumber(n2)).Eval().(numberType)),
+		math.Pow(float64(n1), float64(n2)))
+}

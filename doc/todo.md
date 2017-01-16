@@ -8,6 +8,7 @@
 - Type system?
   - May be gradual one
 - Slab allocator for Thunks?
+- Make `errorType` somewhat strict
 
 ## vm
 

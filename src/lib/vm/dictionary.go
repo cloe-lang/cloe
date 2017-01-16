@@ -51,3 +51,15 @@ func (d dictionaryType) equal(e equalable) Object {
 func notSetableError(k Object) *Thunk {
 	return typeError(k, "Setable")
 }
+
+func (d dictionaryType) toList() Object {
+	kv, rest, ok := d.hashMap.FirstRestKV()
+
+	if !ok {
+		return emptyList
+	}
+
+	return cons(
+		NewList(Normal(kv.Key.(Object)), kv.Val.(*Thunk)),
+		App(ToList, Normal(dictionaryType{rest})))
+}

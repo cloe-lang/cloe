@@ -65,3 +65,22 @@ var Add = NewStrictFunction(func(os ...Object) Object {
 
 	return a0
 })
+
+type listable interface {
+	toList() Object
+}
+
+var ToList = NewStrictFunction(func(os ...Object) Object {
+	if len(os) != 1 {
+		return numArgsError("toList", "1")
+	}
+
+	o := os[0]
+	l, ok := o.(listable)
+
+	if !ok {
+		return typeError(o, "Listable")
+	}
+
+	return l.toList()
+})

@@ -36,9 +36,7 @@ func (l1 listType) equal(e equalable) Object {
 	return True
 }
 
-var Prepend = NewLazyFunction(prepend)
-
-func prepend(ts ...*Thunk) Object {
+var Prepend = NewLazyFunction(func(ts ...*Thunk) Object {
 	switch len(ts) {
 	case 0:
 		return numArgsError("prepend", "> 1")
@@ -54,15 +52,13 @@ func prepend(ts ...*Thunk) Object {
 	}
 
 	return l
-}
+})
 
 func cons(t1, t2 *Thunk) listType {
 	return listType{t1, t2}
 }
 
-var First = NewStrictFunction(first)
-
-func first(os ...Object) Object {
+var First = NewStrictFunction(func(os ...Object) Object {
 	if len(os) != 1 {
 		return numArgsError("first", "1")
 	}
@@ -77,11 +73,9 @@ func first(os ...Object) Object {
 	}
 
 	return l.first
-}
+})
 
-var Rest = NewStrictFunction(rest)
-
-func rest(os ...Object) Object {
+var Rest = NewStrictFunction(func(os ...Object) Object {
 	if len(os) != 1 {
 		return numArgsError("rest", "1")
 	}
@@ -96,7 +90,7 @@ func rest(os ...Object) Object {
 	}
 
 	return l.rest
-}
+})
 
 func notListError(o Object) *Thunk {
 	return typeError(o, "List")

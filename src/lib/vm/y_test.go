@@ -32,10 +32,10 @@ func strictFactorial(n float64) float64 {
 }
 
 func lazyFactorial(ts ...*Thunk) float64 {
-	return float64(App(App(Y, NewLazyFunction(lazyFactorialImpl)), ts...).Eval().(numberType))
+	return float64(App(App(Y, lazyFactorialImpl), ts...).Eval().(numberType))
 }
 
-func lazyFactorialImpl(ts ...*Thunk) Object {
+var lazyFactorialImpl = NewLazyFunction(func(ts ...*Thunk) Object {
 	// fmt.Println(len(ts))
 
 	return App(If,
@@ -44,10 +44,10 @@ func lazyFactorialImpl(ts ...*Thunk) Object {
 		App(Mult,
 			ts[1],
 			App(ts[0], append([]*Thunk{App(Sub, ts[1], NewNumber(1))}, ts[2:]...)...)))
-}
+})
 
 func TestYsSingleF(t *testing.T) {
-	fs := App(Ys, NewLazyFunction(lazyFactorialImpl))
+	fs := App(Ys, lazyFactorialImpl)
 
 	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100} {
 		n1 := float64(App(App(First, fs), NewNumber(n)).Eval().(numberType))

@@ -12,9 +12,7 @@ type equalable interface {
 	equal(equalable) Object
 }
 
-var Equal = NewStrictFunction(equal)
-
-func equal(os ...Object) Object {
+var Equal = NewStrictFunction(func(os ...Object) Object {
 	if len(os) != 2 {
 		return numArgsError("equal", "2")
 	}
@@ -36,7 +34,7 @@ func equal(os ...Object) Object {
 	}
 
 	return es[0].equal(es[1])
-}
+})
 
 type addable interface {
 	add(addable) addable
@@ -45,9 +43,7 @@ type addable interface {
 // Add should be lazy for list concatenation and dictionary merging.
 // THE SENTENCE ABOVE IS WRONG because types of objects must be known to sum up
 // them.
-var Add = NewStrictFunction(add)
-
-func add(os ...Object) Object {
+var Add = NewStrictFunction(func(os ...Object) Object {
 	if len(os) == 0 {
 		return numArgsError("add", ">= 1")
 	}
@@ -68,4 +64,4 @@ func add(os ...Object) Object {
 	}
 
 	return a0
-}
+})

@@ -18,9 +18,7 @@ func (b boolType) equal(e equalable) Object {
 	return rawBool(b == e.(boolType))
 }
 
-var If = NewLazyFunction(ifFunc)
-
-func ifFunc(ts ...*Thunk) Object {
+var If = NewLazyFunction(func(ts ...*Thunk) Object {
 	if len(ts) != 3 {
 		return numArgsError("if", "3")
 	}
@@ -37,7 +35,7 @@ func ifFunc(ts ...*Thunk) Object {
 	}
 
 	return ts[2]
-}
+})
 
 func notBoolError(o Object) *Thunk {
 	return typeError(o, "Bool")

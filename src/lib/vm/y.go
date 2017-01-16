@@ -1,25 +1,19 @@
 package vm
 
-var Y = NewLazyFunction(y)
-
-func y(ts ...*Thunk) Object {
+var Y = NewLazyFunction(func(ts ...*Thunk) Object {
 	if len(ts) != 1 {
 		return numArgsError("y", "1")
 	}
 
 	xfxx := App(Partial, fxx, ts[0])
 	return App(xfxx, xfxx)
-}
+})
 
-var fxx = NewLazyFunction(fxxImpl)
-
-func fxxImpl(ts ...*Thunk) Object {
+var fxx = NewLazyFunction(func(ts ...*Thunk) Object {
 	return App(Partial, ts[0], App(ts[1], ts[1]))
-}
+})
 
-var Ys = NewLazyFunction(ys)
-
-func ys(fs ...*Thunk) Object {
+var Ys = NewLazyFunction(func(fs ...*Thunk) Object {
 	if len(fs) == 0 {
 		return numArgsError("ys", ">= 1")
 	}
@@ -45,14 +39,12 @@ func ys(fs ...*Thunk) Object {
 	})
 
 	return NewList(App(xx, f).Eval().([]*Thunk)...)
-}
+})
 
-var xx = NewLazyFunction(xxImpl)
-
-func xxImpl(ts ...*Thunk) Object {
+var xx = NewLazyFunction(func(ts ...*Thunk) Object {
 	if len(ts) != 1 {
 		panic("xx takes only an argument.")
 	}
 
 	return App(ts[0], ts[0])
-}
+})

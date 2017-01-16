@@ -22,38 +22,38 @@ var kvss = [][][2]*Thunk{
 	},
 }
 
-func TestDictionarySetMethod(t *testing.T) {
-	for _, th := range []*Thunk{
+func TestDictionarySet(t *testing.T) {
+	for _, k := range []*Thunk{
 		True, False, Nil, NewNumber(42), NewString("risp"),
 	} {
-		_, ok := EmptyDictionary.Eval().(dictionaryType).Set(th.Eval(), Nil).(dictionaryType)
+		_, ok := App(Set, EmptyDictionary, k, Nil).Eval().(dictionaryType)
 		assert.True(t, ok)
 	}
 }
 
-func TestDictionaryGetMethod(t *testing.T) {
+func TestDictionaryGet(t *testing.T) {
 	for _, kvs := range kvss {
-		d := EmptyDictionary.Eval().(dictionaryType)
+		d := EmptyDictionary
 
 		for i, kv := range kvs {
 			t.Logf("Setting a %vth key...\n", i)
-			d = d.Set(extractKeyAndValue(kv)).(dictionaryType)
+			d = App(Set, d, kv[0], kv[1])
 		}
 
-		assert.Equal(t, len(kvs), int(d.hashMap.Size()))
+		assert.Equal(t, len(kvs), dictionarySize(d))
 
 		for i, kv := range kvs {
 			t.Logf("Getting a %vth value...\n", i)
 
-			k, v := extractKeyAndValue(kv)
+			k, v := kv[0], kv[1]
 
-			t.Log(k)
+			t.Log(k.Eval())
 
-			if e, ok := d.Get(k).Eval().(errorType); ok {
+			if e, ok := App(Get, d, k).Eval().(errorType); ok {
 				t.Log(e.message.Eval())
 			}
 
-			assert.True(t, testEqual(d.Get(k), v))
+			assert.True(t, testEqual(App(Get, d, k), v))
 		}
 	}
 }
@@ -61,24 +61,24 @@ func TestDictionaryGetMethod(t *testing.T) {
 func TestDictionaryToList(t *testing.T) {
 	for i, kvs := range kvss {
 		t.Log("TestDictionaryToList START", i)
-		d := EmptyDictionary.Eval().(dictionaryType)
+		d := EmptyDictionary
 
 		for i, kv := range kvs {
 			t.Logf("Setting a %vth key...\n", i)
-			d = d.Set(extractKeyAndValue(kv)).(dictionaryType)
+			d = App(Set, d, kv[0], kv[1])
 		}
 
-		assert.Equal(t, len(kvs), int(d.hashMap.Size()))
+		assert.Equal(t, len(kvs), dictionarySize(d))
 
-		l := App(ToList, Normal(d))
+		l := App(ToList, d)
 
 		for i := 0; i < len(kvs); i, l = i+1, App(Rest, l) {
 			kv := App(First, l)
-			k := App(First, kv).Eval()
+			k := App(First, kv)
 			lv := App(First, App(Rest, kv))
-			dv := d.Get(k)
+			dv := App(Get, d, k)
 
-			t.Log("Key:", k)
+			t.Log("Key:", k.Eval())
 			t.Log("LIST Value:", lv.Eval())
 			t.Log("DICT Value:", dv.Eval())
 
@@ -89,6 +89,6 @@ func TestDictionaryToList(t *testing.T) {
 	}
 }
 
-func extractKeyAndValue(kv [2]*Thunk) (Object, *Thunk) {
-	return kv[0].Eval(), kv[1]
+func dictionarySize(d *Thunk) int {
+	return int(d.Eval().(dictionaryType).hashMap.Size())
 }

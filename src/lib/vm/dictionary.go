@@ -14,13 +14,28 @@ func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
 	d := dictionaryType{seq.NewHashMap()}
 
 	for i, k := range ks {
-		d.Set(k, vs[i])
+		d.set(k, vs[i])
 	}
 
 	return Normal(d)
 }
 
-func (d dictionaryType) Set(k Object, v *Thunk) Object {
+var Set = NewLazyFunction(func(ts ...*Thunk) Object {
+	if len(ts) != 3 {
+		return numArgsError("set", "3")
+	}
+
+	o := ts[0].Eval()
+	d, ok := o.(dictionaryType)
+
+	if !ok {
+		return notDictionaryError(o)
+	}
+
+	return d.set(ts[1].Eval(), ts[2])
+})
+
+func (d dictionaryType) set(k Object, v *Thunk) Object {
 	if _, ok := k.(seq.Setable); !ok {
 		return notSetableError(k)
 	}
@@ -29,7 +44,22 @@ func (d dictionaryType) Set(k Object, v *Thunk) Object {
 	return dictionaryType{h}
 }
 
-func (d dictionaryType) Get(k Object) *Thunk {
+var Get = NewLazyFunction(func(ts ...*Thunk) Object {
+	if len(ts) != 2 {
+		return numArgsError("get", "2")
+	}
+
+	o := ts[0].Eval()
+	d, ok := o.(dictionaryType)
+
+	if !ok {
+		return notDictionaryError(o)
+	}
+
+	return d.get(ts[1].Eval())
+})
+
+func (d dictionaryType) get(k Object) *Thunk {
 	if _, ok := k.(seq.Setable); !ok {
 		return notSetableError(k)
 	}
@@ -41,6 +71,10 @@ func (d dictionaryType) Get(k Object) *Thunk {
 	return internalError(
 		"KeyNotFoundError",
 		"The key %v is not found in a dictionary.", k)
+}
+
+func notDictionaryError(o Object) *Thunk {
+	return typeError(o, "Dictionary")
 }
 
 func notSetableError(k Object) *Thunk {

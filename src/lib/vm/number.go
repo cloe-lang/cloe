@@ -1,5 +1,7 @@
 package vm
 
+import "github.com/mediocregopher/seq"
+
 type numberType float64
 
 func NewNumber(n float64) *Thunk {
@@ -93,4 +95,22 @@ func div(os ...Object) Object {
 
 func notNumberError(o Object) *Thunk {
 	return typeError(o, "Number")
+}
+
+// seq.Setable
+
+func (n numberType) Hash(i uint32) uint32 {
+	// TODO: Cast float64 as int64 first by interpreting 64bits and fold it in
+	// half.
+	return (i + uint32(n)) % seq.ARITY
+}
+
+func (n1 numberType) Equal(o interface{}) bool {
+	n2, ok := o.(numberType)
+
+	if !ok {
+		return false
+	}
+
+	return n1 == n2
 }

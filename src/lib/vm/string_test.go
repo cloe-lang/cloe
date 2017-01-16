@@ -1,24 +1,20 @@
 package vm
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestStringEqual(t *testing.T) {
-	n := NewString("foo")
+	s := NewString("foo")
 
-	if !testEqual(n, n) {
-		t.Fail()
-	}
-
-	if testEqual(n, NewString("bar")) {
-		t.Fail()
-	}
+	assert.True(t, testEqual(s, s))
+	assert.True(t, !testEqual(s, NewString("bar")))
 }
 
 func TestStringAdd(t *testing.T) {
 	s := "foo"
-	st := NewString(s)
+	th := NewString(s)
 
-	if string(App(Add, st, st).Eval().(stringType)) != s+s {
-		t.Fail()
-	}
+	assert.Equal(t, string(App(Add, th, th).Eval().(stringType)), s+s)
 }

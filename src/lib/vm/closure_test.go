@@ -1,6 +1,9 @@
 package vm
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestPartial(t *testing.T) {
 	ifFunc := func(ts ...*Thunk) bool {
@@ -8,7 +11,6 @@ func TestPartial(t *testing.T) {
 		return bool(b.Eval().(boolType))
 	}
 
-	if !ifFunc(True) {
-		t.Fail()
-	}
+	assert.True(t, ifFunc(True))
+	assert.True(t, !ifFunc(False))
 }

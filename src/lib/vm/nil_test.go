@@ -1,13 +1,11 @@
 package vm
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestNilEqual(t *testing.T) {
-	if !testEqual(Nil, Nil) {
-		t.Fail()
-	}
-
-	if testEqual(Nil, True) {
-		t.Fail()
-	}
+	assert.True(t, testEqual(Nil, Nil))
+	assert.True(t, !testEqual(Nil, True))
 }

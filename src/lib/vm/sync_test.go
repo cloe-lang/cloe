@@ -2,15 +2,13 @@ package vm
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestSync(t *testing.T) {
 	_, ok := App(Sync, App(print, NewNumber(42)), App(print, NewString("OK!"))).Eval().(nilType)
-
-	if !ok {
-		t.Fail()
-	}
+	assert.True(t, ok)
 }
 
 var print = NewStrictFunction(func(os ...Object) Object {

@@ -1,6 +1,9 @@
 package vm
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestY(t *testing.T) {
 	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100} {
@@ -9,9 +12,7 @@ func TestY(t *testing.T) {
 
 		t.Logf("%d: %f == %f?\n", int(n), n1, n2)
 
-		if n1 != n2 {
-			t.Fail()
-		}
+		assert.Equal(t, n1, n2)
 	}
 
 	for _, ts := range [][]*Thunk{
@@ -55,9 +56,7 @@ func TestYsSingleF(t *testing.T) {
 
 		t.Logf("%d: %f == %f?\n", int(n), n1, n2)
 
-		if n1 != n2 {
-			t.Fail()
-		}
+		assert.Equal(t, n1, n2)
 	}
 }
 
@@ -88,12 +87,8 @@ func TestYsMultipleFs(t *testing.T) {
 
 		t.Logf("n = %v, even? %v, odd? %v\n", n, b1, b2)
 
-		if b1 != (int(n)%2 == 0) {
-			t.Fail()
-		}
-
-		if b2 != (int(n)%2 != 0) {
-			t.Fail()
-		}
+		rem := int(n) % 2
+		assert.Equal(t, b1, rem == 0)
+		assert.Equal(t, b2, rem != 0)
 	}
 }

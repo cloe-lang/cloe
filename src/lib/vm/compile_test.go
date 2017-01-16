@@ -1,6 +1,9 @@
 package vm
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestCompile(t *testing.T) {
 	var n1, n2, n3 float64 = 123, 456, 789
@@ -12,7 +15,5 @@ func TestCompile(t *testing.T) {
 
 	t.Logf("%f == %f?", x1, x2)
 
-	if x1 != x2 {
-		t.Fail()
-	}
+	assert.Equal(t, x1, x2)
 }

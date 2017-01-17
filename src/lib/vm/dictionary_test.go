@@ -50,7 +50,7 @@ func TestDictionaryGet(t *testing.T) {
 			t.Log(k.Eval())
 
 			if e, ok := App(Get, d, k).Eval().(errorType); ok {
-				t.Log(e.message.Eval())
+				t.Log(e.message)
 			}
 
 			assert.True(t, testEqual(App(Get, d, k), v))

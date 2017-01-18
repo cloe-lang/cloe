@@ -1,5 +1,7 @@
 # To do
 
+- Error handling
+
 - `ir <filename>` bin
 - `def` desugarer
 - multiple desugarers
@@ -10,9 +12,5 @@
 - Slab allocator for Thunks?
 
 ## vm
-
-- Split out `concat` function of `stringType` from `add` generic function.
-  - Then, `add` and `mul` for `numberType` can take no argument.
-- `listable` implementation for `stringType`
 
 - s/vm/core/g?

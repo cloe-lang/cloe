@@ -2,7 +2,7 @@
 
 ## Mapping of arguments to names
 
-Can be just sugar because every variadic function has certain number of
+Can be just sugar because every variadic function has a certain number of
 arguments.
 
 ```

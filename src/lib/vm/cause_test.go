@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-func TestSync(t *testing.T) {
-	_, ok := App(Sync, App(print, NewNumber(42)), App(print, NewString("OK!"))).Eval().(nilType)
+func TestCause(t *testing.T) {
+	_, ok := App(Cause, App(print, NewNumber(42)), App(print, NewString("OK!"))).Eval().(nilType)
 	assert.True(t, ok)
 }
 

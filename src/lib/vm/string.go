@@ -19,6 +19,18 @@ func (s stringType) add(a addable) addable {
 	return s + a.(stringType)
 }
 
+func (s stringType) toList() Object {
+	if s == "" {
+		return emptyList
+	}
+
+	rs := []rune(string(s))
+
+	return cons(
+		NewString(string(rs[0])),
+		App(ToList, NewString(string(rs[1:]))))
+}
+
 // seq.Setable
 
 func (s stringType) Hash(i uint32) uint32 {

@@ -15,9 +15,21 @@ func (n numberType) equal(e equalable) Object {
 	return rawBool(n == e.(numberType))
 }
 
-func (n numberType) add(a addable) addable {
-	return n + a.(numberType)
-}
+var Add = NewStrictFunction(func(os ...Object) Object {
+	sum := numberType(0)
+
+	for _, o := range os {
+		n, ok := o.(numberType)
+
+		if !ok {
+			return notNumberError(o)
+		}
+
+		sum += n
+	}
+
+	return sum
+})
 
 var Sub = NewStrictFunction(func(os ...Object) Object {
 	if len(os) == 0 {
@@ -45,12 +57,7 @@ var Sub = NewStrictFunction(func(os ...Object) Object {
 })
 
 var Mul = NewStrictFunction(func(os ...Object) Object {
-	if len(os) == 0 {
-		// for symmetry with add while it can take no argument and return 1.
-		return numArgsError("mul", ">= 1")
-	}
-
-	n0 := numberType(1)
+	prod := numberType(1)
 
 	for _, o := range os {
 		n, ok := o.(numberType)
@@ -59,10 +66,10 @@ var Mul = NewStrictFunction(func(os ...Object) Object {
 			return notNumberError(o)
 		}
 
-		n0 *= n
+		prod *= n
 	}
 
-	return n0
+	return prod
 })
 
 var Div = NewStrictFunction(func(os ...Object) Object {

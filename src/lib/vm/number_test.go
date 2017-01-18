@@ -16,6 +16,7 @@ func TestNumberEqual(t *testing.T) {
 }
 
 func TestNumberAdd(t *testing.T) {
+	assert.Equal(t, float64(App(Add).Eval().(numberType)), float64(0))
 	assert.Equal(t,
 		float64(App(Add, NewNumber(n1), NewNumber(n2)).Eval().(numberType)),
 		n1+n2)
@@ -28,6 +29,7 @@ func TestNumberSub(t *testing.T) {
 }
 
 func TestNumberMul(t *testing.T) {
+	assert.Equal(t, float64(App(Mul).Eval().(numberType)), float64(1))
 	assert.Equal(t,
 		float64(App(Mul, NewNumber(n1), NewNumber(n2)).Eval().(numberType)),
 		n1*n2)

@@ -36,36 +36,6 @@ var Equal = NewStrictFunction(func(os ...Object) Object {
 	return es[0].equal(es[1])
 })
 
-type addable interface {
-	add(addable) addable
-}
-
-// Add should be lazy for list concatenation and dictionary merging.
-// THE SENTENCE ABOVE IS WRONG because types of objects must be known to sum up
-// them.
-var Add = NewStrictFunction(func(os ...Object) Object {
-	if len(os) == 0 {
-		return numArgsError("add", ">= 1")
-	}
-
-	o := os[0]
-	a0, ok := o.(addable)
-
-	if !ok {
-		return typeError(o, "addable")
-	}
-
-	for _, o := range os[1:] {
-		if typ := reflect.TypeOf(a0); typ != reflect.TypeOf(o) {
-			return typeError(o, typ.Name())
-		}
-
-		a0 = a0.add(o.(addable))
-	}
-
-	return a0
-})
-
 type listable interface {
 	toList() Object
 }

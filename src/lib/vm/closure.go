@@ -16,9 +16,7 @@ func (c closureType) call(ts ...*Thunk) Object {
 	return f.call(append(c.freeVariables, ts...)...)
 }
 
-var Partial = NewLazyFunction(partial)
-
-func partial(ts ...*Thunk) Object {
+var Partial = NewLazyFunction(func(ts ...*Thunk) Object {
 	switch len(ts) {
 	case 0:
 		return numArgsError("partial", ">= 1")
@@ -27,4 +25,4 @@ func partial(ts ...*Thunk) Object {
 	}
 
 	return closureType{ts[0], ts[1:]}
-}
+})

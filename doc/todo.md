@@ -11,7 +11,6 @@
 
 ## vm
 
-- Make `errorType` somewhat strict
 - Split out `concat` function of `stringType` from `add` generic function.
   - Then, `add` and `mul` for `numberType` can take no argument.
 - `listable` implementation for `stringType`

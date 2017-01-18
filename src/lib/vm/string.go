@@ -3,6 +3,7 @@ package vm
 import (
 	"github.com/mediocregopher/seq"
 	"hash/crc32"
+	"strings"
 )
 
 type stringType string
@@ -15,9 +16,21 @@ func (s stringType) equal(e equalable) Object {
 	return rawBool(s == e)
 }
 
-func (s stringType) add(a addable) addable {
-	return s + a.(stringType)
-}
+var Concat = NewStrictFunction(func(os ...Object) Object {
+	ss := make([]string, len(os))
+
+	for i, o := range os {
+		s, ok := o.(stringType)
+
+		if !ok {
+			return typeError(o, "String")
+		}
+
+		ss[i] = string(s)
+	}
+
+	return stringType(strings.Join(ss[:], ""))
+})
 
 func (s stringType) toList() Object {
 	if s == "" {

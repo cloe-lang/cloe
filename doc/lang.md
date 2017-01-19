@@ -1,22 +1,43 @@
-## Language
+# Language
 
-- Everything is an object
-  - Every value is wrapped with a dictionary.
+- Object == Dictionary
+  - Like Clojure and JavaScript
 - Support only Ad-hoc polymorphism
   - No subtyping
-  - No generics (dynamic typing covers it.)
-  - Interface support
+  - No generics (Dynamic typing covers it.)
 - Follow the zen of Python
 - 4 special forms
-  - `let`: Constant definition
-  - `def`: Recursive or non-recursive function definition
-  - `rec`: Mutually recursive function definition
-  - `out`: Output definition
+  - `\`: Lambda expression
+  - `def`: Non-recursive function or constant definition
+  - `defr`: (Mutually) recursive function definition
+  - `macro`: Macro definition
 
 
-## OCaml-style mutual recursion
+## Examples
 
 ```
-(rec ((even n) (if (= n 0) true  (odd  (- n 1))))
-     ((odd  n) (if (= n 0) false (even (- n 1)))))
+(\ (x) (+ x 1))
+```
+
+```
+(def answer 42)
+```
+
+```
+(def (inc x) (+ x 1))
+```
+
+```
+(defr (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))
+```
+
+```
+; OCaml style mutual recursion
+(defr
+  (even n) (if (= n 0) true  (odd  (- n 1)))
+  (odd  n) (if (= n 0) false (even (- n 1))))
+```
+
+```
+(macro (call func ..args) (func ..args))
 ```

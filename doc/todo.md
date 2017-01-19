@@ -1,5 +1,7 @@
 # To do
 
+- Parser
+- Compiler
 - Error handling
 
 - `ir <filename>` bin

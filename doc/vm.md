@@ -15,18 +15,17 @@
 - Dictionary
   - Persistent data structure
 - Nil
-  - is Evil
+  - The evil
 - Function
-  - [Thunk] -> Thunk
 - Closure
   - May remove Function
 - Set?
+- Array?
 
 ## Roadmap
 
 - Tier 1
   - Pure lambda calculus
-  - `sync` primitive
 - Tier 2
   - IO
 - Tier 3
@@ -36,14 +35,3 @@
   - Persistent z(t) support
     - Save objects in files
     - May not necessary and covered by `sync` primitive
-
-## Instructions
-
-- + :
-  - Number -> [Number] -> Number
-  - String -> [String] -> Number
-- - : Number -> [Number] -> Number
-- * : Number -> [Number] -> Number
-- / : Number -> [Number] -> Number
-- // : Number -> [Number] -> Number (floor division)
-- ^ : Number -> [Number] -> Number

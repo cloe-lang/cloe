@@ -122,7 +122,7 @@ func TestBlank(t *testing.T) {
 }
 
 func TestQuote(t *testing.T) {
-	for _, str := range []string{"'foo", "'( foo ; lajdfs\n   bar )"} {
+	for _, str := range []string{"`foo", "`( foo ; lajdfs\n   bar )"} {
 		s := newState(str)
 		result, err := s.Exhaust(s.elem())()
 

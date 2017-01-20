@@ -1,12 +1,14 @@
 package parse
 
-import (
-	"./comb"
-)
+import "./comb"
 
 const (
-	spaceChars  = " \t\n\r"
-	quoteString = "quote"
+	bracketChars = "()[]{}"
+	invalidChars = "\x00"
+	quoteChar    = '`'
+	quoteString  = "quote"
+	spaceChars   = " \t\n\r"
+	specialChar  = '$'
 )
 
 func Parse(source string) []interface{} {
@@ -42,7 +44,8 @@ func (s *state) atom() comb.Parser {
 }
 
 func (s *state) identifier() comb.Parser {
-	return s.stringify(s.Many1(s.NotInString("()[]{}$'\x00" + spaceChars)))
+	return s.stringify(s.Many1(s.NotInString(
+		bracketChars + invalidChars + string(quoteChar) + spaceChars + string(specialChar))))
 }
 
 func (s *state) stringLiteral() comb.Parser {
@@ -101,7 +104,7 @@ func (s *state) space() comb.Parser {
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {
-	return s.And(s.Replace(quoteString, s.Char('\'')), p)
+	return s.And(s.Replace(quoteString, s.Char(quoteChar)), p)
 }
 
 func (s *state) quotes(ps ...comb.Parser) []comb.Parser {

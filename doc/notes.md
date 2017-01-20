@@ -56,3 +56,10 @@ Every output function should return `OutputError`. And, the error is ignored by
 ```
 outputFunction : X1 -> X2 -> ... -> Xn -> Error (OutputError)
 ```
+
+## `rally` vs `outs`
+
+```
+rally : [a] -> [a]
+outs : [Output] -> Output
+```

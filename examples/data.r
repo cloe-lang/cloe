@@ -9,3 +9,6 @@
 
 ; Array?
 (def l '[1 2 3])
+
+; Closure
+(def l '(+ #1 #2))

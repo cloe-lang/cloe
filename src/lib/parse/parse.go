@@ -4,6 +4,7 @@ import "./comb"
 
 const (
 	bracketChars = "()[]{}"
+	commentChar  = ';'
 	invalidChars = "\x00"
 	quoteChar    = '`'
 	quoteString  = "quote"
@@ -45,7 +46,8 @@ func (s *state) atom() comb.Parser {
 
 func (s *state) identifier() comb.Parser {
 	return s.stringify(s.Many1(s.NotInString(
-		bracketChars + invalidChars + string(quoteChar) + spaceChars + string(specialChar))))
+		bracketChars + string(commentChar) + invalidChars + string(quoteChar) +
+			spaceChars + string(specialChar))))
 }
 
 func (s *state) stringLiteral() comb.Parser {
@@ -79,7 +81,9 @@ func (s *state) sequence(l, r rune) comb.Parser {
 }
 
 func (s *state) comment() comb.Parser {
-	return s.Void(s.And(s.Char(';'), s.Many(s.NotChar('\n')), s.Char('\n')))
+	return s.Void(s.And(
+		s.Char(commentChar),
+		s.Many(s.NotChar('\n')), s.Char('\n')))
 }
 
 func (s *state) wrapChars(l rune, p comb.Parser, r rune) comb.Parser {

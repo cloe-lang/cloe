@@ -1,6 +1,9 @@
 package parse
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestModule1(t *testing.T) {
 	for _, str := range []string{"", "()", "(foo bar)"} {
@@ -102,6 +105,14 @@ func TestElem(t *testing.T) {
 			t.Error(err.Error())
 		}
 	}
+}
+
+func TestIdentifier(t *testing.T) {
+	result, err := newState(";ident").identifier()()
+
+	assert.Equal(t, result, nil)
+
+	t.Log(err)
 }
 
 func TestBlank(t *testing.T) {

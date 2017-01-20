@@ -5,15 +5,14 @@ import (
 	"testing"
 )
 
-func TestModule1(t *testing.T) {
+func TestModule(t *testing.T) {
 	for _, str := range []string{"", "()", "(foo bar)"} {
 		result, err := newState(str).module()()
 
-		if err == nil {
-			t.Log(result)
-		} else {
-			t.Error(err.Error())
-		}
+		t.Log(result)
+
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
 	}
 }
 
@@ -21,11 +20,10 @@ func TestXFailModule(t *testing.T) {
 	for _, str := range []string{"(", "(()"} {
 		result, err := newState(str).module()()
 
-		if err == nil {
-			t.Error(result)
-		} else {
-			t.Log(err.Error())
-		}
+		t.Log(err.Error())
+
+		assert.Equal(t, result, nil)
+		assert.NotEqual(t, err, nil)
 	}
 }
 
@@ -33,11 +31,10 @@ func TestAtom(t *testing.T) {
 	s := newState("ident")
 	result, err := s.Exhaust(s.atom())()
 
-	if err != nil {
-		t.Error(err.Error())
-	} else {
-		t.Logf("%#v", result)
-	}
+	t.Logf("%#v", result)
+
+	assert.NotEqual(t, result, nil)
+	assert.Equal(t, err, nil)
 }
 
 func TestStringLiteral(t *testing.T) {
@@ -45,11 +42,10 @@ func TestStringLiteral(t *testing.T) {
 		s := newState(str)
 		result, err := s.Exhaust(s.stringLiteral())()
 
-		if err != nil {
-			t.Error(err.Error())
-		} else {
-			t.Logf("%#v", result)
-		}
+		t.Logf("%#v", result)
+
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
 	}
 }
 
@@ -57,33 +53,30 @@ func TestStrip(t *testing.T) {
 	s := newState("  ident  ")
 	result, err := s.Exhaust(s.strip(s.atom()))()
 
-	if err != nil {
-		t.Error(err.Error())
-	} else {
-		t.Logf("%#v", result)
-	}
+	t.Logf("%#v", result)
+
+	assert.NotEqual(t, result, nil)
+	assert.Equal(t, err, nil)
 }
 
 func TestWrapChars(t *testing.T) {
 	s := newState("( \tident \n)  ; laskdfjsl \t  dkjf\n ")
 	result, err := s.Exhaust(s.wrapChars('(', s.atom(), ')'))()
 
-	if err != nil {
-		t.Error(err.Error())
-	} else {
-		t.Logf("%#v", result)
-	}
+	t.Logf("%#v", result)
+
+	assert.NotEqual(t, result, nil)
+	assert.Equal(t, err, nil)
 }
 
 func TestList(t *testing.T) {
 	s := newState("()")
 	result, err := s.Exhaust(s.list())()
 
-	if err != nil {
-		t.Error(err.Error())
-	} else {
-		t.Logf("%#v", result)
-	}
+	t.Logf("%#v", result)
+
+	assert.NotEqual(t, result, nil)
+	assert.Equal(t, err, nil)
 }
 
 func TestElem(t *testing.T) {
@@ -99,20 +92,20 @@ func TestElem(t *testing.T) {
 		s := newState(str)
 		result, err := s.Exhaust(s.elem())()
 
-		if err == nil {
-			t.Logf("%#v", result)
-		} else {
-			t.Error(err.Error())
-		}
+		t.Logf("%#v", result)
+
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
 	}
 }
 
 func TestIdentifier(t *testing.T) {
 	result, err := newState(";ident").identifier()()
 
-	assert.Equal(t, result, nil)
-
 	t.Log(err)
+
+	assert.Equal(t, result, nil)
+	assert.NotEqual(t, err, nil)
 }
 
 func TestBlank(t *testing.T) {
@@ -122,13 +115,8 @@ func TestBlank(t *testing.T) {
 
 		t.Log(result, err)
 
-		if result != nil {
-			t.Errorf("`result` should be nil. (%#v)", result)
-		}
-
-		if err != nil {
-			t.Errorf("`err` should be nil. (%#v)", result)
-		}
+		assert.Equal(t, result, nil)
+		assert.Equal(t, err, nil)
 	}
 }
 
@@ -137,10 +125,9 @@ func TestQuote(t *testing.T) {
 		s := newState(str)
 		result, err := s.Exhaust(s.elem())()
 
-		if err != nil {
-			t.Error(err.Error())
-		} else {
-			t.Logf("%#v", result)
-		}
+		t.Logf("%#v", result)
+
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
 	}
 }

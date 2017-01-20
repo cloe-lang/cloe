@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	spaceChars  = " ,\t\n\r"
+	spaceChars  = " \t\n\r"
 	quoteString = "quote"
 )
 

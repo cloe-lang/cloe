@@ -1,17 +1,19 @@
 package comb
 
-import "testing"
+import (
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
 
 func TestMany(t *testing.T) {
 	for _, str := range []string{"", "  "} {
 		s := NewState(str)
 		result, err := s.Many(s.Char(' '))()
 
-		if err != nil {
-			t.Error(err.Error())
-		}
-
 		t.Logf("%#v", result)
+
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
 	}
 }
 
@@ -23,32 +25,29 @@ func testMany1Space(str string) (interface{}, error) {
 func TestMany1(t *testing.T) {
 	result, err := testMany1Space(" ")
 
-	if err != nil {
-		t.Error(err.Error())
-	}
-
 	t.Logf("%#v", result)
+
+	assert.NotEqual(t, result, nil)
+	assert.Equal(t, err, nil)
 }
 
 func TestMany1Fail(t *testing.T) {
 	result, err := testMany1Space("")
 
-	if result != nil {
-		t.Errorf("`result` should be nil but %#v.", result)
-	}
+	t.Log(err)
 
-	t.Log(err.Error())
+	assert.Equal(t, result, nil)
+	assert.NotEqual(t, err, nil)
 }
 
 func TestMany1Nest(t *testing.T) {
 	s := NewState("    ")
 	result, err := s.Many1(s.Many1(s.Char(' ')))()
 
-	if err != nil {
-		t.Error(err.Error())
-	}
-
 	t.Logf("%#v", result)
+
+	assert.NotEqual(t, result, nil)
+	assert.Equal(t, err, nil)
 }
 
 func testOr(str string) (interface{}, error) {
@@ -60,20 +59,18 @@ func TestOr(t *testing.T) {
 	for _, str := range []string{"a", "b"} {
 		result, err := testOr(str)
 
-		if err != nil {
-			t.Error(err.Error())
-		}
+		t.Logf("%#v", result)
 
-		t.Logf("'%c'", result)
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
 	}
 }
 
 func TestOrFail(t *testing.T) {
 	result, err := testOr("c")
 
-	if result != nil {
-		t.Errorf("`result` should be nil but %#v.", result)
-	}
+	t.Log(err)
 
-	t.Logf(err.Error())
+	assert.Equal(t, result, nil)
+	assert.NotEqual(t, err, nil)
 }

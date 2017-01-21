@@ -100,11 +100,7 @@ func (s *state) strip(p comb.Parser) comb.Parser {
 }
 
 func (s *state) blank() comb.Parser {
-	return s.Void(s.Many(s.Or(s.space(), s.comment())))
-}
-
-func (s *state) space() comb.Parser {
-	return s.Void(s.Many1(s.InString(spaceChars)))
+	return s.Void(s.Many(s.Or(s.InString(spaceChars), s.comment())))
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {

@@ -23,18 +23,18 @@ func Parse(source string) []interface{} {
 }
 
 func (s *state) module() comb.Parser {
-	return s.Exhaust(s.elems())
+	return s.Exhaust(s.expressions())
 }
 
-func (s *state) elems() comb.Parser {
+func (s *state) expressions() comb.Parser {
 	return s.Lazy(s.strictElems)
 }
 
 func (s *state) strictElems() comb.Parser {
-	return s.Many(s.elem())
+	return s.Many(s.expression())
 }
 
-func (s *state) elem() comb.Parser {
+func (s *state) expression() comb.Parser {
 	ps := []comb.Parser{s.atom(), s.list(), s.array(), s.dict()}
 
 	return s.strip(s.Or(append(ps, s.quotes(ps...)...)...))
@@ -77,7 +77,7 @@ func (s *state) dict() comb.Parser {
 }
 
 func (s *state) sequence(l, r rune) comb.Parser {
-	return s.wrapChars(l, s.elems(), r)
+	return s.wrapChars(l, s.expressions(), r)
 }
 
 func (s *state) comment() comb.Parser {

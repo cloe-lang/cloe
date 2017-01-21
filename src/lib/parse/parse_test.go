@@ -79,7 +79,7 @@ func TestList(t *testing.T) {
 	assert.Equal(t, err, nil)
 }
 
-func TestElem(t *testing.T) {
+func TestExpression(t *testing.T) {
 	strs := []string{
 		"ident",
 		"  ident  ",
@@ -90,7 +90,7 @@ func TestElem(t *testing.T) {
 		t.Logf("source: %#v", str)
 
 		s := newState(str)
-		result, err := s.Exhaust(s.elem())()
+		result, err := s.Exhaust(s.expression())()
 
 		t.Logf("%#v", result)
 
@@ -123,7 +123,7 @@ func TestBlank(t *testing.T) {
 func TestQuote(t *testing.T) {
 	for _, str := range []string{"`foo", "`( foo ; lajdfs\n   bar )"} {
 		s := newState(str)
-		result, err := s.Exhaust(s.elem())()
+		result, err := s.Exhaust(s.expression())()
 
 		t.Logf("%#v", result)
 

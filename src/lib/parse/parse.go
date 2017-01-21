@@ -87,11 +87,7 @@ func (s *state) comment() comb.Parser {
 }
 
 func (s *state) wrapChars(l rune, p comb.Parser, r rune) comb.Parser {
-	return s.Wrap(s.strippedChar(l), p, s.strippedChar(r))
-}
-
-func (s *state) strippedChar(r rune) comb.Parser {
-	return s.strip(s.Char(r))
+	return s.Wrap(s.strip(s.Char(l)), p, s.strip(s.Char(r)))
 }
 
 func (s *state) strip(p comb.Parser) comb.Parser {

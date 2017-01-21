@@ -27,10 +27,10 @@ func (s *state) module() comb.Parser {
 }
 
 func (s *state) expressions() comb.Parser {
-	return s.Lazy(s.strictElems)
+	return s.Lazy(s.strictExpressions)
 }
 
-func (s *state) strictElems() comb.Parser {
+func (s *state) strictExpressions() comb.Parser {
 	return s.Many(s.expression())
 }
 

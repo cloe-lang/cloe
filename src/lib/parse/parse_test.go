@@ -59,16 +59,6 @@ func TestStrip(t *testing.T) {
 	assert.Equal(t, err, nil)
 }
 
-func TestWrapChars(t *testing.T) {
-	s := newState("( \tident \n)  ; laskdfjsl \t  dkjf\n ")
-	result, err := s.Exhaust(s.wrapChars('(', s.strip(s.atom()), ')'))()
-
-	t.Logf("%#v", result)
-
-	assert.NotEqual(t, result, nil)
-	assert.Equal(t, err, nil)
-}
-
 func TestList(t *testing.T) {
 	s := newState("()")
 	result, err := s.Exhaust(s.list())()

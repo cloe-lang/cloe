@@ -81,17 +81,13 @@ func (s *state) dict() comb.Parser {
 }
 
 func (s *state) sequence(l, r rune) comb.Parser {
-	return s.wrapChars(l, s.expressions(), r)
+	return s.Wrap(s.strip(s.Char(l)), s.expressions(), s.strip(s.Char(r)))
 }
 
 func (s *state) comment() comb.Parser {
 	return s.Void(s.And(
 		s.Char(commentChar),
 		s.Many(s.NotChar('\n')), s.Char('\n')))
-}
-
-func (s *state) wrapChars(l rune, p comb.Parser, r rune) comb.Parser {
-	return s.Wrap(s.strip(s.Char(l)), p, s.strip(s.Char(r)))
 }
 
 func (s *state) strip(p comb.Parser) comb.Parser {

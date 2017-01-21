@@ -101,6 +101,26 @@ func TestQuotedExpression(t *testing.T) {
 	}
 }
 
+func TestSetLiteral(t *testing.T) {
+	s := newState("'{1 2 3}")
+	result, err := s.Exhaust(s.expression())()
+
+	t.Logf("%#v", result)
+
+	assert.NotEqual(t, result, nil)
+	assert.Equal(t, err, nil)
+}
+
+func TestClosureLiteral(t *testing.T) {
+	s := newState("'(+ #1 #2 3)")
+	result, err := s.Exhaust(s.expression())()
+
+	t.Logf("%#v", result)
+
+	assert.NotEqual(t, result, nil)
+	assert.Equal(t, err, nil)
+}
+
 func TestIdentifier(t *testing.T) {
 	result, err := newState(";ident").identifier()()
 

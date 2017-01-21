@@ -8,7 +8,7 @@
 (let l [1 2 3])
 
 ; Array?
-(let l '[1 2 3])
+;(let l '[1 2 3])
 
 ; Closure
 (let l '(+ #1 #2))

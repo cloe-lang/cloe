@@ -4,6 +4,8 @@
 - Compiler
 - Error handling
 
+- Make some data structures (e.g. List and Dictionary) callable
+
 - `ir <filename>` bin
 
 - Pattern match

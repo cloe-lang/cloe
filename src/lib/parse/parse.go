@@ -23,7 +23,7 @@ func Parse(source string) []interface{} {
 }
 
 func (s *state) module() comb.Parser {
-	return s.Exhaust(s.And(s.blank(), s.expressions()))
+	return s.Exhaust(s.Wrap(s.blank(), s.expressions(), s.None()))
 }
 
 func (s *state) expressions() comb.Parser {

@@ -78,23 +78,29 @@ func (s *state) list() comb.Parser {
 }
 
 func (s *state) listLiteral() comb.Parser {
-	return s.sequence("[", "]")
+	return s.prepend("list", s.sequence("[", "]"))
 }
 
 func (s *state) dictLiteral() comb.Parser {
-	return s.sequence("{", "}")
+	return s.prepend("dict", s.sequence("{", "}"))
 }
 
 func (s *state) setLiteral() comb.Parser {
-	return s.sequence("'{", "}")
+	return s.prepend("set", s.sequence("'{", "}"))
 }
 
 func (s *state) closureLiteral() comb.Parser {
-	return s.sequence("'(", ")")
+	return s.prepend("lambda", s.sequence("'(", ")"))
 }
 
 func (s *state) sequence(l, r string) comb.Parser {
 	return s.Wrap(s.strip(s.String(l)), s.expressions(), s.strip(s.String(r)))
+}
+
+func (s *state) prepend(x interface{}, p comb.Parser) comb.Parser {
+	return s.App(func(any interface{}) interface{} {
+		return append([]interface{}{x}, any.([]interface{})...)
+	}, p)
 }
 
 func (s *state) strip(p comb.Parser) comb.Parser {

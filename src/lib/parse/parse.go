@@ -71,19 +71,19 @@ func (s *state) stringLiteral() comb.Parser {
 }
 
 func (s *state) list() comb.Parser {
-	return s.sequence('(', ')')
+	return s.sequence("(", ")")
 }
 
 func (s *state) listLiteral() comb.Parser {
-	return s.sequence('[', ']')
+	return s.sequence("[", "]")
 }
 
 func (s *state) dictLiteral() comb.Parser {
-	return s.sequence('{', '}')
+	return s.sequence("{", "}")
 }
 
-func (s *state) sequence(l, r rune) comb.Parser {
-	return s.Wrap(s.strip(s.Char(l)), s.expressions(), s.strip(s.Char(r)))
+func (s *state) sequence(l, r string) comb.Parser {
+	return s.Wrap(s.strip(s.String(l)), s.expressions(), s.strip(s.String(r)))
 }
 
 func (s *state) strip(p comb.Parser) comb.Parser {

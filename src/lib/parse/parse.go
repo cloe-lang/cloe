@@ -7,7 +7,7 @@ const (
 	invalidChars = "\x00"
 	quoteString  = "quote"
 	spaceChars   = " \t\n\r"
-	specialChars = "()[]{}'`$"
+	specialChars = "()[]{}\"'`$"
 )
 
 func Parse(source string) []interface{} {
@@ -40,20 +40,17 @@ func (s *state) expression() comb.Parser {
 
 func (s *state) firstOrderExpression() comb.Parser {
 	return s.Or(
-		s.atom(),
-		s.list(),
-		s.listLiteral(),
-		s.dictLiteral(),
-		s.setLiteral(),
-		s.closureLiteral())
+		s.identifier(),
+		s.stringLiteral(),
+		s.sequence("(", ")"),
+		s.prepend("list", s.sequence("[", "]")),
+		s.prepend("dict", s.sequence("{", "}")),
+		s.prepend("set", s.sequence("'{", "}")),
+		s.prepend("lambda", s.sequence("'(", ")")))
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {
 	return s.And(s.Replace(quoteString, s.Char('`')), p)
-}
-
-func (s *state) atom() comb.Parser {
-	return s.Or(s.stringLiteral(), s.identifier())
 }
 
 func (s *state) identifier() comb.Parser {
@@ -71,26 +68,6 @@ func (s *state) stringLiteral() comb.Parser {
 		c,
 		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
 		s.strip(c))))
-}
-
-func (s *state) list() comb.Parser {
-	return s.sequence("(", ")")
-}
-
-func (s *state) listLiteral() comb.Parser {
-	return s.prepend("list", s.sequence("[", "]"))
-}
-
-func (s *state) dictLiteral() comb.Parser {
-	return s.prepend("dict", s.sequence("{", "}"))
-}
-
-func (s *state) setLiteral() comb.Parser {
-	return s.prepend("set", s.sequence("'{", "}"))
-}
-
-func (s *state) closureLiteral() comb.Parser {
-	return s.prepend("lambda", s.sequence("'(", ")"))
 }
 
 func (s *state) sequence(l, r string) comb.Parser {

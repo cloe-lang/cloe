@@ -27,16 +27,6 @@ func TestXFailModule(t *testing.T) {
 	}
 }
 
-func TestAtom(t *testing.T) {
-	s := newState("ident")
-	result, err := s.Exhaust(s.atom())()
-
-	t.Logf("%#v", result)
-
-	assert.NotEqual(t, result, nil)
-	assert.Equal(t, err, nil)
-}
-
 func TestStringLiteral(t *testing.T) {
 	for _, str := range []string{`""`, `"sl"`, "\"   string literal  \n \""} {
 		s := newState(str)
@@ -51,7 +41,7 @@ func TestStringLiteral(t *testing.T) {
 
 func TestStrip(t *testing.T) {
 	s := newState("ident  \t ")
-	result, err := s.Exhaust(s.strip(s.atom()))()
+	result, err := s.Exhaust(s.strip(s.identifier()))()
 
 	t.Logf("%#v", result)
 
@@ -61,7 +51,7 @@ func TestStrip(t *testing.T) {
 
 func TestList(t *testing.T) {
 	s := newState("()")
-	result, err := s.Exhaust(s.list())()
+	result, err := s.Exhaust(s.expression())()
 
 	t.Logf("%#v", result)
 

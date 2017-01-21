@@ -17,4 +17,4 @@
 
 ; define a new output function
 
-($def stdout' ($stdout ($+ $0 1)))
+($def stdout2 ($stdout ($+ $0 1)))

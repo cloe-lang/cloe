@@ -44,8 +44,9 @@ is equivalent to:
 ### Nondeterminism module
 
 ```
-(def nd.rally "Objects -> List. Sort by time when they are evaluated."
-  (objects...) (...))
+(let (rally ..objects)
+     "Objects -> List. Sort by time when they are evaluated."
+     (...))
 ```
 
 ## Keeping purity of functions

@@ -5,8 +5,6 @@
 - Error handling
 
 - `ir <filename>` bin
-- `def` desugarer
-- multiple desugarers
 
 - Pattern match
 - Type system?

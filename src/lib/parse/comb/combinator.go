@@ -206,3 +206,9 @@ func stringToRuneSet(s string) map[rune]bool {
 
 	return rs
 }
+
+func (s *State) None() Parser {
+	return func() (interface{}, error) {
+		return nil, nil
+	}
+}

@@ -50,7 +50,7 @@ func TestStringLiteral(t *testing.T) {
 }
 
 func TestStrip(t *testing.T) {
-	s := newState("  ident  ")
+	s := newState("ident  \t ")
 	result, err := s.Exhaust(s.strip(s.atom()))()
 
 	t.Logf("%#v", result)
@@ -61,7 +61,7 @@ func TestStrip(t *testing.T) {
 
 func TestWrapChars(t *testing.T) {
 	s := newState("( \tident \n)  ; laskdfjsl \t  dkjf\n ")
-	result, err := s.Exhaust(s.wrapChars('(', s.atom(), ')'))()
+	result, err := s.Exhaust(s.wrapChars('(', s.strip(s.atom()), ')'))()
 
 	t.Logf("%#v", result)
 
@@ -82,8 +82,8 @@ func TestList(t *testing.T) {
 func TestExpression(t *testing.T) {
 	strs := []string{
 		"ident",
-		"  ident  ",
-		" (foo ; (this is) comment \n bar)  \t ; lsdfj\n ",
+		"ident  ",
+		"(foo ; (this is) comment \n bar)  \t ; lsdfj\n ",
 	}
 
 	for _, str := range strs {

@@ -41,7 +41,7 @@ func (s *state) expression() comb.Parser {
 }
 
 func (s *state) firstOrderExpression() comb.Parser {
-	return s.Or(s.atom(), s.list(), s.array(), s.dict())
+	return s.Or(s.atom(), s.list(), s.listLiteral(), s.dictLiteral())
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {
@@ -74,11 +74,11 @@ func (s *state) list() comb.Parser {
 	return s.sequence('(', ')')
 }
 
-func (s *state) array() comb.Parser {
+func (s *state) listLiteral() comb.Parser {
 	return s.sequence('[', ']')
 }
 
-func (s *state) dict() comb.Parser {
+func (s *state) dictLiteral() comb.Parser {
 	return s.sequence('{', '}')
 }
 

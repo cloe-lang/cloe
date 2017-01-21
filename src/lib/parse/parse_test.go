@@ -99,6 +99,18 @@ func TestExpression(t *testing.T) {
 	}
 }
 
+func TestQuotedExpression(t *testing.T) {
+	for _, str := range []string{"`ident", "``ident", "```ident"} {
+		s := newState(str)
+		result, err := s.Exhaust(s.expression())()
+
+		t.Logf("%#v", result)
+
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
+	}
+}
+
 func TestIdentifier(t *testing.T) {
 	result, err := newState(";ident").identifier()()
 

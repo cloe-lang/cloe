@@ -35,9 +35,13 @@ func (s *state) strictExpressions() comb.Parser {
 }
 
 func (s *state) expression() comb.Parser {
-	ps := []comb.Parser{s.atom(), s.list(), s.array(), s.dict()}
+	return s.strip(s.Or(
+		s.firstOrderExpression(),
+		s.Lazy(func() comb.Parser { return s.quote(s.expression()) })))
+}
 
-	return s.strip(s.Or(append(ps, s.quotes(ps...)...)...))
+func (s *state) firstOrderExpression() comb.Parser {
+	return s.Or(s.atom(), s.list(), s.array(), s.dict())
 }
 
 func (s *state) atom() comb.Parser {
@@ -105,16 +109,6 @@ func (s *state) space() comb.Parser {
 
 func (s *state) quote(p comb.Parser) comb.Parser {
 	return s.And(s.Replace(quoteString, s.Char(quoteChar)), p)
-}
-
-func (s *state) quotes(ps ...comb.Parser) []comb.Parser {
-	qs := make([]comb.Parser, len(ps))
-
-	for i, p := range ps {
-		qs[i] = s.quote(p)
-	}
-
-	return qs
 }
 
 func (s *state) stringify(p comb.Parser) comb.Parser {

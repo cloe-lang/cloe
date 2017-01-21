@@ -11,3 +11,4 @@
   - `let`: Function or constant definition
   - `rec`: Mutually recursive function definition
   - `macro`: Macro definition
+  - `quote`: Expression quotation

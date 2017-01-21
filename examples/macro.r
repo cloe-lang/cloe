@@ -7,5 +7,5 @@
 (macro (foo) `123)
 (print (+ (foo) bar))
 
-; Invalid and useless too; just use def.
+; Invalid and useless too; just use let.
 (macro foo 123)

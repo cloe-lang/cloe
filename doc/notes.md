@@ -82,3 +82,8 @@ outs : [Output] -> Output
     catched only by functions which evaluates erroneous thunks.
 - Instantiate VM instructions with debug information at each call in each
   function?
+
+## Do we need `seq` and `par` as Parallel Haskell?
+
+- The former, `seq` is pretty similar to `cause` while `cause` is only for IO
+  synchronization.

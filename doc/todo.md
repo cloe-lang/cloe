@@ -4,6 +4,9 @@
 - Compiler
 - Error handling
 - Indexed partial?
+- Comparison operators
+- Set data structure
+- vm.Add like `(+ ..nums)`?
 
 - Make some data structures (e.g. List and Dictionary) callable
 

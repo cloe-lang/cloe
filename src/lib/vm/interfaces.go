@@ -14,7 +14,7 @@ type equalable interface {
 
 var Equal = NewStrictFunction(func(os ...Object) Object {
 	if len(os) != 2 {
-		return numArgsError("equal", "2")
+		return NumArgsError("equal", "2")
 	}
 
 	var es [2]equalable
@@ -23,7 +23,7 @@ var Equal = NewStrictFunction(func(os ...Object) Object {
 		e, ok := o.(equalable)
 
 		if !ok {
-			return typeError(o, "Equalable")
+			return TypeError(o, "Equalable")
 		}
 
 		es[i] = e
@@ -42,14 +42,14 @@ type listable interface {
 
 var ToList = NewStrictFunction(func(os ...Object) Object {
 	if len(os) != 1 {
-		return numArgsError("toList", "1")
+		return NumArgsError("toList", "1")
 	}
 
 	o := os[0]
 	l, ok := o.(listable)
 
 	if !ok {
-		return typeError(o, "Listable")
+		return TypeError(o, "Listable")
 	}
 
 	return l.toList()

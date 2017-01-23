@@ -2,7 +2,7 @@ package vm
 
 var Y = NewLazyFunction(func(ts ...*Thunk) Object {
 	if len(ts) != 1 {
-		return numArgsError("y", "1")
+		return NumArgsError("y", "1")
 	}
 
 	xfxx := App(Partial, fxx, ts[0])
@@ -15,7 +15,7 @@ var fxx = NewLazyFunction(func(ts ...*Thunk) Object {
 
 var Ys = NewLazyFunction(func(fs ...*Thunk) Object {
 	if len(fs) == 0 {
-		return numArgsError("ys", ">= 1")
+		return NumArgsError("ys", ">= 1")
 	}
 
 	f := NewLazyFunction(func(ps ...*Thunk) Object {

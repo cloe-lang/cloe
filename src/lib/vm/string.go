@@ -23,7 +23,7 @@ var Concat = NewStrictFunction(func(os ...Object) Object {
 		s, ok := o.(stringType)
 
 		if !ok {
-			return typeError(o, "String")
+			return TypeError(o, "String")
 		}
 
 		ss[i] = string(s)

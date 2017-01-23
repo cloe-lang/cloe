@@ -33,7 +33,7 @@ var Add = NewStrictFunction(func(os ...Object) Object {
 
 var Sub = NewStrictFunction(func(os ...Object) Object {
 	if len(os) == 0 {
-		return numArgsError("sub", ">= 1")
+		return NumArgsError("sub", ">= 1")
 	}
 
 	o := os[0]
@@ -74,7 +74,7 @@ var Mul = NewStrictFunction(func(os ...Object) Object {
 
 var Div = NewStrictFunction(func(os ...Object) Object {
 	if len(os) == 0 {
-		return numArgsError("div", ">= 1")
+		return NumArgsError("div", ">= 1")
 	}
 
 	o := os[0]
@@ -99,7 +99,7 @@ var Div = NewStrictFunction(func(os ...Object) Object {
 
 var Mod = NewStrictFunction(func(os ...Object) Object {
 	if len(os) != 2 {
-		return numArgsError("mod", "2")
+		return NumArgsError("mod", "2")
 	}
 
 	o := os[0]
@@ -121,7 +121,7 @@ var Mod = NewStrictFunction(func(os ...Object) Object {
 
 var Pow = NewStrictFunction(func(os ...Object) Object {
 	if len(os) != 2 {
-		return numArgsError("pow", "2")
+		return NumArgsError("pow", "2")
 	}
 
 	o := os[0]
@@ -142,7 +142,7 @@ var Pow = NewStrictFunction(func(os ...Object) Object {
 })
 
 func notNumberError(o Object) *Thunk {
-	return typeError(o, "Number")
+	return TypeError(o, "Number")
 }
 
 // seq.Setable

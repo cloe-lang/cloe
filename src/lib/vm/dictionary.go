@@ -22,7 +22,7 @@ func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
 
 var Set = NewLazyFunction(func(ts ...*Thunk) Object {
 	if len(ts) != 3 {
-		return numArgsError("set", "3")
+		return NumArgsError("set", "3")
 	}
 
 	o := ts[0].Eval()
@@ -46,7 +46,7 @@ func (d dictionaryType) set(k Object, v *Thunk) Object {
 
 var Get = NewLazyFunction(func(ts ...*Thunk) Object {
 	if len(ts) != 2 {
-		return numArgsError("get", "2")
+		return NumArgsError("get", "2")
 	}
 
 	o := ts[0].Eval()
@@ -68,17 +68,17 @@ func (d dictionaryType) get(k Object) *Thunk {
 		return v.(*Thunk)
 	}
 
-	return internalError(
+	return NewError(
 		"KeyNotFoundError",
 		"The key %v is not found in a dictionary.", k)
 }
 
 func notDictionaryError(o Object) *Thunk {
-	return typeError(o, "Dictionary")
+	return TypeError(o, "Dictionary")
 }
 
 func notSetableError(k Object) *Thunk {
-	return typeError(k, "Setable")
+	return TypeError(k, "Setable")
 }
 
 func (d dictionaryType) equal(e equalable) Object {

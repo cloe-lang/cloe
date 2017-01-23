@@ -20,7 +20,7 @@ func (b boolType) equal(e equalable) Object {
 
 var If = NewLazyFunction(func(ts ...*Thunk) Object {
 	if len(ts) != 3 {
-		return numArgsError("if", "3")
+		return NumArgsError("if", "3")
 	}
 
 	o := ts[0].Eval()
@@ -38,7 +38,7 @@ var If = NewLazyFunction(func(ts ...*Thunk) Object {
 })
 
 func notBoolError(o Object) *Thunk {
-	return typeError(o, "Bool")
+	return TypeError(o, "Bool")
 }
 
 // seq.Setable

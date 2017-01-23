@@ -7,7 +7,7 @@ type errorType struct {
 	child         *errorType
 }
 
-func internalError(n, m string, xs ...interface{}) *Thunk {
+func NewError(n, m string, xs ...interface{}) *Thunk {
 	return chainedError(nil, n, m, xs...)
 }
 
@@ -19,26 +19,26 @@ func chainedError(e *errorType, n, m string, xs ...interface{}) *Thunk {
 	})
 }
 
-func typeError(o Object, typ string) *Thunk {
+func TypeError(o Object, typ string) *Thunk {
 	n, m := "TypeError", "%#v is not %s"
 
 	if e, ok := o.(errorType); ok {
 		return chainedError(&e, n, m, o, typ)
 	}
 
-	return internalError(n, m, o, typ)
+	return NewError(n, m, o, typ)
 }
 
-func notCallableError(o Object) *Thunk {
-	return typeError(o, "Callable")
+func NotCallableError(o Object) *Thunk {
+	return TypeError(o, "Callable")
 }
 
-func numArgsError(f, condition string) *Thunk {
-	return internalError(
+func NumArgsError(f, condition string) *Thunk {
+	return NewError(
 		"NumArgsError",
 		"Number of arguments to %s must be %s.", f, condition)
 }
 
-func valueError(m string) *Thunk {
-	return internalError("ValueError", m)
+func ValueError(m string) *Thunk {
+	return NewError("ValueError", m)
 }

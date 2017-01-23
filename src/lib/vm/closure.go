@@ -10,7 +10,7 @@ func (c closureType) call(ts ...*Thunk) Object {
 	f, ok := o.(callable)
 
 	if !ok {
-		return notCallableError(o)
+		return NotCallableError(o)
 	}
 
 	return f.call(append(c.freeVariables, ts...)...)
@@ -19,7 +19,7 @@ func (c closureType) call(ts ...*Thunk) Object {
 var Partial = NewLazyFunction(func(ts ...*Thunk) Object {
 	switch len(ts) {
 	case 0:
-		return numArgsError("partial", ">= 1")
+		return NumArgsError("partial", ">= 1")
 	case 1:
 		return ts[0]
 	}

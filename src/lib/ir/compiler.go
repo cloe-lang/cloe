@@ -51,14 +51,14 @@ func (c *compiler) compileExpression(e Expression) *vm.Thunk {
 	panic(fmt.Sprint("Invalid type as an expression.", e))
 }
 
-func (c *compiler) replaceSymbolWithThunk(e Expression) Expression {
+func (c *compiler) replaceSymbolWithThunk(e Expression) interface{} {
 	switch x := e.(type) {
 	case string:
 		return c.env.get(x)
 	case int:
 		return x
 	case []interface{}:
-		es := make([]Expression, len(x))
+		es := make([]interface{}, len(x))
 
 		for i, e := range x {
 			es[i] = c.replaceSymbolWithThunk(e)

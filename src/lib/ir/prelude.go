@@ -32,6 +32,8 @@ var prelude preludeEnvironment = map[string]*vm.Thunk{
 	"ys": vm.Ys,
 
 	"cause": vm.Cause,
+
+	"write": write,
 }
 
 func (e preludeEnvironment) get(s string) *vm.Thunk {

@@ -3,6 +3,7 @@
 - Parser
 - Compiler
 - Error handling
+- Indexed partial?
 
 - Make some data structures (e.g. List and Dictionary) callable
 

@@ -55,16 +55,6 @@ func (n *node) balance() *node {
 		return n
 	}
 
-	l := n.left
-	lb := l != nil && l.color == red
-	ll := l.left
-	lr := l.right
-
-	r := n.right
-	rb := r != nil && r.color == red
-	rl := r.left
-	rr := r.right
-
 	newN := func(
 		o Ordered,
 		lo Ordered, ll, lr *node,
@@ -72,22 +62,37 @@ func (n *node) balance() *node {
 		return newNode(red, o, newNode(black, lo, ll, lr), newNode(black, ro, rl, rr))
 	}
 
-	newRN := func(o, lo Ordered, ll, lr, rl *node) *node {
-		return newN(o, lo, ll, lr, n.value, rl, r)
-	}
+	l := n.left
+	r := n.right
 
-	newLN := func(o, ro Ordered, lr, rl, rr *node) *node {
-		return newN(o, n.value, l, lr, ro, rl, rr)
-	}
+	if l != nil {
+		lb := l != nil && l.color == red
+		ll := l.left
+		lr := l.right
 
-	if lb && ll != nil && ll.color == red {
-		return newRN(l.value, ll.value, ll.left, ll.right, lr)
-	} else if lb && lr != nil && lr.color == red {
-		return newRN(lr.value, l.value, ll, lr.left, lr.right)
-	} else if rb && rl != nil && rl.color == red {
-		return newLN(r.value, rr.value, rl, rr.left, rr.right)
-	} else if rb && rr != nil && rr.color == red {
-		return newLN(rl.value, r.value, rl.left, rl.right, rr)
+		newLN := func(o, lo Ordered, ll, lr, rl *node) *node {
+			return newN(o, lo, ll, lr, n.value, rl, r)
+		}
+
+		if lb && ll != nil && ll.color == red {
+			return newLN(l.value, ll.value, ll.left, ll.right, lr)
+		} else if lb && lr != nil && lr.color == red {
+			return newLN(lr.value, l.value, ll, lr.left, lr.right)
+		}
+	} else if r != nil {
+		rb := r != nil && r.color == red
+		rl := r.left
+		rr := r.right
+
+		newRN := func(o, ro Ordered, lr, rl, rr *node) *node {
+			return newN(o, n.value, l, lr, ro, rl, rr)
+		}
+
+		if rb && rl != nil && rl.color == red {
+			return newRN(r.value, rr.value, rl, rr.left, rr.right)
+		} else if rb && rr != nil && rr.color == red {
+			return newRN(rl.value, r.value, rl.left, rl.right, rr)
+		}
 	}
 
 	return n

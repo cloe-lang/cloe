@@ -26,15 +26,15 @@ func newNode(c color, o Ordered, l, r *node) *node {
 	}
 }
 
-func (n *node) black() *node {
-	m := *n
+func (n *node) insert(o Ordered) *node {
+	m := *n.insertRed(o)
 	m.color = black
 	return &m
 }
 
-func (n *node) insert(o Ordered) *node {
+func (n *node) insertRed(o Ordered) *node {
 	if n == nil {
-		return newNode(red, o, nil, nil) // black?
+		return newNode(red, o, nil, nil)
 	}
 
 	m := *n

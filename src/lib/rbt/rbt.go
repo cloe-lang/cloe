@@ -1,5 +1,7 @@
 package rbt
 
+import "fmt"
+
 type color bool
 
 const (
@@ -40,9 +42,9 @@ func (n *node) insertRed(o Ordered) *node {
 	m := *n
 
 	if n.value.Less(o) {
-		m.left = m.left.insert(o)
+		m.left = m.left.insertRed(o)
 	} else if o.Less(n.value) {
-		m.right = m.right.insert(o)
+		m.right = m.right.insertRed(o)
 	} else {
 		return n
 	}
@@ -108,4 +110,25 @@ func (n *node) search(o Ordered) Ordered {
 	}
 
 	return n.value
+}
+
+func (n *node) dump() {
+	n.dumpWithIndent(0)
+}
+
+func (n *node) dumpWithIndent(i int) {
+	for j := 0; j < i; j++ {
+		fmt.Printf(" ")
+	}
+
+	if n == nil {
+		fmt.Println(nil)
+		return
+	}
+
+	fmt.Println(n.color, n.value)
+
+	k := i + 2
+	n.left.dumpWithIndent(k)
+	n.right.dumpWithIndent(k)
 }

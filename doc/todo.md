@@ -5,6 +5,13 @@
 - Error handling
 - Indexed partial?
 - Comparison operators
+- Ordered interface
+- Thunk as interface?
+  - Object.Eval()
+- Dict and set objects based on persistent red black tree
+- Remove callable interface
+  - Use bare closures
+
 - Set data structure
 - vm.Add like `(+ ..nums)`?
 - Add debug information to Function and Closure

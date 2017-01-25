@@ -92,3 +92,15 @@ func (n *node) balance() *node {
 
 	return n
 }
+
+func (n *node) search(o Ordered) Ordered {
+	if n == nil {
+		return nil
+	} else if n.value.Less(o) {
+		return n.left.search(o)
+	} else if o.Less(n.value) {
+		return n.right.search(o)
+	}
+
+	return n.value
+}

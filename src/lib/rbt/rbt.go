@@ -112,6 +112,83 @@ func (n *node) search(o Ordered) (Ordered, bool) {
 	return n.value, true
 }
 
+func (n *node) remove(o Ordered) (*node, bool) {
+	_, ok := n.search(o)
+
+	if !ok {
+		return n, false
+	}
+
+	n, _ = n.removeOne(o)
+	m := *n
+	m.color = black
+	return &m, true
+}
+
+func (n *node) removeOne(o Ordered) (*node, bool) {
+	if n == nil {
+		return nil, true
+	} else if n.value.Less(o) {
+		n, balanced := n.left.removeOne(o)
+
+		if balanced {
+			return n, true
+		}
+
+		return n.balanceLeft()
+	} else if o.Less(n.value) {
+		n, balanced := n.right.removeOne(o)
+
+		if balanced {
+			return n, true
+		}
+
+		return n.balanceRight()
+	}
+
+	if n.left == nil {
+		return n.right, n.color == red
+	}
+
+	o, l, balanced := n.takeMax()
+
+	m := newNode(n.color, o, l, n.right)
+
+	if balanced {
+		return m, true
+	}
+
+	return m.balanceLeft()
+}
+
+func (n *node) takeMax() (Ordered, *node, bool) {
+	if n.right == nil {
+		return n.value, n.left, n.color == red
+	}
+
+	o, r, balanced := n.right.takeMax()
+
+	m := *n
+	m.right = r
+
+	if balanced {
+		return o, &m, true
+	}
+
+	n, balanced = m.balanceRight()
+	return o, n, balanced
+}
+
+func (n *node) balanceLeft() (*node, bool) {
+	// TODO
+	return nil, false
+}
+
+func (n *node) balanceRight() (*node, bool) {
+	// TODO
+	return nil, false
+}
+
 func (n *node) dump() {
 	n.dumpWithIndent(0)
 }

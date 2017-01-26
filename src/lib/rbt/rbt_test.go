@@ -19,7 +19,9 @@ func TestNode(t *testing.T) {
 	n = n.insert(k)
 	t.Log(n)
 
-	assert.Equal(t, n.search(k), k)
+	kk, ok := n.search(k)
+	assert.True(t, ok)
+	assert.Equal(t, kk, k)
 }
 
 func TestNodeBalance(t *testing.T) {

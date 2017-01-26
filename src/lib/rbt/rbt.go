@@ -100,16 +100,16 @@ func (n *node) balance() *node {
 	return n
 }
 
-func (n *node) search(o Ordered) Ordered {
+func (n *node) search(o Ordered) (Ordered, bool) {
 	if n == nil {
-		return nil
+		return nil, false
 	} else if n.value.Less(o) {
 		return n.left.search(o)
 	} else if o.Less(n.value) {
 		return n.right.search(o)
 	}
 
-	return n.value
+	return n.value, true
 }
 
 func (n *node) dump() {

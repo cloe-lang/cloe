@@ -118,6 +118,11 @@ func (n *node) remove(o Ordered) (*node, bool) {
 	}
 
 	n, _ = n.removeOne(o)
+
+	if n == nil {
+		return nil, true
+	}
+
 	m := *n
 	m.color = black
 	return &m, true

@@ -77,6 +77,8 @@ func TestNodeInsertRandomly(t *testing.T) {
 		old := n
 		n = n.insert(k)
 
+		n.rank()
+
 		if !n.checkColor() {
 			fmt.Println("KEY:", k)
 			fmt.Println("OLD:")
@@ -103,6 +105,8 @@ func TestNodeRemoveRandomly(t *testing.T) {
 		} else {
 			n = n.insert(k)
 		}
+
+		n.rank()
 
 		if !n.checkColor() {
 			if remove {

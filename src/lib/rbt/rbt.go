@@ -292,3 +292,21 @@ func (n *node) checkColor() bool {
 
 	return false
 }
+
+func (n *node) rank() int {
+	if n == nil {
+		return 1
+	}
+
+	if n.left.rank() != n.right.rank() {
+		panic("Red-black tree is unbalanced!")
+	}
+
+	r := 0
+
+	if n.color == black {
+		r = 1
+	}
+
+	return n.left.rank() + r
+}

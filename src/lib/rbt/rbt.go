@@ -41,9 +41,9 @@ func (n *node) insertRed(o Ordered) *node {
 
 	m := *n
 
-	if n.value.Less(o) {
+	if o.Less(n.value) {
 		m.left = m.left.insertRed(o)
-	} else if o.Less(n.value) {
+	} else if n.value.Less(o) {
 		m.right = m.right.insertRed(o)
 	} else {
 		return n
@@ -88,9 +88,9 @@ func (n *node) balance() *node {
 			return newN(o, n.value, l, lr, ro, rl, rr)
 		}
 
-		if rl != nil && rl.color == red {
+		if rr != nil && rr.color == red {
 			return newRN(r.value, rr.value, rl, rr.left, rr.right)
-		} else if rr != nil && rr.color == red {
+		} else if rl != nil && rl.color == red {
 			return newRN(rl.value, r.value, rl.left, rl.right, rr)
 		}
 	}
@@ -101,9 +101,9 @@ func (n *node) balance() *node {
 func (n *node) search(o Ordered) (Ordered, bool) {
 	if n == nil {
 		return nil, false
-	} else if n.value.Less(o) {
-		return n.left.search(o)
 	} else if o.Less(n.value) {
+		return n.left.search(o)
+	} else if n.value.Less(o) {
 		return n.right.search(o)
 	}
 
@@ -126,7 +126,7 @@ func (n *node) remove(o Ordered) (*node, bool) {
 func (n *node) removeOne(o Ordered) (*node, bool) {
 	if n == nil {
 		return nil, true
-	} else if n.value.Less(o) {
+	} else if o.Less(n.value) {
 		l, balanced := n.left.removeOne(o)
 		m := *n
 		m.left = l
@@ -136,7 +136,7 @@ func (n *node) removeOne(o Ordered) (*node, bool) {
 		}
 
 		return m.balanceLeft()
-	} else if o.Less(n.value) {
+	} else if n.value.Less(o) {
 		r, balanced := n.right.removeOne(o)
 		m := *n
 		m.right = r

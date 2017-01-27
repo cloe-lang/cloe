@@ -127,21 +127,25 @@ func (n *node) removeOne(o Ordered) (*node, bool) {
 	if n == nil {
 		return nil, true
 	} else if n.value.Less(o) {
-		n, balanced := n.left.removeOne(o)
+		l, balanced := n.left.removeOne(o)
+		m := *n
+		m.left = l
 
 		if balanced {
-			return n, true
+			return &m, true
 		}
 
-		return n.balanceLeft()
+		return m.balanceLeft()
 	} else if o.Less(n.value) {
-		n, balanced := n.right.removeOne(o)
+		r, balanced := n.right.removeOne(o)
+		m := *n
+		m.right = r
 
 		if balanced {
-			return n, true
+			return &m, true
 		}
 
-		return n.balanceRight()
+		return m.balanceRight()
 	}
 
 	if n.left == nil {
@@ -178,22 +182,18 @@ func (n *node) takeMax() (Ordered, *node, bool) {
 }
 
 func (n *node) balanceLeft() (*node, bool) {
-	if n.right.color == red && n.color == red {
-		panic("What the hell!")
-	}
-
 	if n.right.color == red {
 		l, _ := newNode(red, n.value, n.left, n.right.left).balanceLeft()
 		return newNode(black, n.right.value, l, n.right.right), true
 	}
 
-	if n.right.left.color == red {
+	if n.right.left != nil && n.right.left.color == red {
 		return newNode(
 			n.color,
 			n.right.left.value,
 			newNode(black, n.value, n.left, n.right.left.left),
 			newNode(black, n.right.value, n.right.left.right, n.right.right)), true
-	} else if n.right.right.color == red {
+	} else if n.right.right != nil && n.right.right.color == red {
 		r := *n.right.right
 		r.color = black
 
@@ -215,22 +215,18 @@ func (n *node) balanceLeft() (*node, bool) {
 }
 
 func (n *node) balanceRight() (*node, bool) {
-	if n.left.color == red && n.color == red {
-		panic("What the hell!")
-	}
-
 	if n.left.color == red {
 		r, _ := newNode(red, n.value, n.left.right, n.right).balanceRight()
 		return newNode(black, n.left.value, n.left.left, r), true
 	}
 
-	if n.left.right.color == red {
+	if n.left.right != nil && n.left.right.color == red {
 		return newNode(
 			n.color,
 			n.left.right.value,
 			newNode(black, n.left.value, n.left.left, n.left.right.left),
 			newNode(black, n.value, n.left.right.right, n.right)), true
-	} else if n.left.left.color == red {
+	} else if n.left.left != nil && n.left.left.color == red {
 		l := *n.left.left
 		l.color = black
 

@@ -159,7 +159,7 @@ func (n *node) removeOne(o Ordered) (*node, bool) {
 		return n.right, n.color == red
 	}
 
-	o, l, balanced := n.takeMax()
+	o, l, balanced := n.left.takeMax()
 
 	m := newNode(n.color, o, l, n.right)
 

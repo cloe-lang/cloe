@@ -80,7 +80,9 @@ func (n *node) balance() *node {
 		} else if lr != nil && lr.color == red {
 			return newLN(lr.value, l.value, ll, lr.left, lr.right)
 		}
-	} else if r != nil && r.color == red {
+	}
+
+	if r != nil && r.color == red {
 		rl := r.left
 		rr := r.right
 

@@ -1,6 +1,7 @@
 package rbt
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
@@ -77,10 +78,10 @@ func TestNodeInsertRandomly(t *testing.T) {
 		n = n.insert(k)
 
 		if !n.checkColor() {
-			t.Log("KEY:", k)
-			t.Log("OLD:")
+			fmt.Println("KEY:", k)
+			fmt.Println("OLD:")
 			old.dump()
-			t.Log("NEW:")
+			fmt.Println("NEW:")
 			n.dump()
 			t.FailNow()
 		}
@@ -102,10 +103,10 @@ func TestNodeRemoveRandomly(t *testing.T) {
 		}
 
 		if !n.checkColor() {
-			t.Log("KEY:", k)
-			t.Log("OLD:")
+			fmt.Println("KEY:", k)
+			fmt.Println("OLD:")
 			old.dump()
-			t.Log("NEW:")
+			fmt.Println("NEW:")
 			n.dump()
 			t.FailNow()
 		}

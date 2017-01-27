@@ -178,8 +178,40 @@ func (n *node) takeMax() (Ordered, *node, bool) {
 }
 
 func (n *node) balanceLeft() (*node, bool) {
-	// TODO
-	return nil, false
+	if n.right.color == red && n.color == red {
+		panic("What the hell!")
+	}
+
+	if n.right.color == red {
+		l, _ := newNode(red, n.value, n.left, n.right.left).balanceLeft()
+		return newNode(black, n.right.value, l, n.right.right), true
+	}
+
+	if n.right.left.color == red {
+		return newNode(
+			n.color,
+			n.right.left.value,
+			newNode(black, n.value, n.left, n.right.left.left),
+			newNode(black, n.right.value, n.right.left.right, n.right.right)), true
+	} else if n.right.right.color == red {
+		r := *n.right.right
+		r.color = black
+
+		return newNode(
+			n.color,
+			n.right.value,
+			newNode(black, n.value, n.left, n.right.left),
+			&r), true
+	}
+
+	r := *n.right
+	r.color = red
+
+	m := *n
+	m.color = black
+	m.left = &r
+
+	return &m, n.color == black
 }
 
 func (n *node) balanceRight() (*node, bool) {

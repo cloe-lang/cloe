@@ -264,6 +264,6 @@ func (n *node) dumpWithIndent(i int) {
 	fmt.Println(n.color, n.value)
 
 	k := i + 2
-	n.left.dumpWithIndent(k)
 	n.right.dumpWithIndent(k)
+	n.left.dumpWithIndent(k)
 }

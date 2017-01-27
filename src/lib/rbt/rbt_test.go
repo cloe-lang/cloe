@@ -64,6 +64,4 @@ func TestNodeRemove(t *testing.T) {
 		n, _ = n.remove(k)
 		n.dump()
 	}
-
-	n.dump()
 }

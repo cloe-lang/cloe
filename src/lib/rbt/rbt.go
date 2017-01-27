@@ -275,7 +275,7 @@ func (n *node) dumpWithIndent(i int) {
 	n.left.dumpWithIndent(k)
 }
 
-func (n *node) checkColor() bool {
+func (n *node) checkColors() bool {
 	if n == nil {
 		return true
 	}
@@ -286,7 +286,7 @@ func (n *node) checkColor() bool {
 		return false
 	}
 
-	if n.left.checkColor() && n.right.checkColor() {
+	if n.left.checkColors() && n.right.checkColors() {
 		return true
 	}
 

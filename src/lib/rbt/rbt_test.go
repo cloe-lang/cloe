@@ -36,6 +36,20 @@ func TestNodeBalance(t *testing.T) {
 	n.dump()
 }
 
+func TestNodeTakeMax(t *testing.T) {
+	ks := []key{1, 2, 3, 4, 5, 6, 7, 8}
+	n := (*node)(nil)
+
+	for _, k := range ks {
+		n = n.insert(k)
+		n.dump()
+
+		o, m, _ := n.takeMax()
+		assert.Equal(t, k, o.(key))
+		m.dump()
+	}
+}
+
 func TestNodeRemove(t *testing.T) {
 	ks := []key{1, 2, 3, 4, 5, 6, 7, 8}
 	n := (*node)(nil)

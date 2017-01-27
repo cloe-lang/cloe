@@ -272,3 +272,21 @@ func (n *node) dumpWithIndent(i int) {
 	n.right.dumpWithIndent(k)
 	n.left.dumpWithIndent(k)
 }
+
+func (n *node) checkColor() bool {
+	if n == nil {
+		return true
+	}
+
+	if n.color == red &&
+		((n.left != nil && n.left.color == red) ||
+			(n.right != nil && n.right.color == red)) {
+		return false
+	}
+
+	if n.left.checkColor() && n.right.checkColor() {
+		return true
+	}
+
+	return false
+}

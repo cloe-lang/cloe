@@ -72,8 +72,18 @@ func TestNodeInsertRandomly(t *testing.T) {
 	max := 1000
 
 	for i := 0; i < max; i++ {
-		n = n.insert(key(rand.Int() % max))
-		n.dump()
+		k := key(rand.Int() % max)
+		old := n
+		n = n.insert(k)
+
+		if !n.checkColor() {
+			t.Log("KEY:", k)
+			t.Log("OLD:")
+			old.dump()
+			t.Log("NEW:")
+			n.dump()
+			t.Fail()
+		}
 	}
 }
 
@@ -83,6 +93,7 @@ func TestNodeRemoveRandomly(t *testing.T) {
 
 	for i := 0; i < max; i++ {
 		k := key(rand.Int() % max)
+		old := n
 
 		if rand.Int()%3 == 0 {
 			n, _ = n.remove(k)
@@ -90,6 +101,13 @@ func TestNodeRemoveRandomly(t *testing.T) {
 			n = n.insert(k)
 		}
 
-		n.dump()
+		if !n.checkColor() {
+			t.Log("KEY:", k)
+			t.Log("OLD:")
+			old.dump()
+			t.Log("NEW:")
+			n.dump()
+			t.Fail()
+		}
 	}
 }

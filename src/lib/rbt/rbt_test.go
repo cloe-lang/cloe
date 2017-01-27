@@ -82,7 +82,7 @@ func TestNodeInsertRandomly(t *testing.T) {
 			old.dump()
 			t.Log("NEW:")
 			n.dump()
-			t.Fail()
+			t.FailNow()
 		}
 	}
 }
@@ -107,7 +107,7 @@ func TestNodeRemoveRandomly(t *testing.T) {
 			old.dump()
 			t.Log("NEW:")
 			n.dump()
-			t.Fail()
+			t.FailNow()
 		}
 	}
 }

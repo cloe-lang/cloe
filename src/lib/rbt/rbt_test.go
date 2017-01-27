@@ -96,13 +96,21 @@ func TestNodeRemoveRandomly(t *testing.T) {
 		k := key(rand.Int() % max)
 		old := n
 
-		if rand.Int()%3 == 0 {
+		remove := rand.Int()%3 == 0
+
+		if remove {
 			n, _ = n.remove(k)
 		} else {
 			n = n.insert(k)
 		}
 
 		if !n.checkColor() {
+			if remove {
+				fmt.Println("REMOVE")
+			} else {
+				fmt.Println("INSERT")
+			}
+
 			fmt.Println("KEY:", k)
 			fmt.Println("OLD:")
 			old.dump()

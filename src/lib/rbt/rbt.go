@@ -88,10 +88,10 @@ func (n *node) balance() *node {
 			return newN(o, n.value, l, lr, ro, rl, rr)
 		}
 
-		if rr != nil && rr.color == red {
-			return newRN(r.value, rr.value, rl, rr.left, rr.right)
-		} else if rl != nil && rl.color == red {
+		if rl != nil && rl.color == red {
 			return newRN(rl.value, r.value, rl.left, rl.right, rr)
+		} else if rr != nil && rr.color == red {
+			return newRN(r.value, rr.value, rl, rr.left, rr.right)
 		}
 	}
 

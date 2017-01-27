@@ -2,6 +2,7 @@ package rbt
 
 import (
 	"github.com/stretchr/testify/assert"
+	"math/rand"
 	"testing"
 )
 
@@ -62,6 +63,23 @@ func TestNodeRemove(t *testing.T) {
 
 	for _, k := range ks {
 		n, _ = n.remove(k)
+		n.dump()
+	}
+}
+
+func TestNodeRandomly(t *testing.T) {
+	n := (*node)(nil)
+	max := 1000
+
+	for i := 0; i < max; i++ {
+		k := key(rand.Int() % max)
+
+		if rand.Int()%3 == 0 {
+			n, _ = n.remove(k)
+		} else {
+			n = n.insert(k)
+		}
+
 		n.dump()
 	}
 }

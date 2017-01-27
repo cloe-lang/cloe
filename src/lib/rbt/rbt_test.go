@@ -67,7 +67,17 @@ func TestNodeRemove(t *testing.T) {
 	}
 }
 
-func TestNodeRandomly(t *testing.T) {
+func TestNodeInsertRandomly(t *testing.T) {
+	n := (*node)(nil)
+	max := 1000
+
+	for i := 0; i < max; i++ {
+		n = n.insert(key(rand.Int() % max))
+		n.dump()
+	}
+}
+
+func TestNodeRemoveRandomly(t *testing.T) {
 	n := (*node)(nil)
 	max := 1000
 

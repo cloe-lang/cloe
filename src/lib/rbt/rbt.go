@@ -209,7 +209,7 @@ func (n *node) balanceLeft() (*node, bool) {
 
 	m := *n
 	m.color = black
-	m.left = &r
+	m.right = &r
 
 	return &m, n.color == black
 }

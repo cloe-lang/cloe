@@ -310,3 +310,24 @@ func (n *node) rank() int {
 
 	return n.left.rank() + r
 }
+
+func (n *node) deepCopy() *node {
+	if n == nil {
+		return nil
+	}
+
+	return newNode(n.color, n.value, n.left.deepCopy(), n.right.deepCopy())
+}
+
+func (n *node) totalEqual(m *node) bool {
+	if n == nil && m == nil {
+		return true
+	} else if n == nil || m == nil {
+		return false
+	}
+
+	return n.color == m.color &&
+		n.value == m.value &&
+		n.left.totalEqual(m.left) &&
+		n.right.totalEqual(m.right)
+}

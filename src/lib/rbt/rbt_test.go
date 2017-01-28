@@ -139,3 +139,50 @@ func TestNodeRemoveRandomly(t *testing.T) {
 		}
 	}
 }
+
+func TestInsertRemovePersistency(t *testing.T) {
+	n := (*node)(nil)
+
+	for i := 0; i < MAX_ITERS; i++ {
+		k := key(rand.Int() % MAX_KEY)
+		old := n
+		oldCopy := n.deepCopy()
+
+		remove := rand.Int()%2 == 0
+
+		if remove {
+			n, _ = n.remove(k)
+
+			_, ok := n.search(k)
+
+			if ok {
+				t.Fail()
+			}
+		} else {
+			n = n.insert(k)
+
+			_, ok := n.search(k)
+
+			if !ok {
+				t.Fail()
+			}
+		}
+
+		n.rank() // check ranks
+
+		if !(old.totalEqual(oldCopy) && n.checkColors()) {
+			if remove {
+				fmt.Println("REMOVE")
+			} else {
+				fmt.Println("INSERT")
+			}
+
+			fmt.Println("KEY:", k)
+			fmt.Println("OLD:")
+			old.dump()
+			fmt.Println("NEW:")
+			n.dump()
+			t.FailNow()
+		}
+	}
+}

@@ -28,14 +28,14 @@ func newNode(c color, o Ordered, l, r *node) *node {
 	}
 }
 
-func (n *node) paintBlack() *node {
+func (n *node) paint(c color) *node {
 	m := *n
-	m.color = black
+	m.color = c
 	return &m
 }
 
 func (n *node) insert(o Ordered) *node {
-	return n.insertRed(o).paintBlack()
+	return n.insertRed(o).paint(black)
 }
 
 func (n *node) insertRed(o Ordered) *node {
@@ -129,7 +129,7 @@ func (n *node) remove(o Ordered) (*node, bool) {
 		return nil, true
 	}
 
-	return n.paintBlack(), true
+	return n.paint(black), true
 }
 
 func (n *node) removeOne(o Ordered) (*node, bool) {
@@ -207,14 +207,11 @@ func (n *node) balanceLeft() (*node, bool) {
 			n.color,
 			n.right.value,
 			newNode(black, n.value, n.left, n.right.left),
-			n.right.right.paintBlack()), true
+			n.right.right.paint(black)), true
 	}
 
-	r := *n.right
-	r.color = red
-
-	m := n.paintBlack()
-	m.right = &r
+	m := n.paint(black)
+	m.right = n.right.paint(red)
 
 	return m, n.color == red
 }
@@ -235,15 +232,12 @@ func (n *node) balanceRight() (*node, bool) {
 		return newNode(
 			n.color,
 			n.left.value,
-			n.left.left.paintBlack(),
+			n.left.left.paint(black),
 			newNode(black, n.value, n.left.right, n.right)), true
 	}
 
-	l := *n.left
-	l.color = red
-
-	m := n.paintBlack()
-	m.left = &l
+	m := n.paint(black)
+	m.left = n.left.paint(red)
 
 	return m, n.color == red
 }

@@ -30,6 +30,18 @@ func (n *node) paint(c color) *node {
 	return &m
 }
 
+func (n *node) min() interface{} {
+	if n == nil {
+		return nil
+	}
+
+	if n.left == nil {
+		return n.value
+	}
+
+	return n.left.min()
+}
+
 func (n *node) insert(x interface{}, less func(interface{}, interface{}) bool) *node {
 	return n.insertRed(x, less).paint(black)
 }

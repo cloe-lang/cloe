@@ -1,5 +1,7 @@
 package rbt
 
+import "fmt"
+
 type Tree struct {
 	node *node
 	less func(interface{}, interface{}) bool
@@ -30,4 +32,23 @@ func (t Tree) Remove(x interface{}) (Tree, bool) {
 		node: n,
 		less: t.less,
 	}, ok
+}
+
+type FirstRestFunc func() (interface{}, FirstRestFunc)
+
+func (t Tree) FirstRest() (interface{}, FirstRestFunc) {
+	x := t.node.min()
+
+	if x == nil {
+		return nil, nil
+	}
+
+	rest, ok := t.Remove(x)
+
+	if !ok {
+		t.node.dump()
+		panic(fmt.Sprint("Minimum value must be in a tree!: ", x))
+	}
+
+	return x, rest.FirstRest
 }

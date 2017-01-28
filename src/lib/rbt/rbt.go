@@ -203,24 +203,20 @@ func (n *node) balanceLeft() (*node, bool) {
 			newNode(black, n.value, n.left, n.right.left.left),
 			newNode(black, n.right.value, n.right.left.right, n.right.right)), true
 	} else if n.right.right != nil && n.right.right.color == red {
-		r := *n.right.right
-		r.color = black
-
 		return newNode(
 			n.color,
 			n.right.value,
 			newNode(black, n.value, n.left, n.right.left),
-			&r), true
+			n.right.right.paintBlack()), true
 	}
 
 	r := *n.right
 	r.color = red
 
-	m := *n
-	m.color = black
+	m := n.paintBlack()
 	m.right = &r
 
-	return &m, n.color == red
+	return m, n.color == red
 }
 
 func (n *node) balanceRight() (*node, bool) {
@@ -236,24 +232,20 @@ func (n *node) balanceRight() (*node, bool) {
 			newNode(black, n.left.value, n.left.left, n.left.right.left),
 			newNode(black, n.value, n.left.right.right, n.right)), true
 	} else if n.left.left != nil && n.left.left.color == red {
-		l := *n.left.left
-		l.color = black
-
 		return newNode(
 			n.color,
 			n.left.value,
-			&l,
+			n.left.left.paintBlack(),
 			newNode(black, n.value, n.left.right, n.right)), true
 	}
 
 	l := *n.left
 	l.color = red
 
-	m := *n
-	m.color = black
+	m := n.paintBlack()
 	m.left = &l
 
-	return &m, n.color == red
+	return m, n.color == red
 }
 
 func (n *node) dump() {

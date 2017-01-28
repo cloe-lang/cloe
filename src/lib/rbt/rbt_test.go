@@ -105,8 +105,20 @@ func TestNodeRemoveRandomly(t *testing.T) {
 
 		if remove {
 			n, _ = n.remove(k)
+
+			_, ok := n.search(k)
+
+			if ok {
+				t.Fail()
+			}
 		} else {
 			n = n.insert(k)
+
+			_, ok := n.search(k)
+
+			if !ok {
+				t.Fail()
+			}
 		}
 
 		n.rank() // check ranks

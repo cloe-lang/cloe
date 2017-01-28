@@ -258,9 +258,9 @@ func (n *node) dumpWithIndent(i int) {
 
 	fmt.Println(n.color, n.value)
 
-	k := i + 2
-	n.right.dumpWithIndent(k)
-	n.left.dumpWithIndent(k)
+	j := i + 2
+	n.right.dumpWithIndent(j)
+	n.left.dumpWithIndent(j)
 }
 
 func (n *node) checkColors() bool {

@@ -7,63 +7,62 @@ import (
 	"testing"
 )
 
-type key int
-
-func (k key) Less(o Ordered) bool {
-	return k < o.(key)
+func less(x1, x2 interface{}) bool {
+	i1, i2 := x1.(int), x2.(int)
+	return i1 < i2
 }
 
 func TestNode(t *testing.T) {
-	k := key(3)
+	k := 3
 
 	n := (*node)(nil)
 	t.Log(n)
-	n = n.insert(k)
+	n = n.insert(k, less)
 	t.Log(n)
 
-	kk, ok := n.search(k)
+	kk, ok := n.search(k, less)
 	assert.True(t, ok)
 	assert.Equal(t, kk, k)
 }
 
 func TestNodeBalance(t *testing.T) {
-	ks := []key{1, 2, 3, 4, 5, 6, 7, 8}
+	ks := []int{1, 2, 3, 4, 5, 6, 7, 8}
 	n := (*node)(nil)
 
 	for _, k := range ks {
 		n.dump()
-		n = n.insert(k)
+		n = n.insert(k, less)
 	}
 
 	n.dump()
 }
 
 func TestNodeTakeMax(t *testing.T) {
-	ks := []key{1, 2, 3, 4, 5, 6, 7, 8}
+	ks := []int{1, 2, 3, 4, 5, 6, 7, 8}
 	n := (*node)(nil)
 
 	for _, k := range ks {
-		n = n.insert(k)
+		n = n.insert(k, less)
 		n.dump()
 
 		o, m, _ := n.takeMax()
-		assert.Equal(t, k, o.(key))
+		assert.Equal(t, k, o.(int))
 		m.dump()
 	}
 }
 
 func TestNodeRemove(t *testing.T) {
-	ks := []key{1, 2, 3, 4, 5, 6, 7, 8}
+	ks := []int{1, 2, 3, 4, 5, 6, 7, 8}
 	n := (*node)(nil)
 
 	for _, k := range ks {
-		n = n.insert(k)
+		n = n.insert(k, less)
 	}
 
 	n.dump()
 
 	for _, k := range ks {
-		n, _ = n.remove(k)
+		n, _ = n.remove(k, less)
 		n.dump()
 	}
 }
@@ -73,8 +72,8 @@ const (
 	MAX_KEY   = MAX_ITERS / 2
 )
 
-func generateKey() key {
-	return key(rand.Int() % MAX_KEY)
+func generateKey() int {
+	return rand.Int() % MAX_KEY
 }
 
 func TestNodeInsertRandomly(t *testing.T) {
@@ -84,7 +83,7 @@ func TestNodeInsertRandomly(t *testing.T) {
 		k := generateKey()
 		old := n
 
-		n = n.insert(k)
+		n = n.insert(k, less)
 
 		n.rank() // check ranks
 
@@ -129,16 +128,16 @@ func TestInsertRemovePersistency(t *testing.T) {
 	}
 }
 
-func (n *node) insertOrRemove(t *testing.T, x Ordered) (*node, bool) {
+func (n *node) insertOrRemove(t *testing.T, x interface{}) (*node, bool) {
 	insert := rand.Int()%2 == 0
 
 	if insert {
-		n = n.insert(x)
+		n = n.insert(x, less)
 	} else {
-		n, _ = n.remove(x)
+		n, _ = n.remove(x, less)
 	}
 
-	_, ok := n.search(x)
+	_, ok := n.search(x, less)
 
 	if insert && !ok || !insert && ok {
 		t.Fail()
@@ -147,7 +146,7 @@ func (n *node) insertOrRemove(t *testing.T, x Ordered) (*node, bool) {
 	return n, insert
 }
 
-func failWithDump(t *testing.T, insert bool, k key, old, new *node) {
+func failWithDump(t *testing.T, insert bool, k int, old, new *node) {
 	if insert {
 		fmt.Println("INSERT")
 	} else {

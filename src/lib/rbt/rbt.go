@@ -9,20 +9,16 @@ const (
 	black color = false
 )
 
-type Ordered interface {
-	Less(Ordered) bool
-}
-
 type node struct {
 	color       color
-	value       Ordered
+	value       interface{}
 	left, right *node
 }
 
-func newNode(c color, o Ordered, l, r *node) *node {
+func newNode(c color, x interface{}, l, r *node) *node {
 	return &node{
 		color: c,
-		value: o,
+		value: x,
 		left:  l,
 		right: r,
 	}
@@ -34,21 +30,21 @@ func (n *node) paint(c color) *node {
 	return &m
 }
 
-func (n *node) insert(o Ordered) *node {
-	return n.insertRed(o).paint(black)
+func (n *node) insert(x interface{}, less func(interface{}, interface{}) bool) *node {
+	return n.insertRed(x, less).paint(black)
 }
 
-func (n *node) insertRed(o Ordered) *node {
+func (n *node) insertRed(x interface{}, less func(interface{}, interface{}) bool) *node {
 	if n == nil {
-		return newNode(red, o, nil, nil)
+		return newNode(red, x, nil, nil)
 	}
 
 	m := *n
 
-	if o.Less(n.value) {
-		m.left = m.left.insertRed(o)
-	} else if n.value.Less(o) {
-		m.right = m.right.insertRed(o)
+	if less(x, n.value) {
+		m.left = m.left.insertRed(x, less)
+	} else if less(n.value, x) {
+		m.right = m.right.insertRed(x, less)
 	} else {
 		return n
 	}
@@ -62,10 +58,10 @@ func (n *node) balance() *node {
 	}
 
 	newN := func(
-		o Ordered,
-		lo Ordered, ll, lr *node,
-		ro Ordered, rl, rr *node) *node {
-		return newNode(red, o, newNode(black, lo, ll, lr), newNode(black, ro, rl, rr))
+		x interface{},
+		lx interface{}, ll, lr *node,
+		rx interface{}, rl, rr *node) *node {
+		return newNode(red, x, newNode(black, lx, ll, lr), newNode(black, rx, rl, rr))
 	}
 
 	l := n.left
@@ -75,8 +71,8 @@ func (n *node) balance() *node {
 		ll := l.left
 		lr := l.right
 
-		newLN := func(o, lo Ordered, ll, lr, rl *node) *node {
-			return newN(o, lo, ll, lr, n.value, rl, r)
+		newLN := func(x, lx interface{}, ll, lr, rl *node) *node {
+			return newN(x, lx, ll, lr, n.value, rl, r)
 		}
 
 		if ll != nil && ll.color == red {
@@ -90,8 +86,8 @@ func (n *node) balance() *node {
 		rl := r.left
 		rr := r.right
 
-		newRN := func(o, ro Ordered, lr, rl, rr *node) *node {
-			return newN(o, n.value, l, lr, ro, rl, rr)
+		newRN := func(x, rx interface{}, lr, rl, rr *node) *node {
+			return newN(x, n.value, l, lr, rx, rl, rr)
 		}
 
 		if rl != nil && rl.color == red {
@@ -104,26 +100,26 @@ func (n *node) balance() *node {
 	return n
 }
 
-func (n *node) search(o Ordered) (Ordered, bool) {
+func (n *node) search(x interface{}, less func(interface{}, interface{}) bool) (interface{}, bool) {
 	if n == nil {
 		return nil, false
-	} else if o.Less(n.value) {
-		return n.left.search(o)
-	} else if n.value.Less(o) {
-		return n.right.search(o)
+	} else if less(x, n.value) {
+		return n.left.search(x, less)
+	} else if less(n.value, x) {
+		return n.right.search(x, less)
 	}
 
 	return n.value, true
 }
 
-func (n *node) remove(o Ordered) (*node, bool) {
-	_, ok := n.search(o)
+func (n *node) remove(x interface{}, less func(interface{}, interface{}) bool) (*node, bool) {
+	_, ok := n.search(x, less)
 
 	if !ok {
 		return n, false
 	}
 
-	n, _ = n.removeOne(o)
+	n, _ = n.removeOne(x, less)
 
 	if n == nil {
 		return nil, true
@@ -132,11 +128,11 @@ func (n *node) remove(o Ordered) (*node, bool) {
 	return n.paint(black), true
 }
 
-func (n *node) removeOne(o Ordered) (*node, bool) {
+func (n *node) removeOne(x interface{}, less func(interface{}, interface{}) bool) (*node, bool) {
 	if n == nil {
 		return nil, true
-	} else if o.Less(n.value) {
-		l, balanced := n.left.removeOne(o)
+	} else if less(x, n.value) {
+		l, balanced := n.left.removeOne(x, less)
 		m := *n
 		m.left = l
 
@@ -145,8 +141,8 @@ func (n *node) removeOne(o Ordered) (*node, bool) {
 		}
 
 		return m.balanceLeft()
-	} else if n.value.Less(o) {
-		r, balanced := n.right.removeOne(o)
+	} else if less(n.value, x) {
+		r, balanced := n.right.removeOne(x, less)
 		m := *n
 		m.right = r
 
@@ -161,9 +157,9 @@ func (n *node) removeOne(o Ordered) (*node, bool) {
 		return n.right, n.color == red
 	}
 
-	o, l, balanced := n.left.takeMax()
+	x, l, balanced := n.left.takeMax()
 
-	m := newNode(n.color, o, l, n.right)
+	m := newNode(n.color, x, l, n.right)
 
 	if balanced {
 		return m, true
@@ -172,22 +168,22 @@ func (n *node) removeOne(o Ordered) (*node, bool) {
 	return m.balanceLeft()
 }
 
-func (n *node) takeMax() (Ordered, *node, bool) {
+func (n *node) takeMax() (interface{}, *node, bool) {
 	if n.right == nil {
 		return n.value, n.left, n.color == red
 	}
 
-	o, r, balanced := n.right.takeMax()
+	x, r, balanced := n.right.takeMax()
 
 	m := *n
 	m.right = r
 
 	if balanced {
-		return o, &m, true
+		return x, &m, true
 	}
 
 	n, balanced = m.balanceRight()
-	return o, n, balanced
+	return x, n, balanced
 }
 
 func (n *node) balanceLeft() (*node, bool) {

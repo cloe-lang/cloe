@@ -101,7 +101,7 @@ func TestNodeRemoveRandomly(t *testing.T) {
 		k := key(rand.Int() % MAX_KEY)
 		old := n
 
-		remove := rand.Int()%3 == 0
+		remove := rand.Int()%2 == 0
 
 		if remove {
 			n, _ = n.remove(k)

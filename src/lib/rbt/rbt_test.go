@@ -73,23 +73,23 @@ const (
 	MAX_KEY   = MAX_ITERS / 2
 )
 
+func generateKey() key {
+	return key(rand.Int() % MAX_KEY)
+}
+
 func TestNodeInsertRandomly(t *testing.T) {
 	n := (*node)(nil)
 
 	for i := 0; i < MAX_ITERS; i++ {
-		k := key(rand.Int() % MAX_KEY)
+		k := generateKey()
 		old := n
+
 		n = n.insert(k)
 
 		n.rank() // check ranks
 
 		if !n.checkColors() {
-			fmt.Println("KEY:", k)
-			fmt.Println("OLD:")
-			old.dump()
-			fmt.Println("NEW:")
-			n.dump()
-			t.FailNow()
+			failWithDump(t, true, k, old, n)
 		}
 	}
 }
@@ -98,44 +98,15 @@ func TestNodeRemoveRandomly(t *testing.T) {
 	n := (*node)(nil)
 
 	for i := 0; i < MAX_ITERS; i++ {
-		k := key(rand.Int() % MAX_KEY)
+		k := generateKey()
 		old := n
 
-		remove := rand.Int()%2 == 0
-
-		if remove {
-			n, _ = n.remove(k)
-
-			_, ok := n.search(k)
-
-			if ok {
-				t.Fail()
-			}
-		} else {
-			n = n.insert(k)
-
-			_, ok := n.search(k)
-
-			if !ok {
-				t.Fail()
-			}
-		}
+		n, insert := n.insertOrRemove(t, k)
 
 		n.rank() // check ranks
 
 		if !n.checkColors() {
-			if remove {
-				fmt.Println("REMOVE")
-			} else {
-				fmt.Println("INSERT")
-			}
-
-			fmt.Println("KEY:", k)
-			fmt.Println("OLD:")
-			old.dump()
-			fmt.Println("NEW:")
-			n.dump()
-			t.FailNow()
+			failWithDump(t, insert, k, old, n)
 		}
 	}
 }
@@ -144,45 +115,49 @@ func TestInsertRemovePersistency(t *testing.T) {
 	n := (*node)(nil)
 
 	for i := 0; i < MAX_ITERS; i++ {
-		k := key(rand.Int() % MAX_KEY)
+		k := generateKey()
 		old := n
 		oldCopy := n.deepCopy()
 
-		remove := rand.Int()%2 == 0
-
-		if remove {
-			n, _ = n.remove(k)
-
-			_, ok := n.search(k)
-
-			if ok {
-				t.Fail()
-			}
-		} else {
-			n = n.insert(k)
-
-			_, ok := n.search(k)
-
-			if !ok {
-				t.Fail()
-			}
-		}
+		n, insert := n.insertOrRemove(t, k)
 
 		n.rank() // check ranks
 
 		if !(old.totalEqual(oldCopy) && n.checkColors()) {
-			if remove {
-				fmt.Println("REMOVE")
-			} else {
-				fmt.Println("INSERT")
-			}
-
-			fmt.Println("KEY:", k)
-			fmt.Println("OLD:")
-			old.dump()
-			fmt.Println("NEW:")
-			n.dump()
-			t.FailNow()
+			failWithDump(t, insert, k, old, n)
 		}
 	}
+}
+
+func (n *node) insertOrRemove(t *testing.T, x Ordered) (*node, bool) {
+	insert := rand.Int()%2 == 0
+
+	if insert {
+		n = n.insert(x)
+	} else {
+		n, _ = n.remove(x)
+	}
+
+	_, ok := n.search(x)
+
+	if insert && !ok || !insert && ok {
+		t.Fail()
+	}
+
+	return n, insert
+}
+
+func failWithDump(t *testing.T, insert bool, k key, old, new *node) {
+	if insert {
+		fmt.Println("INSERT")
+	} else {
+		fmt.Println("REMOVE")
+	}
+
+	fmt.Println("KEY:", k)
+	fmt.Println("OLD:")
+	old.dump()
+	fmt.Println("NEW:")
+	new.dump()
+	t.FailNow()
 }

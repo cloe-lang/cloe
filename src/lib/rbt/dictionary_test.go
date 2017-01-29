@@ -16,7 +16,7 @@ func TestDictionaryInsertRemoveRandomly(t *testing.T) {
 		if insert {
 			d = d.Insert(k, keyToValue(k))
 		} else {
-			d, _ = d.Remove(k)
+			d = d.Remove(k)
 		}
 
 		_, ok := d.Search(k)
@@ -35,18 +35,18 @@ func TestDictionaryFirstRest(t *testing.T) {
 		d = d.Insert(k, keyToValue(k))
 	}
 
-	k, v, f := d.FirstRest()
+	k, v, d := d.FirstRest()
 
 	for _, expected := range ks {
 		t.Log(k, v)
 		assert.Equal(t, expected, k)
 		assert.Equal(t, keyToValue(expected), v)
-		k, v, f = f()
+		k, v, d = d.FirstRest()
 	}
 
 	assert.Equal(t, nil, k)
 	assert.Equal(t, nil, v)
-	assert.Equal(t, FirstRestKVFunc(nil), f)
+	assert.True(t, d.Empty())
 }
 
 func keyToValue(k int) int {

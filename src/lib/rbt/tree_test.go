@@ -16,7 +16,7 @@ func TestTreeInsertRemoveRandomly(t *testing.T) {
 		if insert {
 			tr = tr.Insert(x)
 		} else {
-			tr, _ = tr.Remove(x)
+			tr = tr.Remove(x)
 		}
 
 		_, ok := tr.Search(x)
@@ -35,14 +35,14 @@ func TestTreeFirstRest(t *testing.T) {
 		tr = tr.Insert(x)
 	}
 
-	x, f := tr.FirstRest()
+	x, tr := tr.FirstRest()
 
 	for _, xpected := range xs {
 		t.Log(x)
 		assert.Equal(t, xpected, x)
-		x, f = f()
+		x, tr = tr.FirstRest()
 	}
 
 	assert.Equal(t, nil, x)
-	assert.Equal(t, FirstRestFunc(nil), f)
+	assert.True(t, tr.Empty())
 }

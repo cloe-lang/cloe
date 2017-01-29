@@ -15,7 +15,11 @@ func (s Set) Include(x interface{}) bool {
 	return ok
 }
 
-func (s Set) Remove(x interface{}) (Set, bool) {
-	t, ok := s.Tree.Remove(x)
-	return Set{t}, ok
+func (s Set) Remove(x interface{}) Set {
+	return Set{s.Tree.Remove(x)}
+}
+
+func (s Set) FirstRest() (interface{}, Set) {
+	x, t := s.Tree.FirstRest()
+	return x, Set{t}
 }

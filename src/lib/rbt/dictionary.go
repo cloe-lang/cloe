@@ -36,26 +36,17 @@ func (d Dictionary) Search(k interface{}) (interface{}, bool) {
 	return kv.(keyValue).Value, ok
 }
 
-func (d Dictionary) Remove(k interface{}) (Dictionary, bool) {
-	t, ok := d.Tree.Remove(k)
-	return Dictionary{t}, ok
+func (d Dictionary) Remove(k interface{}) Dictionary {
+	return Dictionary{d.Tree.Remove(k)}
 }
 
-type FirstRestKVFunc func() (interface{}, interface{}, FirstRestKVFunc)
+func (d Dictionary) FirstRest() (interface{}, interface{}, Dictionary) {
+	x, t := d.Tree.FirstRest()
 
-func (d Dictionary) FirstRest() (interface{}, interface{}, FirstRestKVFunc) {
-	return convertFunc(d.Tree.FirstRest)()
-}
-
-func convertFunc(f FirstRestFunc) FirstRestKVFunc {
-	return func() (interface{}, interface{}, FirstRestKVFunc) {
-		x, f := f()
-
-		if x == nil {
-			return nil, nil, nil
-		}
-
-		kv := x.(keyValue)
-		return kv.Key, kv.Value, convertFunc(f)
+	if x == nil {
+		return nil, nil, Dictionary{NewTree(d.less)}
 	}
+
+	kv := x.(keyValue)
+	return kv.Key, kv.Value, Dictionary{t}
 }

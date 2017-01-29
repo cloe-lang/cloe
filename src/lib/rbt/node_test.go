@@ -62,7 +62,7 @@ func TestNodeRemove(t *testing.T) {
 	n.dump()
 
 	for _, k := range ks {
-		n, _ = n.remove(k, less)
+		n = n.remove(k, less)
 		n.dump()
 	}
 }
@@ -134,7 +134,7 @@ func (n *node) insertOrRemove(t *testing.T, x interface{}) (*node, bool) {
 	if insert {
 		n = n.insert(x, less)
 	} else {
-		n, _ = n.remove(x, less)
+		n = n.remove(x, less)
 	}
 
 	_, ok := n.search(x, less)

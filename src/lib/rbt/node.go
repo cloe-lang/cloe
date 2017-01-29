@@ -124,20 +124,14 @@ func (n *node) search(x interface{}, less func(interface{}, interface{}) bool) (
 	return n.value, true
 }
 
-func (n *node) remove(x interface{}, less func(interface{}, interface{}) bool) (*node, bool) {
-	_, ok := n.search(x, less)
-
-	if !ok {
-		return n, false
-	}
-
+func (n *node) remove(x interface{}, less func(interface{}, interface{}) bool) *node {
 	n, _ = n.removeOne(x, less)
 
 	if n == nil {
-		return nil, true
+		return nil
 	}
 
-	return n.paint(black), true
+	return n.paint(black)
 }
 
 func (n *node) removeOne(x interface{}, less func(interface{}, interface{}) bool) (*node, bool) {

@@ -16,7 +16,7 @@ func TestSetInsertRemoveRandomly(t *testing.T) {
 		if insert {
 			s = s.Insert(x)
 		} else {
-			s, _ = s.Remove(x)
+			s = s.Remove(x)
 		}
 
 		ok := s.Include(x)
@@ -35,14 +35,14 @@ func TestSetFirstRest(t *testing.T) {
 		s = s.Insert(x)
 	}
 
-	x, f := s.FirstRest()
+	x, s := s.FirstRest()
 
 	for _, expected := range xs {
 		t.Log(x)
 		assert.Equal(t, expected, x)
-		x, f = f()
+		x, s = s.FirstRest()
 	}
 
 	assert.Equal(t, nil, x)
-	assert.Equal(t, FirstRestFunc(nil), f)
+	assert.True(t, s.Empty())
 }

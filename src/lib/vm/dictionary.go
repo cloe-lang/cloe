@@ -78,8 +78,7 @@ func notOrderedError(k Object) *Thunk {
 }
 
 func (d dictionaryType) equal(e equalable) Object {
-	// TODO: Use ToList and compare them as Lists
-	return rawBool(false)
+	return d.toList().(listType).equal(e.(dictionaryType).toList().(listType))
 }
 
 func (d dictionaryType) toList() Object {

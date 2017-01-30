@@ -2,6 +2,7 @@ package vm
 
 import (
 	"github.com/stretchr/testify/assert"
+	"math/rand"
 	"testing"
 )
 
@@ -110,4 +111,23 @@ func TestDictionaryWithDuplicateKeys(t *testing.T) {
 
 func dictionarySize(d *Thunk) int {
 	return int(d.Eval().(dictionaryType).Size())
+}
+
+func TestDictionaryEqual(t *testing.T) {
+	kvs := [][2]*Thunk{
+		{True, Nil},
+		{False, NewList(NewNumber(123))},
+		{Nil, NewList(NewNumber(123), NewNumber(456))},
+		{NewNumber(42), NewString("foo")},
+	}
+
+	ds := []*Thunk{EmptyDictionary, EmptyDictionary}
+
+	for i := range ds {
+		for _, j := range rand.Perm(len(kvs)) {
+			ds[i] = App(Set, ds[i], kvs[j][0], kvs[j][1])
+		}
+	}
+
+	assert.True(t, testEqual(ds[0], ds[1]))
 }

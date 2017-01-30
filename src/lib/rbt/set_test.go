@@ -20,10 +20,7 @@ func TestSetInsertRemoveRandomly(t *testing.T) {
 		}
 
 		ok := s.Include(x)
-
-		if insert && !ok || !insert && ok {
-			t.Fail()
-		}
+		assert.True(t, insert && ok || !insert && !ok)
 	}
 }
 

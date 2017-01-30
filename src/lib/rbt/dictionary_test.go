@@ -20,10 +20,7 @@ func TestDictionaryInsertRemoveRandomly(t *testing.T) {
 		}
 
 		_, ok := d.Search(k)
-
-		if insert && !ok || !insert && ok {
-			t.Fail()
-		}
+		assert.True(t, insert && ok || !insert && !ok)
 	}
 }
 

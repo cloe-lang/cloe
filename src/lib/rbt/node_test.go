@@ -138,10 +138,7 @@ func (n *node) insertOrRemove(t *testing.T, x interface{}) (*node, bool) {
 	}
 
 	_, ok := n.search(x, less)
-
-	if insert && !ok || !insert && ok {
-		t.Fail()
-	}
+	assert.True(t, insert && ok || !insert && !ok)
 
 	return n, insert
 }

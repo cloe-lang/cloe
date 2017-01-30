@@ -33,10 +33,7 @@ func TestTreeInsertRemoveRandomly(t *testing.T) {
 		}
 
 		_, ok = tr.Search(x)
-
-		if insert && !ok || !insert && ok {
-			t.Fail()
-		}
+		assert.True(t, insert && ok || !insert && !ok)
 	}
 }
 

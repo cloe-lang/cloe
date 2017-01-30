@@ -43,3 +43,7 @@ func (t Tree) FirstRest() (interface{}, Tree) {
 func (t Tree) Empty() bool {
 	return t.node == nil
 }
+
+func (t Tree) Size() int {
+	return t.node.size()
+}

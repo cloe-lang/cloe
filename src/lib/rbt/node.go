@@ -309,6 +309,14 @@ func (n *node) deepCopy() *node {
 	return newNode(n.color, n.value, n.left.deepCopy(), n.right.deepCopy())
 }
 
+func (n *node) size() int {
+	if n == nil {
+		return 0
+	}
+
+	return n.left.size() + 1 + n.right.size()
+}
+
 func (n *node) totalEqual(m *node) bool {
 	if n == nil && m == nil {
 		return true

@@ -11,6 +11,7 @@ func TestTreeInsertRemoveRandomly(t *testing.T) {
 
 	for i := 0; i < MAX_ITERS; i++ {
 		x := generateKey()
+		old := tr
 		insert := rand.Int()%2 == 0
 
 		if insert {
@@ -19,7 +20,19 @@ func TestTreeInsertRemoveRandomly(t *testing.T) {
 			tr = tr.Remove(x)
 		}
 
-		_, ok := tr.Search(x)
+		_, ok := old.Search(x)
+
+		if insert && !ok {
+			assert.Equal(t, 1, tr.Size()-old.Size())
+		} else if insert && ok {
+			assert.Equal(t, tr.Size(), old.Size())
+		} else if !insert && ok {
+			assert.Equal(t, 1, old.Size()-tr.Size())
+		} else {
+			assert.Equal(t, tr.Size(), old.Size())
+		}
+
+		_, ok = tr.Search(x)
 
 		if insert && !ok || !insert && ok {
 			t.Fail()
@@ -45,4 +58,21 @@ func TestTreeFirstRest(t *testing.T) {
 
 	assert.Equal(t, nil, x)
 	assert.True(t, tr.Empty())
+}
+
+func TestTreeSize(t *testing.T) {
+	tr := NewTree(less)
+	assert.Equal(t, 0, tr.Size())
+	tr = tr.Insert(0)
+	assert.Equal(t, 1, tr.Size())
+	tr = tr.Insert(1)
+	assert.Equal(t, 2, tr.Size())
+	tr = tr.Insert(1)
+	assert.Equal(t, 2, tr.Size())
+	tr = tr.Remove(1)
+	assert.Equal(t, 1, tr.Size())
+	tr = tr.Remove(0)
+	assert.Equal(t, 0, tr.Size())
+	tr = tr.Remove(0)
+	assert.Equal(t, 0, tr.Size())
 }

@@ -29,7 +29,7 @@ var Equal = NewStrictFunction(func(os ...Object) Object {
 		es[i] = e
 	}
 
-	if reflect.TypeOf(es[0]) != reflect.TypeOf(es[1]) {
+	if !areSameType(es[0], es[1]) {
 		return False
 	}
 
@@ -54,3 +54,31 @@ var ToList = NewStrictFunction(func(os ...Object) Object {
 
 	return l.toList()
 })
+
+type ordered interface {
+	less(ordered) bool // can panic
+}
+
+func less(x1, x2 interface{}) bool {
+	if !areSameType(x1, x2) {
+		return reflect.TypeOf(x1).Name() < reflect.TypeOf(x2).Name()
+	}
+
+	o1, ok := x1.(ordered)
+
+	if !ok {
+		panic(notOrderedError(x1))
+	}
+
+	o2, ok := x2.(ordered)
+
+	if !ok {
+		panic(notOrderedError(x2))
+	}
+
+	return o1.less(o2)
+}
+
+func areSameType(x1, x2 interface{}) bool {
+	return reflect.TypeOf(x1) == reflect.TypeOf(x2)
+}

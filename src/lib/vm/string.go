@@ -1,10 +1,6 @@
 package vm
 
-import (
-	"github.com/mediocregopher/seq"
-	"hash/crc32"
-	"strings"
-)
+import "strings"
 
 type stringType string
 
@@ -44,19 +40,8 @@ func (s stringType) toList() Object {
 		App(ToList, NewString(string(rs[1:]))))
 }
 
-// seq.Setable
+// ordered
 
-func (s stringType) Hash(i uint32) uint32 {
-	// TODO: Need to add i?
-	return crc32.ChecksumIEEE([]byte(s)) % seq.ARITY
-}
-
-func (s1 stringType) Equal(o interface{}) bool {
-	s2, ok := o.(stringType)
-
-	if !ok {
-		return false
-	}
-
-	return s1 == s2
+func (s stringType) less(o ordered) bool {
+	return s < o.(stringType)
 }

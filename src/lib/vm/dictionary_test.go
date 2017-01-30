@@ -114,5 +114,5 @@ func TestDictionaryWithDuplicateKeys(t *testing.T) {
 }
 
 func dictionarySize(d *Thunk) int {
-	return int(d.Eval().(dictionaryType).hashMap.Size())
+	return int(d.Eval().(dictionaryType).Size())
 }

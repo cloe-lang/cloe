@@ -1,9 +1,6 @@
 package vm
 
-import (
-	"github.com/mediocregopher/seq"
-	"math"
-)
+import "math"
 
 type numberType float64
 
@@ -145,20 +142,8 @@ func notNumberError(o Object) *Thunk {
 	return TypeError(o, "Number")
 }
 
-// seq.Setable
+// ordered
 
-func (n numberType) Hash(i uint32) uint32 {
-	// TODO: Cast float64 as int64 first by interpreting 64bits and fold it in
-	// half.
-	return (i + uint32(n)) % seq.ARITY
-}
-
-func (n1 numberType) Equal(o interface{}) bool {
-	n2, ok := o.(numberType)
-
-	if !ok {
-		return false
-	}
-
-	return n1 == n2
+func (n numberType) less(o ordered) bool {
+	return n < o.(numberType)
 }

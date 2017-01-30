@@ -95,15 +95,10 @@ func TestDictionaryWithDuplicateKeys(t *testing.T) {
 		NewNumber(2049), NewString("runner"), NewString("lisp"),
 	}
 
-	dups := []*Thunk{
-		ks[0], ks[1], ks[2], ks[2], ks[7], ks[3], ks[0], ks[4], ks[6], ks[1],
-		ks[1], ks[4], ks[5], ks[6], ks[0], ks[2], ks[8], ks[8],
-	}
-
 	d := EmptyDictionary
 
-	for _, k := range dups {
-		d = App(Set, d, k, k)
+	for _, i := range []int{0, 1, 2, 2, 7, 3, 0, 4, 6, 1, 1, 4, 5, 6, 0, 2, 8, 8} {
+		d = App(Set, d, ks[i], ks[i])
 	}
 
 	assert.Equal(t, len(ks), dictionarySize(d))

@@ -99,3 +99,30 @@ func notListError(o Object) *Thunk {
 func emptyListError() *Thunk {
 	return ValueError("The list is empty. You cannot apply rest.")
 }
+
+// ordered
+
+func (l1 listType) less(ord ordered) bool {
+	l2 := ord.(listType)
+
+	if l2 == emptyList {
+		return false
+	} else if l1 == emptyList {
+		return true
+	}
+
+	// Compare firsts
+
+	o1 := l1.first.Eval()
+	o2 := l2.first.Eval()
+
+	if less(o1, o2) {
+		return true
+	} else if less(o2, o1) {
+		return false
+	}
+
+	// Compare rests
+
+	return less(l1.rest.Eval(), l2.rest.Eval())
+}

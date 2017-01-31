@@ -92,3 +92,9 @@ func (d dictionaryType) toList() Object {
 		NewList(Normal(k.(Object)), v.(*Thunk)),
 		App(ToList, Normal(dictionaryType{rest})))
 }
+
+// ordered
+
+func (d dictionaryType) less(o ordered) bool {
+	return less(d.toList(), o.(dictionaryType).toList())
+}

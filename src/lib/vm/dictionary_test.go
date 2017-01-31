@@ -132,3 +132,24 @@ func TestDictionaryEqual(t *testing.T) {
 	assert.Equal(t, 4, ds[0].Eval().(dictionaryType).Size())
 	assert.True(t, testEqual(ds[0], ds[1]))
 }
+
+func TestDictionaryLess(t *testing.T) {
+	kvs := [][2]*Thunk{
+		{True, Nil},
+		{False, NewList(NewNumber(123))},
+	}
+
+	ds := []*Thunk{EmptyDictionary, EmptyDictionary}
+
+	for i := range ds {
+		for _, j := range rand.Perm(len(kvs)) {
+			ds[i] = App(Set, ds[i], kvs[j][0], kvs[j][1])
+		}
+	}
+
+	ds[1] = App(Set, ds[1], Nil, Nil)
+
+	assert.Equal(t, 2, ds[0].Eval().(dictionaryType).Size())
+	assert.Equal(t, 3, ds[1].Eval().(dictionaryType).Size())
+	assert.True(t, testLess(ds[0], ds[1]))
+}

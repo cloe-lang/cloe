@@ -6,7 +6,7 @@ import (
 )
 
 func TestListEqual(t *testing.T) {
-	for _, tss := range [][][]*Thunk{
+	for _, tss := range [][2][]*Thunk{
 		{{}, {}},
 		{{True}, {True}},
 		{{True, False}, {True, False}},
@@ -14,7 +14,7 @@ func TestListEqual(t *testing.T) {
 		assert.True(t, testEqual(NewList(tss[0]...), NewList(tss[1]...)))
 	}
 
-	for _, tss := range [][][]*Thunk{
+	for _, tss := range [][2][]*Thunk{
 		{{}, {True}},
 		{{True}, {False}},
 		{{True, True}, {True, True, True}},

@@ -129,5 +129,6 @@ func TestDictionaryEqual(t *testing.T) {
 		}
 	}
 
+	assert.Equal(t, 4, ds[0].Eval().(dictionaryType).Size())
 	assert.True(t, testEqual(ds[0], ds[1]))
 }

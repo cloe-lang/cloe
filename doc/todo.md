@@ -8,13 +8,10 @@
 - Ordered interface
 - Thunk as interface?
   - Object.Eval()
-- Dict and set objects based on persistent red black tree
-- Remove callable interface
-  - Use bare closures
 
 - Set data structure
 - vm.Add like `(+ ..nums)`?
-- Add debug information to Function and Closure
+- Add debug information to Functions, Closures and Thunks
 - Modify `Thunk.Eval()` to trace function calls and chain errors over them.
 
 - Make some data structures (e.g. List and Dictionary) callable
@@ -22,8 +19,7 @@
 - `ir <filename>` bin
 
 - Pattern match
-- Type system?
-  - May be gradual one
+- Gradual typing?
 - Slab allocator for Thunks?
 
 ## vm

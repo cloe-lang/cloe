@@ -92,6 +92,23 @@ var Rest = NewStrictFunction(func(os ...Object) Object {
 	return l.rest
 })
 
+var Append = NewLazyFunction(appendFunc)
+
+func appendFunc(ts ...*Thunk) Object {
+	o := ts[0].Eval()
+	l, ok := o.(listType)
+
+	if !ok {
+		return notListError(o)
+	}
+
+	if l == emptyList {
+		return NewList(ts[1])
+	}
+
+	return cons(l.first, App(NewLazyFunction(appendFunc), l.rest, ts[1]))
+}
+
 func notListError(o Object) *Thunk {
 	return TypeError(o, "List")
 }

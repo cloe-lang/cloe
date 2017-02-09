@@ -87,3 +87,8 @@ outs : [Output] -> Output
 
 - The former, `seq` is pretty similar to `cause` while `cause` is only for IO
   synchronization.
+
+## Named types like Go language?
+
+It may inhibit potentially polymorphic code.
+(e.g. `(isType? x "POSRecord")` instead of `(haveKey x "price")`)

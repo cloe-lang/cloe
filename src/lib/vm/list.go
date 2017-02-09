@@ -117,6 +117,18 @@ func emptyListError() *Thunk {
 	return ValueError("The list is empty. You cannot apply rest.")
 }
 
+func (l listType) merge(ts ...*Thunk) Object {
+	if len(ts) == 0 {
+		return l
+	}
+
+	if l == emptyList {
+		return App(Merge, ts...)
+	}
+
+	return cons(l.first, App(Merge, append([]*Thunk{l.rest}, ts...)...))
+}
+
 // ordered
 
 func (l1 listType) less(ord ordered) bool {

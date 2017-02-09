@@ -84,3 +84,18 @@ func less(x1, x2 interface{}) bool {
 func areSameType(x1, x2 interface{}) bool {
 	return reflect.TypeOf(x1) == reflect.TypeOf(x2)
 }
+
+type mergable interface {
+	merge(ts ...*Thunk) Object
+}
+
+var Merge = NewLazyFunction(func(ts ...*Thunk) Object {
+	o := ts[0].Eval()
+	c, ok := o.(mergable)
+
+	if !ok {
+		return TypeError(o, "Mergable")
+	}
+
+	return c.merge(ts[1:]...)
+})

@@ -12,11 +12,11 @@ func TestStringEqual(t *testing.T) {
 	assert.True(t, !testEqual(s, NewString("bar")))
 }
 
-func TestConcat(t *testing.T) {
+func TestStringMerge(t *testing.T) {
 	s := "foo"
 	th := NewString(s)
 
-	assert.Equal(t, string(App(Concat, th, th).Eval().(stringType)), s+s)
+	assert.Equal(t, string(App(Merge, th, th).Eval().(stringType)), s+s)
 }
 
 func TestStringToList(t *testing.T) {

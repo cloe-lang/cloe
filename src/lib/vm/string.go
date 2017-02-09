@@ -12,21 +12,23 @@ func (s stringType) equal(e equalable) Object {
 	return rawBool(s == e)
 }
 
-var Concat = NewStrictFunction(func(os ...Object) Object {
-	ss := make([]string, len(os))
+func (s stringType) merge(ts ...*Thunk) Object {
+	return App(NewStrictFunction(func(os ...Object) Object {
+		ss := make([]string, len(os))
 
-	for i, o := range os {
-		s, ok := o.(stringType)
+		for i, o := range os {
+			s, ok := o.(stringType)
 
-		if !ok {
-			return TypeError(o, "String")
+			if !ok {
+				return TypeError(o, "String")
+			}
+
+			ss[i] = string(s)
 		}
 
-		ss[i] = string(s)
-	}
-
-	return stringType(strings.Join(ss[:], ""))
-})
+		return stringType(strings.Join(ss, ""))
+	}), append([]*Thunk{Normal(s)}, ts...)...)
+}
 
 func (s stringType) toList() Object {
 	if s == "" {

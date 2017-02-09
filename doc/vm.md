@@ -42,8 +42,8 @@
     - String, List, Dictionary, Set
   - delete
     - Dictionary, Set (List?)
-  - concat
-    - String, List
+  - merge
+    - String, List, Set, Dictionary
 - Internal
   - ordered
     - Except for Error

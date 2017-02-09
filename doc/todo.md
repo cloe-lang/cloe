@@ -1,5 +1,8 @@
 # To do
 
+- Change structures of Function and Closure by equipping them with Signatures
+  - Make argument binding lazy
+
 - Parser
 - Compiler
 - Error handling

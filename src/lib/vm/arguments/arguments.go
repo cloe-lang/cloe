@@ -53,3 +53,26 @@ func mergeRestPositionalArgs(ps ...PositionalArgument) *vm.Thunk {
 
 	return t
 }
+
+func (args Arguments) search(s string) *vm.Thunk {
+	for _, k := range args.keywords {
+		if s == k.name {
+			return k.value
+		}
+	}
+
+	for _, d := range args.expandedDicts {
+		o := d.Eval()
+		d, ok := o.(vm.DictionaryType)
+
+		if !ok {
+			return vm.NotDictionaryError(o)
+		}
+
+		if v, ok := d.Search(vm.NewString(s).Eval()); ok {
+			return v.(*vm.Thunk)
+		}
+	}
+
+	return nil
+}

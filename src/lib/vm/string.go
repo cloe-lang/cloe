@@ -13,21 +13,26 @@ func (s StringType) equal(e equalable) Object {
 }
 
 func (s StringType) merge(ts ...*Thunk) Object {
-	return App(NewStrictFunction(func(os ...Object) Object {
-		ss := make([]string, len(os))
+	ts = append([]*Thunk{Normal(s)}, ts...)
 
-		for i, o := range os {
-			s, ok := o.(StringType)
+	for _, t := range ts {
+		go t.Eval()
+	}
 
-			if !ok {
-				return TypeError(o, "String")
-			}
+	ss := make([]string, len(ts))
 
-			ss[i] = string(s)
+	for i, t := range ts {
+		o := t.Eval()
+		s, ok := o.(StringType)
+
+		if !ok {
+			return TypeError(o, "String")
 		}
 
-		return StringType(strings.Join(ss, ""))
-	}), append([]*Thunk{Normal(s)}, ts...)...)
+		ss[i] = string(s)
+	}
+
+	return StringType(strings.Join(ss, ""))
 }
 
 func (s StringType) toList() Object {

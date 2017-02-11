@@ -90,12 +90,20 @@ type mergable interface {
 }
 
 var Merge = NewLazyFunction(func(ts ...*Thunk) Object {
+	if len(ts) == 0 {
+		return NumArgsError("merge", "> 0")
+	}
+
 	o := ts[0].Eval()
-	c, ok := o.(mergable)
+	m, ok := o.(mergable)
 
 	if !ok {
 		return TypeError(o, "Mergable")
 	}
 
-	return c.merge(ts[1:]...)
+	if len(ts) == 1 {
+		return m
+	}
+
+	return m.merge(ts[1:]...)
 })

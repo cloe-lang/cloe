@@ -118,10 +118,6 @@ func emptyListError() *Thunk {
 }
 
 func (l ListType) merge(ts ...*Thunk) Object {
-	if len(ts) == 0 {
-		return l
-	}
-
 	if l == emptyList {
 		return App(Merge, ts...)
 	}

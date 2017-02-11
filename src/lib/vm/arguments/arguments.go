@@ -41,11 +41,15 @@ func listPositionalArgs(ps ...PositionalArgument) *vm.Thunk {
 		panic("First PositionalArgument must be a list.")
 	}
 
-	// t := ps[0].value
+	t := ps[0].value
 
-	// for _, p := range ps[1:] {
-	// 	t = vm.App(vm.Append, t, p.value)
-	// }
+	for _, p := range ps[1:] {
+		if p.expanded {
+			t = vm.App(vm.Merge, t, p.value)
+		} else {
+			t = vm.App(vm.Append, t, p.value)
+		}
+	}
 
-	return nil
+	return t
 }

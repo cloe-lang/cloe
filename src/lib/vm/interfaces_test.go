@@ -1,7 +1,7 @@
 package vm
 
 func testEqual(ts ...*Thunk) bool {
-	return bool(App(Equal, ts...).Eval().(boolType))
+	return bool(App(Equal, ts...).Eval().(BoolType))
 }
 
 func testLess(t1, t2 *Thunk) bool {

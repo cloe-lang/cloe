@@ -27,7 +27,7 @@ func TestDictionarySet(t *testing.T) {
 	for _, k := range []*Thunk{
 		True, False, Nil, NewNumber(42), NewString("risp"),
 	} {
-		_, ok := App(Set, EmptyDictionary, k, Nil).Eval().(dictionaryType)
+		_, ok := App(Set, EmptyDictionary, k, Nil).Eval().(DictionaryType)
 		assert.True(t, ok)
 	}
 }
@@ -50,7 +50,7 @@ func TestDictionaryGet(t *testing.T) {
 
 			t.Log(k.Eval())
 
-			if e, ok := App(Get, d, k).Eval().(errorType); ok {
+			if e, ok := App(Get, d, k).Eval().(ErrorType); ok {
 				t.Log(e.message)
 			}
 
@@ -86,7 +86,7 @@ func TestDictionaryToList(t *testing.T) {
 			assert.True(t, testEqual(lv, dv))
 		}
 
-		assert.Equal(t, l.Eval().(listType), emptyList)
+		assert.Equal(t, l.Eval().(ListType), emptyList)
 	}
 }
 
@@ -110,7 +110,7 @@ func TestDictionaryWithDuplicateKeys(t *testing.T) {
 }
 
 func dictionarySize(d *Thunk) int {
-	return int(d.Eval().(dictionaryType).Size())
+	return int(d.Eval().(DictionaryType).Size())
 }
 
 func TestDictionaryEqual(t *testing.T) {
@@ -129,7 +129,7 @@ func TestDictionaryEqual(t *testing.T) {
 		}
 	}
 
-	assert.Equal(t, 4, ds[0].Eval().(dictionaryType).Size())
+	assert.Equal(t, 4, ds[0].Eval().(DictionaryType).Size())
 	assert.True(t, testEqual(ds[0], ds[1]))
 }
 
@@ -149,7 +149,7 @@ func TestDictionaryLess(t *testing.T) {
 
 	ds[1] = App(Set, ds[1], Nil, Nil)
 
-	assert.Equal(t, 2, ds[0].Eval().(dictionaryType).Size())
-	assert.Equal(t, 3, ds[1].Eval().(dictionaryType).Size())
+	assert.Equal(t, 2, ds[0].Eval().(DictionaryType).Size())
+	assert.Equal(t, 3, ds[1].Eval().(DictionaryType).Size())
 	assert.True(t, testLess(ds[0], ds[1]))
 }

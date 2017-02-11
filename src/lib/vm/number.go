@@ -2,21 +2,21 @@ package vm
 
 import "math"
 
-type numberType float64
+type NumberType float64
 
 func NewNumber(n float64) *Thunk {
-	return Normal(numberType(n))
+	return Normal(NumberType(n))
 }
 
-func (n numberType) equal(e equalable) Object {
-	return rawBool(n == e.(numberType))
+func (n NumberType) equal(e equalable) Object {
+	return rawBool(n == e.(NumberType))
 }
 
 var Add = NewStrictFunction(func(os ...Object) Object {
-	sum := numberType(0)
+	sum := NumberType(0)
 
 	for _, o := range os {
-		n, ok := o.(numberType)
+		n, ok := o.(NumberType)
 
 		if !ok {
 			return notNumberError(o)
@@ -34,14 +34,14 @@ var Sub = NewStrictFunction(func(os ...Object) Object {
 	}
 
 	o := os[0]
-	n0, ok := o.(numberType)
+	n0, ok := o.(NumberType)
 
 	if !ok {
 		return notNumberError(o)
 	}
 
 	for _, o := range os[1:] {
-		n, ok := o.(numberType)
+		n, ok := o.(NumberType)
 
 		if !ok {
 			return notNumberError(o)
@@ -54,10 +54,10 @@ var Sub = NewStrictFunction(func(os ...Object) Object {
 })
 
 var Mul = NewStrictFunction(func(os ...Object) Object {
-	prod := numberType(1)
+	prod := NumberType(1)
 
 	for _, o := range os {
-		n, ok := o.(numberType)
+		n, ok := o.(NumberType)
 
 		if !ok {
 			return notNumberError(o)
@@ -75,14 +75,14 @@ var Div = NewStrictFunction(func(os ...Object) Object {
 	}
 
 	o := os[0]
-	n0, ok := o.(numberType)
+	n0, ok := o.(NumberType)
 
 	if !ok {
 		return notNumberError(o)
 	}
 
 	for _, o := range os[1:] {
-		n, ok := o.(numberType)
+		n, ok := o.(NumberType)
 
 		if !ok {
 			return notNumberError(o)
@@ -100,14 +100,14 @@ var Mod = NewStrictFunction(func(os ...Object) Object {
 	}
 
 	o := os[0]
-	n1, ok := o.(numberType)
+	n1, ok := o.(NumberType)
 
 	if !ok {
 		return notNumberError(o)
 	}
 
 	o = os[1]
-	n2, ok := o.(numberType)
+	n2, ok := o.(NumberType)
 
 	if !ok {
 		return notNumberError(o)
@@ -122,14 +122,14 @@ var Pow = NewStrictFunction(func(os ...Object) Object {
 	}
 
 	o := os[0]
-	n1, ok := o.(numberType)
+	n1, ok := o.(NumberType)
 
 	if !ok {
 		return notNumberError(o)
 	}
 
 	o = os[1]
-	n2, ok := o.(numberType)
+	n2, ok := o.(NumberType)
 
 	if !ok {
 		return notNumberError(o)
@@ -144,6 +144,6 @@ func notNumberError(o Object) *Thunk {
 
 // ordered
 
-func (n numberType) less(o ordered) bool {
-	return n < o.(numberType)
+func (n NumberType) less(o ordered) bool {
+	return n < o.(NumberType)
 }

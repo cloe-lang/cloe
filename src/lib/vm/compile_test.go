@@ -10,7 +10,7 @@ func TestCompile(t *testing.T) {
 
 	f := Compile([]interface{}{0, 1, []interface{}{0, 2, 3}})
 
-	x1 := float64(App(f, Add, NewNumber(n1), NewNumber(n2), NewNumber(n3)).Eval().(numberType))
+	x1 := float64(App(f, Add, NewNumber(n1), NewNumber(n2), NewNumber(n3)).Eval().(NumberType))
 	x2 := n1 + n2 + n3
 
 	t.Logf("%f == %f?", x1, x2)

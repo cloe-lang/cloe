@@ -2,22 +2,22 @@ package vm
 
 import "strings"
 
-type stringType string
+type StringType string
 
 func NewString(s string) *Thunk {
-	return Normal(stringType(s))
+	return Normal(StringType(s))
 }
 
-func (s stringType) equal(e equalable) Object {
+func (s StringType) equal(e equalable) Object {
 	return rawBool(s == e)
 }
 
-func (s stringType) merge(ts ...*Thunk) Object {
+func (s StringType) merge(ts ...*Thunk) Object {
 	return App(NewStrictFunction(func(os ...Object) Object {
 		ss := make([]string, len(os))
 
 		for i, o := range os {
-			s, ok := o.(stringType)
+			s, ok := o.(StringType)
 
 			if !ok {
 				return TypeError(o, "String")
@@ -26,11 +26,11 @@ func (s stringType) merge(ts ...*Thunk) Object {
 			ss[i] = string(s)
 		}
 
-		return stringType(strings.Join(ss, ""))
+		return StringType(strings.Join(ss, ""))
 	}), append([]*Thunk{Normal(s)}, ts...)...)
 }
 
-func (s stringType) toList() Object {
+func (s StringType) toList() Object {
 	if s == "" {
 		return emptyList
 	}
@@ -44,6 +44,6 @@ func (s stringType) toList() Object {
 
 // ordered
 
-func (s stringType) less(o ordered) bool {
-	return s < o.(stringType)
+func (s StringType) less(o ordered) bool {
+	return s < o.(StringType)
 }

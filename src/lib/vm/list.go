@@ -1,18 +1,18 @@
 package vm
 
-type listType struct {
+type ListType struct {
 	first *Thunk
 	rest  *Thunk
 }
 
-var emptyList = listType{nil, nil}
+var emptyList = ListType{nil, nil}
 
 func NewList(ts ...*Thunk) *Thunk {
 	return App(Prepend, append(ts, Normal(emptyList))...)
 }
 
-func (l1 listType) equal(e equalable) Object {
-	l2 := e.(listType)
+func (l1 ListType) equal(e equalable) Object {
+	l2 := e.(ListType)
 
 	if l1 == emptyList || l2 == emptyList {
 		return rawBool(l1 == l2)
@@ -24,7 +24,7 @@ func (l1 listType) equal(e equalable) Object {
 		App(Equal, l1.rest, l2.rest),
 	} {
 		o := t.Eval()
-		b, ok := o.(boolType)
+		b, ok := o.(BoolType)
 
 		if !ok {
 			return notBoolError(o)
@@ -54,8 +54,8 @@ var Prepend = NewLazyFunction(func(ts ...*Thunk) Object {
 	return l
 })
 
-func cons(t1, t2 *Thunk) listType {
-	return listType{t1, t2}
+func cons(t1, t2 *Thunk) ListType {
+	return ListType{t1, t2}
 }
 
 var First = NewStrictFunction(func(os ...Object) Object {
@@ -64,7 +64,7 @@ var First = NewStrictFunction(func(os ...Object) Object {
 	}
 
 	o := os[0]
-	l, ok := o.(listType)
+	l, ok := o.(ListType)
 
 	if !ok {
 		return notListError(o)
@@ -81,7 +81,7 @@ var Rest = NewStrictFunction(func(os ...Object) Object {
 	}
 
 	o := os[0]
-	l, ok := o.(listType)
+	l, ok := o.(ListType)
 
 	if !ok {
 		return notListError(o)
@@ -96,7 +96,7 @@ var Append = NewLazyFunction(appendFunc)
 
 func appendFunc(ts ...*Thunk) Object {
 	o := ts[0].Eval()
-	l, ok := o.(listType)
+	l, ok := o.(ListType)
 
 	if !ok {
 		return notListError(o)
@@ -117,7 +117,7 @@ func emptyListError() *Thunk {
 	return ValueError("The list is empty. You cannot apply rest.")
 }
 
-func (l listType) merge(ts ...*Thunk) Object {
+func (l ListType) merge(ts ...*Thunk) Object {
 	if len(ts) == 0 {
 		return l
 	}
@@ -131,8 +131,8 @@ func (l listType) merge(ts ...*Thunk) Object {
 
 // ordered
 
-func (l1 listType) less(ord ordered) bool {
-	l2 := ord.(listType)
+func (l1 ListType) less(ord ordered) bool {
+	l2 := ord.(ListType)
 
 	if l2 == emptyList {
 		return false

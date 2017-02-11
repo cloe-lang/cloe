@@ -5,7 +5,7 @@ var Cause = NewLazyFunction(func(ts ...*Thunk) Object {
 		return NumArgsError("cause", "2")
 	}
 
-	e, ok := ts[0].Eval().(errorType)
+	e, ok := ts[0].Eval().(ErrorType)
 
 	if ok {
 		return e

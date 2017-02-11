@@ -7,7 +7,7 @@ import (
 )
 
 func TestCause(t *testing.T) {
-	_, ok := App(Cause, App(print, NewNumber(42)), App(print, NewString("OK!"))).Eval().(nilType)
+	_, ok := App(Cause, App(print, NewNumber(42)), App(print, NewString("OK!"))).Eval().(NilType)
 	assert.True(t, ok)
 }
 

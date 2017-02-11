@@ -1,15 +1,15 @@
 package vm
 
-type nilType struct{}
+type NilType struct{}
 
-var Nil = Normal(nilType{})
+var Nil = Normal(NilType{})
 
-func (n nilType) equal(e equalable) Object {
+func (n NilType) equal(e equalable) Object {
 	return True
 }
 
 // ordered
 
-func (nilType) less(o ordered) bool {
+func (NilType) less(o ordered) bool {
 	return false
 }

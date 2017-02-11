@@ -1,6 +1,6 @@
 package vm
 
-type boolType bool
+type BoolType bool
 
 var True, False = NewBool(true), NewBool(false)
 
@@ -8,12 +8,12 @@ func NewBool(b bool) *Thunk {
 	return Normal(rawBool(b))
 }
 
-func rawBool(b bool) boolType {
-	return boolType(b)
+func rawBool(b bool) BoolType {
+	return BoolType(b)
 }
 
-func (b boolType) equal(e equalable) Object {
-	return rawBool(b == e.(boolType))
+func (b BoolType) equal(e equalable) Object {
+	return rawBool(b == e.(BoolType))
 }
 
 var If = NewLazyFunction(func(ts ...*Thunk) Object {
@@ -22,7 +22,7 @@ var If = NewLazyFunction(func(ts ...*Thunk) Object {
 	}
 
 	o := ts[0].Eval()
-	b, ok := o.(boolType)
+	b, ok := o.(BoolType)
 
 	if !ok {
 		return notBoolError(o)
@@ -41,6 +41,6 @@ func notBoolError(o Object) *Thunk {
 
 // ordered
 
-func (b boolType) less(o ordered) bool {
-	return bool(!b && o.(boolType))
+func (b BoolType) less(o ordered) bool {
+	return bool(!b && o.(BoolType))
 }

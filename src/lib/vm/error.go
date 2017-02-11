@@ -2,17 +2,17 @@ package vm
 
 import "fmt"
 
-type errorType struct {
+type ErrorType struct {
 	name, message string
-	child         *errorType
+	child         *ErrorType
 }
 
 func NewError(n, m string, xs ...interface{}) *Thunk {
 	return chainedError(nil, n, m, xs...)
 }
 
-func chainedError(e *errorType, n, m string, xs ...interface{}) *Thunk {
-	return Normal(errorType{
+func chainedError(e *ErrorType, n, m string, xs ...interface{}) *Thunk {
+	return Normal(ErrorType{
 		name:    n,
 		message: fmt.Sprintf(m, xs...),
 		child:   e,
@@ -22,7 +22,7 @@ func chainedError(e *errorType, n, m string, xs ...interface{}) *Thunk {
 func TypeError(o Object, typ string) *Thunk {
 	n, m := "TypeError", "%#v is not %s"
 
-	if e, ok := o.(errorType); ok {
+	if e, ok := o.(ErrorType); ok {
 		return chainedError(&e, n, m, o, typ)
 	}
 

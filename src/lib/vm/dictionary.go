@@ -2,7 +2,7 @@ package vm
 
 import "../rbt"
 
-type dictionaryType struct{ rbt.Dictionary }
+type DictionaryType struct{ rbt.Dictionary }
 
 var EmptyDictionary = NewDictionary([]Object{}, []*Thunk{})
 
@@ -11,7 +11,7 @@ func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
 		panic("Number of keys doesn't match with number of values.")
 	}
 
-	d := Normal(dictionaryType{rbt.NewDictionary(less)})
+	d := Normal(DictionaryType{rbt.NewDictionary(less)})
 
 	for i, k := range ks {
 		d = App(Set, d, Normal(k), vs[i])
@@ -26,7 +26,7 @@ var Set = NewLazyFunction(func(ts ...*Thunk) Object {
 	}
 
 	o := ts[0].Eval()
-	d, ok := o.(dictionaryType)
+	d, ok := o.(DictionaryType)
 
 	if !ok {
 		return notDictionaryError(o)
@@ -38,7 +38,7 @@ var Set = NewLazyFunction(func(ts ...*Thunk) Object {
 		return notOrderedError(k)
 	}
 
-	return dictionaryType{d.Insert(k, ts[2])}
+	return DictionaryType{d.Insert(k, ts[2])}
 })
 
 var Get = NewLazyFunction(func(ts ...*Thunk) Object {
@@ -47,7 +47,7 @@ var Get = NewLazyFunction(func(ts ...*Thunk) Object {
 	}
 
 	o := ts[0].Eval()
-	d, ok := o.(dictionaryType)
+	d, ok := o.(DictionaryType)
 
 	if !ok {
 		return notDictionaryError(o)
@@ -77,11 +77,11 @@ func notOrderedError(k Object) *Thunk {
 	return TypeError(k, "Ordered")
 }
 
-func (d dictionaryType) equal(e equalable) Object {
-	return d.toList().(listType).equal(e.(dictionaryType).toList().(listType))
+func (d DictionaryType) equal(e equalable) Object {
+	return d.toList().(ListType).equal(e.(DictionaryType).toList().(ListType))
 }
 
-func (d dictionaryType) toList() Object {
+func (d DictionaryType) toList() Object {
 	k, v, rest := d.FirstRest()
 
 	if k == nil {
@@ -90,11 +90,11 @@ func (d dictionaryType) toList() Object {
 
 	return cons(
 		NewList(Normal(k.(Object)), v.(*Thunk)),
-		App(ToList, Normal(dictionaryType{rest})))
+		App(ToList, Normal(DictionaryType{rest})))
 }
 
 // ordered
 
-func (d dictionaryType) less(o ordered) bool {
-	return less(d.toList(), o.(dictionaryType).toList())
+func (d DictionaryType) less(o ordered) bool {
+	return less(d.toList(), o.(DictionaryType).toList())
 }

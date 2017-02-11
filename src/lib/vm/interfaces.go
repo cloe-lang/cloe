@@ -56,7 +56,7 @@ var ToList = NewStrictFunction(func(os ...Object) Object {
 })
 
 // This interface should not be used in exported Functions and exists only to
-// make keys of dictionaryType and elements of setType ordered.
+// make keys of DictionaryType and elements of setType ordered.
 type ordered interface {
 	less(ordered) bool // can panic
 }

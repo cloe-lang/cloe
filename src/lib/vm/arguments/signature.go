@@ -38,7 +38,7 @@ func (s Signature) Bind(args Arguments) []*vm.Thunk {
 	// }
 
 	if len(ts) != s.arity() {
-		panic("You sucks!")
+		panic("Number of arguments bound to names is different from signature's arity.")
 	}
 
 	return ts

@@ -29,7 +29,7 @@ var Set = NewLazyFunction(func(ts ...*Thunk) Object {
 	d, ok := o.(DictionaryType)
 
 	if !ok {
-		return notDictionaryError(o)
+		return NotDictionaryError(o)
 	}
 
 	k := ts[1].Eval()
@@ -50,7 +50,7 @@ var Get = NewLazyFunction(func(ts ...*Thunk) Object {
 	d, ok := o.(DictionaryType)
 
 	if !ok {
-		return notDictionaryError(o)
+		return NotDictionaryError(o)
 	}
 
 	o = ts[1].Eval()
@@ -68,10 +68,6 @@ var Get = NewLazyFunction(func(ts ...*Thunk) Object {
 		"KeyNotFoundError",
 		"The key %v is not found in a dictionary.", k)
 })
-
-func notDictionaryError(o Object) *Thunk {
-	return TypeError(o, "Dictionary")
-}
 
 func notOrderedError(k Object) *Thunk {
 	return TypeError(k, "Ordered")

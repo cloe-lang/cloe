@@ -42,3 +42,7 @@ func NumArgsError(f, condition string) *Thunk {
 func ValueError(m string) *Thunk {
 	return NewError("ValueError", m)
 }
+
+func NotDictionaryError(o Object) *Thunk {
+	return TypeError(o, "Dictionary")
+}

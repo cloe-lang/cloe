@@ -89,6 +89,25 @@ func (d DictionaryType) toList() Object {
 		App(ToList, Normal(DictionaryType{rest})))
 }
 
+func (d DictionaryType) merge(ts ...*Thunk) Object {
+	for _, t := range ts {
+		go t.Eval()
+	}
+
+	for _, t := range ts {
+		o := t.Eval()
+		dd, ok := o.(DictionaryType)
+
+		if !ok {
+			return NotDictionaryError(o)
+		}
+
+		d = DictionaryType{d.Merge(dd.Dictionary)}
+	}
+
+	return d
+}
+
 // ordered
 
 func (d DictionaryType) less(o ordered) bool {

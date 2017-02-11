@@ -23,3 +23,7 @@ func (s Set) FirstRest() (interface{}, Set) {
 	x, t := s.Tree.FirstRest()
 	return x, Set{t}
 }
+
+func (s Set) Merge(ss Set) Set {
+	return Set{s.Tree.Merge(ss.Tree)}
+}

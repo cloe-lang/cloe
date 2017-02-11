@@ -50,3 +50,7 @@ func (d Dictionary) FirstRest() (interface{}, interface{}, Dictionary) {
 	kv := x.(keyValue)
 	return kv.Key, kv.Value, Dictionary{t}
 }
+
+func (d Dictionary) Merge(dd Dictionary) Dictionary {
+	return Dictionary{d.Tree.Merge(dd.Tree)}
+}

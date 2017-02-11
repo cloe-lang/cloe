@@ -73,3 +73,17 @@ func TestTreeSize(t *testing.T) {
 	tr = tr.Remove(0)
 	assert.Equal(t, 0, tr.Size())
 }
+
+func TestTreeMerge(t *testing.T) {
+	tr1 := NewTree(less)
+	tr1 = tr1.Insert(0)
+	tr1 = tr1.Insert(1)
+	tr1 = tr1.Insert(2)
+
+	tr2 := NewTree(less)
+	tr2 = tr2.Insert(3)
+	tr2 = tr2.Insert(4)
+	tr2 = tr2.Insert(5)
+
+	assert.Equal(t, tr1.Size()+tr2.Size(), tr1.Merge(tr2).Size())
+}

@@ -47,3 +47,18 @@ func (t Tree) Empty() bool {
 func (t Tree) Size() int {
 	return t.node.size()
 }
+
+func (t Tree) Merge(tt Tree) Tree {
+	for {
+		var x interface{}
+		x, tt = tt.FirstRest()
+
+		if x == nil {
+			break
+		}
+
+		t = t.Insert(x)
+	}
+
+	return t
+}

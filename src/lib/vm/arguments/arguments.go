@@ -120,3 +120,26 @@ func (args Arguments) restKeywords() *vm.Thunk {
 
 	return t
 }
+
+func (original Arguments) Merge(merged Arguments) Arguments {
+	var new Arguments
+
+	if new.expandedList == nil {
+		new.positionals = append(original.positionals, merged.positionals...)
+		new.expandedList = merged.expandedList
+	} else {
+		new.positionals = original.positionals
+		new.expandedList = vm.App(
+			vm.Append,
+			append([]*vm.Thunk{original.expandedList}, merged.positionals...)...)
+
+		if merged.expandedList != nil {
+			new.expandedList = vm.App(vm.Merge, new.expandedList, merged.expandedList)
+		}
+	}
+
+	new.keywords = append(original.keywords, merged.keywords...)
+	new.expandedDicts = append(original.expandedDicts, merged.expandedDicts...)
+
+	return new
+}

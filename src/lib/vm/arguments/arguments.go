@@ -21,7 +21,7 @@ func NewArguments(
 
 	for i, p := range ps {
 		if p.expanded {
-			l = listPositionalArgs(ps[i:]...)
+			l = mergeRestPositionalArgs(ps[i:]...)
 			break
 		}
 
@@ -36,7 +36,7 @@ func NewArguments(
 	}
 }
 
-func listPositionalArgs(ps ...PositionalArgument) *vm.Thunk {
+func mergeRestPositionalArgs(ps ...PositionalArgument) *vm.Thunk {
 	if !ps[0].expanded {
 		panic("First PositionalArgument must be a list.")
 	}

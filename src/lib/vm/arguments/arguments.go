@@ -10,27 +10,22 @@ type Arguments struct {
 	expandedDicts []*vm.Thunk
 }
 
+// NewArguments creates a new Arguments.
 func NewArguments(
 	ps []PositionalArgument,
 	ks []KeywordArgument,
 	expandedDicts []*vm.Thunk) Arguments {
 	ts := make([]*vm.Thunk, 0, len(ps))
 
-	var i int
+	l := (*vm.Thunk)(nil)
 
-	for j, p := range ps {
+	for i, p := range ps {
 		if p.expanded {
-			i = j
+			l = listPositionalArgs(ps[i:]...)
 			break
 		}
 
 		ts = append(ts, p.value)
-	}
-
-	l := (*vm.Thunk)(nil)
-
-	if i < len(ps) {
-		l = listPositionalArgs(ps[i:]...)
 	}
 
 	return Arguments{

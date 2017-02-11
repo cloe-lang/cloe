@@ -31,11 +31,73 @@ func NewSignature(
 func (s Signature) Bind(args Arguments) []*vm.Thunk {
 	ts := make([]*vm.Thunk, 0, s.arity())
 
-	// for i, p := range args.positionals {
-	// 	if i != len(args.positionals)-1 &&  {
-	// 	}
-	// 	p.value
-	// }
+	for _, name := range s.positionals.requireds {
+		t := args.searchKeyword(name)
+
+		if t == nil {
+			t = args.nextPositional()
+		}
+
+		if t == nil {
+			panic("Could not bind an required positional argument.")
+		}
+
+		ts = append(ts, t)
+	}
+
+	for _, o := range s.positionals.optionals {
+		t := args.searchKeyword(o.name)
+
+		if t == nil {
+			t = args.nextPositional()
+		}
+
+		if t == nil {
+			t = o.defaultValue
+		}
+
+		ts = append(ts, t)
+	}
+
+	if s.positionals.rest != "" {
+		t := args.searchKeyword(s.positionals.rest)
+
+		if t == nil {
+			t = args.restPositionals()
+		}
+
+		ts = append(ts, t)
+	}
+
+	for _, name := range s.keywords.requireds {
+		t := args.searchKeyword(name)
+
+		if t == nil {
+			panic("Could not bind an required positional argument.")
+		}
+
+		ts = append(ts, t)
+	}
+
+	for _, o := range s.keywords.optionals {
+		t := args.searchKeyword(o.name)
+
+		if t == nil {
+			t = o.defaultValue
+		}
+
+		ts = append(ts, t)
+	}
+
+	if s.keywords.rest != "" {
+		t := args.searchKeyword(s.keywords.rest)
+
+		if t == nil {
+			t = args.restKeywords()
+		}
+
+		ts = append(ts, t)
+	}
 
 	if len(ts) != s.arity() {
 		panic("Number of arguments bound to names is different from signature's arity.")

@@ -54,25 +54,69 @@ func mergeRestPositionalArgs(ps ...PositionalArgument) *vm.Thunk {
 	return t
 }
 
-func (args Arguments) search(s string) *vm.Thunk {
-	for _, k := range args.keywords {
+func (args *Arguments) nextPositional() *vm.Thunk {
+	if len(args.positionals) != 0 {
+		defer func() { args.positionals = args.positionals[1:] }()
+		return args.positionals[0]
+	}
+
+	if args.expandedList == nil {
+		return nil
+	}
+
+	defer func() { args.expandedList = vm.App(vm.Rest, args.expandedList) }()
+	return vm.App(vm.First, args.expandedList)
+}
+
+func (args Arguments) restPositionals() *vm.Thunk {
+	if args.expandedList == nil {
+		return vm.NewList(args.positionals...)
+	}
+
+	if len(args.positionals) == 0 {
+		return args.expandedList
+	}
+
+	return vm.App(vm.Merge, vm.NewList(args.positionals...), args.expandedList)
+}
+
+func (args *Arguments) searchKeyword(s string) *vm.Thunk {
+	for i, k := range args.keywords {
 		if s == k.name {
+			args.keywords = append(args.keywords[:i], args.keywords[i+1:]...)
 			return k.value
 		}
 	}
 
-	for _, d := range args.expandedDicts {
-		o := d.Eval()
+	for i, t := range args.expandedDicts {
+		o := t.Eval()
 		d, ok := o.(vm.DictionaryType)
 
 		if !ok {
 			return vm.NotDictionaryError(o)
 		}
 
-		if v, ok := d.Search(vm.NewString(s).Eval()); ok {
+		k := vm.StringType(s)
+
+		if v, ok := d.Search(k); ok {
+			args.expandedDicts[i] = vm.Normal(d.Remove(k))
 			return v.(*vm.Thunk)
 		}
 	}
 
 	return nil
+}
+
+func (args Arguments) restKeywords() *vm.Thunk {
+	t := vm.EmptyDictionary
+
+	for _, k := range args.keywords {
+		t = vm.App(vm.Set, t, vm.NewString(k.name), k.value)
+	}
+
+	for _, tt := range args.expandedDicts {
+		t = vm.App(vm.Merge, t, tt)
+	}
+
+	return t
 }

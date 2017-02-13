@@ -16,7 +16,7 @@ func TestStringMerge(t *testing.T) {
 	s := "foo"
 	th := NewString(s)
 
-	assert.Equal(t, string(App(Merge, th, th).Eval().(StringType)), s+s)
+	assert.Equal(t, string(App(Merge, th, NewList(th)).Eval().(StringType)), s+s)
 }
 
 func TestStringToList(t *testing.T) {

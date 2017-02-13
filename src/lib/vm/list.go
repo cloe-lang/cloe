@@ -132,10 +132,10 @@ func emptyListError() *Thunk {
 
 func (l ListType) merge(ts ...*Thunk) Object {
 	if l == emptyList {
-		return App(Merge, ts...)
+		return App(Merge, ts[0], NewList(ts[1:]...))
 	}
 
-	return cons(l.first, App(Merge, append([]*Thunk{l.rest}, ts...)...))
+	return cons(l.first, App(Merge, l.rest, NewList(ts...)))
 }
 
 // ordered

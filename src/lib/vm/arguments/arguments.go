@@ -45,7 +45,7 @@ func mergeRestPositionalArgs(ps ...PositionalArgument) *vm.Thunk {
 
 	for _, p := range ps[1:] {
 		if p.expanded {
-			t = vm.App(vm.Merge, t, p.value)
+			t = vm.App(vm.Merge, t, vm.NewList(p.value))
 		} else {
 			t = vm.App(vm.Append, t, p.value)
 		}
@@ -77,7 +77,7 @@ func (args Arguments) restPositionals() *vm.Thunk {
 		return args.expandedList
 	}
 
-	return vm.App(vm.Merge, vm.NewList(args.positionals...), args.expandedList)
+	return vm.App(vm.Merge, vm.NewList(args.positionals...), vm.NewList(args.expandedList))
 }
 
 func (args *Arguments) searchKeyword(s string) *vm.Thunk {
@@ -115,7 +115,7 @@ func (args Arguments) restKeywords() *vm.Thunk {
 	}
 
 	for _, tt := range args.expandedDicts {
-		t = vm.App(vm.Merge, t, tt)
+		t = vm.App(vm.Merge, t, vm.NewList(tt))
 	}
 
 	return t
@@ -134,7 +134,7 @@ func (original Arguments) Merge(merged Arguments) Arguments {
 			append([]*vm.Thunk{original.expandedList}, merged.positionals...)...)
 
 		if merged.expandedList != nil {
-			new.expandedList = vm.App(vm.Merge, new.expandedList, merged.expandedList)
+			new.expandedList = vm.App(vm.Merge, new.expandedList, vm.NewList(merged.expandedList))
 		}
 	}
 

@@ -12,7 +12,20 @@ func (n NumberType) equal(e equalable) Object {
 	return rawBool(n == e.(NumberType))
 }
 
-var Add = NewStrictFunction(func(os ...Object) Object {
+var Add = NewLazyFunction(func(ts ...*Thunk) Object {
+	o := ts[0].Eval()
+	l, ok := o.(ListType)
+
+	if !ok {
+		return notListError(o)
+	}
+
+	os, err := l.ToObjects()
+
+	if err != nil {
+		return err
+	}
+
 	sum := NumberType(0)
 
 	for _, o := range os {
@@ -28,19 +41,32 @@ var Add = NewStrictFunction(func(os ...Object) Object {
 	return sum
 })
 
-var Sub = NewStrictFunction(func(os ...Object) Object {
-	if len(os) == 0 {
-		return NumArgsError("sub", ">= 1")
-	}
-
-	o := os[0]
+var Sub = NewLazyFunction(func(ts ...*Thunk) Object {
+	o := ts[0].Eval()
 	n0, ok := o.(NumberType)
 
 	if !ok {
 		return notNumberError(o)
 	}
 
-	for _, o := range os[1:] {
+	o = ts[1].Eval()
+	l, ok := o.(ListType)
+
+	if !ok {
+		return notListError(o)
+	}
+
+	os, err := l.ToObjects()
+
+	if err != nil {
+		return err
+	}
+
+	if len(os) == 0 {
+		return NumArgsError("sub", ">= 1")
+	}
+
+	for _, o := range os {
 		n, ok := o.(NumberType)
 
 		if !ok {
@@ -53,7 +79,20 @@ var Sub = NewStrictFunction(func(os ...Object) Object {
 	return n0
 })
 
-var Mul = NewStrictFunction(func(os ...Object) Object {
+var Mul = NewLazyFunction(func(ts ...*Thunk) Object {
+	o := ts[0].Eval()
+	l, ok := o.(ListType)
+
+	if !ok {
+		return notListError(o)
+	}
+
+	os, err := l.ToObjects()
+
+	if err != nil {
+		return err
+	}
+
 	prod := NumberType(1)
 
 	for _, o := range os {
@@ -69,19 +108,32 @@ var Mul = NewStrictFunction(func(os ...Object) Object {
 	return prod
 })
 
-var Div = NewStrictFunction(func(os ...Object) Object {
-	if len(os) == 0 {
-		return NumArgsError("div", ">= 1")
-	}
-
-	o := os[0]
+var Div = NewLazyFunction(func(ts ...*Thunk) Object {
+	o := ts[0].Eval()
 	n0, ok := o.(NumberType)
 
 	if !ok {
 		return notNumberError(o)
 	}
 
-	for _, o := range os[1:] {
+	o = ts[1].Eval()
+	l, ok := o.(ListType)
+
+	if !ok {
+		return notListError(o)
+	}
+
+	os, err := l.ToObjects()
+
+	if err != nil {
+		return err
+	}
+
+	if len(os) == 0 {
+		return NumArgsError("div", ">= 1")
+	}
+
+	for _, o := range os {
 		n, ok := o.(NumberType)
 
 		if !ok {

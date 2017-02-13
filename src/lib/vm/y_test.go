@@ -42,9 +42,9 @@ var lazyFactorialImpl = NewLazyFunction(func(ts ...*Thunk) Object {
 	return App(If,
 		App(Equal, ts[1], NewNumber(0)),
 		NewNumber(1),
-		App(Mul,
+		App(Mul, NewList(
 			ts[1],
-			App(ts[0], append([]*Thunk{App(Sub, ts[1], NewNumber(1))}, ts[2:]...)...)))
+			App(ts[0], append([]*Thunk{App(Sub, ts[1], NewList(NewNumber(1)))}, ts[2:]...)...))))
 })
 
 func TestYsSingleF(t *testing.T) {
@@ -67,7 +67,7 @@ func TestYsMultipleFs(t *testing.T) {
 		return App(If,
 			App(Equal, n, NewNumber(0)),
 			True,
-			App(ts[1], App(Sub, n, NewNumber(1))))
+			App(ts[1], App(Sub, n, NewList(NewNumber(1)))))
 	})
 
 	odd := NewLazyFunction(func(ts ...*Thunk) Object {
@@ -76,7 +76,7 @@ func TestYsMultipleFs(t *testing.T) {
 		return App(If,
 			App(Equal, n, NewNumber(0)),
 			False,
-			App(ts[0], Nil, App(Sub, n, NewNumber(1))))
+			App(ts[0], Nil, App(Sub, n, NewList(NewNumber(1)))))
 	})
 
 	fs := App(Ys, evenWithExtraArg, odd)

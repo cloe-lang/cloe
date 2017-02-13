@@ -16,28 +16,28 @@ func TestNumberEqual(t *testing.T) {
 }
 
 func TestNumberAdd(t *testing.T) {
-	assert.Equal(t, float64(App(Add).Eval().(NumberType)), float64(0))
+	assert.Equal(t, float64(App(Add, NewList()).Eval().(NumberType)), float64(0))
 	assert.Equal(t,
-		float64(App(Add, NewNumber(n1), NewNumber(n2)).Eval().(NumberType)),
+		float64(App(Add, NewList(NewNumber(n1), NewNumber(n2))).Eval().(NumberType)),
 		n1+n2)
 }
 
 func TestNumberSub(t *testing.T) {
 	assert.Equal(t,
-		float64(App(Sub, NewNumber(n1), NewNumber(n2)).Eval().(NumberType)),
+		float64(App(Sub, NewNumber(n1), NewList(NewNumber(n2))).Eval().(NumberType)),
 		n1-n2)
 }
 
 func TestNumberMul(t *testing.T) {
-	assert.Equal(t, float64(App(Mul).Eval().(NumberType)), float64(1))
+	assert.Equal(t, float64(App(Mul, NewList()).Eval().(NumberType)), float64(1))
 	assert.Equal(t,
-		float64(App(Mul, NewNumber(n1), NewNumber(n2)).Eval().(NumberType)),
+		float64(App(Mul, NewList(NewNumber(n1), NewNumber(n2))).Eval().(NumberType)),
 		n1*n2)
 }
 
 func TestNumberDiv(t *testing.T) {
 	assert.Equal(t,
-		float64(App(Div, NewNumber(n1), NewNumber(n2)).Eval().(NumberType)),
+		float64(App(Div, NewNumber(n1), NewList(NewNumber(n2))).Eval().(NumberType)),
 		n1/n2)
 }
 

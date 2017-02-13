@@ -1,5 +1,7 @@
 package vm
 
+import "fmt"
+
 type ListType struct {
 	first *Thunk
 	rest  *Thunk
@@ -8,7 +10,13 @@ type ListType struct {
 var emptyList = ListType{nil, nil}
 
 func NewList(ts ...*Thunk) *Thunk {
-	return App(Prepend, append(ts, Normal(emptyList))...)
+	l := Normal(emptyList)
+
+	for i := len(ts) - 1; i >= 0; i-- {
+		l = Normal(cons(ts[i], l))
+	}
+
+	return l
 }
 
 func (l1 ListType) equal(e equalable) Object {
@@ -37,21 +45,26 @@ func (l1 ListType) equal(e equalable) Object {
 }
 
 var Prepend = NewLazyFunction(func(ts ...*Thunk) Object {
-	switch len(ts) {
-	case 0:
-		return NumArgsError("prepend", "> 1")
-	case 1:
-		return ts[0]
+	t := ts[0]
+
+	o := ts[1].Eval()
+	l, ok := o.(ListType)
+
+	if !ok {
+		panic(fmt.Sprintf("Rest arguments must be a list. %v", o))
 	}
 
-	last := len(ts) - 1
-	l := cons(ts[last-1], ts[last])
+	ts, err := l.ToThunks()
 
-	for i := last - 2; i >= 0; i-- {
-		l = cons(ts[i], Normal(l))
+	if err != nil {
+		return err
 	}
 
-	return l
+	for i := len(ts) - 1; i >= 0; i-- {
+		t = Normal(cons(ts[i], t))
+	}
+
+	return t
 })
 
 func cons(t1, t2 *Thunk) ListType {

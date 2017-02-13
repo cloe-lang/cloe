@@ -20,7 +20,7 @@ end
 task :examples => examples
 
 task :test do
-  sh 'go test -test.v ./...'
+  sh 'go test ./...'
 end
 
 task :lint do

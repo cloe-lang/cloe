@@ -48,7 +48,7 @@ var lazyFactorialImpl = NewLazyFunction(func(ts ...*Thunk) Object {
 })
 
 func TestYsSingleF(t *testing.T) {
-	fs := App(Ys, lazyFactorialImpl)
+	fs := App(Ys, NewList(lazyFactorialImpl))
 
 	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100} {
 		n1 := float64(App(App(First, fs), NewNumber(n)).Eval().(NumberType))
@@ -79,7 +79,7 @@ func TestYsMultipleFs(t *testing.T) {
 			App(ts[0], Nil, App(Sub, n, NewList(NewNumber(1)))))
 	})
 
-	fs := App(Ys, evenWithExtraArg, odd)
+	fs := App(Ys, NewList(evenWithExtraArg, odd))
 
 	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100, 121, 256, 1023} {
 		b1 := bool(App(App(First, fs), NewString("unused"), NewNumber(n)).Eval().(BoolType))

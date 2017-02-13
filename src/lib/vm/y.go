@@ -13,7 +13,20 @@ var fxx = NewLazyFunction(func(ts ...*Thunk) Object {
 	return App(Partial, ts[0], App(ts[1], ts[1]))
 })
 
-var Ys = NewLazyFunction(func(fs ...*Thunk) Object {
+var Ys = NewLazyFunction(func(ts ...*Thunk) Object {
+	o := ts[0].Eval()
+	l, ok := o.(ListType)
+
+	if !ok {
+		panic("Rest arguments must be a list.")
+	}
+
+	fs, err := l.ToThunks()
+
+	if err != nil {
+		return err
+	}
+
 	if len(fs) == 0 {
 		return NumArgsError("ys", ">= 1")
 	}

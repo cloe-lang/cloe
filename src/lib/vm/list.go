@@ -152,7 +152,7 @@ func (l1 ListType) less(ord ordered) bool {
 	return less(l1.rest.Eval(), l2.rest.Eval())
 }
 
-func (l ListType) ToThunks() Object {
+func (l ListType) ToThunks() ([]*Thunk, Object) {
 	ts := make([]*Thunk, 0)
 
 	for l != emptyList {
@@ -163,19 +163,18 @@ func (l ListType) ToThunks() Object {
 		l, ok = o.(ListType)
 
 		if !ok {
-			return notListError(o)
+			return nil, notListError(o)
 		}
 	}
 
-	return ts
+	return ts, nil
 }
 
-func (l ListType) ToObjects() Object {
-	o := l.ToThunks()
-	ts, ok := o.([]*Thunk)
+func (l ListType) ToObjects() ([]Object, Object) {
+	ts, err := l.ToThunks()
 
-	if !ok {
-		return o
+	if err != nil {
+		return nil, err
 	}
 
 	os := make([]Object, len(ts))
@@ -188,5 +187,5 @@ func (l ListType) ToObjects() Object {
 		os[i] = t.Eval()
 	}
 
-	return os
+	return os, nil
 }

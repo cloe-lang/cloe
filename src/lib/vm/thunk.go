@@ -49,7 +49,7 @@ func (t *Thunk) Eval() Object { // return WHNF
 			f, ok := o.(callable)
 
 			if !ok {
-				t.result = NotCallableError(o)
+				t.result = NotCallableError(o).Eval()
 				break
 			}
 

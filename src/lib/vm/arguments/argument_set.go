@@ -1,4 +1,4 @@
-package signature
+package sig
 
 type argumentSet struct {
 	requireds []string

@@ -1,6 +1,4 @@
-package sig
-
-import ".."
+package vm
 
 // Signature represents function signature.
 type Signature struct {
@@ -28,8 +26,8 @@ func NewSignature(
 
 // Bind binds Arguments to names defined in Signature and returns full
 // arguments to be passed to a function.
-func (s Signature) Bind(args Arguments) []*vm.Thunk {
-	ts := make([]*vm.Thunk, 0, s.arity())
+func (s Signature) Bind(args Arguments) []*Thunk {
+	ts := make([]*Thunk, 0, s.arity())
 
 	for _, name := range s.positionals.requireds {
 		t := args.searchKeyword(name)

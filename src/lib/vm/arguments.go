@@ -1,23 +1,21 @@
-package sig
-
-import ".."
+package vm
 
 // Arguments represents a structured set of arguments passed to a predicate.
 type Arguments struct {
-	positionals   []*vm.Thunk
-	expandedList  *vm.Thunk
+	positionals   []*Thunk
+	expandedList  *Thunk
 	keywords      []KeywordArgument
-	expandedDicts []*vm.Thunk
+	expandedDicts []*Thunk
 }
 
 // NewArguments creates a new Arguments.
 func NewArguments(
 	ps []PositionalArgument,
 	ks []KeywordArgument,
-	expandedDicts []*vm.Thunk) Arguments {
-	ts := make([]*vm.Thunk, 0, len(ps))
+	expandedDicts []*Thunk) Arguments {
+	ts := make([]*Thunk, 0, len(ps))
 
-	l := (*vm.Thunk)(nil)
+	l := (*Thunk)(nil)
 
 	for i, p := range ps {
 		if p.expanded {
@@ -36,7 +34,7 @@ func NewArguments(
 	}
 }
 
-func mergeRestPositionalArgs(ps ...PositionalArgument) *vm.Thunk {
+func mergeRestPositionalArgs(ps ...PositionalArgument) *Thunk {
 	if !ps[0].expanded {
 		panic("First PositionalArgument must be a list.")
 	}
@@ -45,16 +43,16 @@ func mergeRestPositionalArgs(ps ...PositionalArgument) *vm.Thunk {
 
 	for _, p := range ps[1:] {
 		if p.expanded {
-			t = vm.App(vm.Merge, t, vm.NewList(p.value))
+			t = App(Merge, t, NewList(p.value))
 		} else {
-			t = vm.App(vm.Append, t, p.value)
+			t = App(Append, t, p.value)
 		}
 	}
 
 	return t
 }
 
-func (args *Arguments) nextPositional() *vm.Thunk {
+func (args *Arguments) nextPositional() *Thunk {
 	if len(args.positionals) != 0 {
 		defer func() { args.positionals = args.positionals[1:] }()
 		return args.positionals[0]
@@ -64,23 +62,23 @@ func (args *Arguments) nextPositional() *vm.Thunk {
 		return nil
 	}
 
-	defer func() { args.expandedList = vm.App(vm.Rest, args.expandedList) }()
-	return vm.App(vm.First, args.expandedList)
+	defer func() { args.expandedList = App(Rest, args.expandedList) }()
+	return App(First, args.expandedList)
 }
 
-func (args Arguments) restPositionals() *vm.Thunk {
+func (args Arguments) restPositionals() *Thunk {
 	if args.expandedList == nil {
-		return vm.NewList(args.positionals...)
+		return NewList(args.positionals...)
 	}
 
 	if len(args.positionals) == 0 {
 		return args.expandedList
 	}
 
-	return vm.App(vm.Merge, vm.NewList(args.positionals...), vm.NewList(args.expandedList))
+	return App(Merge, NewList(args.positionals...), NewList(args.expandedList))
 }
 
-func (args *Arguments) searchKeyword(s string) *vm.Thunk {
+func (args *Arguments) searchKeyword(s string) *Thunk {
 	for i, k := range args.keywords {
 		if s == k.name {
 			args.keywords = append(args.keywords[:i], args.keywords[i+1:]...)
@@ -90,32 +88,32 @@ func (args *Arguments) searchKeyword(s string) *vm.Thunk {
 
 	for i, t := range args.expandedDicts {
 		o := t.Eval()
-		d, ok := o.(vm.DictionaryType)
+		d, ok := o.(DictionaryType)
 
 		if !ok {
-			return vm.NotDictionaryError(o)
+			return NotDictionaryError(o)
 		}
 
-		k := vm.StringType(s)
+		k := StringType(s)
 
 		if v, ok := d.Search(k); ok {
-			args.expandedDicts[i] = vm.Normal(d.Remove(k))
-			return v.(*vm.Thunk)
+			args.expandedDicts[i] = Normal(d.Remove(k))
+			return v.(*Thunk)
 		}
 	}
 
 	return nil
 }
 
-func (args Arguments) restKeywords() *vm.Thunk {
-	t := vm.EmptyDictionary
+func (args Arguments) restKeywords() *Thunk {
+	t := EmptyDictionary
 
 	for _, k := range args.keywords {
-		t = vm.App(vm.Set, t, vm.NewString(k.name), k.value)
+		t = App(Set, t, NewString(k.name), k.value)
 	}
 
 	for _, tt := range args.expandedDicts {
-		t = vm.App(vm.Merge, t, vm.NewList(tt))
+		t = App(Merge, t, NewList(tt))
 	}
 
 	return t
@@ -129,12 +127,12 @@ func (original Arguments) Merge(merged Arguments) Arguments {
 		new.expandedList = merged.expandedList
 	} else {
 		new.positionals = original.positionals
-		new.expandedList = vm.App(
-			vm.Append,
-			append([]*vm.Thunk{original.expandedList}, merged.positionals...)...)
+		new.expandedList = App(
+			Append,
+			append([]*Thunk{original.expandedList}, merged.positionals...)...)
 
 		if merged.expandedList != nil {
-			new.expandedList = vm.App(vm.Merge, new.expandedList, vm.NewList(merged.expandedList))
+			new.expandedList = App(Merge, new.expandedList, NewList(merged.expandedList))
 		}
 	}
 

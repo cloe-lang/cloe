@@ -1,4 +1,4 @@
-package sig
+package vm
 
 type argumentSet struct {
 	requireds []string

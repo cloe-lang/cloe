@@ -5,55 +5,57 @@ import "reflect"
 type Object interface{}
 
 type callable interface {
-	call(...*Thunk) Object
+	call(Arguments) Object
 }
 
 type equalable interface {
 	equal(equalable) Object
 }
 
-var Equal = NewStrictFunction(func(os ...Object) Object {
-	if len(os) != 2 {
-		return NumArgsError("equal", "2")
-	}
+var Equal = NewStrictFunction(
+	NewSignature(
+		[]string{"x", "y"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(os ...Object) Object {
+		var es [2]equalable
 
-	var es [2]equalable
+		for i, o := range os {
+			e, ok := o.(equalable)
 
-	for i, o := range os {
-		e, ok := o.(equalable)
+			if !ok {
+				return TypeError(o, "Equalable")
+			}
 
-		if !ok {
-			return TypeError(o, "Equalable")
+			es[i] = e
 		}
 
-		es[i] = e
-	}
+		if !areSameType(es[0], es[1]) {
+			return False
+		}
 
-	if !areSameType(es[0], es[1]) {
-		return False
-	}
-
-	return es[0].equal(es[1])
-})
+		return es[0].equal(es[1])
+	})
 
 type listable interface {
 	toList() Object
 }
 
-var ToList = NewStrictFunction(func(os ...Object) Object {
-	if len(os) != 1 {
-		return NumArgsError("toList", "1")
-	}
+var ToList = NewStrictFunction(
+	NewSignature(
+		[]string{"listLike"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(os ...Object) Object {
+		o := os[0]
+		l, ok := o.(listable)
 
-	o := os[0]
-	l, ok := o.(listable)
+		if !ok {
+			return TypeError(o, "Listable")
+		}
 
-	if !ok {
-		return TypeError(o, "Listable")
-	}
-
-	return l.toList()
-})
+		return l.toList()
+	})
 
 // This interface should not be used in exported Functions and exists only to
 // make keys of DictionaryType and elements of setType ordered.
@@ -89,30 +91,35 @@ type mergable interface {
 	merge(ts ...*Thunk) Object
 }
 
-var Merge = NewLazyFunction(func(ts ...*Thunk) Object {
-	o := ts[0].Eval()
-	m, ok := o.(mergable)
+var Merge = NewLazyFunction(
+	NewSignature(
+		[]string{"x"}, []OptionalArgument{}, "ys",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(ts ...*Thunk) Object {
+		o := ts[0].Eval()
+		m, ok := o.(mergable)
 
-	if !ok {
-		return TypeError(o, "Mergable")
-	}
+		if !ok {
+			return TypeError(o, "Mergable")
+		}
 
-	o = ts[1].Eval()
-	l, ok := o.(ListType)
+		o = ts[1].Eval()
+		l, ok := o.(ListType)
 
-	if !ok {
-		return notListError(o)
-	}
+		if !ok {
+			return notListError(o)
+		}
 
-	ts, err := l.ToThunks()
+		ts, err := l.ToThunks()
 
-	if err != nil {
-		return err
-	}
+		if err != nil {
+			return err
+		}
 
-	if len(ts) == 0 {
-		return m
-	}
+		if len(ts) == 0 {
+			return m
+		}
 
-	return m.merge(ts...)
-})
+		return m.merge(ts...)
+	})

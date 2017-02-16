@@ -27,7 +27,7 @@ func TestDictionarySet(t *testing.T) {
 	for _, k := range []*Thunk{
 		True, False, Nil, NewNumber(42), NewString("risp"),
 	} {
-		_, ok := App(Set, EmptyDictionary, k, Nil).Eval().(DictionaryType)
+		_, ok := PApp(Set, EmptyDictionary, k, Nil).Eval().(DictionaryType)
 		assert.True(t, ok)
 	}
 }
@@ -38,7 +38,7 @@ func TestDictionaryGet(t *testing.T) {
 
 		for i, kv := range kvs {
 			t.Logf("Setting a %vth key...\n", i)
-			d = App(Set, d, kv[0], kv[1])
+			d = PApp(Set, d, kv[0], kv[1])
 		}
 
 		assert.Equal(t, len(kvs), dictionarySize(d))
@@ -50,11 +50,11 @@ func TestDictionaryGet(t *testing.T) {
 
 			t.Log(k.Eval())
 
-			if e, ok := App(Get, d, k).Eval().(ErrorType); ok {
+			if e, ok := PApp(Get, d, k).Eval().(ErrorType); ok {
 				t.Log(e.message)
 			}
 
-			assert.True(t, testEqual(App(Get, d, k), v))
+			assert.True(t, testEqual(PApp(Get, d, k), v))
 		}
 	}
 }
@@ -66,18 +66,18 @@ func TestDictionaryToList(t *testing.T) {
 
 		for i, kv := range kvs {
 			t.Logf("Setting a %vth key...\n", i)
-			d = App(Set, d, kv[0], kv[1])
+			d = PApp(Set, d, kv[0], kv[1])
 		}
 
 		assert.Equal(t, len(kvs), dictionarySize(d))
 
-		l := App(ToList, d)
+		l := PApp(ToList, d)
 
-		for i := 0; i < len(kvs); i, l = i+1, App(Rest, l) {
-			kv := App(First, l)
-			k := App(First, kv)
-			lv := App(First, App(Rest, kv))
-			dv := App(Get, d, k)
+		for i := 0; i < len(kvs); i, l = i+1, PApp(Rest, l) {
+			kv := PApp(First, l)
+			k := PApp(First, kv)
+			lv := PApp(First, PApp(Rest, kv))
+			dv := PApp(Get, d, k)
 
 			t.Log("Key:", k.Eval())
 			t.Log("LIST Value:", lv.Eval())
@@ -99,13 +99,13 @@ func TestDictionaryWithDuplicateKeys(t *testing.T) {
 	d := EmptyDictionary
 
 	for _, i := range []int{0, 1, 2, 2, 7, 3, 0, 4, 6, 1, 1, 4, 5, 6, 0, 2, 8, 8} {
-		d = App(Set, d, ks[i], ks[i])
+		d = PApp(Set, d, ks[i], ks[i])
 	}
 
 	assert.Equal(t, len(ks), dictionarySize(d))
 
 	for _, k := range ks {
-		assert.True(t, testEqual(App(Get, d, k), k))
+		assert.True(t, testEqual(PApp(Get, d, k), k))
 	}
 }
 
@@ -125,7 +125,7 @@ func TestDictionaryEqual(t *testing.T) {
 
 	for i := range ds {
 		for _, j := range rand.Perm(len(kvs)) {
-			ds[i] = App(Set, ds[i], kvs[j][0], kvs[j][1])
+			ds[i] = PApp(Set, ds[i], kvs[j][0], kvs[j][1])
 		}
 	}
 
@@ -143,11 +143,11 @@ func TestDictionaryLess(t *testing.T) {
 
 	for i := range ds {
 		for _, j := range rand.Perm(len(kvs)) {
-			ds[i] = App(Set, ds[i], kvs[j][0], kvs[j][1])
+			ds[i] = PApp(Set, ds[i], kvs[j][0], kvs[j][1])
 		}
 	}
 
-	ds[1] = App(Set, ds[1], Nil, Nil)
+	ds[1] = PApp(Set, ds[1], Nil, Nil)
 
 	assert.Equal(t, 2, ds[0].Eval().(DictionaryType).Size())
 	assert.Equal(t, 3, ds[1].Eval().(DictionaryType).Size())

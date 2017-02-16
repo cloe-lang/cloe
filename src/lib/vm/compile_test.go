@@ -7,11 +7,16 @@ import (
 )
 
 func TestCompile(t *testing.T) {
-	var n1, n2, n3 float64 = 123, 456, 789
+	const n1, n2, n3 float64 = 2, 3, 4
 
-	f := Compile([]interface{}{0, 1, []interface{}{0, 2, 3}})
+	f := Compile(
+		NewSignature(
+			[]string{"f", "x1", "x2", "x3"}, []OptionalArgument{}, "",
+			[]string{}, []OptionalArgument{}, "",
+		),
+		IRApp(0, NewIRPositionalArguments(1, IRApp(0, NewIRPositionalArguments(2, 3)))))
 
-	x1 := float64(App(f, Pow, NewNumber(n1), NewNumber(n2), NewNumber(n3)).Eval().(NumberType))
+	x1 := float64(PApp(f, Pow, NewNumber(n1), NewNumber(n2), NewNumber(n3)).Eval().(NumberType))
 	x2 := math.Pow(n1, math.Pow(n2, n3))
 
 	t.Logf("%f == %f?", x1, x2)

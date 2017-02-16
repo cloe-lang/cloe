@@ -1,15 +1,16 @@
 package vm
 
-var Cause = NewLazyFunction(func(ts ...*Thunk) Object {
-	if len(ts) != 2 {
-		return NumArgsError("cause", "2")
-	}
+var Cause = NewLazyFunction(
+	NewSignature(
+		[]string{"first", "next"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(ts ...*Thunk) Object {
+		e, ok := ts[0].Eval().(ErrorType)
 
-	e, ok := ts[0].Eval().(ErrorType)
+		if ok {
+			return e
+		}
 
-	if ok {
-		return e
-	}
-
-	return ts[1]
-})
+		return ts[1]
+	})

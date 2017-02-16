@@ -44,7 +44,7 @@ func (s StringType) toList() Object {
 
 	return cons(
 		NewString(string(rs[0])),
-		App(ToList, NewString(string(rs[1:]))))
+		PApp(ToList, NewString(string(rs[1:]))))
 }
 
 // ordered

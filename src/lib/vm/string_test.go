@@ -16,16 +16,16 @@ func TestStringMerge(t *testing.T) {
 	s := "foo"
 	th := NewString(s)
 
-	assert.Equal(t, string(App(Merge, th, NewList(th)).Eval().(StringType)), s+s)
+	assert.Equal(t, string(PApp(Merge, th, th).Eval().(StringType)), s+s)
 }
 
 func TestStringToList(t *testing.T) {
 	s := "lisp"
-	l := App(ToList, NewString(s))
+	l := PApp(ToList, NewString(s))
 
 	for _, r := range s {
-		assert.Equal(t, string(App(First, l).Eval().(StringType)), string(r))
-		l = App(Rest, l)
+		assert.Equal(t, string(PApp(First, l).Eval().(StringType)), string(r))
+		l = PApp(Rest, l)
 	}
 
 	assert.Equal(t, l.Eval().(ListType), emptyList)

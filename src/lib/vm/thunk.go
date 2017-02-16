@@ -23,7 +23,7 @@ type Thunk struct {
 	// their functions. If you want to define functions with arguments fully
 	// lazy, just create a function which takes only a thunk of a List as a
 	// argument.
-	args      []*Thunk
+	args      Arguments
 	state     thunkState
 	blackHole sync.WaitGroup
 }
@@ -34,10 +34,14 @@ func Normal(o Object) *Thunk {
 	return &Thunk{result: o, state: normal}
 }
 
-func App(f *Thunk, args ...*Thunk) *Thunk {
+func App(f *Thunk, args Arguments) *Thunk {
 	t := &Thunk{function: f, args: args, state: app}
 	t.blackHole.Add(1)
 	return t
+}
+
+func PApp(f *Thunk, ps ...*Thunk) *Thunk {
+	return App(f, NewPositionalArguments(ps...))
 }
 
 func (t *Thunk) Eval() Object { // return WHNF
@@ -53,7 +57,7 @@ func (t *Thunk) Eval() Object { // return WHNF
 				break
 			}
 
-			t.result = f.call(t.args...)
+			t.result = f.call(t.args)
 			child, ok := t.result.(*Thunk)
 
 			if !ok {
@@ -91,17 +95,17 @@ func (t *Thunk) lock() bool {
 	return t.compareAndSwapState(app, locked)
 }
 
-func (t *Thunk) delegateEval() (*Thunk, []*Thunk, bool) {
+func (t *Thunk) delegateEval() (*Thunk, Arguments, bool) {
 	if t.lock() {
 		return t.function, t.args, true
 	}
 
-	return nil, nil, false
+	return nil, Arguments{}, false
 }
 
 func (t *Thunk) finalize() {
 	t.function = nil
-	t.args = nil
+	t.args = Arguments{}
 	t.storeState(normal)
 	t.blackHole.Done()
 }

@@ -45,7 +45,7 @@ func (c *compiler) compileExpression(e Expression) *vm.Thunk {
 			ts[i] = c.compileExpression(e)
 		}
 
-		return vm.App(ts[0], ts[1:]...)
+		return vm.PApp(ts[0], ts[1:]...)
 	}
 
 	panic(fmt.Sprint("Invalid type as an expression.", e))

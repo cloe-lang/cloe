@@ -13,6 +13,10 @@ func NewArguments(
 	ps []PositionalArgument,
 	ks []KeywordArgument,
 	expandedDicts []*Thunk) Arguments {
+	if ks == nil {
+		ks = []KeywordArgument{}
+	}
+
 	ts := make([]*Thunk, 0, len(ps))
 
 	l := (*Thunk)(nil)
@@ -43,9 +47,11 @@ func mergeRestPositionalArgs(ps ...PositionalArgument) *Thunk {
 
 	for _, p := range ps[1:] {
 		if p.expanded {
-			t = App(Merge, t, NewList(p.value))
+			t = PApp(Merge, t, p.value)
 		} else {
-			t = App(Append, t, p.value)
+			t = PApp(
+				NewLazyFunction(appendFuncSignature, appendFunc), // Avoid initialization loop
+				t, p.value)
 		}
 	}
 
@@ -62,8 +68,11 @@ func (args *Arguments) nextPositional() *Thunk {
 		return nil
 	}
 
-	defer func() { args.expandedList = App(Rest, args.expandedList) }()
-	return App(First, args.expandedList)
+	defer func() {
+		args.expandedList = PApp(Rest, args.expandedList)
+	}()
+
+	return PApp(First, args.expandedList)
 }
 
 func (args Arguments) restPositionals() *Thunk {
@@ -75,7 +84,7 @@ func (args Arguments) restPositionals() *Thunk {
 		return args.expandedList
 	}
 
-	return App(Merge, NewList(args.positionals...), NewList(args.expandedList))
+	return PApp(Merge, NewList(args.positionals...), args.expandedList)
 }
 
 func (args *Arguments) searchKeyword(s string) *Thunk {
@@ -109,11 +118,11 @@ func (args Arguments) restKeywords() *Thunk {
 	t := EmptyDictionary
 
 	for _, k := range args.keywords {
-		t = App(Set, t, NewString(k.name), k.value)
+		t = PApp(Set, t, NewString(k.name), k.value)
 	}
 
 	for _, tt := range args.expandedDicts {
-		t = App(Merge, t, NewList(tt))
+		t = PApp(Merge, t, tt)
 	}
 
 	return t
@@ -127,12 +136,12 @@ func (original Arguments) Merge(merged Arguments) Arguments {
 		new.expandedList = merged.expandedList
 	} else {
 		new.positionals = original.positionals
-		new.expandedList = App(
+		new.expandedList = PApp(
 			Append,
 			append([]*Thunk{original.expandedList}, merged.positionals...)...)
 
 		if merged.expandedList != nil {
-			new.expandedList = App(Merge, new.expandedList, NewList(merged.expandedList))
+			new.expandedList = PApp(Merge, new.expandedList, merged.expandedList)
 		}
 	}
 

@@ -5,12 +5,13 @@ import (
 	"fmt"
 )
 
-var write = vm.NewStrictFunction(func(os ...vm.Object) vm.Object {
-	if len(os) != 1 {
-		return vm.NumArgsError("write", "1")
-	}
+var write = vm.NewStrictFunction(
+	vm.NewSignature(
+		[]string{"x"}, []vm.OptionalArgument{}, "",
+		[]string{}, []vm.OptionalArgument{}, "",
+	),
+	func(os ...vm.Object) vm.Object {
+		fmt.Println(os[0])
 
-	fmt.Println(os[0])
-
-	return vm.Nil
-})
+		return vm.Nil
+	})

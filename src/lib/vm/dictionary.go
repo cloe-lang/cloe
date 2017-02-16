@@ -14,60 +14,62 @@ func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
 	d := Normal(DictionaryType{rbt.NewDictionary(less)})
 
 	for i, k := range ks {
-		d = App(Set, d, Normal(k), vs[i])
+		d = PApp(Set, d, Normal(k), vs[i])
 	}
 
 	return d
 }
 
-var Set = NewLazyFunction(func(ts ...*Thunk) Object {
-	if len(ts) != 3 {
-		return NumArgsError("set", "3")
-	}
+var Set = NewLazyFunction(
+	NewSignature(
+		[]string{"dict", "key", "value"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(ts ...*Thunk) Object {
+		o := ts[0].Eval()
+		d, ok := o.(DictionaryType)
 
-	o := ts[0].Eval()
-	d, ok := o.(DictionaryType)
+		if !ok {
+			return NotDictionaryError(o)
+		}
 
-	if !ok {
-		return NotDictionaryError(o)
-	}
+		k := ts[1].Eval()
 
-	k := ts[1].Eval()
+		if _, ok := k.(ordered); !ok {
+			return notOrderedError(k)
+		}
 
-	if _, ok := k.(ordered); !ok {
-		return notOrderedError(k)
-	}
+		return DictionaryType{d.Insert(k, ts[2])}
+	})
 
-	return DictionaryType{d.Insert(k, ts[2])}
-})
+var Get = NewLazyFunction(
+	NewSignature(
+		[]string{"dict", "key"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(ts ...*Thunk) Object {
+		o := ts[0].Eval()
+		d, ok := o.(DictionaryType)
 
-var Get = NewLazyFunction(func(ts ...*Thunk) Object {
-	if len(ts) != 2 {
-		return NumArgsError("get", "2")
-	}
+		if !ok {
+			return NotDictionaryError(o)
+		}
 
-	o := ts[0].Eval()
-	d, ok := o.(DictionaryType)
+		o = ts[1].Eval()
+		k, ok := o.(ordered)
 
-	if !ok {
-		return NotDictionaryError(o)
-	}
+		if !ok {
+			return notOrderedError(o)
+		}
 
-	o = ts[1].Eval()
-	k, ok := o.(ordered)
+		if v, ok := d.Search(k); ok {
+			return v.(*Thunk)
+		}
 
-	if !ok {
-		return notOrderedError(o)
-	}
-
-	if v, ok := d.Search(k); ok {
-		return v.(*Thunk)
-	}
-
-	return NewError(
-		"KeyNotFoundError",
-		"The key %v is not found in a dictionary.", k)
-})
+		return NewError(
+			"KeyNotFoundError",
+			"The key %v is not found in a dictionary.", k)
+	})
 
 func notOrderedError(k Object) *Thunk {
 	return TypeError(k, "Ordered")
@@ -86,7 +88,7 @@ func (d DictionaryType) toList() Object {
 
 	return cons(
 		NewList(Normal(k.(Object)), v.(*Thunk)),
-		App(ToList, Normal(DictionaryType{rest})))
+		PApp(ToList, Normal(DictionaryType{rest})))
 }
 
 func (d DictionaryType) merge(ts ...*Thunk) Object {

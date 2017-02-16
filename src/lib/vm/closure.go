@@ -2,27 +2,20 @@ package vm
 
 type closureType struct {
 	function      *Thunk
-	freeVariables []*Thunk
+	freeVariables Arguments
 }
 
-func (c closureType) call(ts ...*Thunk) Object {
-	o := c.function.Eval()
-	f, ok := o.(callable)
-
-	if !ok {
-		return NotCallableError(o)
-	}
-
-	return f.call(append(c.freeVariables, ts...)...)
+func (c closureType) call(args Arguments) Object {
+	return App(c.function, c.freeVariables.Merge(args))
 }
 
-var Partial = NewLazyFunction(func(ts ...*Thunk) Object {
-	switch len(ts) {
-	case 0:
-		return NumArgsError("partial", ">= 1")
-	case 1:
-		return ts[0]
-	}
+type RawFunction func(Arguments) Object
 
-	return closureType{ts[0], ts[1:]}
-})
+func (f RawFunction) call(args Arguments) Object {
+	return f(args)
+}
+
+var Partial *Thunk = Normal(RawFunction(func(args Arguments) Object {
+	t := args.nextPositional()
+	return closureType{t, args}
+}))

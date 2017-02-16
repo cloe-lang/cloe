@@ -7,7 +7,7 @@ import (
 
 func TestPartial(t *testing.T) {
 	ifFunc := func(ts ...*Thunk) bool {
-		b := App(App(Partial, If, False, True), ts...)
+		b := PApp(PApp(Partial, If, False, True), ts...)
 		return bool(b.Eval().(BoolType))
 	}
 

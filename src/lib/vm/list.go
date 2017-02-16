@@ -28,8 +28,8 @@ func (l1 ListType) equal(e equalable) Object {
 
 	for _, t := range []*Thunk{
 		// Don't evaluate these parallely for short circuit behavior.
-		App(Equal, l1.first, l2.first),
-		App(Equal, l1.rest, l2.rest),
+		PApp(Equal, l1.first, l2.first),
+		PApp(Equal, l1.rest, l2.rest),
 	} {
 		o := t.Eval()
 		b, ok := o.(BoolType)
@@ -44,68 +44,88 @@ func (l1 ListType) equal(e equalable) Object {
 	return True
 }
 
-var Prepend = NewLazyFunction(func(ts ...*Thunk) Object {
-	t := ts[0]
+var Prepend = NewLazyFunction(
+	NewSignature(
+		[]string{"list"}, []OptionalArgument{}, "elems",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(ts ...*Thunk) Object {
+		t := ts[0]
 
-	o := ts[1].Eval()
-	l, ok := o.(ListType)
+		o := ts[1].Eval()
+		l, ok := o.(ListType)
 
-	if !ok {
-		panic(fmt.Sprintf("Rest arguments must be a list. %v", o))
-	}
+		if !ok {
+			panic(fmt.Sprintf("Rest arguments must be a list. %v", o))
+		}
 
-	ts, err := l.ToThunks()
+		ts, err := l.ToThunks()
 
-	if err != nil {
-		return err
-	}
+		if err != nil {
+			return err
+		}
 
-	for i := len(ts) - 1; i >= 0; i-- {
-		t = Normal(cons(ts[i], t))
-	}
+		for i := len(ts) - 1; i >= 0; i-- {
+			t = Normal(cons(ts[i], t))
+		}
 
-	return t
-})
+		return t
+	})
 
 func cons(t1, t2 *Thunk) ListType {
 	return ListType{t1, t2}
 }
 
-var First = NewStrictFunction(func(os ...Object) Object {
-	if len(os) != 1 {
-		return NumArgsError("first", "1")
-	}
+var First = NewStrictFunction(
+	NewSignature(
+		[]string{"list"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(os ...Object) Object {
+		if len(os) != 1 {
+			return NumArgsError("first", "1")
+		}
 
-	o := os[0]
-	l, ok := o.(ListType)
+		o := os[0]
+		l, ok := o.(ListType)
 
-	if !ok {
-		return notListError(o)
-	} else if l == emptyList {
-		return emptyListError()
-	}
+		if !ok {
+			return notListError(o)
+		} else if l == emptyList {
+			return emptyListError()
+		}
 
-	return l.first
-})
+		return l.first
+	})
 
-var Rest = NewStrictFunction(func(os ...Object) Object {
-	if len(os) != 1 {
-		return NumArgsError("rest", "1")
-	}
+var Rest = NewStrictFunction(
+	NewSignature(
+		[]string{"list"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(os ...Object) Object {
+		if len(os) != 1 {
+			return NumArgsError("rest", "1")
+		}
 
-	o := os[0]
-	l, ok := o.(ListType)
+		o := os[0]
+		l, ok := o.(ListType)
 
-	if !ok {
-		return notListError(o)
-	} else if l == emptyList {
-		return emptyListError()
-	}
+		if !ok {
+			return notListError(o)
+		} else if l == emptyList {
+			return emptyListError()
+		}
 
-	return l.rest
-})
+		return l.rest
+	})
 
-var Append = NewLazyFunction(appendFunc)
+var appendFuncSignature = NewSignature(
+	[]string{"list", "elem"}, []OptionalArgument{}, "",
+	[]string{}, []OptionalArgument{}, "",
+)
+
+var Append = NewLazyFunction(appendFuncSignature, appendFunc)
 
 func appendFunc(ts ...*Thunk) Object {
 	o := ts[0].Eval()
@@ -119,7 +139,10 @@ func appendFunc(ts ...*Thunk) Object {
 		return NewList(ts[1])
 	}
 
-	return cons(l.first, App(NewLazyFunction(appendFunc), l.rest, ts[1]))
+	return cons(
+		l.first,
+		PApp(NewLazyFunction(appendFuncSignature, appendFunc), l.rest, ts[1]),
+	)
 }
 
 func notListError(o Object) *Thunk {
@@ -132,10 +155,10 @@ func emptyListError() *Thunk {
 
 func (l ListType) merge(ts ...*Thunk) Object {
 	if l == emptyList {
-		return App(Merge, ts[0], NewList(ts[1:]...))
+		return PApp(Merge, ts...)
 	}
 
-	return cons(l.first, App(Merge, l.rest, NewList(ts...)))
+	return cons(l.first, PApp(Merge, append([]*Thunk{l.rest}, ts...)...))
 }
 
 // ordered

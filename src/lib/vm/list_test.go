@@ -46,7 +46,7 @@ func TestListAppend(t *testing.T) {
 		l := NewList(tss[0]...)
 
 		for _, t := range tss[1] {
-			l = App(Append, l, t)
+			l = PApp(Append, l, t)
 		}
 
 		assert.True(t, testEqual(NewList(append(tss[0], tss[1]...)...), l))
@@ -69,14 +69,14 @@ func TestListMerge(t *testing.T) {
 
 		l2 := NewList(tss[0]...)
 		for _, ts := range tss[1:] {
-			l2 = App(Merge, l2, NewList(NewList(ts...)))
+			l2 = PApp(Merge, l2, NewList(ts...))
 		}
 
 		ls := make([]*Thunk, 0)
 		for _, ts := range tss {
 			ls = append(ls, NewList(ts...))
 		}
-		l3 := App(Merge, ls[0], NewList(ls[1:]...))
+		l3 := PApp(Merge, ls...)
 
 		assert.True(t, testEqual(l1, l2))
 		assert.True(t, testEqual(l1, l3))

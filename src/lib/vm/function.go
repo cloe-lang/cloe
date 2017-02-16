@@ -1,17 +1,29 @@
 package vm
 
-type functionType func(...*Thunk) Object
-
-func (f functionType) call(ts ...*Thunk) Object {
-	return f(ts...)
+type functionType struct {
+	signature Signature
+	function  func(...*Thunk) Object
 }
 
-func NewLazyFunction(f func(...*Thunk) Object) *Thunk {
-	return Normal(functionType(f))
+func (f functionType) call(args Arguments) Object {
+	ts, err := f.signature.Bind(args)
+
+	if err != nil {
+		return err
+	}
+
+	return f.function(ts...)
 }
 
-func NewStrictFunction(f func(...Object) Object) *Thunk {
-	return NewLazyFunction(func(ts ...*Thunk) Object {
+func NewLazyFunction(s Signature, f func(...*Thunk) Object) *Thunk {
+	return Normal(functionType{
+		signature: s,
+		function:  f,
+	})
+}
+
+func NewStrictFunction(s Signature, f func(...Object) Object) *Thunk {
+	return NewLazyFunction(s, func(ts ...*Thunk) Object {
 		for _, t := range ts {
 			go t.Eval()
 		}

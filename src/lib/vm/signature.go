@@ -26,7 +26,7 @@ func NewSignature(
 
 // Bind binds Arguments to names defined in Signature and returns full
 // arguments to be passed to a function.
-func (s Signature) Bind(args Arguments) []*Thunk {
+func (s Signature) Bind(args Arguments) ([]*Thunk, *Thunk) {
 	ts := make([]*Thunk, 0, s.arity())
 
 	for _, name := range s.positionals.requireds {
@@ -37,7 +37,7 @@ func (s Signature) Bind(args Arguments) []*Thunk {
 		}
 
 		if t == nil {
-			panic("Could not bind an required positional argument.")
+			return nil, argumentError("Could not bind an required positional argument.")
 		}
 
 		ts = append(ts, t)
@@ -71,7 +71,7 @@ func (s Signature) Bind(args Arguments) []*Thunk {
 		t := args.searchKeyword(name)
 
 		if t == nil {
-			panic("Could not bind an required positional argument.")
+			return nil, argumentError("Could not bind an required positional argument.")
 		}
 
 		ts = append(ts, t)
@@ -98,12 +98,16 @@ func (s Signature) Bind(args Arguments) []*Thunk {
 	}
 
 	if len(ts) != s.arity() {
-		panic("Number of arguments bound to names is different from signature's arity.")
+		return nil, argumentError("Number of arguments bound to names is different from signature's arity.")
 	}
 
-	return ts
+	return ts, nil
 }
 
 func (s Signature) arity() int {
 	return s.positionals.size() + s.keywords.size()
+}
+
+func argumentError(m string) *Thunk {
+	return NewError("ArgumentError", m)
 }

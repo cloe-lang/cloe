@@ -1,4 +1,4 @@
-package compile
+package ir
 
 import (
 	"../vm"
@@ -10,7 +10,7 @@ import (
 func TestCompileFunction(t *testing.T) {
 	const n1, n2, n3 float64 = 2, 3, 4
 
-	f := compileFunction(
+	f := CompileFunction(
 		vm.NewSignature(
 			[]string{"f", "x1", "x2", "x3"}, []vm.OptionalArgument{}, "",
 			[]string{}, []vm.OptionalArgument{}, "",

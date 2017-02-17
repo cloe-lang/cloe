@@ -1,6 +1,7 @@
 package compile
 
 import (
+	"../ir"
 	"../vm"
 	"fmt"
 )
@@ -23,7 +24,7 @@ func (c *compiler) compile(instrs []interface{}) []*vm.Thunk {
 		case LetConst:
 			c.env.set(x.name, c.compileExpression(x.expr))
 		case LetFunction:
-			c.env.set(x.name, compileFunction(x.signature, c.compileFunctionBodyToIR(x.body)))
+			c.env.set(x.name, ir.CompileFunction(x.signature, c.compileFunctionBodyToIR(x.body)))
 		case Output:
 			c.outputs = append(c.outputs, c.compileExpression(x.expr))
 		default:
@@ -58,38 +59,17 @@ func (c *compiler) compileFunctionBodyToIR(e Expression) interface{} {
 	case int:
 		return x
 	case []interface{}:
-		ps := make([]PositionalArgument, len(x)-1)
+		ps := make([]ir.PositionalArgument, len(x)-1)
 
 		for i, e := range x[1:] {
-			ps[i] = NewPositionalArgument(c.compileFunctionBodyToIR(e), false)
+			ps[i] = ir.NewPositionalArgument(c.compileFunctionBodyToIR(e), false)
 		}
 
 		// TODO: Support keyword arguments and expanded dictionaries.
-		return NewApp(
+		return ir.NewApp(
 			c.compileFunctionBodyToIR(x[0]),
-			NewArguments(ps, []KeywordArgument{}, []interface{}{}))
+			ir.NewArguments(ps, []ir.KeywordArgument{}, []interface{}{}))
 	}
 
 	panic(fmt.Sprint("Invalid type.", e))
-}
-
-func compileFunction(s vm.Signature, expr interface{}) *vm.Thunk {
-	return vm.NewLazyFunction(
-		s,
-		func(ts ...*vm.Thunk) vm.Object {
-			return compileExpression(ts, expr)
-		})
-}
-
-func compileExpression(args []*vm.Thunk, expr interface{}) *vm.Thunk {
-	switch x := expr.(type) {
-	case int:
-		return args[x]
-	case *vm.Thunk:
-		return x
-	case App:
-		return x.compile(args)
-	}
-
-	panic(fmt.Sprintf("Invalid type. %v", expr))
 }

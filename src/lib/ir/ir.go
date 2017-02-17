@@ -1,4 +1,4 @@
-package compile
+package ir
 
 import "../vm"
 
@@ -8,10 +8,7 @@ type App struct {
 }
 
 func NewApp(f interface{}, args Arguments) App {
-	return App{
-		function: f,
-		args:     args,
-	}
+	return App{f, args}
 }
 
 func (app App) compile(args []*vm.Thunk) *vm.Thunk {

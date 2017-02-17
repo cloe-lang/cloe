@@ -1,5 +1,10 @@
 package comb
 
+import (
+	"fmt"
+	"strings"
+)
+
 func (s *State) Char(r rune) Parser {
 	return func() (interface{}, error) {
 		if s.currentRune() != r {
@@ -32,7 +37,7 @@ func (s *State) String(str string) Parser {
 		ps[i] = s.Char(r)
 	}
 
-	return s.And(ps...)
+	return s.Stringify(s.And(ps...))
 }
 
 func (s *State) InString(str string) Parser {
@@ -211,4 +216,27 @@ func (s *State) None() Parser {
 	return func() (interface{}, error) {
 		return nil, nil
 	}
+}
+
+func (s *State) Stringify(p Parser) Parser {
+	return s.App(func(x interface{}) interface{} { return stringify(x) }, p)
+}
+
+func stringify(x interface{}) string {
+	switch x := x.(type) {
+	case string:
+		return x
+	case rune:
+		return string(x)
+	case []interface{}:
+		ss := make([]string, len(x))
+
+		for i, s := range x {
+			ss[i] = stringify(s)
+		}
+
+		return strings.Join(ss, "")
+	}
+
+	panic(fmt.Sprint("Invalid type.", x))
 }

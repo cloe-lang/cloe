@@ -28,7 +28,7 @@ func TestXFailModule(t *testing.T) {
 }
 
 func TestStringLiteral(t *testing.T) {
-	for _, str := range []string{`""`, `"sl"`, "\"   string literal  \n \""} {
+	for _, str := range []string{`""`, `"sl"`, "\"   string literal  \n \"", `"\""`, `"\\"`} {
 		s := newState(str)
 		result, err := s.Exhaust(s.stringLiteral())()
 

@@ -41,8 +41,8 @@ func (s *state) expression() comb.Parser {
 func (s *state) firstOrderExpression() comb.Parser {
 	return s.Or(
 		s.identifier(),
-		s.stringify(s.String("..")),
-		s.stringify(s.String(".")),
+		s.String(".."),
+		s.String("."),
 		s.stringLiteral(),
 		s.sequence("(", ")"),
 		s.prepend("list", s.sequence("[", "]")),
@@ -61,7 +61,7 @@ func (s *state) identifier() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 		return string(xs[0].(rune)) + xs[1].(string)
-	}, s.And(s.NotInString(cs+"."), s.stringify(s.Many(s.NotInString(cs)))))
+	}, s.And(s.NotInString(cs+"."), s.Stringify(s.Many(s.NotInString(cs)))))
 }
 
 func (s *state) stringLiteral() comb.Parser {
@@ -70,7 +70,7 @@ func (s *state) stringLiteral() comb.Parser {
 		return []interface{}{quoteString, x}
 	}
 
-	return s.App(f, s.stringify(s.Wrap(
+	return s.App(f, s.Stringify(s.Wrap(
 		c,
 		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
 		s.strip(c))))
@@ -99,17 +99,4 @@ func (s *state) comment() comb.Parser {
 	return s.Void(s.And(
 		s.Char(commentChar),
 		s.Many(s.NotChar('\n')), s.Char('\n')))
-}
-
-func (s *state) stringify(p comb.Parser) comb.Parser {
-	return s.App(func(any interface{}) interface{} {
-		xs := any.([]interface{})
-		rs := make([]rune, len(xs))
-
-		for i, x := range xs {
-			rs[i] = x.(rune)
-		}
-
-		return string(rs)
-	}, p)
 }

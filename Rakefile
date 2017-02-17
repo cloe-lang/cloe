@@ -1,5 +1,5 @@
-bins = %i(parse desugar risp)
-examples = %i(parse_examples desugar_examples run_examples)
+bins = %i(parse risp)
+examples = %i(parse_examples run_examples)
 
 bins.each do |bin|
   task bin do

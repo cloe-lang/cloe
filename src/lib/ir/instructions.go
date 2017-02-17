@@ -1,5 +1,7 @@
 package ir
 
+import "../vm"
+
 type LetConst struct {
 	name string
 	expr Expression
@@ -10,12 +12,17 @@ func NewLetConst(s string, e Expression) LetConst {
 }
 
 type LetFunction struct {
-	name string
-	body Expression
+	name      string
+	signature vm.Signature
+	body      Expression
 }
 
-func NewLetFunction(s string, e Expression) LetFunction {
-	return LetFunction{name: s, body: e}
+func NewLetFunction(n string, s vm.Signature, e Expression) LetFunction {
+	return LetFunction{
+		name:      n,
+		signature: s,
+		body:      e,
+	}
 }
 
 type Output struct {

@@ -24,6 +24,13 @@ func NewSignature(
 	}
 }
 
+func NewSimpleSignature(pr ...string) Signature {
+	return NewSignature(
+		pr, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	)
+}
+
 // Bind binds Arguments to names defined in Signature and returns full
 // arguments to be passed to a function.
 func (s Signature) Bind(args Arguments) ([]*Thunk, *Thunk) {

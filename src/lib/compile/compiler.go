@@ -65,7 +65,7 @@ func (c *compiler) compileFunctionBodyToIR(e Expression) interface{} {
 		}
 
 		// TODO: Support keyword arguments and expanded dictionaries.
-		return App(
+		return NewApp(
 			c.compileFunctionBodyToIR(x[0]),
 			NewArguments(ps, []KeywordArgument{}, []interface{}{}))
 	}
@@ -87,7 +87,7 @@ func compileExpression(args []*vm.Thunk, expr interface{}) *vm.Thunk {
 		return args[x]
 	case *vm.Thunk:
 		return x
-	case Thunk:
+	case App:
 		return x.compile(args)
 	}
 

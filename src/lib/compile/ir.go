@@ -1,4 +1,4 @@
-package ir
+package compile
 
 import "../vm"
 

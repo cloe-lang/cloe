@@ -1,4 +1,4 @@
-package ir
+package compile
 
 func Run(instrs []interface{}) {
 	os := newCompiler().compile(instrs)

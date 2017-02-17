@@ -8,7 +8,7 @@ import (
 )
 
 func TestCompileFunction(t *testing.T) {
-	const n1, n2, n3 float64 = 2, 3, 4
+	const n1, n2, n3 = 2, 3, 4
 
 	f := CompileFunction(
 		vm.NewSignature(

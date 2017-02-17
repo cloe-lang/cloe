@@ -1,4 +1,6 @@
-package vm
+package ir
+
+import "../vm"
 
 type IRThunk struct {
 	function interface{}
@@ -12,26 +14,26 @@ func IRApp(f interface{}, args IRArguments) IRThunk {
 	}
 }
 
-func (t IRThunk) compile(args []*Thunk) *Thunk {
-	ps := make([]PositionalArgument, len(t.args.positionals))
+func (t IRThunk) compile(args []*vm.Thunk) *vm.Thunk {
+	ps := make([]vm.PositionalArgument, len(t.args.positionals))
 
 	for i, p := range t.args.positionals {
 		ps[i] = p.compile(args)
 	}
 
-	ks := make([]KeywordArgument, len(t.args.keywords))
+	ks := make([]vm.KeywordArgument, len(t.args.keywords))
 
 	for i, k := range t.args.keywords {
 		ks[i] = k.compile(args)
 	}
 
-	ds := make([]*Thunk, len(t.args.expandedDicts))
+	ds := make([]*vm.Thunk, len(t.args.expandedDicts))
 
 	for i, d := range t.args.expandedDicts {
 		ds[i] = compileExpression(args, d)
 	}
 
-	return App(compileExpression(args, t.function), NewArguments(ps, ks, ds))
+	return vm.App(compileExpression(args, t.function), vm.NewArguments(ps, ks, ds))
 }
 
 type IRArguments struct {
@@ -70,8 +72,8 @@ func NewIRPositionalArgument(ir interface{}, expanded bool) IRPositionalArgument
 	}
 }
 
-func (p IRPositionalArgument) compile(args []*Thunk) PositionalArgument {
-	return NewPositionalArgument(compileExpression(args, p.value), p.expanded)
+func (p IRPositionalArgument) compile(args []*vm.Thunk) vm.PositionalArgument {
+	return vm.NewPositionalArgument(compileExpression(args, p.value), p.expanded)
 }
 
 type IRKeywordArgument struct {
@@ -86,6 +88,6 @@ func NewIRKeywordArgument(n string, ir interface{}) IRKeywordArgument {
 	}
 }
 
-func (k IRKeywordArgument) compile(args []*Thunk) KeywordArgument {
-	return NewKeywordArgument(k.name, compileExpression(args, k.value))
+func (k IRKeywordArgument) compile(args []*vm.Thunk) vm.KeywordArgument {
+	return vm.NewKeywordArgument(k.name, compileExpression(args, k.value))
 }

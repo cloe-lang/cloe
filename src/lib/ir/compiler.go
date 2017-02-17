@@ -23,7 +23,7 @@ func (c *compiler) compile(instrs []interface{}) []*vm.Thunk {
 		case LetConst:
 			c.env.set(x.name, c.compileExpression(x.expr))
 		case LetFunction:
-			c.env.set(x.name, vm.Compile(x.signature, c.compileFunctionBodyToIR(x.body)))
+			c.env.set(x.name, Compile(x.signature, c.compileFunctionBodyToIR(x.body)))
 		case Output:
 			c.outputs = append(c.outputs, c.compileExpression(x.expr))
 		default:
@@ -58,16 +58,16 @@ func (c *compiler) compileFunctionBodyToIR(e Expression) interface{} {
 	case int:
 		return x
 	case []interface{}:
-		ps := make([]vm.IRPositionalArgument, len(x)-1)
+		ps := make([]IRPositionalArgument, len(x)-1)
 
 		for i, e := range x[1:] {
-			ps[i] = vm.NewIRPositionalArgument(c.compileFunctionBodyToIR(e), false)
+			ps[i] = NewIRPositionalArgument(c.compileFunctionBodyToIR(e), false)
 		}
 
 		// TODO: Support keyword arguments and expanded dictionaries.
-		return vm.IRApp(
+		return IRApp(
 			c.compileFunctionBodyToIR(x[0]),
-			vm.NewIRArguments(ps, []vm.IRKeywordArgument{}, []interface{}{}))
+			NewIRArguments(ps, []IRKeywordArgument{}, []interface{}{}))
 	}
 
 	panic(fmt.Sprint("Invalid type.", e))

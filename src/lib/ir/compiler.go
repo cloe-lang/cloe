@@ -58,16 +58,16 @@ func (c *compiler) compileFunctionBodyToIR(e Expression) interface{} {
 	case int:
 		return x
 	case []interface{}:
-		ps := make([]IRPositionalArgument, len(x)-1)
+		ps := make([]PositionalArgument, len(x)-1)
 
 		for i, e := range x[1:] {
-			ps[i] = NewIRPositionalArgument(c.compileFunctionBodyToIR(e), false)
+			ps[i] = NewPositionalArgument(c.compileFunctionBodyToIR(e), false)
 		}
 
 		// TODO: Support keyword arguments and expanded dictionaries.
-		return IRApp(
+		return App(
 			c.compileFunctionBodyToIR(x[0]),
-			NewIRArguments(ps, []IRKeywordArgument{}, []interface{}{}))
+			NewArguments(ps, []KeywordArgument{}, []interface{}{}))
 	}
 
 	panic(fmt.Sprint("Invalid type.", e))
@@ -87,7 +87,7 @@ func compileExpression(args []*vm.Thunk, expr interface{}) *vm.Thunk {
 		return args[x]
 	case *vm.Thunk:
 		return x
-	case IRThunk:
+	case Thunk:
 		return x.compile(args)
 	}
 

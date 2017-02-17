@@ -41,6 +41,8 @@ func (s *state) expression() comb.Parser {
 func (s *state) firstOrderExpression() comb.Parser {
 	return s.Or(
 		s.identifier(),
+		s.stringify(s.String("..")),
+		s.stringify(s.String(".")),
 		s.stringLiteral(),
 		s.sequence("(", ")"),
 		s.prepend("list", s.sequence("[", "]")),
@@ -54,8 +56,12 @@ func (s *state) quote(p comb.Parser) comb.Parser {
 }
 
 func (s *state) identifier() comb.Parser {
-	return s.stringify(s.Many1(s.NotInString(
-		string(commentChar) + invalidChars + spaceChars + specialChars)))
+	cs := string(commentChar) + invalidChars + spaceChars + specialChars
+
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		return string(xs[0].(rune)) + xs[1].(string)
+	}, s.And(s.NotInString(cs+"."), s.stringify(s.Many(s.NotInString(cs)))))
 }
 
 func (s *state) stringLiteral() comb.Parser {

@@ -23,7 +23,7 @@ func (c *compiler) compile(instrs []interface{}) []*vm.Thunk {
 		case LetConst:
 			c.env.set(x.name, c.compileExpression(x.expr))
 		case LetFunction:
-			c.env.set(x.name, Compile(x.signature, c.compileFunctionBodyToIR(x.body)))
+			c.env.set(x.name, compileFunction(x.signature, c.compileFunctionBodyToIR(x.body)))
 		case Output:
 			c.outputs = append(c.outputs, c.compileExpression(x.expr))
 		default:
@@ -71,4 +71,25 @@ func (c *compiler) compileFunctionBodyToIR(e Expression) interface{} {
 	}
 
 	panic(fmt.Sprint("Invalid type.", e))
+}
+
+func compileFunction(s vm.Signature, expr interface{}) *vm.Thunk {
+	return vm.NewLazyFunction(
+		s,
+		func(ts ...*vm.Thunk) vm.Object {
+			return compileExpression(ts, expr)
+		})
+}
+
+func compileExpression(args []*vm.Thunk, expr interface{}) *vm.Thunk {
+	switch x := expr.(type) {
+	case int:
+		return args[x]
+	case *vm.Thunk:
+		return x
+	case IRThunk:
+		return x.compile(args)
+	}
+
+	panic(fmt.Sprintf("Invalid type. %v", expr))
 }

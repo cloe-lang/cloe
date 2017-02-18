@@ -9,18 +9,16 @@ import (
 )
 
 type compiler struct {
-	env     env.Environment
-	outputs []*vm.Thunk
+	env env.Environment
 }
 
 func newCompiler() compiler {
-	return compiler{
-		env:     prelude.Child(),
-		outputs: make([]*vm.Thunk, 0, 8), // TODO: Best cap?
-	}
+	return compiler{env: prelude.Child()}
 }
 
 func (c *compiler) compile(module []interface{}) []*vm.Thunk {
+	outputs := make([]*vm.Thunk, 0, 8) // TODO: Best cap?
+
 	for _, node := range module {
 		switch x := node.(type) {
 		case ast.LetConst:
@@ -28,13 +26,13 @@ func (c *compiler) compile(module []interface{}) []*vm.Thunk {
 		case ast.LetFunction:
 			c.env.Set(x.Name(), ir.CompileFunction(x.Signature(), c.compileFunctionBodyToIR(x.Body())))
 		case ast.Output:
-			c.outputs = append(c.outputs, c.compileExpression(x.Expr()))
+			outputs = append(outputs, c.compileExpression(x.Expr()))
 		default:
 			panic(fmt.Sprint("Invalid instruction.", x))
 		}
 	}
 
-	return c.outputs
+	return outputs
 }
 
 func (c *compiler) compileExpression(expr interface{}) *vm.Thunk {

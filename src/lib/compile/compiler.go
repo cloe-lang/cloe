@@ -4,28 +4,29 @@ import (
 	"../ast"
 	"../ir"
 	"../vm"
+	"./env"
 	"fmt"
 )
 
 type compiler struct {
-	env     environment
+	env     env.Environment
 	outputs []*vm.Thunk
 }
 
 func newCompiler() compiler {
 	return compiler{
-		env:     newEnvironment(nil),
+		env:     prelude.Child(),
 		outputs: make([]*vm.Thunk, 0, 8), // TODO: Best cap?
 	}
 }
 
 func (c *compiler) compile(module []interface{}) []*vm.Thunk {
-	for _, instr := range module {
-		switch x := instr.(type) {
+	for _, node := range module {
+		switch x := node.(type) {
 		case ast.LetConst:
-			c.env.set(x.Name(), c.compileExpression(x.Expr()))
+			c.env.Set(x.Name(), c.compileExpression(x.Expr()))
 		case ast.LetFunction:
-			c.env.set(x.Name(), ir.CompileFunction(x.Signature(), c.compileFunctionBodyToIR(x.Body())))
+			c.env.Set(x.Name(), ir.CompileFunction(x.Signature(), c.compileFunctionBodyToIR(x.Body())))
 		case ast.Output:
 			c.outputs = append(c.outputs, c.compileExpression(x.Expr()))
 		default:
@@ -39,7 +40,7 @@ func (c *compiler) compile(module []interface{}) []*vm.Thunk {
 func (c *compiler) compileExpression(expr interface{}) *vm.Thunk {
 	switch x := expr.(type) {
 	case string:
-		return c.env.get(x)
+		return getOrError(c.env, x)
 	case []interface{}:
 		ts := make([]*vm.Thunk, len(x))
 
@@ -56,7 +57,7 @@ func (c *compiler) compileExpression(expr interface{}) *vm.Thunk {
 func (c *compiler) compileFunctionBodyToIR(expr interface{}) interface{} {
 	switch x := expr.(type) {
 	case string:
-		return c.env.get(x)
+		return getOrError(c.env, x)
 	case int:
 		return x
 	case []interface{}:
@@ -73,4 +74,14 @@ func (c *compiler) compileFunctionBodyToIR(expr interface{}) interface{} {
 	}
 
 	panic(fmt.Sprint("Invalid type.", expr))
+}
+
+func getOrError(e env.Environment, s string) *vm.Thunk {
+	t, err := e.Get(s)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return t
 }

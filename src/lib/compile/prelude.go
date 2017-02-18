@@ -2,52 +2,53 @@ package compile
 
 import (
 	"../vm"
-	"fmt"
+	"./env"
 	"strconv"
 )
 
-type preludeEnvironment map[string]*vm.Thunk
+var prelude = func() env.Environment {
+	e := env.NewEnvironment(func(s string) (*vm.Thunk, error) {
+		n, err := strconv.ParseFloat(s, 64)
 
-var prelude preludeEnvironment = map[string]*vm.Thunk{
-	"true":  vm.True,
-	"false": vm.False,
-	"if":    vm.If,
+		if err != nil {
+			return nil, err
+		}
 
-	"partial": vm.Partial,
+		return vm.NewNumber(n), nil
+	})
 
-	"first":   vm.First,
-	"rest":    vm.Rest,
-	"prepend": vm.Prepend,
+	for _, nv := range []struct {
+		name  string
+		value *vm.Thunk
+	}{
+		{"true", vm.True},
+		{"false", vm.False},
+		{"if", vm.If},
 
-	"nil": vm.Nil,
+		{"partial", vm.Partial},
 
-	"+":   vm.Add,
-	"-":   vm.Sub,
-	"*":   vm.Mul,
-	"/":   vm.Div,
-	"mod": vm.Mod,
-	"pow": vm.Pow,
+		{"first", vm.First},
+		{"rest", vm.Rest},
+		{"prepend", vm.Prepend},
 
-	"y":  vm.Y,
-	"ys": vm.Ys,
+		{"nil", vm.Nil},
 
-	"cause": vm.Cause,
+		{"+", vm.Add},
+		{"-", vm.Sub},
+		{"*", vm.Mul},
+		{"/", vm.Div},
+		{"mod", vm.Mod},
+		{"pow", vm.Pow},
 
-	"write": write,
-}
+		{"y", vm.Y},
+		{"ys", vm.Ys},
 
-func (e preludeEnvironment) get(s string) *vm.Thunk {
-	t, ok := e[s]
+		{"cause", vm.Cause},
 
-	if ok {
-		return t
+		{"write", write},
+	} {
+		e.Set(nv.name, nv.value)
 	}
 
-	f, err := strconv.ParseFloat(s, 64)
-
-	if err == nil {
-		return vm.NewNumber(f)
-	}
-
-	panic(fmt.Sprint(s, "is not found."))
-}
+	return e
+}()

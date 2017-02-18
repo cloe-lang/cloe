@@ -1,32 +1,33 @@
 package compile
 
 import (
+	"../ast"
 	"../ir"
 	"../vm"
 	"fmt"
 )
 
 type compiler struct {
-	env     *environment
+	env     environment
 	outputs []*vm.Thunk
 }
 
-func newCompiler() *compiler {
-	return &compiler{
+func newCompiler() compiler {
+	return compiler{
 		env:     newEnvironment(nil),
 		outputs: make([]*vm.Thunk, 0, 8), // TODO: Best cap?
 	}
 }
 
-func (c *compiler) compile(instrs []interface{}) []*vm.Thunk {
-	for _, instr := range instrs {
+func (c *compiler) compile(module []interface{}) []*vm.Thunk {
+	for _, instr := range module {
 		switch x := instr.(type) {
-		case LetConst:
-			c.env.set(x.name, c.compileExpression(x.expr))
-		case LetFunction:
-			c.env.set(x.name, ir.CompileFunction(x.signature, c.compileFunctionBodyToIR(x.body)))
-		case Output:
-			c.outputs = append(c.outputs, c.compileExpression(x.expr))
+		case ast.LetConst:
+			c.env.set(x.Name(), c.compileExpression(x.Expr()))
+		case ast.LetFunction:
+			c.env.set(x.Name(), ir.CompileFunction(x.Signature(), c.compileFunctionBodyToIR(x.Body())))
+		case ast.Output:
+			c.outputs = append(c.outputs, c.compileExpression(x.Expr()))
 		default:
 			panic(fmt.Sprint("Invalid instruction.", x))
 		}
@@ -35,8 +36,8 @@ func (c *compiler) compile(instrs []interface{}) []*vm.Thunk {
 	return c.outputs
 }
 
-func (c *compiler) compileExpression(e Expression) *vm.Thunk {
-	switch x := e.(type) {
+func (c *compiler) compileExpression(expr interface{}) *vm.Thunk {
+	switch x := expr.(type) {
 	case string:
 		return c.env.get(x)
 	case []interface{}:
@@ -49,11 +50,11 @@ func (c *compiler) compileExpression(e Expression) *vm.Thunk {
 		return vm.PApp(ts[0], ts[1:]...)
 	}
 
-	panic(fmt.Sprint("Invalid type as an expression.", e))
+	panic(fmt.Sprint("Invalid type as an expression.", expr))
 }
 
-func (c *compiler) compileFunctionBodyToIR(e Expression) interface{} {
-	switch x := e.(type) {
+func (c *compiler) compileFunctionBodyToIR(expr interface{}) interface{} {
+	switch x := expr.(type) {
 	case string:
 		return c.env.get(x)
 	case int:
@@ -71,5 +72,5 @@ func (c *compiler) compileFunctionBodyToIR(e Expression) interface{} {
 			ir.NewArguments(ps, []ir.KeywordArgument{}, []interface{}{}))
 	}
 
-	panic(fmt.Sprint("Invalid type.", e))
+	panic(fmt.Sprint("Invalid type.", expr))
 }

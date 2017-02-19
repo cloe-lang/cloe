@@ -1,6 +1,9 @@
 package parse
 
-import "./comb"
+import (
+	"../ast"
+	"./comb"
+)
 
 const (
 	commentChar  = ';'
@@ -22,6 +25,19 @@ func Parse(source string) []interface{} {
 
 func (s *state) module() comb.Parser {
 	return s.Exhaust(s.Wrap(s.blank(), s.expressions(), s.None()))
+}
+
+func (s *state) output() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		expanded := false
+
+		if xs[0] != nil {
+			expanded = true
+		}
+
+		return ast.NewOutput(xs[1], expanded)
+	}, s.And(s.Maybe(s.String("..")), s.expression()))
 }
 
 func (s *state) expressions() comb.Parser {

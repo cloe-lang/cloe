@@ -27,6 +27,14 @@ func TestXFailModule(t *testing.T) {
 	}
 }
 
+func TestOutput(t *testing.T) {
+	for _, str := range []string{"output", "..outputs", "(foo bar)", "..(foo bar)"} {
+		s := newState(str)
+		_, err := s.Exhaust(s.output())()
+		assert.Equal(t, nil, err)
+	}
+}
+
 func TestStringLiteral(t *testing.T) {
 	for _, str := range []string{`""`, `"sl"`, "\"   string literal  \n \"", `"\""`, `"\\"`} {
 		s := newState(str)

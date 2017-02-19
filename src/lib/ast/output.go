@@ -1,11 +1,12 @@
 package ast
 
 type Output struct {
-	expr interface{}
+	expr     interface{}
+	expanded bool
 }
 
-func NewOutput(expr interface{}) Output {
-	return Output{expr}
+func NewOutput(expr interface{}, expanded bool) Output {
+	return Output{expr, expanded}
 }
 
 func (o Output) Expr() interface{} {

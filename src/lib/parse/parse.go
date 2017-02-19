@@ -73,11 +73,7 @@ func (s *state) quote(p comb.Parser) comb.Parser {
 
 func (s *state) identifier() comb.Parser {
 	cs := string(commentChar) + invalidChars + spaceChars + specialChars
-
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
-		return string(xs[0].(rune)) + xs[1].(string)
-	}, s.And(s.NotInString(cs+"."), s.Stringify(s.Many(s.NotInString(cs)))))
+	return s.Stringify(s.And(s.NotInString(cs+"."), s.Stringify(s.Many(s.NotInString(cs)))))
 }
 
 func (s *state) stringLiteral() comb.Parser {

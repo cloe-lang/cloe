@@ -27,6 +27,14 @@ func TestXFailModule(t *testing.T) {
 	}
 }
 
+func TestLetConst(t *testing.T) {
+	for _, str := range []string{"(let foo 123)", "(let foo (f x y))"} {
+		s := newState(str)
+		_, err := s.Exhaust(s.letConst())()
+		assert.Equal(t, nil, err)
+	}
+}
+
 func TestOutput(t *testing.T) {
 	for _, str := range []string{"output", "..outputs", "(foo bar)", "..(foo bar)"} {
 		s := newState(str)

@@ -27,6 +27,13 @@ func (s *state) module() comb.Parser {
 	return s.Exhaust(s.Wrap(s.blank(), s.expressions(), s.None()))
 }
 
+func (s *state) letConst() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		return ast.NewLetConst(xs[1].(string), xs[2])
+	}, s.list(s.strippedString("let"), s.identifier(), s.expression()))
+}
+
 func (s *state) output() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
@@ -73,7 +80,7 @@ func (s *state) quote(p comb.Parser) comb.Parser {
 
 func (s *state) identifier() comb.Parser {
 	cs := string(commentChar) + invalidChars + spaceChars + specialChars
-	return s.Stringify(s.And(s.NotInString(cs+"."), s.Stringify(s.Many(s.NotInString(cs)))))
+	return s.strip(s.Stringify(s.And(s.NotInString(cs+"."), s.Stringify(s.Many(s.NotInString(cs))))))
 }
 
 func (s *state) stringLiteral() comb.Parser {
@@ -88,8 +95,12 @@ func (s *state) stringLiteral() comb.Parser {
 		s.strip(c))))
 }
 
+func (s *state) list(ps ...comb.Parser) comb.Parser {
+	return s.Wrap(s.strippedString("("), s.And(ps...), s.strippedString(")"))
+}
+
 func (s *state) sequence(l, r string) comb.Parser {
-	return s.Wrap(s.strip(s.String(l)), s.expressions(), s.strip(s.String(r)))
+	return s.Wrap(s.strippedString(l), s.expressions(), s.strippedString(r))
 }
 
 func (s *state) prepend(x interface{}, p comb.Parser) comb.Parser {
@@ -111,4 +122,8 @@ func (s *state) comment() comb.Parser {
 	return s.Void(s.And(
 		s.Char(commentChar),
 		s.Many(s.NotChar('\n')), s.Char('\n')))
+}
+
+func (s *state) strippedString(str string) comb.Parser {
+	return s.strip(s.String(str))
 }

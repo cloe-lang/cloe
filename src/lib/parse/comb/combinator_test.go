@@ -74,3 +74,23 @@ func TestOrFail(t *testing.T) {
 	assert.Equal(t, result, nil)
 	assert.NotEqual(t, err, nil)
 }
+
+func TestMaybeSuccess(t *testing.T) {
+	s := NewState("foo")
+	result, err := s.Maybe(s.String("foo"))()
+
+	t.Log(result)
+
+	assert.Equal(t, "foo", result)
+	assert.Equal(t, nil, err)
+}
+
+func TestMaybeFailure(t *testing.T) {
+	s := NewState("bar")
+	result, err := s.Maybe(s.String("foo"))()
+
+	t.Log(result)
+
+	assert.Equal(t, nil, result)
+	assert.Equal(t, nil, err)
+}

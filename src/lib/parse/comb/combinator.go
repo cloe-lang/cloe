@@ -218,6 +218,10 @@ func (s *State) None() Parser {
 	}
 }
 
+func (s *State) Maybe(p Parser) Parser {
+	return s.Or(p, s.None())
+}
+
 func (s *State) Stringify(p Parser) Parser {
 	return s.App(func(x interface{}) interface{} { return stringify(x) }, p)
 }

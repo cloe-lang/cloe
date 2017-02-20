@@ -136,6 +136,13 @@ func (s *state) quote(p comb.Parser) comb.Parser {
 	return s.And(s.Replace(quoteString, s.Char('`')), p)
 }
 
+func (s *state) app() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		return ast.NewApp(xs[0], xs[1].(ast.Arguments))
+	}, s.list(s.expression(), s.arguments()))
+}
+
 func (s *state) arguments() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})

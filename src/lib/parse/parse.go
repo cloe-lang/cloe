@@ -75,12 +75,11 @@ func (s *state) signature() comb.Parser {
 
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
-		pas := xs[0].([3]interface{})
 
-		var kas [3]interface{}
-		if ys, ok := xs[1].([]interface{}); ok {
-			kas = ys[1].([3]interface{})
-		} else {
+		pas := xs[0].([3]interface{})
+		kas, ok := xs[1].([3]interface{})
+
+		if !ok {
 			kas = [3]interface{}{[]string{}, []ast.OptionalArgument{}, ""}
 		}
 
@@ -88,7 +87,7 @@ func (s *state) signature() comb.Parser {
 			pas[0].([]string), pas[1].([]ast.OptionalArgument), pas[2].(string),
 			kas[0].([]string), kas[1].([]ast.OptionalArgument), kas[2].(string),
 		)
-	}, s.And(argSet, s.Maybe(s.And(s.strippedString("."), argSet))))
+	}, s.And(argSet, s.Maybe(s.Wrap(s.strippedString("."), argSet, s.None()))))
 }
 
 func (s *state) output() comb.Parser {

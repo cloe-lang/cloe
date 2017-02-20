@@ -133,7 +133,8 @@ func (s *state) firstOrderExpression() comb.Parser {
 		s.prepend("list", s.sequence("[", "]")),
 		s.prepend("dict", s.sequence("{", "}")),
 		s.prepend("set", s.sequence("'{", "}")),
-		s.prepend("lambda", s.sequence("'(", ")")))
+		s.prepend("lambda", s.sequence("'(", ")")),
+	)
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {

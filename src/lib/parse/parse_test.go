@@ -147,6 +147,15 @@ func TestClosureLiteral(t *testing.T) {
 	assert.Equal(t, err, nil)
 }
 
+func TestArguments(t *testing.T) {
+	for _, str := range []string{"", "x", "x y", "..x", ". x 123", ". x 123 y 456", ". ..kwargs", "..x (func x y) 123 456 ..foo . a 123 b 456 ..c ..(d 123 456 789)"} {
+		s := newState(str)
+		result, err := s.Exhaust(s.arguments())()
+		t.Logf("%#v", result)
+		assert.Equal(t, err, nil)
+	}
+}
+
 func TestIdentifier(t *testing.T) {
 	result, err := newState(";ident").identifier()()
 

@@ -6,7 +6,7 @@ import (
 )
 
 func TestModule(t *testing.T) {
-	for _, str := range []string{"", "()", "(foo bar)"} {
+	for _, str := range []string{"", "(foo bar)"} {
 		result, err := newState(str).module()()
 
 		t.Log(result)
@@ -86,13 +86,15 @@ func TestStrip(t *testing.T) {
 }
 
 func TestList(t *testing.T) {
-	s := newState("()")
-	result, err := s.Exhaust(s.expression())()
+	for _, str := range []string{"[]", "[123 456]", "[(f x) 123]"} {
+		s := newState(str)
+		result, err := s.Exhaust(s.expression())()
 
-	t.Logf("%#v", result)
+		t.Logf("%#v", result)
 
-	assert.NotEqual(t, result, nil)
-	assert.Equal(t, err, nil)
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
+	}
 }
 
 func TestExpression(t *testing.T) {

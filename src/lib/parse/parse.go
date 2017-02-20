@@ -116,6 +116,10 @@ func (s *state) strictExpressions() comb.Parser {
 }
 
 func (s *state) expression() comb.Parser {
+	return s.Lazy(s.strictExpression)
+}
+
+func (s *state) strictExpression() comb.Parser {
 	return s.strip(s.Or(
 		s.firstOrderExpression(),
 		s.Lazy(func() comb.Parser { return s.quote(s.expression()) })))
@@ -125,7 +129,7 @@ func (s *state) firstOrderExpression() comb.Parser {
 	return s.Or(
 		s.identifier(),
 		s.stringLiteral(),
-		s.sequence("(", ")"),
+		s.app(),
 		s.prepend("list", s.sequence("[", "]")),
 		s.prepend("dict", s.sequence("{", "}")),
 		s.prepend("set", s.sequence("'{", "}")),

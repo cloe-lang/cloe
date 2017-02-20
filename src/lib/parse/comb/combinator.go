@@ -176,7 +176,9 @@ func (s *State) Exhaust(p Parser) Parser {
 	return func() (interface{}, error) {
 		result, err := p()
 
-		if !s.exhausted() {
+		if err != nil {
+			return result, err
+		} else if !s.exhausted() {
 			return nil, NewError(
 				"Some characters are left in source. %#v",
 				string(s.source[s.position:]))

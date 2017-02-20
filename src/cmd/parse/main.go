@@ -16,7 +16,7 @@ func main() {
 		panic(err.Error())
 	}
 
-	fmt.Println(parse.Parse(string(source)))
+	fmt.Printf("%#v\n", parse.Parse(string(source)))
 }
 
 func getArgs() map[string]interface{} {

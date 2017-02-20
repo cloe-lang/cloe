@@ -24,7 +24,7 @@ func Parse(source string) []interface{} {
 }
 
 func (s *state) module() comb.Parser {
-	return s.Exhaust(s.Wrap(s.blank(), s.expressions(), s.None()))
+	return s.Exhaust(s.Wrap(s.blank(), s.Many(s.Or(s.letConst(), s.letFunction(), s.output())), s.None()))
 }
 
 func (s *state) letConst() comb.Parser {

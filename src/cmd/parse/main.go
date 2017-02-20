@@ -2,8 +2,8 @@ package main
 
 import (
 	"../../lib/parse"
-	"fmt"
 	"github.com/docopt/docopt-go"
+	"github.com/kr/pretty"
 	"io/ioutil"
 )
 
@@ -16,7 +16,7 @@ func main() {
 		panic(err.Error())
 	}
 
-	fmt.Printf("%#v\n", parse.Parse(string(source)))
+	pretty.Println(parse.Parse(string(source)))
 }
 
 func getArgs() map[string]interface{} {

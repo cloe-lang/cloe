@@ -107,10 +107,6 @@ func (s *state) expanded(p comb.Parser) comb.Parser {
 	return s.Wrap(s.String(".."), p, s.None())
 }
 
-func (s *state) expressions() comb.Parser {
-	return s.Lazy(s.strictExpressions)
-}
-
 func (s *state) strictExpressions() comb.Parser {
 	return s.Many(s.expression())
 }
@@ -130,10 +126,10 @@ func (s *state) firstOrderExpression() comb.Parser {
 		s.identifier(),
 		s.stringLiteral(),
 		s.app(),
-		s.prepend("list", s.sequence("[", "]")),
-		s.prepend("dict", s.sequence("{", "}")),
-		s.prepend("set", s.sequence("'{", "}")),
-		s.prepend("lambda", s.sequence("'(", ")")),
+		s.appFunc("list", s.sequence("[", "]")),
+		s.appFunc("dict", s.sequence("{", "}")),
+		s.appFunc("set", s.sequence("'{", "}")),
+		// s.appFunc("lambda", s.sequence("'(", ")")),
 	)
 }
 
@@ -152,29 +148,31 @@ func (s *state) arguments() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 
-		ys := xs[0].([]interface{})
-		ps := make([]ast.PositionalArgument, len(ys))
-		for i, p := range ys {
-			ps[i] = p.(ast.PositionalArgument)
-		}
-
 		ks := []ast.KeywordArgument{}
 		dicts := []interface{}{}
 
-		if xs, ok := xs[1].([]interface{}); ok {
-			ys = xs[0].([]interface{})
-			ks = make([]ast.KeywordArgument, len(ys))
-			for i, y := range ys {
-				ks[i] = y.(ast.KeywordArgument)
-			}
-
+		if xs, ok := xs[1].([2]interface{}); ok {
+			ks = xs[0].([]ast.KeywordArgument)
 			dicts = xs[1].([]interface{})
 		}
 
-		return ast.NewArguments(ps, ks, dicts)
+		return ast.NewArguments(xs[0].([]ast.PositionalArgument), ks, dicts)
 	}, s.And(
-		s.Many(s.positionalArgument()),
-		s.Maybe(s.Wrap(s.strippedString("."), s.And(s.Many(s.keywordArgument()), s.Many(s.expanded(s.expression()))), s.None()))))
+		s.positionalArguments(),
+		s.Maybe(s.Wrap(s.strippedString("."), s.keywordArguments(), s.None()))))
+}
+
+func (s *state) positionalArguments() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		ps := make([]ast.PositionalArgument, len(xs))
+
+		for i, x := range xs {
+			ps[i] = x.(ast.PositionalArgument)
+		}
+
+		return ps
+	}, s.Many(s.positionalArgument()))
 }
 
 func (s *state) positionalArgument() comb.Parser {
@@ -187,6 +185,20 @@ func (s *state) positionalArgument() comb.Parser {
 	}, s.expanded(s.expression()))
 
 	return s.Or(unexpanded, expanded)
+}
+
+func (s *state) keywordArguments() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+
+		ys := xs[0].([]interface{})
+		ks := make([]ast.KeywordArgument, len(ys))
+		for i, y := range ys {
+			ks[i] = y.(ast.KeywordArgument)
+		}
+
+		return [2]interface{}{ks, xs[1].([]interface{})}
+	}, s.And(s.Many(s.keywordArgument()), s.Many(s.expanded(s.expression()))))
 }
 
 func (s *state) keywordArgument() comb.Parser {
@@ -214,16 +226,22 @@ func (s *state) stringLiteral() comb.Parser {
 }
 
 func (s *state) list(ps ...comb.Parser) comb.Parser {
-	return s.Wrap(s.strippedString("("), s.And(ps...), s.strippedString(")"))
+	return s.stringWrap("(", s.And(ps...), ")")
 }
 
 func (s *state) sequence(l, r string) comb.Parser {
-	return s.Wrap(s.strippedString(l), s.expressions(), s.strippedString(r))
+	return s.App(func(x interface{}) interface{} {
+		return ast.NewArguments(x.([]ast.PositionalArgument), []ast.KeywordArgument{}, []interface{}{})
+	}, s.stringWrap(l, s.positionalArguments(), r))
 }
 
-func (s *state) prepend(x interface{}, p comb.Parser) comb.Parser {
-	return s.App(func(any interface{}) interface{} {
-		return append([]interface{}{x}, any.([]interface{})...)
+func (s *state) stringWrap(l string, p comb.Parser, r string) comb.Parser {
+	return s.Wrap(s.strippedString(l), p, s.strippedString(r))
+}
+
+func (s *state) appFunc(ident string, p comb.Parser) comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		return ast.NewApp(ident, x.(ast.Arguments))
 	}, p)
 }
 

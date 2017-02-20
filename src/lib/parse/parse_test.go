@@ -139,15 +139,15 @@ func TestSetLiteral(t *testing.T) {
 	assert.Equal(t, err, nil)
 }
 
-func TestClosureLiteral(t *testing.T) {
-	s := newState("'(+ #1 #2 3)")
-	result, err := s.Exhaust(s.expression())()
+// func TestClosureLiteral(t *testing.T) {
+// 	s := newState("'(+ #1 #2 3)")
+// 	result, err := s.Exhaust(s.expression())()
 
-	t.Logf("%#v", result)
+// 	t.Logf("%#v", result)
 
-	assert.NotEqual(t, result, nil)
-	assert.Equal(t, err, nil)
-}
+// 	assert.NotEqual(t, result, nil)
+// 	assert.Equal(t, err, nil)
+// }
 
 func TestApp(t *testing.T) {
 	for _, str := range []string{

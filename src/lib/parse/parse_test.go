@@ -156,6 +156,15 @@ func TestIdentifier(t *testing.T) {
 	assert.NotEqual(t, err, nil)
 }
 
+func TestXFailIdentifier(t *testing.T) {
+	for _, str := range []string{"", ".", "..", ".foo"} {
+		s := newState(str)
+		result, err := s.identifier()()
+		assert.Equal(t, result, nil)
+		assert.NotEqual(t, err, nil)
+	}
+}
+
 func TestBlank(t *testing.T) {
 	for _, str := range []string{"", "   ", "\t", "\n\n", " ; laskdjf \n \t "} {
 		s := newState(str)

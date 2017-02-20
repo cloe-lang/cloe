@@ -1,14 +1,12 @@
 package ast
 
-import "../vm"
-
 type LetFunction struct {
 	name      string
-	signature vm.Signature
+	signature Signature
 	body      interface{}
 }
 
-func NewLetFunction(name string, sig vm.Signature, expr interface{}) LetFunction {
+func NewLetFunction(name string, sig Signature, expr interface{}) LetFunction {
 	return LetFunction{name, sig, expr}
 }
 
@@ -16,7 +14,7 @@ func (f LetFunction) Name() string {
 	return f.name
 }
 
-func (f LetFunction) Signature() vm.Signature {
+func (f LetFunction) Signature() Signature {
 	return f.signature
 }
 

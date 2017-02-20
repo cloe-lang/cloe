@@ -24,7 +24,7 @@ func (c *compiler) compile(module []interface{}) []*vm.Thunk {
 		case ast.LetConst:
 			c.env.Set(x.Name(), c.compileExpression(x.Expr()))
 		case ast.LetFunction:
-			c.env.Set(x.Name(), ir.CompileFunction(x.Signature(), c.compileFunctionBodyToIR(x.Body())))
+			c.env.Set(x.Name(), ir.CompileFunction(c.compileSignature(x.Signature()), c.compileFunctionBodyToIR(x.Body())))
 		case ast.Output:
 			outputs = append(outputs, c.compileExpression(x.Expr()))
 		default:
@@ -50,6 +50,23 @@ func (c *compiler) compileExpression(expr interface{}) *vm.Thunk {
 	}
 
 	panic(fmt.Sprint("Invalid type as an expression.", expr))
+}
+
+func (c *compiler) compileSignature(sig ast.Signature) vm.Signature {
+	return vm.NewSignature(
+		sig.PosReqs(), c.compileOptionalArguments(sig.PosOpts()), sig.PosRest(),
+		sig.KeyReqs(), c.compileOptionalArguments(sig.KeyOpts()), sig.KeyRest(),
+	)
+}
+
+func (c *compiler) compileOptionalArguments(opts []ast.OptionalArgument) []vm.OptionalArgument {
+	vmOpts := make([]vm.OptionalArgument, len(opts))
+
+	for i, opt := range opts {
+		vmOpts[i] = vm.NewOptionalArgument(opt.Name(), c.compileExpression(opt.DefaultValue()))
+	}
+
+	return vmOpts
 }
 
 func (c *compiler) compileFunctionBodyToIR(expr interface{}) interface{} {

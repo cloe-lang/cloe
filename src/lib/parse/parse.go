@@ -34,6 +34,63 @@ func (s *state) letConst() comb.Parser {
 	}, s.list(s.strippedString("let"), s.identifier(), s.expression()))
 }
 
+func (s *state) letFunction() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		ys := xs[1].([]interface{})
+		return ast.NewLetFunction(ys[0].(string), ys[1].(ast.Signature), xs[2])
+	}, s.list(s.strippedString("let"), s.list(s.identifier(), s.signature()), s.expression()))
+}
+
+func (s *state) signature() comb.Parser {
+	optArg := s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		return ast.NewOptionalArgument(xs[0].(string), xs[1])
+	}, s.strip(s.list(s.identifier(), s.expression())))
+
+	expanded := s.strip(s.expanded(s.identifier()))
+
+	argSet := s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+
+		xs0 := xs[0].([]interface{})
+		requireds := make([]string, len(xs0))
+		for i, r := range xs0 {
+			requireds[i] = r.(string)
+		}
+
+		xs1 := xs[1].([]interface{})
+		optionals := make([]ast.OptionalArgument, len(xs1))
+		for i, o := range xs1 {
+			optionals[i] = o.(ast.OptionalArgument)
+		}
+
+		expanded := ""
+		if xs[2] != nil {
+			expanded = xs[2].(string)
+		}
+
+		return [3]interface{}{requireds, optionals, expanded}
+	}, s.And(s.Many(s.identifier()), s.Many(optArg), s.Maybe(expanded)))
+
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		pas := xs[0].([3]interface{})
+
+		var kas [3]interface{}
+		if ys, ok := xs[1].([]interface{}); ok {
+			kas = ys[1].([3]interface{})
+		} else {
+			kas = [3]interface{}{[]string{}, []ast.OptionalArgument{}, ""}
+		}
+
+		return ast.NewSignature(
+			pas[0].([]string), pas[1].([]ast.OptionalArgument), pas[2].(string),
+			kas[0].([]string), kas[1].([]ast.OptionalArgument), kas[2].(string),
+		)
+	}, s.And(argSet, s.Maybe(s.And(s.strippedString("."), argSet))))
+}
+
 func (s *state) output() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
@@ -45,6 +102,10 @@ func (s *state) output() comb.Parser {
 
 		return ast.NewOutput(xs[1], expanded)
 	}, s.And(s.Maybe(s.String("..")), s.expression()))
+}
+
+func (s *state) expanded(p comb.Parser) comb.Parser {
+	return s.Wrap(s.String(".."), p, s.None())
 }
 
 func (s *state) expressions() comb.Parser {

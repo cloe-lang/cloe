@@ -35,6 +35,26 @@ func TestLetConst(t *testing.T) {
 	}
 }
 
+func TestLetFunction(t *testing.T) {
+	for _, str := range []string{
+		"(let (foo) 123)",
+		"(let (foo x) (f x y))",
+		"(let (foo x y (z 123) (v 456) ..args . a b (c 123) (d 456) ..kwargs) 123)",
+	} {
+		s := newState(str)
+		_, err := s.Exhaust(s.letFunction())()
+		assert.Equal(t, nil, err)
+	}
+}
+
+func TestSignature(t *testing.T) {
+	for _, str := range []string{"", "x", "x y", "(x 123)", "..args", ". x", ". (x 123)", ". ..kwargs", "..args . ..kwargs"} {
+		s := newState(str)
+		_, err := s.Exhaust(s.signature())()
+		assert.Equal(t, nil, err)
+	}
+}
+
 func TestOutput(t *testing.T) {
 	for _, str := range []string{"output", "..outputs", "(foo bar)", "..(foo bar)"} {
 		s := newState(str)

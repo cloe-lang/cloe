@@ -19,3 +19,27 @@ func NewSignature(
 		keywords:    argumentSet{kr, ko, kk},
 	}
 }
+
+func (s Signature) PosReqs() []string {
+	return s.positionals.requireds
+}
+
+func (s Signature) PosOpts() []OptionalArgument {
+	return s.positionals.optionals
+}
+
+func (s Signature) PosRest() string {
+	return s.positionals.rest
+}
+
+func (s Signature) KeyReqs() []string {
+	return s.keywords.requireds
+}
+
+func (s Signature) KeyOpts() []OptionalArgument {
+	return s.keywords.optionals
+}
+
+func (s Signature) KeyRest() string {
+	return s.keywords.rest
+}

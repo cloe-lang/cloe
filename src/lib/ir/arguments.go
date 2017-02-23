@@ -13,13 +13,3 @@ func NewArguments(ps []PositionalArgument, ks []KeywordArgument, dicts []interfa
 		expandedDicts: dicts,
 	}
 }
-
-func NewPositionalArguments(xs ...interface{}) Arguments {
-	ps := make([]PositionalArgument, len(xs))
-
-	for i, x := range xs {
-		ps[i] = NewPositionalArgument(x, false)
-	}
-
-	return NewArguments(ps, []KeywordArgument{}, []interface{}{})
-}

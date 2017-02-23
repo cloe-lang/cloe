@@ -134,7 +134,14 @@ func (s *state) firstOrderExpression() comb.Parser {
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {
-	return s.And(s.Replace(quoteString, s.Char('`')), p)
+	return s.App(func(x interface{}) interface{} {
+		return ast.NewApp(
+			"quote",
+			ast.NewArguments(
+				[]ast.PositionalArgument{ast.NewPositionalArgument(p, false)},
+				[]ast.KeywordArgument{},
+				[]interface{}{}))
+	}, s.Wrap(s.Char('`'), p, s.None()))
 }
 
 func (s *state) app() comb.Parser {

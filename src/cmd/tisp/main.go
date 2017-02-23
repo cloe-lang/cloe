@@ -1,15 +1,30 @@
 package main
 
 import (
-	_ "../../lib/parse"
-	"../../lib/vm"
+	"../../lib/compile"
+	"../../lib/parse"
+	"../../lib/run"
 	"github.com/docopt/docopt-go"
+	"io/ioutil"
+	"log"
 )
 
 func main() {
-	getArgs()
+	args := getArgs()
 
-	vm.Nil.Eval()
+	source, err := ioutil.ReadFile(args["<filename>"].(string))
+
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	module, err := parse.Parse(string(source))
+
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	run.Run(compile.Compile(module))
 }
 
 func getArgs() map[string]interface{} {

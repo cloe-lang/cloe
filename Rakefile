@@ -19,15 +19,23 @@ end
 
 task :examples => examples
 
-task :test do
+task :unittest do
   sh 'go test ./...'
 end
+
+task :cmdtest => :tisp do
+  Dir.glob('test/*.tisp') do |file|
+    sh "bin/tisp #{file}"
+  end
+end
+
+task :test => %i(unittest cmdtest)
 
 task :lint do
   sh 'go vet ./...; golint ./...'
 end
 
-task :default => %i(test build examples)
+task :default => %i(test build)
 
 task :clean do
   sh 'git clean -dfx'

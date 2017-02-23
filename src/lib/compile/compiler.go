@@ -6,6 +6,7 @@ import (
 	"../vm"
 	"./env"
 	"fmt"
+	"log"
 )
 
 type compiler struct {
@@ -39,17 +40,28 @@ func (c *compiler) compileExpression(expr interface{}) *vm.Thunk {
 	switch x := expr.(type) {
 	case string:
 		return getOrError(c.env, x)
-	case []interface{}:
-		ts := make([]*vm.Thunk, len(x))
+	case ast.App:
+		args := x.Arguments()
 
-		for i, e := range x {
-			ts[i] = c.compileExpression(e)
+		ps := make([]vm.PositionalArgument, len(args.Positionals()))
+		for i, p := range args.Positionals() {
+			ps[i] = vm.NewPositionalArgument(c.compileExpression(p.Value()), p.Expanded())
 		}
 
-		return vm.PApp(ts[0], ts[1:]...)
+		ks := make([]vm.KeywordArgument, len(args.Keywords()))
+		for i, k := range args.Keywords() {
+			ks[i] = vm.NewKeywordArgument(k.Name(), c.compileExpression(k.Value()))
+		}
+
+		ds := make([]*vm.Thunk, len(args.ExpandedDicts()))
+		for i, d := range args.ExpandedDicts() {
+			ds[i] = c.compileExpression(d)
+		}
+
+		return vm.App(c.compileExpression(x.Function()), vm.NewArguments(ps, ks, ds))
 	}
 
-	panic(fmt.Sprint("Invalid type as an expression.", expr))
+	panic(fmt.Sprintf("Invalid type as an expression. %#v", expr))
 }
 
 func (c *compiler) compileSignature(sig ast.Signature) vm.Signature {
@@ -95,7 +107,7 @@ func getOrError(e env.Environment, s string) *vm.Thunk {
 	t, err := e.Get(s)
 
 	if err != nil {
-		panic(err)
+		log.Fatalln(err.Error())
 	}
 
 	return t

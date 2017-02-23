@@ -134,14 +134,18 @@ func (s *state) firstOrderExpression() comb.Parser {
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {
+	return s.appQuote(s.Wrap(s.Char('`'), p, s.None()))
+}
+
+func (s *state) appQuote(p comb.Parser) comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		return ast.NewApp(
 			"quote",
 			ast.NewArguments(
-				[]ast.PositionalArgument{ast.NewPositionalArgument(p, false)},
+				[]ast.PositionalArgument{ast.NewPositionalArgument(x, false)},
 				[]ast.KeywordArgument{},
 				[]interface{}{}))
-	}, s.Wrap(s.Char('`'), p, s.None()))
+	}, p)
 }
 
 func (s *state) app() comb.Parser {
@@ -222,11 +226,8 @@ func (s *state) identifier() comb.Parser {
 
 func (s *state) stringLiteral() comb.Parser {
 	c := s.Char('"')
-	f := func(x interface{}) interface{} {
-		return []interface{}{quoteString, x}
-	}
 
-	return s.App(f, s.Stringify(s.Wrap(
+	return s.appQuote(s.Stringify(s.Wrap(
 		c,
 		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
 		s.strip(c))))

@@ -18,7 +18,7 @@ func newCompiler() compiler {
 }
 
 func (c *compiler) compile(module []interface{}) []*vm.Thunk {
-	outputs := make([]*vm.Thunk, 0, 8) // TODO: Best cap?
+	outputs := make([]*vm.Thunk, 0, 8) // TODO: Use ListType.
 
 	for _, node := range module {
 		switch x := node.(type) {
@@ -27,7 +27,7 @@ func (c *compiler) compile(module []interface{}) []*vm.Thunk {
 		case ast.LetFunction:
 			c.env.Set(x.Name(), ir.CompileFunction(c.compileSignature(x.Signature()), c.exprToIR(x.Signature(), x.Body())))
 		case ast.Output:
-			outputs = append(outputs, c.exprToThunk(x.Expr()))
+			outputs = append(outputs, c.exprToThunk(x.Expr())) // TODO: Expand expanded lists.
 		default:
 			panic(fmt.Sprint("Invalid instruction.", x))
 		}

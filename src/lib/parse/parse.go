@@ -13,14 +13,14 @@ const (
 	specialChars = "()[]{}\"'`$"
 )
 
-func Parse(source string) []interface{} {
+func Parse(source string) ([]interface{}, error) {
 	m, err := newState(source).module()()
 
 	if err != nil {
-		panic(err.Error())
+		return nil, err
 	}
 
-	return m.([]interface{})
+	return m.([]interface{}), nil
 }
 
 func (s *state) module() comb.Parser {

@@ -7,4 +7,4 @@
   (let z (+ x y))
   (+ (^ z 3) (^ z 2) z))
 
-(print (+ foo bar))
+(write (+ foo bar))

@@ -2,7 +2,7 @@
 
 (let (inc x) (+ x 1))
 
-(let (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))
+(rec (let (factorial n) (if (= n 0) 1 (* n (factorial (- n 1))))))
 
 ; OCaml style mutual recursion
 (rec

@@ -1,5 +1,7 @@
 package ast
 
+import "fmt"
+
 type Signature struct {
 	positionals argumentSet
 	keywords    argumentSet
@@ -42,4 +44,47 @@ func (s Signature) KeyOpts() []OptionalArgument {
 
 func (s Signature) KeyRest() string {
 	return s.keywords.rest
+}
+
+func (s Signature) NameToIndex(name string) (int, error) {
+	i, ok := s.positionals.nameToIndex(name)
+
+	if ok {
+		return i, nil
+	}
+
+	j, ok := s.keywords.nameToIndex(name)
+
+	if ok {
+		return i + j, nil
+	}
+
+	return -1, fmt.Errorf("name %#v was not found in a signature", name)
+}
+
+func (as argumentSet) nameToIndex(name string) (int, bool) {
+	i := 0
+
+	for _, r := range as.requireds {
+		if name == r {
+			return i, true
+		}
+		i++
+	}
+
+	for _, o := range as.optionals {
+		if name == o.name {
+			return i, true
+		}
+		i++
+	}
+
+	if as.rest != "" {
+		if name == as.rest {
+			return i, true
+		}
+		i++
+	}
+
+	return i, false
 }

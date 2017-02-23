@@ -23,11 +23,11 @@ func (c *compiler) compile(module []interface{}) []*vm.Thunk {
 	for _, node := range module {
 		switch x := node.(type) {
 		case ast.LetConst:
-			c.env.Set(x.Name(), c.compileExpression(x.Expr()))
+			c.env.Set(x.Name(), c.exprToThunk(x.Expr()))
 		case ast.LetFunction:
-			c.env.Set(x.Name(), ir.CompileFunction(c.compileSignature(x.Signature()), c.compileFunctionBodyToIR(x.Body())))
+			c.env.Set(x.Name(), ir.CompileFunction(c.compileSignature(x.Signature()), c.exprToIR(x.Signature(), x.Body())))
 		case ast.Output:
-			outputs = append(outputs, c.compileExpression(x.Expr()))
+			outputs = append(outputs, c.exprToThunk(x.Expr()))
 		default:
 			panic(fmt.Sprint("Invalid instruction.", x))
 		}
@@ -36,7 +36,7 @@ func (c *compiler) compile(module []interface{}) []*vm.Thunk {
 	return outputs
 }
 
-func (c *compiler) compileExpression(expr interface{}) *vm.Thunk {
+func (c *compiler) exprToThunk(expr interface{}) *vm.Thunk {
 	switch x := expr.(type) {
 	case string:
 		return getOrError(c.env, x)
@@ -45,20 +45,20 @@ func (c *compiler) compileExpression(expr interface{}) *vm.Thunk {
 
 		ps := make([]vm.PositionalArgument, len(args.Positionals()))
 		for i, p := range args.Positionals() {
-			ps[i] = vm.NewPositionalArgument(c.compileExpression(p.Value()), p.Expanded())
+			ps[i] = vm.NewPositionalArgument(c.exprToThunk(p.Value()), p.Expanded())
 		}
 
 		ks := make([]vm.KeywordArgument, len(args.Keywords()))
 		for i, k := range args.Keywords() {
-			ks[i] = vm.NewKeywordArgument(k.Name(), c.compileExpression(k.Value()))
+			ks[i] = vm.NewKeywordArgument(k.Name(), c.exprToThunk(k.Value()))
 		}
 
 		ds := make([]*vm.Thunk, len(args.ExpandedDicts()))
 		for i, d := range args.ExpandedDicts() {
-			ds[i] = c.compileExpression(d)
+			ds[i] = c.exprToThunk(d)
 		}
 
-		return vm.App(c.compileExpression(x.Function()), vm.NewArguments(ps, ks, ds))
+		return vm.App(c.exprToThunk(x.Function()), vm.NewArguments(ps, ks, ds))
 	}
 
 	panic(fmt.Sprintf("Invalid type as an expression. %#v", expr))
@@ -75,29 +75,47 @@ func (c *compiler) compileOptionalArguments(opts []ast.OptionalArgument) []vm.Op
 	vmOpts := make([]vm.OptionalArgument, len(opts))
 
 	for i, opt := range opts {
-		vmOpts[i] = vm.NewOptionalArgument(opt.Name(), c.compileExpression(opt.DefaultValue()))
+		vmOpts[i] = vm.NewOptionalArgument(opt.Name(), c.exprToThunk(opt.DefaultValue()))
 	}
 
 	return vmOpts
 }
 
-func (c *compiler) compileFunctionBodyToIR(expr interface{}) interface{} {
+func (c *compiler) exprToIR(sig ast.Signature, expr interface{}) interface{} {
 	switch x := expr.(type) {
 	case string:
-		return getOrError(c.env, x)
-	case int:
-		return x
-	case []interface{}:
-		ps := make([]ir.PositionalArgument, len(x)-1)
+		t, err := c.env.Get(x)
 
-		for i, e := range x[1:] {
-			ps[i] = ir.NewPositionalArgument(c.compileFunctionBodyToIR(e), false)
+		if err == nil {
+			return t
 		}
 
-		// TODO: Support keyword arguments and expanded dictionaries.
-		return ir.NewApp(
-			c.compileFunctionBodyToIR(x[0]),
-			ir.NewArguments(ps, []ir.KeywordArgument{}, []interface{}{}))
+		i, err := sig.NameToIndex(x)
+
+		if err == nil {
+			return i
+		}
+
+		log.Fatalln(err.Error())
+	case ast.App:
+		args := x.Arguments()
+
+		ps := make([]ir.PositionalArgument, len(args.Positionals()))
+		for i, p := range args.Positionals() {
+			ps[i] = ir.NewPositionalArgument(c.exprToIR(sig, p.Value()), p.Expanded())
+		}
+
+		ks := make([]ir.KeywordArgument, len(args.Keywords()))
+		for i, k := range args.Keywords() {
+			ks[i] = ir.NewKeywordArgument(k.Name(), c.exprToIR(sig, k.Value()))
+		}
+
+		ds := make([]interface{}, len(args.ExpandedDicts()))
+		for i, d := range args.ExpandedDicts() {
+			ds[i] = c.exprToIR(sig, d)
+		}
+
+		return ir.NewApp(c.exprToIR(sig, x.Function()), ir.NewArguments(ps, ks, ds))
 	}
 
 	panic(fmt.Sprint("Invalid type.", expr))

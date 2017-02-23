@@ -84,16 +84,16 @@ func (c *compiler) compileOptionalArguments(opts []ast.OptionalArgument) []vm.Op
 func (c *compiler) exprToIR(sig ast.Signature, expr interface{}) interface{} {
 	switch x := expr.(type) {
 	case string:
-		t, err := c.env.Get(x)
-
-		if err == nil {
-			return t
-		}
-
 		i, err := sig.NameToIndex(x)
 
 		if err == nil {
 			return i
+		}
+
+		t, err := c.env.Get(x)
+
+		if err == nil {
+			return t
 		}
 
 		log.Fatalln(err.Error())

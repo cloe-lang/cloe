@@ -1,0 +1,2 @@
+(let (f x (y 2) ..args . foo (bar 4) ..kwargs) (+ x y foo bar))
+(write (f 1 . foo 3))

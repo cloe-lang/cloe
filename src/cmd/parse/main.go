@@ -20,12 +20,12 @@ func main() {
 }
 
 func getArgs() map[string]interface{} {
-	usage := `Risp parser
+	usage := `Tisp parser
 
 Usage:
   parse <filename>`
 
-	args, err := docopt.Parse(usage, nil, true, "Risp 0.0.0", false)
+	args, err := docopt.Parse(usage, nil, true, "Tisp 0.0.0", false)
 
 	if err != nil {
 		panic(err.Error())

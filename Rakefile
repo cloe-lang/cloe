@@ -1,4 +1,4 @@
-bins = %i(parse risp)
+bins = %i(parse tisp)
 examples = %i(parse_examples run_examples)
 
 bins.each do |bin|

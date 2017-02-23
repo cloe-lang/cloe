@@ -13,15 +13,15 @@ func main() {
 }
 
 func getArgs() map[string]interface{} {
-	usage := `Risp interpreter
+	usage := `Tisp interpreter
 
 Usage:
-  risp <filename>
+  tisp <filename>
 
 Options:
   -h --help     Show this help.`
 
-	args, _ := docopt.Parse(usage, nil, true, "Risp 0.0.0", false)
+	args, _ := docopt.Parse(usage, nil, true, "Tisp 0.0.0", false)
 
 	return args
 }

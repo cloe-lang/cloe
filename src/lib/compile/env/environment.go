@@ -36,7 +36,11 @@ func (e Environment) Get(s string) (*vm.Thunk, error) {
 }
 
 func (e Environment) Child() Environment {
-	return NewEnvironment(e.fallback)
+	return Environment{
+		parent:   &e,
+		me:       make(map[string]*vm.Thunk),
+		fallback: e.fallback,
+	}
 }
 
 func (e Environment) Parent() Environment {

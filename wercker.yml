@@ -16,7 +16,7 @@ build:
         go get -t ./...
 
     - script:
-      name: test
+      name: unit test
       code: |
         for dir in $(go list ./...)
         do
@@ -29,6 +29,10 @@ build:
           fi
         done
         bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+
+    - script:
+      name: command test
+      code: rake cmdtest
 
     - script:
       name: build

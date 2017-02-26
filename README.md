@@ -1,6 +1,7 @@
 # Tisp
 
 [![wercker status](https://app.wercker.com/status/68b66e4881f08974e109a864520e369f/s/master "wercker status")](https://app.wercker.com/project/byKey/68b66e4881f08974e109a864520e369f)
+[![codecov](https://codecov.io/gh/raviqqe/tisp/branch/master/graph/badge.svg)](https://codecov.io/gh/raviqqe/tisp)
 
 Tisp is a "Time is Space" programming language.
 

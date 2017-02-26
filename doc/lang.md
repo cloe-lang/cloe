@@ -7,6 +7,9 @@
   - No subtyping
   - No generics (Dynamic typing covers it.)
 - Follow the zen of Python
+  - Simple
+  - Canonical
+  - Practical
 - 3 special forms
   - `let`: Function or constant definition
   - `rec`: Mutually recursive function definition

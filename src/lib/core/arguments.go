@@ -1,4 +1,4 @@
-package vm
+package core
 
 // Arguments represents a structured set of arguments passed to a predicate.
 type Arguments struct {

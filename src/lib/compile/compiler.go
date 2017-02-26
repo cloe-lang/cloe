@@ -3,7 +3,7 @@ package compile
 import (
 	"../ast"
 	"../ir"
-	"../vm"
+	"../core"
 	"./env"
 	"fmt"
 	"log"
@@ -17,8 +17,8 @@ func newCompiler() compiler {
 	return compiler{env: prelude.Child()}
 }
 
-func (c *compiler) compile(module []interface{}) []*vm.Thunk {
-	outputs := make([]*vm.Thunk, 0, 8) // TODO: Use ListType.
+func (c *compiler) compile(module []interface{}) []*core.Thunk {
+	outputs := make([]*core.Thunk, 0, 8) // TODO: Use ListType.
 
 	for _, node := range module {
 		switch x := node.(type) {
@@ -36,49 +36,49 @@ func (c *compiler) compile(module []interface{}) []*vm.Thunk {
 	return outputs
 }
 
-func (c *compiler) exprToThunk(expr interface{}) *vm.Thunk {
+func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {
 	switch x := expr.(type) {
 	case string:
 		return getOrError(c.env, x)
 	case ast.App:
 		args := x.Arguments()
 
-		ps := make([]vm.PositionalArgument, len(args.Positionals()))
+		ps := make([]core.PositionalArgument, len(args.Positionals()))
 		for i, p := range args.Positionals() {
-			ps[i] = vm.NewPositionalArgument(c.exprToThunk(p.Value()), p.Expanded())
+			ps[i] = core.NewPositionalArgument(c.exprToThunk(p.Value()), p.Expanded())
 		}
 
-		ks := make([]vm.KeywordArgument, len(args.Keywords()))
+		ks := make([]core.KeywordArgument, len(args.Keywords()))
 		for i, k := range args.Keywords() {
-			ks[i] = vm.NewKeywordArgument(k.Name(), c.exprToThunk(k.Value()))
+			ks[i] = core.NewKeywordArgument(k.Name(), c.exprToThunk(k.Value()))
 		}
 
-		ds := make([]*vm.Thunk, len(args.ExpandedDicts()))
+		ds := make([]*core.Thunk, len(args.ExpandedDicts()))
 		for i, d := range args.ExpandedDicts() {
 			ds[i] = c.exprToThunk(d)
 		}
 
-		return vm.App(c.exprToThunk(x.Function()), vm.NewArguments(ps, ks, ds))
+		return core.App(c.exprToThunk(x.Function()), core.NewArguments(ps, ks, ds))
 	}
 
 	panic(fmt.Sprintf("Invalid type as an expression. %#v", expr))
 }
 
-func (c *compiler) compileSignature(sig ast.Signature) vm.Signature {
-	return vm.NewSignature(
+func (c *compiler) compileSignature(sig ast.Signature) core.Signature {
+	return core.NewSignature(
 		sig.PosReqs(), c.compileOptionalArguments(sig.PosOpts()), sig.PosRest(),
 		sig.KeyReqs(), c.compileOptionalArguments(sig.KeyOpts()), sig.KeyRest(),
 	)
 }
 
-func (c *compiler) compileOptionalArguments(opts []ast.OptionalArgument) []vm.OptionalArgument {
-	vmOpts := make([]vm.OptionalArgument, len(opts))
+func (c *compiler) compileOptionalArguments(opts []ast.OptionalArgument) []core.OptionalArgument {
+	coreOpts := make([]core.OptionalArgument, len(opts))
 
 	for i, opt := range opts {
-		vmOpts[i] = vm.NewOptionalArgument(opt.Name(), c.exprToThunk(opt.DefaultValue()))
+		coreOpts[i] = core.NewOptionalArgument(opt.Name(), c.exprToThunk(opt.DefaultValue()))
 	}
 
-	return vmOpts
+	return coreOpts
 }
 
 func (c *compiler) exprToIR(sig ast.Signature, expr interface{}) interface{} {
@@ -121,7 +121,7 @@ func (c *compiler) exprToIR(sig ast.Signature, expr interface{}) interface{} {
 	panic(fmt.Sprint("Invalid type.", expr))
 }
 
-func getOrError(e env.Environment, s string) *vm.Thunk {
+func getOrError(e env.Environment, s string) *core.Thunk {
 	t, err := e.Get(s)
 
 	if err != nil {

@@ -1,17 +1,17 @@
 package compile
 
 import (
-	"../vm"
+	"../core"
 	"fmt"
 )
 
-var write = vm.NewStrictFunction(
-	vm.NewSignature(
-		[]string{"x"}, []vm.OptionalArgument{}, "",
-		[]string{}, []vm.OptionalArgument{}, "",
+var write = core.NewStrictFunction(
+	core.NewSignature(
+		[]string{"x"}, []core.OptionalArgument{}, "",
+		[]string{}, []core.OptionalArgument{}, "",
 	),
-	func(os ...vm.Object) vm.Object {
+	func(os ...core.Object) core.Object {
 		fmt.Println(os[0])
 
-		return vm.Nil
+		return core.Nil
 	})

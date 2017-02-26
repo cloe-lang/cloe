@@ -1,8 +1,8 @@
 package compile
 
-import "../vm"
+import "../core"
 
-func Compile(module []interface{}) []*vm.Thunk {
+func Compile(module []interface{}) []*core.Thunk {
 	c := newCompiler()
 	return c.compile(module)
 }

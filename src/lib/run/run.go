@@ -1,8 +1,8 @@
 package run
 
-import "../vm"
+import "../core"
 
-func Run(ts []*vm.Thunk) {
+func Run(ts []*core.Thunk) {
 	for _, t := range ts {
 		go t.Eval() // TODO: Ensure results are Outputs.
 	}

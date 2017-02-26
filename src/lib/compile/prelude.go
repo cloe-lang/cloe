@@ -1,49 +1,49 @@
 package compile
 
 import (
-	"../vm"
+	"../core"
 	"./env"
 	"strconv"
 )
 
 var prelude = func() env.Environment {
-	e := env.NewEnvironment(func(s string) (*vm.Thunk, error) {
+	e := env.NewEnvironment(func(s string) (*core.Thunk, error) {
 		n, err := strconv.ParseFloat(s, 64)
 
 		if err != nil {
 			return nil, err
 		}
 
-		return vm.NewNumber(n), nil
+		return core.NewNumber(n), nil
 	})
 
 	for _, nv := range []struct {
 		name  string
-		value *vm.Thunk
+		value *core.Thunk
 	}{
-		{"true", vm.True},
-		{"false", vm.False},
-		{"if", vm.If},
+		{"true", core.True},
+		{"false", core.False},
+		{"if", core.If},
 
-		{"partial", vm.Partial},
+		{"partial", core.Partial},
 
-		{"first", vm.First},
-		{"rest", vm.Rest},
-		{"prepend", vm.Prepend},
+		{"first", core.First},
+		{"rest", core.Rest},
+		{"prepend", core.Prepend},
 
-		{"nil", vm.Nil},
+		{"nil", core.Nil},
 
-		{"+", vm.Add},
-		{"-", vm.Sub},
-		{"*", vm.Mul},
-		{"/", vm.Div},
-		{"mod", vm.Mod},
-		{"pow", vm.Pow},
+		{"+", core.Add},
+		{"-", core.Sub},
+		{"*", core.Mul},
+		{"/", core.Div},
+		{"mod", core.Mod},
+		{"pow", core.Pow},
 
-		{"y", vm.Y},
-		{"ys", vm.Ys},
+		{"y", core.Y},
+		{"ys", core.Ys},
 
-		{"cause", vm.Cause},
+		{"cause", core.Cause},
 
 		{"write", write},
 	} {

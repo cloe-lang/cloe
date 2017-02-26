@@ -1,6 +1,6 @@
 package ir
 
-import "../vm"
+import "../core"
 
 type PositionalArgument struct {
 	value    interface{}
@@ -14,6 +14,6 @@ func NewPositionalArgument(ir interface{}, expanded bool) PositionalArgument {
 	}
 }
 
-func (p PositionalArgument) compile(args []*vm.Thunk) vm.PositionalArgument {
-	return vm.NewPositionalArgument(compileExpression(args, p.value), p.expanded)
+func (p PositionalArgument) compile(args []*core.Thunk) core.PositionalArgument {
+	return core.NewPositionalArgument(compileExpression(args, p.value), p.expanded)
 }

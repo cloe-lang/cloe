@@ -1,4 +1,4 @@
-package vm
+package core
 
 type closureType struct {
 	function      *Thunk

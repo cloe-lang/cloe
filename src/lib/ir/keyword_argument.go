@@ -1,6 +1,6 @@
 package ir
 
-import "../vm"
+import "../core"
 
 type KeywordArgument struct {
 	name  string
@@ -14,6 +14,6 @@ func NewKeywordArgument(n string, ir interface{}) KeywordArgument {
 	}
 }
 
-func (k KeywordArgument) compile(args []*vm.Thunk) vm.KeywordArgument {
-	return vm.NewKeywordArgument(k.name, compileExpression(args, k.value))
+func (k KeywordArgument) compile(args []*core.Thunk) core.KeywordArgument {
+	return core.NewKeywordArgument(k.name, compileExpression(args, k.value))
 }

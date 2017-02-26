@@ -1,4 +1,4 @@
-package vm
+package core
 
 type argumentSet struct {
 	requireds []string

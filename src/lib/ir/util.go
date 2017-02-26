@@ -1,23 +1,23 @@
 package ir
 
 import (
-	"../vm"
+	"../core"
 	"fmt"
 )
 
-func CompileFunction(s vm.Signature, expr interface{}) *vm.Thunk {
-	return vm.NewLazyFunction(
+func CompileFunction(s core.Signature, expr interface{}) *core.Thunk {
+	return core.NewLazyFunction(
 		s,
-		func(ts ...*vm.Thunk) vm.Object {
+		func(ts ...*core.Thunk) core.Object {
 			return compileExpression(ts, expr)
 		})
 }
 
-func compileExpression(args []*vm.Thunk, expr interface{}) *vm.Thunk {
+func compileExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 	switch x := expr.(type) {
 	case int:
 		return args[x]
-	case *vm.Thunk:
+	case *core.Thunk:
 		return x
 	case App:
 		return x.compile(args)

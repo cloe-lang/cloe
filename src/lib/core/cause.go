@@ -1,4 +1,4 @@
-package vm
+package core
 
 var Cause = NewLazyFunction(
 	NewSignature(

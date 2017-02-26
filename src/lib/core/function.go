@@ -1,4 +1,4 @@
-package vm
+package core
 
 type functionType struct {
 	signature Signature

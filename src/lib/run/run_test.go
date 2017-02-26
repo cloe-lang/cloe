@@ -1,19 +1,19 @@
 package run
 
 import (
-	"../vm"
+	"../core"
 	"testing"
 )
 
 func TestRunWithNoThunk(t *testing.T) {
-	Run([]*vm.Thunk{})
+	Run([]*core.Thunk{})
 }
 
 func TestRunWithOneThunk(t *testing.T) {
-	Run([]*vm.Thunk{vm.PApp(vm.Add, vm.NewNumber(123), vm.NewNumber(456))})
+	Run([]*core.Thunk{core.PApp(core.Add, core.NewNumber(123), core.NewNumber(456))})
 }
 
 func TestRunWithThunks(t *testing.T) {
-	th := vm.PApp(vm.Add, vm.NewNumber(123), vm.NewNumber(456))
-	Run([]*vm.Thunk{th, th, th, th, th, th, th, th})
+	th := core.PApp(core.Add, core.NewNumber(123), core.NewNumber(456))
+	Run([]*core.Thunk{th, th, th, th, th, th, th, th})
 }

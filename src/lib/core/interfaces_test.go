@@ -1,4 +1,4 @@
-package vm
+package core
 
 func testEqual(ts ...*Thunk) bool {
 	return bool(PApp(Equal, ts...).Eval().(BoolType))

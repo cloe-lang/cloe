@@ -1,7 +1,7 @@
 package ir
 
 import (
-	"../vm"
+	"../core"
 	"github.com/stretchr/testify/assert"
 	"math"
 	"testing"
@@ -11,13 +11,13 @@ func TestCompileFunction(t *testing.T) {
 	const n1, n2, n3 = 2, 3, 4
 
 	f := CompileFunction(
-		vm.NewSignature(
-			[]string{"f", "x1", "x2", "x3"}, []vm.OptionalArgument{}, "",
-			[]string{}, []vm.OptionalArgument{}, "",
+		core.NewSignature(
+			[]string{"f", "x1", "x2", "x3"}, []core.OptionalArgument{}, "",
+			[]string{}, []core.OptionalArgument{}, "",
 		),
 		NewApp(0, newPositionalArguments(1, NewApp(0, newPositionalArguments(2, 3)))))
 
-	x1 := float64(vm.PApp(f, vm.Pow, vm.NewNumber(n1), vm.NewNumber(n2), vm.NewNumber(n3)).Eval().(vm.NumberType))
+	x1 := float64(core.PApp(f, core.Pow, core.NewNumber(n1), core.NewNumber(n2), core.NewNumber(n3)).Eval().(core.NumberType))
 	x2 := math.Pow(n1, math.Pow(n2, n3))
 
 	t.Logf("%f == %f?", x1, x2)

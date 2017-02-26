@@ -1,4 +1,4 @@
-package vm
+package core
 
 // Signature represents function signature.
 type Signature struct {

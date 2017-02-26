@@ -1,4 +1,4 @@
-package vm
+package core
 
 // OptionalArgument contains its name and default value.
 type OptionalArgument struct {

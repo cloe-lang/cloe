@@ -12,12 +12,23 @@ build:
       name: install
       code: |
         apt -y update --fix-missing
-        apt -y install golang rake git
+        apt -y install golang rake git curl
         go get -t ./...
 
     - script:
       name: test
-      code: rake test
+      code: |
+        for dir in $(go list ./...)
+        do
+          profile_file=profile.out
+          go test -coverprofile=$profile_file -covermode=atomic $dir
+          if [ -f $profile_file ]
+          then
+            cat $profile_file >> coverage.txt
+            rm $profile_file
+          fi
+        done
+        bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
 
     - script:
       name: build

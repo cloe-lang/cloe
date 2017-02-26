@@ -1,5 +1,7 @@
 # Tisp
 
+[![wercker status](https://app.wercker.com/status/68b66e4881f08974e109a864520e369f/s/master "wercker status")](https://app.wercker.com/project/byKey/68b66e4881f08974e109a864520e369f)
+
 Tisp is a "Time is Space" programming language.
 
 

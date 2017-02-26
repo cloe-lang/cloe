@@ -1,6 +1,6 @@
 package core
 
-import "../rbt"
+import "github.com/raviqqe/tisp/src/lib/rbt"
 
 type DictionaryType struct{ rbt.Dictionary }
 

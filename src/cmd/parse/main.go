@@ -1,7 +1,7 @@
 package main
 
 import (
-	"../../lib/parse"
+	"github.com/raviqqe/tisp/src/lib/parse"
 	"github.com/docopt/docopt-go"
 	"github.com/kr/pretty"
 	"io/ioutil"

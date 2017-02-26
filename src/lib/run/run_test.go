@@ -1,7 +1,7 @@
 package run
 
 import (
-	"../core"
+	"github.com/raviqqe/tisp/src/lib/core"
 	"testing"
 )
 

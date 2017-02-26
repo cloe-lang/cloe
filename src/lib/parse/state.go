@@ -1,6 +1,6 @@
 package parse
 
-import "./comb"
+import "github.com/raviqqe/tisp/src/lib/parse/comb"
 
 type state struct{ *comb.State }
 

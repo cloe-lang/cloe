@@ -1,9 +1,9 @@
 package main
 
 import (
-	"../../lib/compile"
-	"../../lib/parse"
-	"../../lib/run"
+	"github.com/raviqqe/tisp/src/lib/compile"
+	"github.com/raviqqe/tisp/src/lib/parse"
+	"github.com/raviqqe/tisp/src/lib/run"
 	"github.com/docopt/docopt-go"
 	"io/ioutil"
 	"log"

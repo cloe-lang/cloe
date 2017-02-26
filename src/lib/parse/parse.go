@@ -1,8 +1,8 @@
 package parse
 
 import (
-	"../ast"
-	"./comb"
+	"github.com/raviqqe/tisp/src/lib/ast"
+	"github.com/raviqqe/tisp/src/lib/parse/comb"
 )
 
 const (

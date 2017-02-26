@@ -1,6 +1,6 @@
 package ir
 
-import "../core"
+import "github.com/raviqqe/tisp/src/lib/core"
 
 type App struct {
 	function interface{}

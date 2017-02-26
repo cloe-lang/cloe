@@ -1,6 +1,6 @@
 package std
 
-import "../core"
+import "github.com/raviqqe/tisp/src/lib/core"
 
 var Y = core.NewLazyFunction(
 	core.NewSignature(

@@ -1,6 +1,6 @@
 package run
 
-import "../core"
+import "github.com/raviqqe/tisp/src/lib/core"
 
 func Run(ts []*core.Thunk) {
 	for _, t := range ts {

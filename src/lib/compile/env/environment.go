@@ -1,7 +1,7 @@
 package env
 
 import (
-	"../../core"
+	"github.com/raviqqe/tisp/src/lib/core"
 	"fmt"
 )
 

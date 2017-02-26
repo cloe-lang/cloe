@@ -1,19 +1,21 @@
 # Tisp
 
-Tisp is a purely-functional, inherently parallel, asynchronous programming language.
+Tisp is a "Time is Space" programming language.
+
+
+## Features
+
+- Purely functional programming
+- Implicit parallelism
+- Asynchronous IO
 
 
 ## FAQ
 
-### Why another language?
-
-For fun.
-
-### Any limitations?
+### Is it general-purpose?
 
 We would like to strive to make the language as general as possible.
-But, the way to model programs discribed above may have restrict domains of
-this language.
+However, Tisp's programming model may restrict its domain.
 There is no proof about how general this language is so far.
 
 

@@ -1,5 +1,4 @@
 bins = %i(parse tisp)
-examples = %i(parse_examples run_examples)
 
 
 bins.each do |bin|
@@ -10,18 +9,6 @@ end
 
 
 task :build => bins
-
-
-examples.zip(bins).each do |name, bin|
-  task name => bin do
-    Dir.glob('examples/*.r').each do |file|
-      sh "bin/#{bin} #{file}"
-    end
-  end
-end
-
-
-task :examples => examples
 
 
 task :unittest do

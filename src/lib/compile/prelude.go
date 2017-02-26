@@ -2,6 +2,7 @@ package compile
 
 import (
 	"../core"
+	"../std"
 	"./env"
 	"strconv"
 )
@@ -40,12 +41,12 @@ var prelude = func() env.Environment {
 		{"mod", core.Mod},
 		{"pow", core.Pow},
 
-		{"y", core.Y},
-		{"ys", core.Ys},
+		{"y", std.Y},
+		{"ys", std.Ys},
 
-		{"cause", core.Cause},
+		{"cause", std.Cause},
 
-		{"write", write},
+		{"write", std.Write},
 	} {
 		e.Set(nv.name, nv.value)
 	}

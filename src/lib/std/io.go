@@ -1,11 +1,11 @@
-package compile
+package std
 
 import (
 	"../core"
 	"fmt"
 )
 
-var write = core.NewStrictFunction(
+var Write = core.NewStrictFunction(
 	core.NewSignature(
 		[]string{"x"}, []core.OptionalArgument{}, "",
 		[]string{}, []core.OptionalArgument{}, "",

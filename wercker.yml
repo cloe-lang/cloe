@@ -1,0 +1,24 @@
+box: ubuntu
+
+build:
+  steps:
+    - script:
+      name: env
+      code: export GOPATH=~
+
+    - setup-go-workspace
+
+    - script:
+      name: install
+      code: |
+        apt -y update --fix-missing
+        apt -y install golang rake git
+        go get -t ./...
+
+    - script:
+      name: test
+      code: rake test
+
+    - script:
+      name: build
+      code: rake build

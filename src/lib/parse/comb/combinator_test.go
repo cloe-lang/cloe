@@ -31,7 +31,7 @@ func TestMany1(t *testing.T) {
 	assert.Equal(t, err, nil)
 }
 
-func TestMany1Fail(t *testing.T) {
+func TestXFailMany1(t *testing.T) {
 	result, err := testMany1Space("")
 
 	t.Log(err)
@@ -66,7 +66,7 @@ func TestOr(t *testing.T) {
 	}
 }
 
-func TestOrFail(t *testing.T) {
+func TestXFailOr(t *testing.T) {
 	result, err := testOr("c")
 
 	t.Log(err)

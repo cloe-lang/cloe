@@ -44,6 +44,13 @@ task :lint do
 end
 
 
+task :format do
+  Dir.glob('src/**/*.go').each do |file|
+    sh "go fmt #{file}"
+  end
+end
+
+
 task :default => %i(test build)
 
 

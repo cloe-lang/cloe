@@ -2,8 +2,8 @@ package compile
 
 import (
 	"../ast"
-	"../ir"
 	"../core"
+	"../ir"
 	"./env"
 	"fmt"
 	"log"

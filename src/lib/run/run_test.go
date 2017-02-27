@@ -1,19 +1,20 @@
 package run
 
 import (
+	"github.com/raviqqe/tisp/src/lib/compile"
 	"github.com/raviqqe/tisp/src/lib/core"
 	"testing"
 )
 
 func TestRunWithNoThunk(t *testing.T) {
-	Run([]*core.Thunk{})
+	Run([]compile.Output{})
 }
 
 func TestRunWithOneThunk(t *testing.T) {
-	Run([]*core.Thunk{core.PApp(core.Add, core.NewNumber(123), core.NewNumber(456))})
+	Run([]compile.Output{compile.NewOutput(core.PApp(core.Add, core.NewNumber(123), core.NewNumber(456)), false)})
 }
 
 func TestRunWithThunks(t *testing.T) {
-	th := core.PApp(core.Add, core.NewNumber(123), core.NewNumber(456))
-	Run([]*core.Thunk{th, th, th, th, th, th, th, th})
+	o := compile.NewOutput(core.PApp(core.Add, core.NewNumber(123), core.NewNumber(456)), false)
+	Run([]compile.Output{o, o, o, o, o, o, o, o})
 }

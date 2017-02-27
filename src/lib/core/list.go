@@ -7,7 +7,10 @@ type ListType struct {
 	rest  *Thunk
 }
 
-var emptyList = ListType{nil, nil}
+var (
+	emptyList = ListType{nil, nil}
+	EmptyList = Normal(emptyList)
+)
 
 func NewList(ts ...*Thunk) *Thunk {
 	l := Normal(emptyList)

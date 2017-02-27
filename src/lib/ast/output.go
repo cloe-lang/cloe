@@ -12,3 +12,7 @@ func NewOutput(expr interface{}, expanded bool) Output {
 func (o Output) Expr() interface{} {
 	return o.expr
 }
+
+func (o Output) Expanded() bool {
+	return o.expanded
+}

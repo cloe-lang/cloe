@@ -41,6 +41,8 @@ var prelude = func() env.Environment {
 		{"mod", core.Mod},
 		{"pow", core.Pow},
 
+		{"list", std.List},
+
 		{"y", std.Y},
 		{"ys", std.Ys},
 

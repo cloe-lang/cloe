@@ -1,8 +1,8 @@
 package ir
 
 import (
-	"github.com/raviqqe/tisp/src/lib/core"
 	"fmt"
+	"github.com/raviqqe/tisp/src/lib/core"
 )
 
 func CompileFunction(s core.Signature, expr interface{}) *core.Thunk {

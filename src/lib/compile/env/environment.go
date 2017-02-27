@@ -1,8 +1,8 @@
 package env
 
 import (
-	"github.com/raviqqe/tisp/src/lib/core"
 	"fmt"
+	"github.com/raviqqe/tisp/src/lib/core"
 )
 
 type Environment struct {

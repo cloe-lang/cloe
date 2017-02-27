@@ -1,8 +1,8 @@
 package std
 
 import (
-	"github.com/raviqqe/tisp/src/lib/core"
 	"fmt"
+	"github.com/raviqqe/tisp/src/lib/core"
 )
 
 var Write = core.NewStrictFunction(

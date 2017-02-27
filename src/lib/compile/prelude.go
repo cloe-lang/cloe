@@ -1,9 +1,9 @@
 package compile
 
 import (
+	"github.com/raviqqe/tisp/src/lib/compile/env"
 	"github.com/raviqqe/tisp/src/lib/core"
 	"github.com/raviqqe/tisp/src/lib/std"
-	"github.com/raviqqe/tisp/src/lib/compile/env"
 	"strconv"
 )
 

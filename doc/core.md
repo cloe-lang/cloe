@@ -28,7 +28,6 @@
 
 - Array?
 
-
 ## Interfaces
 
 - Exported

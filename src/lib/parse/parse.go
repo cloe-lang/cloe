@@ -126,9 +126,9 @@ func (s *state) firstOrderExpression() comb.Parser {
 		s.identifier(),
 		s.stringLiteral(),
 		s.app(),
-		s.appFunc("list", s.sequence("[", "]")),
-		s.appFunc("dict", s.sequence("{", "}")),
-		s.appFunc("set", s.sequence("'{", "}")),
+		s.appFunc("$list", s.sequence("[", "]")),
+		s.appFunc("$dict", s.sequence("{", "}")),
+		s.appFunc("$set", s.sequence("'{", "}")),
 		// s.appFunc("lambda", s.sequence("'(", ")")),
 	)
 }

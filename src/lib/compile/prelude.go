@@ -44,6 +44,7 @@ var prelude = func() env.Environment {
 		{"=", core.Equal},
 
 		{"list", std.List},
+		{"$list", std.List},
 
 		{"y", std.Y},
 		{"ys", std.Ys},

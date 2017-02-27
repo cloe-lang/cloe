@@ -55,11 +55,11 @@ func evalOutputList(t *core.Thunk) {
 
 		wg.Add(1)
 		outSem <- true
-		go func() {
+		go func(t *core.Thunk) {
 			core.PApp(core.First, t).Eval() // TODO: Check error
 			<-outSem
 			wg.Done()
-		}()
+		}(t)
 
 		t = core.PApp(core.Rest, t)
 	}

@@ -38,6 +38,13 @@ task :format do
 end
 
 
+task :docker do
+  tag = 'raviqqe/tisp-build'
+  sh "sudo docker build -t #{tag} etc/docker"
+  sh "sudo docker push #{tag}"
+end
+
+
 task :default => %i(test build)
 
 

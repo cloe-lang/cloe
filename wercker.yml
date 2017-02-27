@@ -1,4 +1,4 @@
-box: ubuntu
+box: raviqqe/tisp-build
 
 build:
   steps:
@@ -9,11 +9,8 @@ build:
     - setup-go-workspace
 
     - script:
-      name: install
-      code: |
-        apt -y update --fix-missing
-        apt -y install golang rake git curl
-        go get -t ./...
+      name: install dependencies
+      code: go get -t ./...
 
     - script:
       name: unit test

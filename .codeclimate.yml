@@ -16,4 +16,4 @@ ratings:
   paths:
     - "**.go"
     - "**.md"
-    - Rakefile
+    - "**.rb"

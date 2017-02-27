@@ -9,7 +9,7 @@ import (
 func TestDictionaryInsertRemoveRandomly(t *testing.T) {
 	d := NewDictionary(less)
 
-	for i := 0; i < MAX_ITERS; i++ {
+	for i := 0; i < MaxIters; i++ {
 		k := generateKey()
 		insert := rand.Int()%2 == 0
 

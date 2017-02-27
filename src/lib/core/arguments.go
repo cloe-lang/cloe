@@ -128,25 +128,25 @@ func (args Arguments) restKeywords() *Thunk {
 	return t
 }
 
-func (original Arguments) Merge(merged Arguments) Arguments {
+func (args Arguments) Merge(merged Arguments) Arguments {
 	var new Arguments
 
 	if new.expandedList == nil {
-		new.positionals = append(original.positionals, merged.positionals...)
+		new.positionals = append(args.positionals, merged.positionals...)
 		new.expandedList = merged.expandedList
 	} else {
-		new.positionals = original.positionals
+		new.positionals = args.positionals
 		new.expandedList = PApp(
 			Append,
-			append([]*Thunk{original.expandedList}, merged.positionals...)...)
+			append([]*Thunk{args.expandedList}, merged.positionals...)...)
 
 		if merged.expandedList != nil {
 			new.expandedList = PApp(Merge, new.expandedList, merged.expandedList)
 		}
 	}
 
-	new.keywords = append(original.keywords, merged.keywords...)
-	new.expandedDicts = append(original.expandedDicts, merged.expandedDicts...)
+	new.keywords = append(args.keywords, merged.keywords...)
+	new.expandedDicts = append(args.expandedDicts, merged.expandedDicts...)
 
 	return new
 }

@@ -19,17 +19,17 @@ func NewList(ts ...*Thunk) *Thunk {
 	return l
 }
 
-func (l1 ListType) equal(e equalable) Object {
-	l2 := e.(ListType)
+func (l ListType) equal(e equalable) Object {
+	ll := e.(ListType)
 
-	if l1 == emptyList || l2 == emptyList {
-		return rawBool(l1 == l2)
+	if l == emptyList || ll == emptyList {
+		return rawBool(l == ll)
 	}
 
 	for _, t := range []*Thunk{
 		// Don't evaluate these parallely for short circuit behavior.
-		PApp(Equal, l1.first, l2.first),
-		PApp(Equal, l1.rest, l2.rest),
+		PApp(Equal, l.first, ll.first),
+		PApp(Equal, l.rest, ll.rest),
 	} {
 		o := t.Eval()
 		b, ok := o.(BoolType)
@@ -163,19 +163,19 @@ func (l ListType) merge(ts ...*Thunk) Object {
 
 // ordered
 
-func (l1 ListType) less(ord ordered) bool {
-	l2 := ord.(ListType)
+func (l ListType) less(ord ordered) bool {
+	ll := ord.(ListType)
 
-	if l2 == emptyList {
+	if ll == emptyList {
 		return false
-	} else if l1 == emptyList {
+	} else if l == emptyList {
 		return true
 	}
 
 	// Compare firsts
 
-	o1 := l1.first.Eval()
-	o2 := l2.first.Eval()
+	o1 := l.first.Eval()
+	o2 := ll.first.Eval()
 
 	if less(o1, o2) {
 		return true
@@ -185,7 +185,7 @@ func (l1 ListType) less(ord ordered) bool {
 
 	// Compare rests
 
-	return less(l1.rest.Eval(), l2.rest.Eval())
+	return less(l.rest.Eval(), ll.rest.Eval())
 }
 
 func (l ListType) ToThunks() ([]*Thunk, *Thunk) {

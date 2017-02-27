@@ -9,7 +9,7 @@ import (
 func TestSetInsertRemoveRandomly(t *testing.T) {
 	s := NewSet(less)
 
-	for i := 0; i < MAX_ITERS; i++ {
+	for i := 0; i < MaxIters; i++ {
 		x := generateKey()
 		insert := rand.Int()%2 == 0
 

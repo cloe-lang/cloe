@@ -9,7 +9,7 @@ import (
 func TestTreeInsertRemoveRandomly(t *testing.T) {
 	tr := NewTree(less)
 
-	for i := 0; i < MAX_ITERS; i++ {
+	for i := 0; i < MaxIters; i++ {
 		x := generateKey()
 		old := tr
 		insert := rand.Int()%2 == 0

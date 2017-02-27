@@ -45,7 +45,7 @@ func (e Environment) Child() Environment {
 
 func (e Environment) Parent() Environment {
 	if e.parent == nil {
-		panic(fmt.Errorf("Parent is nil."))
+		panic(fmt.Errorf("parent environment is nil"))
 	}
 
 	return *e.parent

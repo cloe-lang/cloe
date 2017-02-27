@@ -15,7 +15,7 @@ func (f RawFunction) call(args Arguments) Object {
 	return f(args)
 }
 
-var Partial *Thunk = Normal(RawFunction(func(args Arguments) Object {
+var Partial = Normal(RawFunction(func(args Arguments) Object {
 	t := args.nextPositional()
 	return closureType{t, args}
 }))

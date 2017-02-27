@@ -68,18 +68,18 @@ func TestNodeRemove(t *testing.T) {
 }
 
 const (
-	MAX_ITERS = 2000
-	MAX_KEY   = MAX_ITERS / 2
+	MaxIters = 2000
+	MaxKey   = MaxIters / 2
 )
 
 func generateKey() int {
-	return rand.Int() % MAX_KEY
+	return rand.Int() % MaxKey
 }
 
 func TestNodeInsertRandomly(t *testing.T) {
 	n := (*node)(nil)
 
-	for i := 0; i < MAX_ITERS; i++ {
+	for i := 0; i < MaxIters; i++ {
 		k := generateKey()
 		old := n
 
@@ -96,7 +96,7 @@ func TestNodeInsertRandomly(t *testing.T) {
 func TestNodeRemoveRandomly(t *testing.T) {
 	n := (*node)(nil)
 
-	for i := 0; i < MAX_ITERS; i++ {
+	for i := 0; i < MaxIters; i++ {
 		k := generateKey()
 		old := n
 
@@ -113,7 +113,7 @@ func TestNodeRemoveRandomly(t *testing.T) {
 func TestInsertRemovePersistency(t *testing.T) {
 	n := (*node)(nil)
 
-	for i := 0; i < MAX_ITERS; i++ {
+	for i := 0; i < MaxIters; i++ {
 		k := generateKey()
 		old := n
 		oldCopy := n.deepCopy()

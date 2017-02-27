@@ -17,8 +17,21 @@ end
 
 
 task :cmdtest => :tisp do
+  tmp_dir = 'tmp'
+  mkdir_p tmp_dir
+
   Dir.glob('test/*.tisp') do |file|
-    sh "bin/tisp #{file}"
+    in_file = file.ext '.in'
+    expected_out_file = file.ext '.out'
+    actual_out_file = File.join(tmp_dir, File.basename(expected_out_file))
+
+    sh %W(bin/tisp #{file}
+          #{File.exist?(in_file) ? "< #{in_file}" : ''}
+          #{File.exist?(expected_out_file) ? "> #{actual_out_file}" : ''}
+    ).join ' '
+
+    sh "diff #{expected_out_file} #{actual_out_file}" \
+        if File.exist? expected_out_file
   end
 end
 

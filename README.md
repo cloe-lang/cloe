@@ -2,6 +2,7 @@
 
 [![wercker status](https://app.wercker.com/status/68b66e4881f08974e109a864520e369f/s/master "wercker status")](https://app.wercker.com/project/byKey/68b66e4881f08974e109a864520e369f)
 [![codecov](https://codecov.io/gh/raviqqe/tisp/branch/master/graph/badge.svg)](https://codecov.io/gh/raviqqe/tisp)
+[![Code Climate](https://codeclimate.com/github/raviqqe/tisp/badges/gpa.svg)](https://codeclimate.com/github/raviqqe/tisp)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Tisp is a "Time is Space" programming language.

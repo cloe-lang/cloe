@@ -49,13 +49,11 @@ func (l ListType) equal(e equalable) Object {
 
 var Prepend = NewLazyFunction(
 	NewSignature(
-		[]string{"list"}, []OptionalArgument{}, "elems",
+		[]string{}, []OptionalArgument{}, "elemsAndList",
 		[]string{}, []OptionalArgument{}, "",
 	),
 	func(ts ...*Thunk) Object {
-		t := ts[0]
-
-		o := ts[1].Eval()
+		o := ts[0].Eval()
 		l, ok := o.(ListType)
 
 		if !ok {
@@ -66,9 +64,14 @@ var Prepend = NewLazyFunction(
 
 		if err != nil {
 			return err
+		} else if len(ts) == 0 {
+			return NumArgsError("prepend", "> 0")
 		}
 
-		for i := len(ts) - 1; i >= 0; i-- {
+		last := len(ts) - 1
+		t := ts[last]
+
+		for i := last - 1; i >= 0; i-- {
 			t = Normal(cons(ts[i], t))
 		}
 

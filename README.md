@@ -4,6 +4,7 @@
 [![codecov](https://codecov.io/gh/raviqqe/tisp/branch/master/graph/badge.svg)](https://codecov.io/gh/raviqqe/tisp)
 [![Code Climate](https://codeclimate.com/github/raviqqe/tisp/badges/gpa.svg)](https://codeclimate.com/github/raviqqe/tisp)
 [![Issue Count](https://codeclimate.com/github/raviqqe/tisp/badges/issue_count.svg)](https://codeclimate.com/github/raviqqe/tisp)
+[![Go Report Card](https://goreportcard.com/badge/github.com/raviqqe/tisp)](https://goreportcard.com/report/github.com/raviqqe/tisp)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Tisp is a "Time is Space" programming language.

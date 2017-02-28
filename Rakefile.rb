@@ -21,6 +21,13 @@ task :cmdtest => :tisp do
   mkdir_p tmp_dir
 
   Dir.glob('test/*.tisp') do |file|
+    shell_script = file.ext '.sh'
+
+    if File.exist? shell_script
+      sh "sh #{shell_script}"
+      next
+    end
+
     in_file = file.ext '.in'
     expected_out_file = file.ext '.out'
     actual_out_file = File.join(tmp_dir, File.basename(expected_out_file))

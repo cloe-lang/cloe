@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/docopt/docopt-go"
 	"github.com/raviqqe/tisp/src/lib/compile"
+	"github.com/raviqqe/tisp/src/lib/desugar"
 	"github.com/raviqqe/tisp/src/lib/parse"
 	"github.com/raviqqe/tisp/src/lib/run"
 	"io/ioutil"
@@ -24,7 +25,7 @@ func main() {
 		log.Fatalln(err.Error())
 	}
 
-	run.Run(compile.Compile(module))
+	run.Run(compile.Compile(desugar.Desugar(module)))
 }
 
 func getArgs() map[string]interface{} {

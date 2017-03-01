@@ -29,11 +29,11 @@ func Run(os []compile.Output) {
 
 		wg.Add(1)
 		outSem <- true
-		go func() {
+		go func(o compile.Output) {
 			o.Value().Eval()
 			<-outSem
 			wg.Done()
-		}()
+		}(o)
 	}
 
 	wg.Wait()

@@ -25,7 +25,7 @@ func (c *compiler) compile(module []interface{}) []Output {
 		case ast.LetConst:
 			c.env.Set(x.Name(), c.exprToThunk(x.Expr()))
 		case ast.LetFunction:
-			c.env.Set(x.Name(), ir.CompileFunction(c.compileSignature(x.Signature()), c.exprToIR(x.Signature(), x.Body())))
+			c.env.Set(x.Name(), ir.CompileFunction(c.compileSignature(x.Signature()), []interface{}{}, c.exprToIR(x.Signature(), x.Body())))
 		case ast.Output:
 			outputs = append(outputs, NewOutput(c.exprToThunk(x.Expr()), x.Expanded()))
 		default:

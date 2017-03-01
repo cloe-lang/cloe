@@ -5,12 +5,23 @@ import (
 	"github.com/raviqqe/tisp/src/lib/core"
 )
 
-func CompileFunction(s core.Signature, expr interface{}) *core.Thunk {
+func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) *core.Thunk {
 	return core.NewLazyFunction(
 		s,
 		func(ts ...*core.Thunk) core.Object {
-			return compileExpression(ts, expr)
+			return compileWithVars(ts, vars, expr)
 		})
+}
+
+func compileWithVars(args []*core.Thunk, vars []interface{}, expr interface{}) *core.Thunk {
+	if len(vars) == 0 {
+		return compileExpression(args, expr)
+	}
+
+	return compileWithVars(
+		append(args, compileExpression(args, vars[0])),
+		vars[1:],
+		expr)
 }
 
 func compileExpression(args []*core.Thunk, expr interface{}) *core.Thunk {

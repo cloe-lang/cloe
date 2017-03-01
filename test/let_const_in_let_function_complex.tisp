@@ -1,0 +1,6 @@
+(let (foo x y)
+  (let bar (+ x x))
+  (let baz (- x y))
+  (* bar baz (+ x y)))
+
+(write (foo 2 3))

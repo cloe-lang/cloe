@@ -46,6 +46,20 @@ func (s Signature) KeyRest() string {
 	return s.keywords.rest
 }
 
+func (s Signature) Arity() int {
+	return s.positionals.arity() + s.keywords.arity()
+}
+
+func (as argumentSet) arity() int {
+	rest := 0
+
+	if as.rest != "" {
+		rest = 1
+	}
+
+	return len(as.requireds) + len(as.optionals) + rest
+}
+
 func (s Signature) NameToIndex(name string) (int, error) {
 	i, ok := s.positionals.nameToIndex(name)
 

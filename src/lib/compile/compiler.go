@@ -25,7 +25,24 @@ func (c *compiler) compile(module []interface{}) []Output {
 		case ast.LetConst:
 			c.env.Set(x.Name(), c.exprToThunk(x.Expr()))
 		case ast.LetFunction:
-			c.env.Set(x.Name(), ir.CompileFunction(c.compileSignature(x.Signature()), []interface{}{}, c.exprToIR(x.Signature(), x.Body())))
+			sig := x.Signature()
+			ls := x.Lets()
+
+			vars := make([]interface{}, len(ls))
+			varIndices := map[string]int{}
+
+			for i, l := range ls {
+				cst := l.(ast.LetConst)
+				vars[i] = c.exprToIR(sig, varIndices, cst.Expr())
+				varIndices[cst.Name()] = sig.Arity() + i
+			}
+
+			c.env.Set(
+				x.Name(),
+				ir.CompileFunction(
+					c.compileSignature(sig),
+					vars,
+					c.exprToIR(sig, varIndices, x.Body())))
 		case ast.Output:
 			outputs = append(outputs, NewOutput(c.exprToThunk(x.Expr()), x.Expanded()))
 		default:
@@ -81,9 +98,13 @@ func (c *compiler) compileOptionalArguments(opts []ast.OptionalArgument) []core.
 	return coreOpts
 }
 
-func (c *compiler) exprToIR(sig ast.Signature, expr interface{}) interface{} {
+func (c *compiler) exprToIR(sig ast.Signature, vars map[string]int, expr interface{}) interface{} {
 	switch x := expr.(type) {
 	case string:
+		if i, ok := vars[x]; ok {
+			return i
+		}
+
 		i, err := sig.NameToIndex(x)
 
 		if err == nil {
@@ -102,20 +123,20 @@ func (c *compiler) exprToIR(sig ast.Signature, expr interface{}) interface{} {
 
 		ps := make([]ir.PositionalArgument, len(args.Positionals()))
 		for i, p := range args.Positionals() {
-			ps[i] = ir.NewPositionalArgument(c.exprToIR(sig, p.Value()), p.Expanded())
+			ps[i] = ir.NewPositionalArgument(c.exprToIR(sig, vars, p.Value()), p.Expanded())
 		}
 
 		ks := make([]ir.KeywordArgument, len(args.Keywords()))
 		for i, k := range args.Keywords() {
-			ks[i] = ir.NewKeywordArgument(k.Name(), c.exprToIR(sig, k.Value()))
+			ks[i] = ir.NewKeywordArgument(k.Name(), c.exprToIR(sig, vars, k.Value()))
 		}
 
 		ds := make([]interface{}, len(args.ExpandedDicts()))
 		for i, d := range args.ExpandedDicts() {
-			ds[i] = c.exprToIR(sig, d)
+			ds[i] = c.exprToIR(sig, vars, d)
 		}
 
-		return ir.NewApp(c.exprToIR(sig, x.Function()), ir.NewArguments(ps, ks, ds))
+		return ir.NewApp(c.exprToIR(sig, vars, x.Function()), ir.NewArguments(ps, ks, ds))
 	}
 
 	panic(fmt.Sprint("Invalid type.", expr))

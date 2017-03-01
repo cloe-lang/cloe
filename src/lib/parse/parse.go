@@ -38,7 +38,7 @@ func (s *state) letFunction() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 		ys := xs[1].([]interface{})
-		return ast.NewLetFunction(ys[0].(string), ys[1].(ast.Signature), xs[2])
+		return ast.NewLetFunction(ys[0].(string), ys[1].(ast.Signature), []interface{}{}, xs[2])
 	}, s.list(s.strippedString("let"), s.list(s.identifier(), s.signature()), s.expression()))
 }
 

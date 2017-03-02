@@ -13,6 +13,13 @@ const (
 	specialChars = "()[]{}\"'`$"
 )
 
+var reserveds = map[string]bool{
+	"let":   true,
+	"macro": true,
+	"quote": true,
+	"rec":   true,
+}
+
 func Parse(source string) ([]interface{}, error) {
 	m, err := newState(source).module()()
 
@@ -226,7 +233,21 @@ func (s *state) keywordArgument() comb.Parser {
 
 func (s *state) identifier() comb.Parser {
 	cs := string(commentChar) + invalidChars + spaceChars + specialChars
-	return s.strip(s.Stringify(s.And(s.NotInString(cs+"."), s.Stringify(s.Many(s.NotInString(cs))))))
+	p := s.strip(s.Stringify(s.And(s.NotInString(cs+"."), s.Stringify(s.Many(s.NotInString(cs))))))
+
+	return func() (interface{}, error) {
+		x, err := p()
+
+		if err != nil {
+			return nil, err
+		}
+
+		if _, ok := reserveds[x.(string)]; ok {
+			return nil, comb.NewError("%#v is a reserved identifier.", x)
+		}
+
+		return x, nil
+	}
 }
 
 func (s *state) stringLiteral() comb.Parser {

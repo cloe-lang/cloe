@@ -32,7 +32,15 @@ func Parse(source string) ([]interface{}, error) {
 
 func (s *state) module() comb.Parser {
 	// TODO: Pass error from s.output() through s.None().
-	return s.Exhaust(s.Wrap(s.blank(), s.Many(s.Or(s.letConst(), s.letFunction(), s.output())), s.None()))
+	return s.Exhaust(s.Wrap(s.blank(), s.Many(s.Or(s.let(), s.output())), s.None()))
+}
+
+func (s *state) let() comb.Parser {
+	return s.Lazy(s.strictLet)
+}
+
+func (s *state) strictLet() comb.Parser {
+	return s.Or(s.letConst(), s.letFunction())
 }
 
 func (s *state) letConst() comb.Parser {
@@ -50,7 +58,7 @@ func (s *state) letFunction() comb.Parser {
 	}, s.list(
 		s.strippedString("let"),
 		s.list(s.identifier(), s.signature()),
-		s.Many(s.letConst()),
+		s.Many(s.let()),
 		s.expression()),
 	)
 }

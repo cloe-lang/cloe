@@ -1,0 +1,5 @@
+(let (f x)
+  (let (g y) (+ x y))
+  (g 42))
+
+(write (f 2007))

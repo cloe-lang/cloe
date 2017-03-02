@@ -31,6 +31,7 @@ func Parse(source string) ([]interface{}, error) {
 }
 
 func (s *state) module() comb.Parser {
+	// TODO: Pass error from s.output() through s.None().
 	return s.Exhaust(s.Wrap(s.blank(), s.Many(s.Or(s.letConst(), s.letFunction(), s.output())), s.None()))
 }
 

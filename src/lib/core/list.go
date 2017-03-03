@@ -30,7 +30,7 @@ func (l ListType) equal(e equalable) Object {
 	}
 
 	for _, t := range []*Thunk{
-		// Don't evaluate these parallely for short circuit behavior.
+		// Don't evaluate these parallelly for short circuit behavior.
 		PApp(Equal, l.first, ll.first),
 		PApp(Equal, l.rest, ll.rest),
 	} {

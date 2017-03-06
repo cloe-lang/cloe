@@ -32,6 +32,14 @@ func TestDictionarySet(t *testing.T) {
 	}
 }
 
+func TestXFailDictionarySet(t *testing.T) {
+	l := NewList(NewError("you", "failed."))
+	o := PApp(Set, PApp(Set, EmptyDictionary, l, Nil), l, Nil).Eval()
+	_, ok := o.(ErrorType)
+	t.Logf("%#v", o)
+	assert.True(t, ok)
+}
+
 func TestDictionaryGet(t *testing.T) {
 	for _, kvs := range kvss {
 		d := EmptyDictionary
@@ -57,6 +65,14 @@ func TestDictionaryGet(t *testing.T) {
 			assert.True(t, testEqual(PApp(Get, d, k), v))
 		}
 	}
+}
+
+func TestXFailDictionaryGet(t *testing.T) {
+	l := NewList(NewError("you", "failed."))
+	o := PApp(Get, PApp(Set, EmptyDictionary, l, Nil), l, Nil).Eval()
+	_, ok := o.(ErrorType)
+	t.Logf("%#v", o)
+	assert.True(t, ok)
 }
 
 func TestDictionaryToList(t *testing.T) {

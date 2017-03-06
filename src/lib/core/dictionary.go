@@ -25,7 +25,13 @@ var Set = NewLazyFunction(
 		[]string{"dict", "key", "value"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(ts ...*Thunk) Object {
+	func(ts ...*Thunk) (result Object) {
+		defer func() {
+			if r := recover(); r != nil {
+				result = r
+			}
+		}()
+
 		o := ts[0].Eval()
 		d, ok := o.(DictionaryType)
 
@@ -47,7 +53,13 @@ var Get = NewLazyFunction(
 		[]string{"dict", "key"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(ts ...*Thunk) Object {
+	func(ts ...*Thunk) (result Object) {
+		defer func() {
+			if r := recover(); r != nil {
+				result = r
+			}
+		}()
+
 		o := ts[0].Eval()
 		d, ok := o.(DictionaryType)
 

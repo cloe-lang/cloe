@@ -37,12 +37,8 @@
     - Number, String, List, Set
   - str
     - All types
-  - len, include
+  - merge, delete, len, include
     - String, List, Dictionary, Set
-  - delete
-    - Dictionary, Set (List?)
-  - merge
-    - String, List, Set, Dictionary
 - Internal
   - ordered
     - Except for Error

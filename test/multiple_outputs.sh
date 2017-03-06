@@ -1,4 +1,5 @@
 #!/bin/sh
 
-[ $(bin/tisp test/multiple_outputs.tisp | wc -l | grep -o '[0-9]*' | head -1) \
-  -eq 3 ]
+. test/lib/lib.sh
+
+[ $(bin/tisp test/multiple_outputs.tisp | count_lines) -eq 3 ]

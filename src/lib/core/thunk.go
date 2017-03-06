@@ -26,6 +26,7 @@ type Thunk struct {
 	args      Arguments
 	state     thunkState
 	blackHole sync.WaitGroup
+	info      *DebugInfo
 }
 
 func Normal(o Object) *Thunk {
@@ -34,12 +35,20 @@ func Normal(o Object) *Thunk {
 	return &Thunk{result: o, state: normal}
 }
 
+// App creates a thunk applying a function to arguments.
 func App(f *Thunk, args Arguments) *Thunk {
 	t := &Thunk{function: f, args: args, state: app}
 	t.blackHole.Add(1)
 	return t
 }
 
+// AppWithDebugInfo is the same as App except that it stores debug information
+// in the thunk.
+func AppWithDebugInfo(f *Thunk, args Arguments, info DebugInfo) *Thunk {
+	return &Thunk{function: f, args: args, state: app, info: &info}
+}
+
+// PApp is not PPap.
 func PApp(f *Thunk, ps ...*Thunk) *Thunk {
 	return App(f, NewPositionalArguments(ps...))
 }

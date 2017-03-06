@@ -4,6 +4,7 @@ import "fmt"
 
 type ErrorType struct {
 	name, message string
+	callTrace     []DebugInfo
 }
 
 func NewError(n, m string, xs ...interface{}) *Thunk {

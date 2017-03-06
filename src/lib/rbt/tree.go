@@ -62,3 +62,7 @@ func (t Tree) Merge(tt Tree) Tree {
 
 	return t
 }
+
+func (t Tree) Dump() {
+	t.node.dump()
+}

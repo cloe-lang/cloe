@@ -3,6 +3,7 @@ package core
 import "math"
 
 // NumberType is a type of numbers in the language.
+// It will perhaps be represented by DEC64 in the future release.
 type NumberType float64
 
 // NewNumber creates a thunk containing a number object.
@@ -169,6 +170,8 @@ var Div = NewLazyFunction(
 
 		return n0
 	})
+
+// TODO: Implement FloorDiv function.
 
 var Mod = NewStrictFunction(
 	NewSignature(

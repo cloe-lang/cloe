@@ -2,16 +2,22 @@ package core
 
 import "reflect"
 
+// Object represents an object in the language.
+// Hackingly, it can be *Thunk so that tail calls are eliminated.
+// See also Thunk.Eval().
 type Object interface{}
 
 type callable interface {
 	call(Arguments) Object
 }
 
+// equalable must be implemented for every type other than error type.
 type equalable interface {
 	equal(equalable) Object
 }
 
+// Equal returns true when arguments are equal and false otherwise.
+// Comparing error objects is invalid and it should return an error object.
 var Equal = NewStrictFunction(
 	NewSignature(
 		[]string{"x", "y"}, []OptionalArgument{}, "",
@@ -57,8 +63,9 @@ var ToList = NewStrictFunction(
 		return l.toList()
 	})
 
-// This interface should not be used in exported Functions and exists only to
-// make keys of DictionaryType and elements of setType ordered.
+// ordered must be implemented for every type other than error type.
+// This interface should not be used in exported functions and exists only to
+// make keys for collections in rbt package.
 type ordered interface {
 	less(ordered) bool // can panic
 }
@@ -167,3 +174,10 @@ var Delete = NewStrictFunction(
 
 		return d
 	})
+
+// TODO: Create stringable interface with a method, toString.
+// It should be implemented for all types including error type.
+
+// TODO: Create collection interface integrating some existing interfaces with
+// methods of index, insert, merge, delete, size (or len?), include and toList.
+// It should be implemented by StringType, ListType, DictionaryType and SetType.

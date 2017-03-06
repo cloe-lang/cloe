@@ -41,19 +41,19 @@ func (d *desugarer) desugarLetFunction(f ast.LetFunction) []interface{} {
 			ls = append(ls, l)
 		case ast.LetFunction:
 			unnested := "$" + f.Name() + "$" + l.Name()
-			// TODO: Remove names in signatureToNames(l.Signature()).
-			usedNames := signatureToNames(f.Signature()).find(l.Body()).slice()
+			usedNames := signatureToNames(f.Signature()).find(l.Body())
+			usedNames.subtract(signatureToNames(l.Signature()))
 
 			ss = append(ss, ast.NewLetFunction(
 				unnested,
-				prependPosReqsToSig(l.Signature(), usedNames),
+				prependPosReqsToSig(l.Signature(), usedNames.slice()),
 				l.Lets(),
 				l.Body()))
 
 			ls = append(ls, ast.NewLetConst(l.Name(), ast.NewApp("partial", ast.NewArguments(
 				append(
 					[]ast.PositionalArgument{ast.NewPositionalArgument(unnested, false)},
-					namesToPosArgs(usedNames)...,
+					namesToPosArgs(usedNames.slice())...,
 				), []ast.KeywordArgument{}, []interface{}{}))))
 		default:
 			log.Panicf("Invalid value: %#v\n", l)

@@ -41,6 +41,12 @@ func (ns names) add(n string) {
 	ns[n] = true
 }
 
+func (ns names) subtract(ms names) {
+	for k := range ms {
+		delete(ns, k)
+	}
+}
+
 func (ns names) include(n string) bool {
 	_, ok := ns[n]
 	return ok

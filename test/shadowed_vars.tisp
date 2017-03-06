@@ -1,0 +1,5 @@
+(let (f x)
+  (let (g x) x)
+  (g 42))
+
+(write (f 123456))

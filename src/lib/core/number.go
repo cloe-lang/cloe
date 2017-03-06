@@ -2,8 +2,10 @@ package core
 
 import "math"
 
+// NumberType is a type of numbers in the language.
 type NumberType float64
 
+// NewNumber creates a thunk containing a number object.
 func NewNumber(n float64) *Thunk {
 	return Normal(NumberType(n))
 }
@@ -12,6 +14,7 @@ func (n NumberType) equal(e equalable) Object {
 	return rawBool(n == e.(NumberType))
 }
 
+// Add sums up numbers of arguments.
 var Add = NewLazyFunction(
 	NewSignature(
 		[]string{}, []OptionalArgument{}, "nums",
@@ -46,6 +49,7 @@ var Add = NewLazyFunction(
 		return sum
 	})
 
+// Sub subtracts arguments of the second to the last from the first one as numbers.
 var Sub = NewLazyFunction(
 	NewSignature(
 		[]string{"minuend"}, []OptionalArgument{}, "subtrahends",

@@ -122,6 +122,16 @@ func (d DictionaryType) merge(ts ...*Thunk) Object {
 	return d
 }
 
+func (d DictionaryType) delete(o Object) (result deletable, err Object) {
+	defer func() {
+		if r := recover(); r != nil {
+			result, err = nil, r
+		}
+	}()
+
+	return DictionaryType{d.Remove(o)}, nil
+}
+
 // ordered
 
 func (d DictionaryType) less(o ordered) bool {

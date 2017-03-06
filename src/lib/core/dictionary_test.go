@@ -75,6 +75,28 @@ func TestXFailDictionaryGet(t *testing.T) {
 	assert.True(t, ok)
 }
 
+func TestDictionaryDeletable(t *testing.T) {
+	t.Log(deletable(EmptyDictionary.Eval().(deletable)))
+}
+
+func TestDictionaryDelete(t *testing.T) {
+	k := NewNumber(42)
+	o := PApp(Delete, PApp(Set, EmptyDictionary, k, Nil), k).Eval()
+	d, ok := o.(DictionaryType)
+	t.Logf("%#v", o)
+	assert.True(t, ok)
+	assert.Equal(t, 0, d.Size())
+}
+
+func TestXFailDictionaryDelete(t *testing.T) {
+	l1 := NewList(NewError("you", "failed."))
+	l2 := NewList(NewNumber(42))
+	o := PApp(Delete, PApp(Set, EmptyDictionary, l1, Nil), l2).Eval()
+	_, ok := o.(ErrorType)
+	t.Logf("%#v", o)
+	assert.True(t, ok)
+}
+
 func TestDictionaryToList(t *testing.T) {
 	for i, kvs := range kvss {
 		t.Log("TestDictionaryToList START", i)

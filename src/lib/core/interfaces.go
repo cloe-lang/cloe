@@ -64,10 +64,6 @@ type ordered interface {
 }
 
 func less(x1, x2 interface{}) bool {
-	if !areSameType(x1, x2) {
-		return reflect.TypeOf(x1).Name() < reflect.TypeOf(x2).Name()
-	}
-
 	o1, ok := x1.(ordered)
 
 	if !ok {
@@ -78,6 +74,10 @@ func less(x1, x2 interface{}) bool {
 
 	if !ok {
 		panic(notOrderedError(x2))
+	}
+
+	if !areSameType(o1, o2) {
+		return reflect.TypeOf(o1).Name() < reflect.TypeOf(o2).Name()
 	}
 
 	return o1.less(o2)

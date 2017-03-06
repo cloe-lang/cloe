@@ -123,3 +123,47 @@ var Merge = NewLazyFunction(
 
 		return m.merge(ts...)
 	})
+
+type deletable interface {
+	delete(Object) (deletable, Object)
+}
+
+var Delete = NewStrictFunction(
+	NewSignature(
+		[]string{"collection"}, []OptionalArgument{}, "elems",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(os ...Object) Object {
+		d, ok := os[0].(deletable)
+
+		if !ok {
+			return TypeError(os[0], "Deletable")
+		}
+
+		l, ok := os[1].(ListType)
+
+		if !ok {
+			return notListError(os[1])
+		}
+
+		os, err := l.ToObjects()
+
+		if err != nil {
+			return err
+		}
+
+		for _, o := range os {
+			if _, ok := o.(ErrorType); ok {
+				return o
+			}
+
+			var err Object
+			d, err = d.delete(o)
+
+			if err != nil {
+				return err
+			}
+		}
+
+		return d
+	})

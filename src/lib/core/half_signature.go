@@ -1,12 +1,12 @@
 package core
 
-type argumentSet struct {
+type halfSignature struct {
 	requireds []string
 	optionals []OptionalArgument
 	rest      string
 }
 
-func (as argumentSet) size() int {
+func (as halfSignature) size() int {
 	n := len(as.requireds) + len(as.optionals)
 
 	if as.rest != "" {

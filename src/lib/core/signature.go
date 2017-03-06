@@ -2,8 +2,8 @@ package core
 
 // Signature represents function signature.
 type Signature struct {
-	positionals argumentSet
-	keywords    argumentSet
+	positionals halfSignature
+	keywords    halfSignature
 }
 
 // NewSignature defines a new Signature.
@@ -11,12 +11,12 @@ func NewSignature(
 	pr []string, po []OptionalArgument, pp string,
 	kr []string, ko []OptionalArgument, kk string) Signature {
 	return Signature{
-		positionals: argumentSet{
+		positionals: halfSignature{
 			requireds: pr,
 			optionals: po,
 			rest:      pp,
 		},
-		keywords: argumentSet{
+		keywords: halfSignature{
 			requireds: kr,
 			optionals: ko,
 			rest:      kk,

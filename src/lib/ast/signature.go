@@ -3,11 +3,11 @@ package ast
 import "fmt"
 
 type Signature struct {
-	positionals argumentSet
-	keywords    argumentSet
+	positionals halfSignature
+	keywords    halfSignature
 }
 
-type argumentSet struct {
+type halfSignature struct {
 	requireds []string
 	optionals []OptionalArgument
 	rest      string
@@ -17,8 +17,8 @@ func NewSignature(
 	pr []string, po []OptionalArgument, pp string,
 	kr []string, ko []OptionalArgument, kk string) Signature {
 	return Signature{
-		positionals: argumentSet{pr, po, pp},
-		keywords:    argumentSet{kr, ko, kk},
+		positionals: halfSignature{pr, po, pp},
+		keywords:    halfSignature{kr, ko, kk},
 	}
 }
 
@@ -50,7 +50,7 @@ func (s Signature) Arity() int {
 	return s.positionals.arity() + s.keywords.arity()
 }
 
-func (as argumentSet) arity() int {
+func (as halfSignature) arity() int {
 	rest := 0
 
 	if as.rest != "" {
@@ -76,7 +76,7 @@ func (s Signature) NameToIndex(name string) (int, error) {
 	return -1, fmt.Errorf("name %#v was not found in a signature", name)
 }
 
-func (as argumentSet) nameToIndex(name string) (int, bool) {
+func (as halfSignature) nameToIndex(name string) (int, bool) {
 	i := 0
 
 	for _, r := range as.requireds {

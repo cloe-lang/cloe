@@ -227,8 +227,10 @@ func notNumberError(o Object) *Thunk {
 	return TypeError(o, "Number")
 }
 
-// ordered
-
 func (n NumberType) less(o ordered) bool {
 	return n < o.(NumberType)
+}
+
+func (n NumberType) string() Object {
+	return sprint(n)
 }

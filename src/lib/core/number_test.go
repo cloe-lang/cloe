@@ -52,3 +52,15 @@ func TestNumberPow(t *testing.T) {
 		float64(PApp(Pow, NewNumber(n1), NewNumber(n2)).Eval().(NumberType)),
 		math.Pow(float64(n1), float64(n2)))
 }
+
+func TestNumberToString(t *testing.T) {
+	for _, xs := range []struct {
+		expected string
+		number   float64
+	}{
+		{"1", 1},
+		{"1.1", 1.1},
+	} {
+		assert.Equal(t, StringType(xs.expected), PApp(ToString, NewNumber(xs.number)).Eval())
+	}
+}

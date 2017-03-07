@@ -37,3 +37,7 @@ func NewStrictFunction(s Signature, f func(...Object) Object) *Thunk {
 		return f(os...)
 	})
 }
+
+func (f functionType) string() Object {
+	return StringType("<function>")
+}

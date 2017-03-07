@@ -191,3 +191,16 @@ func TestDictionaryLess(t *testing.T) {
 	assert.Equal(t, 3, ds[1].Eval().(DictionaryType).Size())
 	assert.True(t, testLess(ds[0], ds[1]))
 }
+
+func TestDictionaryToString(t *testing.T) {
+	for _, xs := range []struct {
+		expected string
+		thunk    *Thunk
+	}{
+		{"{}", EmptyDictionary},
+		{"{true nil}", PApp(Set, EmptyDictionary, True, Nil)},
+		{"{false nil true nil}", PApp(Set, PApp(Set, EmptyDictionary, True, Nil), False, Nil)},
+	} {
+		assert.Equal(t, StringType(xs.expected), PApp(ToString, xs.thunk).Eval())
+	}
+}

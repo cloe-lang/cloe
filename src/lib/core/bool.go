@@ -48,8 +48,10 @@ func notBoolError(o Object) *Thunk {
 	return TypeError(o, "Bool")
 }
 
-// ordered
-
 func (b BoolType) less(o ordered) bool {
 	return bool(!b && o.(BoolType))
+}
+
+func (b BoolType) string() Object {
+	return sprint(b)
 }

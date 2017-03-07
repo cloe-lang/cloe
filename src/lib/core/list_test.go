@@ -95,3 +95,18 @@ func TestListMerge(t *testing.T) {
 		assert.True(t, testEqual(l1, l3))
 	}
 }
+
+func TestListToString(t *testing.T) {
+	for _, xs := range []struct {
+		expected string
+		thunk    *Thunk
+	}{
+		{"[]", NewList()},
+		{"[123]", NewList(NewNumber(123))},
+		{"[123 nil]", NewList(NewNumber(123), Nil)},
+		{"[[123]]", NewList(NewList(NewNumber(123)))},
+		{"[nil [123]]", NewList(Nil, NewList(NewNumber(123)))},
+	} {
+		assert.Equal(t, StringType(xs.expected), PApp(ToString, xs.thunk).Eval())
+	}
+}

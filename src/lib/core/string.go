@@ -47,8 +47,10 @@ func (s StringType) toList() Object {
 		PApp(ToList, NewString(string(rs[1:]))))
 }
 
-// ordered
-
 func (s StringType) less(o ordered) bool {
 	return s < o.(StringType)
+}
+
+func (s StringType) string() Object {
+	return s
 }

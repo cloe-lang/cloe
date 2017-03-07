@@ -181,7 +181,7 @@ var Delete = NewStrictFunction(
 // stringable is an interface for something convertable into StringType.
 // This should be implemented for all types including error type.
 type stringable interface {
-	string() StringType
+	string() Object
 }
 
 // ToString converts some object into one of StringType.

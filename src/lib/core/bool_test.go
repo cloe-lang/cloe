@@ -20,3 +20,12 @@ func TestBoolEqual(t *testing.T) {
 		assert.True(t, !testEqual(ts...))
 	}
 }
+
+func TestBoolToString(t *testing.T) {
+	test := func(s string, b bool) {
+		assert.Equal(t, StringType(s), PApp(ToString, NewBool(b)).Eval())
+	}
+
+	test("true", true)
+	test("false", false)
+}

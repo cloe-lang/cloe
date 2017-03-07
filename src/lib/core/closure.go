@@ -19,3 +19,7 @@ var Partial = Normal(RawFunction(func(args Arguments) Object {
 	t := args.nextPositional()
 	return closureType{t, args}
 }))
+
+func (c closureType) string() Object {
+	return StringType("<closure>")
+}

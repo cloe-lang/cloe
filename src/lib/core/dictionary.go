@@ -3,6 +3,7 @@ package core
 import (
 	"github.com/raviqqe/tisp/src/lib/rbt"
 	"github.com/raviqqe/tisp/src/lib/util"
+	"strings"
 )
 
 type DictionaryType struct{ rbt.Dictionary }
@@ -135,8 +136,50 @@ func (d DictionaryType) delete(o Object) (result deletable, err Object) {
 	return DictionaryType{d.Remove(o)}, nil
 }
 
-// ordered
-
 func (d DictionaryType) less(o ordered) bool {
 	return less(d.toList(), o.(DictionaryType).toList())
+}
+
+func (d DictionaryType) string() Object {
+	o := PApp(ToList, Normal(d)).Eval()
+
+	if err, ok := o.(ErrorType); ok {
+		return err
+	}
+
+	os, err := o.(ListType).ToObjects()
+
+	if err != nil {
+		return err.Eval()
+	}
+
+	ss := make([]string, 2*len(os))
+
+	for i, o := range os {
+		if err, ok := o.(ErrorType); ok {
+			return err
+		}
+
+		os, err := o.(ListType).ToObjects()
+
+		if err != nil {
+			return err
+		}
+
+		for j, o := range os {
+			if err, ok := o.(ErrorType); ok {
+				return err
+			}
+
+			o = PApp(ToString, Normal(o)).Eval()
+
+			if err, ok := o.(ErrorType); ok {
+				return err
+			}
+
+			ss[2*i+j] = string(o.(StringType))
+		}
+	}
+
+	return StringType("{" + strings.Join(ss, " ") + "}")
 }

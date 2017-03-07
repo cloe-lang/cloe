@@ -1,5 +1,7 @@
 package core
 
+import "strings"
+
 type ListType struct {
 	first *Thunk
 	rest  *Thunk
@@ -151,8 +153,6 @@ func (l ListType) merge(ts ...*Thunk) Object {
 	return cons(l.first, PApp(Merge, append([]*Thunk{l.rest}, ts...)...))
 }
 
-// ordered
-
 func (l ListType) less(ord ordered) bool {
 	ll := ord.(ListType)
 
@@ -176,6 +176,32 @@ func (l ListType) less(ord ordered) bool {
 	// Compare rests
 
 	return less(l.rest.Eval(), ll.rest.Eval())
+}
+
+func (l ListType) string() Object {
+	os, err := l.ToObjects()
+
+	if err != nil {
+		return err.Eval()
+	}
+
+	ss := make([]string, len(os))
+
+	for i, o := range os {
+		if err, ok := o.(ErrorType); ok {
+			return err
+		}
+
+		o = PApp(ToString, Normal(o)).Eval()
+
+		if err, ok := o.(ErrorType); ok {
+			return err
+		}
+
+		ss[i] = string(o.(StringType))
+	}
+
+	return StringType("[" + strings.Join(ss, " ") + "]")
 }
 
 func (l ListType) ToThunks() ([]*Thunk, *Thunk) {

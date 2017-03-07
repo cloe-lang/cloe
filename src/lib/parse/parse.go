@@ -193,7 +193,7 @@ func (s *state) appWithInfo(p comb.Parser, f func(interface{}) (interface{}, ast
 		p,
 		func(x interface{}, i debug.Info) (interface{}, error) {
 			f, args := f(x)
-			return ast.NewAppWithInfo(f, args, &i), nil
+			return ast.NewApp(f, args, i), nil
 		})
 }
 

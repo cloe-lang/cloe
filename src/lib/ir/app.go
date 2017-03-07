@@ -8,14 +8,10 @@ import (
 type App struct {
 	function interface{}
 	args     Arguments
-	info     *debug.Info
+	info     debug.Info
 }
 
-func NewApp(f interface{}, args Arguments) App {
-	return App{f, args, nil}
-}
-
-func NewAppWithInfo(f interface{}, args Arguments, info *debug.Info) App {
+func NewApp(f interface{}, args Arguments, info debug.Info) App {
 	return App{f, args, info}
 }
 

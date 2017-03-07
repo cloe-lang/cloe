@@ -38,13 +38,22 @@ func Normal(o Object) *Thunk {
 
 // App creates a thunk applying a function to arguments.
 func App(f *Thunk, args Arguments) *Thunk {
-	return AppWithInfo(f, args, nil)
+	return newThunk(f, args, nil)
 }
 
 // AppWithInfo is the same as App except that it stores debug information
 // in the thunk.
-func AppWithInfo(f *Thunk, args Arguments, info *debug.Info) *Thunk {
-	t := &Thunk{function: f, args: args, state: app, info: info}
+func AppWithInfo(f *Thunk, args Arguments, i debug.Info) *Thunk {
+	return newThunk(f, args, &i)
+}
+
+func newThunk(f *Thunk, args Arguments, i *debug.Info) *Thunk {
+	t := &Thunk{
+		function: f,
+		args:     args,
+		state:    app,
+		info:     i,
+	}
 	t.blackHole.Add(1)
 	return t
 }

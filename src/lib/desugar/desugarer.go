@@ -51,13 +51,16 @@ func (d *desugarer) desugarLetFunction(f ast.LetFunction) []interface{} {
 				l.Body(),
 				l.DebugInfo()))
 
-			i := f.DebugInfo() // TODO: Remove me.
-
-			ls = append(ls, ast.NewLetConst(l.Name(), ast.NewAppWithInfo("partial", ast.NewArguments(
-				append(
-					[]ast.PositionalArgument{ast.NewPositionalArgument(unnested, false)},
-					namesToPosArgs(usedNames.slice())...,
-				), []ast.KeywordArgument{}, []interface{}{}), &i)))
+			ls = append(ls, ast.NewLetConst(
+				l.Name(),
+				ast.NewApp(
+					"partial",
+					ast.NewArguments(
+						append(
+							[]ast.PositionalArgument{ast.NewPositionalArgument(unnested, false)},
+							namesToPosArgs(usedNames.slice())...,
+						), []ast.KeywordArgument{}, []interface{}{}),
+					f.DebugInfo())))
 		default:
 			log.Panicf("Invalid value: %#v\n", l)
 		}

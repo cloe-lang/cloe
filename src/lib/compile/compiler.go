@@ -139,7 +139,7 @@ func (c *compiler) exprToIR(sig ast.Signature, vars map[string]int, expr interfa
 			ds[i] = c.exprToIR(sig, vars, d)
 		}
 
-		return ir.NewAppWithInfo(
+		return ir.NewApp(
 			c.exprToIR(sig, vars, x.Function()),
 			ir.NewArguments(ps, ks, ds),
 			x.DebugInfo())

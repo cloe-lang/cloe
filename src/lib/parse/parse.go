@@ -2,6 +2,7 @@ package parse
 
 import (
 	"github.com/raviqqe/tisp/src/lib/ast"
+	"github.com/raviqqe/tisp/src/lib/debug"
 	"github.com/raviqqe/tisp/src/lib/parse/comb"
 	"io/ioutil"
 	"log"
@@ -59,16 +60,17 @@ func (s *state) letConst() comb.Parser {
 }
 
 func (s *state) letFunction() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
-		ys := xs[1].([]interface{})
-		return ast.NewLetFunction(ys[0].(string), ys[1].(ast.Signature), xs[2].([]interface{}), xs[3])
-	}, s.list(
-		s.strippedString("let"),
-		s.list(s.identifier(), s.signature()),
-		s.Many(s.let()),
-		s.expression()),
-	)
+	return s.withInfo(
+		s.list(
+			s.strippedString("let"),
+			s.list(s.identifier(), s.signature()),
+			s.Many(s.let()),
+			s.expression()),
+		func(x interface{}, i debug.Info) (interface{}, error) {
+			xs := x.([]interface{})
+			ys := xs[1].([]interface{})
+			return ast.NewLetFunction(ys[0].(string), ys[1].(ast.Signature), xs[2].([]interface{}), xs[3], i), nil
+		})
 }
 
 func (s *state) signature() comb.Parser {
@@ -187,6 +189,15 @@ func (s *state) app() comb.Parser {
 }
 
 func (s *state) appWithInfo(p comb.Parser, f func(interface{}) (interface{}, ast.Arguments)) comb.Parser {
+	return s.withInfo(
+		p,
+		func(x interface{}, i debug.Info) (interface{}, error) {
+			f, args := f(x)
+			return ast.NewAppWithInfo(f, args, &i), nil
+		})
+}
+
+func (s *state) withInfo(p comb.Parser, f func(interface{}, debug.Info) (interface{}, error)) comb.Parser {
 	return func() (interface{}, error) {
 		i := s.debugInfo()
 		x, err := p()
@@ -195,8 +206,7 @@ func (s *state) appWithInfo(p comb.Parser, f func(interface{}) (interface{}, ast
 			return nil, err
 		}
 
-		f, args := f(x)
-		return ast.NewAppWithInfo(f, args, &i), nil
+		return f(x, i)
 	}
 }
 

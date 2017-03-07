@@ -1,14 +1,17 @@
 package ast
 
+import "github.com/raviqqe/tisp/src/lib/debug"
+
 type LetFunction struct {
 	name      string
 	signature Signature
 	lets      []interface{}
 	body      interface{}
+	info      debug.Info
 }
 
-func NewLetFunction(name string, sig Signature, lets []interface{}, expr interface{}) LetFunction {
-	return LetFunction{name, sig, lets, expr}
+func NewLetFunction(name string, sig Signature, lets []interface{}, expr interface{}, i debug.Info) LetFunction {
+	return LetFunction{name, sig, lets, expr, i}
 }
 
 func (f LetFunction) Name() string {
@@ -27,4 +30,8 @@ func (f LetFunction) Lets() []interface{} {
 
 func (f LetFunction) Body() interface{} {
 	return f.body
+}
+
+func (f LetFunction) DebugInfo() debug.Info {
+	return f.info
 }

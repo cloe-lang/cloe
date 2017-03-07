@@ -48,19 +48,22 @@ func (d *desugarer) desugarLetFunction(f ast.LetFunction) []interface{} {
 				unnested,
 				prependPosReqsToSig(l.Signature(), usedNames.slice()),
 				l.Lets(),
-				l.Body()))
+				l.Body(),
+				l.DebugInfo()))
 
-			ls = append(ls, ast.NewLetConst(l.Name(), ast.NewApp("partial", ast.NewArguments(
+			i := f.DebugInfo() // TODO: Remove me.
+
+			ls = append(ls, ast.NewLetConst(l.Name(), ast.NewAppWithInfo("partial", ast.NewArguments(
 				append(
 					[]ast.PositionalArgument{ast.NewPositionalArgument(unnested, false)},
 					namesToPosArgs(usedNames.slice())...,
-				), []ast.KeywordArgument{}, []interface{}{}))))
+				), []ast.KeywordArgument{}, []interface{}{}), &i)))
 		default:
 			log.Panicf("Invalid value: %#v\n", l)
 		}
 	}
 
-	return append(ss, ast.NewLetFunction(f.Name(), f.Signature(), ls, f.Body()))
+	return append(ss, ast.NewLetFunction(f.Name(), f.Signature(), ls, f.Body(), f.DebugInfo()))
 }
 
 func signatureToNames(s ast.Signature) names {

@@ -1,10 +1,13 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/raviqqe/tisp/src/lib/debug"
+)
 
 type ErrorType struct {
 	name, message string
-	callTrace     []DebugInfo
+	callTrace     []debug.Info
 }
 
 func NewError(n, m string, xs ...interface{}) *Thunk {

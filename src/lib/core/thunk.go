@@ -1,6 +1,7 @@
 package core
 
 import (
+	"github.com/raviqqe/tisp/src/lib/debug"
 	"sync"
 	"sync/atomic"
 )
@@ -26,7 +27,7 @@ type Thunk struct {
 	args      Arguments
 	state     thunkState
 	blackHole sync.WaitGroup
-	info      *DebugInfo
+	info      *debug.Info
 }
 
 func Normal(o Object) *Thunk {
@@ -44,7 +45,7 @@ func App(f *Thunk, args Arguments) *Thunk {
 
 // AppWithDebugInfo is the same as App except that it stores debug information
 // in the thunk.
-func AppWithDebugInfo(f *Thunk, args Arguments, info DebugInfo) *Thunk {
+func AppWithInfo(f *Thunk, args Arguments, info debug.Info) *Thunk {
 	return &Thunk{function: f, args: args, state: app, info: &info}
 }
 

@@ -2,7 +2,7 @@ package desugar
 
 import (
 	"github.com/raviqqe/tisp/src/lib/ast"
-	"log"
+	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 type names map[string]bool
@@ -91,6 +91,6 @@ func (ns names) find(x interface{}) names {
 		return ms
 	}
 
-	log.Printf("Invalid type: %#v", x)
+	util.Fail("Invalid type: %#v", x)
 	panic("Unreachable")
 }

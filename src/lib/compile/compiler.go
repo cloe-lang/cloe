@@ -1,12 +1,11 @@
 package compile
 
 import (
-	"fmt"
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/compile/env"
 	"github.com/raviqqe/tisp/src/lib/core"
 	"github.com/raviqqe/tisp/src/lib/ir"
-	"log"
+	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 type compiler struct {
@@ -46,7 +45,7 @@ func (c *compiler) compile(module []interface{}) []Output {
 		case ast.Output:
 			outputs = append(outputs, NewOutput(c.exprToThunk(x.Expr()), x.Expanded()))
 		default:
-			panic(fmt.Sprint("Invalid instruction.", x))
+			util.Fail("Invalid instruction.", x)
 		}
 	}
 
@@ -81,7 +80,8 @@ func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {
 			x.DebugInfo())
 	}
 
-	panic(fmt.Sprintf("Invalid type as an expression. %#v", expr))
+	util.Fail("Invalid type as an expression. %#v", expr)
+	panic("Unreachable")
 }
 
 func (c *compiler) compileSignature(sig ast.Signature) core.Signature {
@@ -120,7 +120,7 @@ func (c *compiler) exprToIR(sig ast.Signature, vars map[string]int, expr interfa
 			return t
 		}
 
-		log.Fatalln(err.Error())
+		util.Fail(err.Error())
 	case ast.App:
 		args := x.Arguments()
 
@@ -145,14 +145,15 @@ func (c *compiler) exprToIR(sig ast.Signature, vars map[string]int, expr interfa
 			x.DebugInfo())
 	}
 
-	panic(fmt.Sprint("Invalid type.", expr))
+	util.Fail("Invalid type.", expr)
+	panic("Unreachable")
 }
 
 func getOrError(e env.Environment, s string) *core.Thunk {
 	t, err := e.Get(s)
 
 	if err != nil {
-		log.Fatalln(err.Error())
+		util.Fail(err.Error())
 	}
 
 	return t

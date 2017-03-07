@@ -6,7 +6,7 @@ import (
 	"github.com/raviqqe/tisp/src/lib/desugar"
 	"github.com/raviqqe/tisp/src/lib/parse"
 	"github.com/raviqqe/tisp/src/lib/run"
-	"log"
+	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 	module, err := parse.Parse(args["<filename>"].(string))
 
 	if err != nil {
-		log.Fatalln(err.Error())
+		util.Fail(err.Error())
 	}
 
 	run.Run(compile.Compile(desugar.Desugar(module)))

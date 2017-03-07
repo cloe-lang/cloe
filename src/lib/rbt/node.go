@@ -1,6 +1,9 @@
 package rbt
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/raviqqe/tisp/src/lib/util"
+)
 
 type color bool
 
@@ -289,7 +292,7 @@ func (n *node) rank() int {
 	}
 
 	if n.left.rank() != n.right.rank() {
-		panic("Red-black tree is unbalanced!")
+		util.Fail("Red-black tree is unbalanced!")
 	}
 
 	r := 0

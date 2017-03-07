@@ -1,7 +1,7 @@
 package debug
 
 import (
-	"log"
+	"github.com/raviqqe/tisp/src/lib/util"
 	"runtime"
 )
 
@@ -22,7 +22,7 @@ func NewGoInfo(skip int) Info {
 	_, file, line, ok := runtime.Caller(skip + 1)
 
 	if !ok {
-		log.Fatalln("runtime.Caller failed.")
+		util.Fail("runtime.Caller failed.")
 	}
 
 	return NewInfo(file, line, "")

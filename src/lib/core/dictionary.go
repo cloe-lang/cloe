@@ -1,6 +1,9 @@
 package core
 
-import "github.com/raviqqe/tisp/src/lib/rbt"
+import (
+	"github.com/raviqqe/tisp/src/lib/rbt"
+	"github.com/raviqqe/tisp/src/lib/util"
+)
 
 type DictionaryType struct{ rbt.Dictionary }
 
@@ -8,7 +11,7 @@ var EmptyDictionary = NewDictionary([]Object{}, []*Thunk{})
 
 func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
 	if len(ks) != len(vs) {
-		panic("Number of keys doesn't match with number of values.")
+		util.Fail("Number of keys doesn't match with number of values.")
 	}
 
 	d := Normal(DictionaryType{rbt.NewDictionary(less)})

@@ -4,8 +4,8 @@ import (
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/debug"
 	"github.com/raviqqe/tisp/src/lib/parse/comb"
+	"github.com/raviqqe/tisp/src/lib/util"
 	"io/ioutil"
-	"log"
 )
 
 const (
@@ -27,7 +27,7 @@ func Parse(file string) ([]interface{}, error) {
 	source, err := ioutil.ReadFile(file)
 
 	if err != nil {
-		log.Fatalln(err.Error())
+		util.Fail(err.Error())
 	}
 
 	m, err := newState(file, string(source)).module()()

@@ -1,8 +1,8 @@
 package ir
 
 import (
-	"fmt"
 	"github.com/raviqqe/tisp/src/lib/core"
+	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) *core.Thunk {
@@ -34,5 +34,6 @@ func compileExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 		return x.compile(args)
 	}
 
-	panic(fmt.Sprintf("Invalid type. %v", expr))
+	util.Fail("Invalid type. %v", expr)
+	panic("Unreachable")
 }

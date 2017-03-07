@@ -1,7 +1,7 @@
 package comb
 
 import (
-	"fmt"
+	"github.com/raviqqe/tisp/src/lib/util"
 	"strings"
 )
 
@@ -244,5 +244,6 @@ func stringify(x interface{}) string {
 		return strings.Join(ss, "")
 	}
 
-	panic(fmt.Sprint("Invalid type.", x))
+	util.Fail("Invalid type.", x)
+	panic("Unreachable")
 }

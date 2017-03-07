@@ -1,5 +1,7 @@
 package core
 
+import "github.com/raviqqe/tisp/src/lib/util"
+
 // Arguments represents a structured set of arguments passed to a predicate.
 type Arguments struct {
 	positionals   []*Thunk
@@ -40,7 +42,7 @@ func NewArguments(
 
 func mergeRestPositionalArgs(ps ...PositionalArgument) *Thunk {
 	if !ps[0].expanded {
-		panic("First PositionalArgument must be a list.")
+		util.Fail("First PositionalArgument must be a list.")
 	}
 
 	t := ps[0].value

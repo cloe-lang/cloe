@@ -1,8 +1,8 @@
 package env
 
 import (
-	"fmt"
 	"github.com/raviqqe/tisp/src/lib/core"
+	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 type Environment struct {
@@ -45,7 +45,7 @@ func (e Environment) Child() Environment {
 
 func (e Environment) Parent() Environment {
 	if e.parent == nil {
-		panic(fmt.Errorf("parent environment is nil"))
+		util.Fail("Parent environment is nil.")
 	}
 
 	return *e.parent

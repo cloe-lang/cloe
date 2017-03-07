@@ -2,6 +2,7 @@ package core
 
 import (
 	"github.com/raviqqe/tisp/src/lib/debug"
+	"github.com/raviqqe/tisp/src/lib/util"
 	"sync"
 	"sync/atomic"
 )
@@ -154,6 +155,6 @@ func (t *Thunk) chainError(o Object) bool {
 
 func checkObject(s string, o Object) {
 	if _, ok := o.(*Thunk); ok {
-		panic(s + " is *Thunk.")
+		util.Fail(s + " is *Thunk.")
 	}
 }

@@ -2,7 +2,7 @@ package desugar
 
 import (
 	"github.com/raviqqe/tisp/src/lib/ast"
-	"log"
+	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 type desugarer struct{}
@@ -62,7 +62,7 @@ func (d *desugarer) desugarLetFunction(f ast.LetFunction) []interface{} {
 						), []ast.KeywordArgument{}, []interface{}{}),
 					f.DebugInfo())))
 		default:
-			log.Panicf("Invalid value: %#v\n", l)
+			util.Fail("Invalid value: %#v\n", l)
 		}
 	}
 

@@ -1,7 +1,5 @@
 package core
 
-import "fmt"
-
 type ListType struct {
 	first *Thunk
 	rest  *Thunk
@@ -54,13 +52,7 @@ var Prepend = NewLazyFunction(
 	),
 	func(ts ...*Thunk) Object {
 		o := ts[0].Eval()
-		l, ok := o.(ListType)
-
-		if !ok {
-			panic(fmt.Sprintf("Rest arguments must be a list. %v", o))
-		}
-
-		ts, err := l.ToThunks()
+		ts, err := o.(ListType).ToThunks()
 
 		if err != nil {
 			return err
@@ -88,10 +80,6 @@ var First = NewStrictFunction(
 		[]string{}, []OptionalArgument{}, "",
 	),
 	func(os ...Object) Object {
-		if len(os) != 1 {
-			return NumArgsError("first", "1")
-		}
-
 		o := os[0]
 		l, ok := o.(ListType)
 
@@ -110,10 +98,6 @@ var Rest = NewStrictFunction(
 		[]string{}, []OptionalArgument{}, "",
 	),
 	func(os ...Object) Object {
-		if len(os) != 1 {
-			return NumArgsError("rest", "1")
-		}
-
 		o := os[0]
 		l, ok := o.(ListType)
 

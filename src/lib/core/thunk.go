@@ -30,24 +30,20 @@ type Thunk struct {
 	info      debug.Info
 }
 
+// Normal creates a thunk of a WHNF object as its result.
 func Normal(o Object) *Thunk {
 	checkObject("Normal's argument", o)
-
 	return &Thunk{result: o, state: normal}
 }
 
 // App creates a thunk applying a function to arguments.
 func App(f *Thunk, args Arguments) *Thunk {
-	return newThunk(f, args, debug.NewGoInfo(1))
+	return AppWithInfo(f, args, debug.NewGoInfo(1))
 }
 
 // AppWithInfo is the same as App except that it stores debug information
 // in the thunk.
 func AppWithInfo(f *Thunk, args Arguments, i debug.Info) *Thunk {
-	return newThunk(f, args, i)
-}
-
-func newThunk(f *Thunk, args Arguments, i debug.Info) *Thunk {
 	t := &Thunk{
 		function: f,
 		args:     args,
@@ -60,15 +56,21 @@ func newThunk(f *Thunk, args Arguments, i debug.Info) *Thunk {
 
 // PApp is not PPap.
 func PApp(f *Thunk, ps ...*Thunk) *Thunk {
-	return App(f, NewPositionalArguments(ps...))
+	return AppWithInfo(f, NewPositionalArguments(ps...), debug.NewGoInfo(1))
 }
 
-func (t *Thunk) Eval() Object { // return WHNF
+// Eval evaluates a thunk and returns a WHNF object.
+func (t *Thunk) Eval() Object {
 	if t.lock() {
 		children := make([]*Thunk, 0, 1) // TODO: best capacity?
 
 		for {
 			o := t.function.Eval()
+
+			if t.chainError(o) {
+				break
+			}
+
 			f, ok := o.(callable)
 
 			if !ok {
@@ -77,6 +79,11 @@ func (t *Thunk) Eval() Object { // return WHNF
 			}
 
 			t.result = f.call(t.args)
+
+			if t.chainError(t.result) {
+				break
+			}
+
 			child, ok := t.result.(*Thunk)
 
 			if !ok {
@@ -87,6 +94,7 @@ func (t *Thunk) Eval() Object { // return WHNF
 
 			if !ok {
 				t.result = child.Eval()
+				t.chainError(t.result)
 				break
 			}
 
@@ -96,6 +104,7 @@ func (t *Thunk) Eval() Object { // return WHNF
 		checkObject("Thunk.result", t.result)
 
 		for _, child := range children {
+			// TODO: Use children's debug informations, child.info?
 			child.result = t.result
 			child.finalize()
 		}
@@ -135,6 +144,16 @@ func (t *Thunk) compareAndSwapState(old, new thunkState) bool {
 
 func (t *Thunk) storeState(new thunkState) {
 	atomic.StoreInt32((*int32)(&t.state), int32(new))
+}
+
+func (t *Thunk) chainError(o Object) bool {
+	if e, ok := o.(ErrorType); ok {
+		e.callTrace = append(e.callTrace, t.info)
+		t.result = e
+		return true
+	}
+
+	return false
 }
 
 func checkObject(s string, o Object) {

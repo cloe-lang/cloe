@@ -1,9 +1,15 @@
 package core
 
+// BoolType represents a type of boolean values in the language.
 type BoolType bool
 
-var True, False = NewBool(true), NewBool(false)
+// True is a true value.
+var True = NewBool(true)
 
+// False is a false value.
+var False = NewBool(false)
+
+// NewBool converts a Go boolean value into BoolType.
 func NewBool(b bool) *Thunk {
 	return Normal(rawBool(b))
 }
@@ -16,6 +22,8 @@ func (b BoolType) equal(e equalable) Object {
 	return rawBool(b == e.(BoolType))
 }
 
+// If returns the second argument when the first one is true or the third one
+// otherwise.
 var If = NewLazyFunction(
 	NewSignature(
 		[]string{"condition", "then", "else"}, []OptionalArgument{}, "",

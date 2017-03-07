@@ -94,3 +94,9 @@ func TestMaybeFailure(t *testing.T) {
 	assert.Equal(t, nil, result)
 	assert.Equal(t, nil, err)
 }
+
+func TestExhaustWithErroneousParser(t *testing.T) {
+	s := NewState("")
+	_, err := s.Exhaust(s.String("foo"))()
+	assert.NotEqual(t, err, nil)
+}

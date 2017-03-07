@@ -18,12 +18,8 @@ const (
 )
 
 type Thunk struct {
-	result   Object
-	function *Thunk
-	// `args` is represented as a slice but not a List to let users optimize
-	// their functions. If you want to define functions with arguments fully
-	// lazy, just create a function which takes only a thunk of a List as a
-	// argument.
+	result    Object
+	function  *Thunk
 	args      Arguments
 	state     thunkState
 	blackHole sync.WaitGroup

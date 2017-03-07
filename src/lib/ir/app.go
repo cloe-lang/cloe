@@ -1,14 +1,22 @@
 package ir
 
-import "github.com/raviqqe/tisp/src/lib/core"
+import (
+	"github.com/raviqqe/tisp/src/lib/core"
+	"github.com/raviqqe/tisp/src/lib/debug"
+)
 
 type App struct {
 	function interface{}
 	args     Arguments
+	info     *debug.Info
 }
 
 func NewApp(f interface{}, args Arguments) App {
-	return App{f, args}
+	return App{f, args, nil}
+}
+
+func NewAppWithInfo(f interface{}, args Arguments, info *debug.Info) App {
+	return App{f, args, info}
 }
 
 func (app App) compile(args []*core.Thunk) *core.Thunk {
@@ -30,5 +38,5 @@ func (app App) compile(args []*core.Thunk) *core.Thunk {
 		ds[i] = compileExpression(args, d)
 	}
 
-	return core.App(compileExpression(args, app.function), core.NewArguments(ps, ks, ds))
+	return core.AppWithInfo(compileExpression(args, app.function), core.NewArguments(ps, ks, ds), app.info)
 }

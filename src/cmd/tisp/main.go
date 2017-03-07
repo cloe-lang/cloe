@@ -6,20 +6,13 @@ import (
 	"github.com/raviqqe/tisp/src/lib/desugar"
 	"github.com/raviqqe/tisp/src/lib/parse"
 	"github.com/raviqqe/tisp/src/lib/run"
-	"io/ioutil"
 	"log"
 )
 
 func main() {
 	args := getArgs()
 
-	source, err := ioutil.ReadFile(args["<filename>"].(string))
-
-	if err != nil {
-		log.Fatalln(err.Error())
-	}
-
-	module, err := parse.Parse(string(source))
+	module, err := parse.Parse(args["<filename>"].(string))
 
 	if err != nil {
 		log.Fatalln(err.Error())

@@ -7,7 +7,7 @@ import (
 
 func TestModule(t *testing.T) {
 	for _, str := range []string{"", "(foo bar)"} {
-		result, err := newState(str).module()()
+		result, err := newStateWithoutFile(str).module()()
 
 		t.Log(result)
 
@@ -18,7 +18,7 @@ func TestModule(t *testing.T) {
 
 func TestXFailModule(t *testing.T) {
 	for _, str := range []string{"(", "(()"} {
-		result, err := newState(str).module()()
+		result, err := newStateWithoutFile(str).module()()
 
 		t.Log(err.Error())
 
@@ -29,7 +29,7 @@ func TestXFailModule(t *testing.T) {
 
 func TestLetConst(t *testing.T) {
 	for _, str := range []string{"(let foo 123)", "(let foo (f x y))"} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		_, err := s.Exhaust(s.letConst())()
 		assert.Equal(t, nil, err)
 	}
@@ -41,7 +41,7 @@ func TestLetFunction(t *testing.T) {
 		"(let (foo x) (f x y))",
 		"(let (foo x y (z 123) (v 456) ..args . a b (c 123) (d 456) ..kwargs) 123)",
 	} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		_, err := s.Exhaust(s.letFunction())()
 		assert.Equal(t, nil, err)
 	}
@@ -49,7 +49,7 @@ func TestLetFunction(t *testing.T) {
 
 func TestSignature(t *testing.T) {
 	for _, str := range []string{"", "x", "x y", "(x 123)", "..args", ". x", ". (x 123)", ". ..kwargs", "..args . ..kwargs"} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		_, err := s.Exhaust(s.signature())()
 		assert.Equal(t, nil, err)
 	}
@@ -57,7 +57,7 @@ func TestSignature(t *testing.T) {
 
 func TestOutput(t *testing.T) {
 	for _, str := range []string{"output", "..outputs", "(foo bar)", "..(foo bar)"} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		_, err := s.Exhaust(s.output())()
 		assert.Equal(t, nil, err)
 	}
@@ -65,7 +65,7 @@ func TestOutput(t *testing.T) {
 
 func TestStringLiteral(t *testing.T) {
 	for _, str := range []string{`""`, `"sl"`, "\"   string literal  \n \"", `"\""`, `"\\"`} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		result, err := s.Exhaust(s.stringLiteral())()
 
 		t.Logf("%#v", result)
@@ -76,7 +76,7 @@ func TestStringLiteral(t *testing.T) {
 }
 
 func TestStrip(t *testing.T) {
-	s := newState("ident  \t ")
+	s := newStateWithoutFile("ident  \t ")
 	result, err := s.Exhaust(s.strip(s.identifier()))()
 
 	t.Logf("%#v", result)
@@ -87,7 +87,7 @@ func TestStrip(t *testing.T) {
 
 func TestList(t *testing.T) {
 	for _, str := range []string{"[]", "[123 456]", "[(f x) 123]"} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		result, err := s.Exhaust(s.expression())()
 
 		t.Logf("%#v", result)
@@ -107,7 +107,7 @@ func TestExpression(t *testing.T) {
 	for _, str := range strs {
 		t.Logf("source: %#v", str)
 
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		result, err := s.Exhaust(s.expression())()
 
 		t.Logf("%#v", result)
@@ -119,7 +119,7 @@ func TestExpression(t *testing.T) {
 
 func TestQuotedExpression(t *testing.T) {
 	for _, str := range []string{"`ident", "``ident", "```ident"} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		result, err := s.Exhaust(s.expression())()
 
 		t.Logf("%#v", result)
@@ -130,7 +130,7 @@ func TestQuotedExpression(t *testing.T) {
 }
 
 func TestSetLiteral(t *testing.T) {
-	s := newState("'{1 2 3}")
+	s := newStateWithoutFile("'{1 2 3}")
 	result, err := s.Exhaust(s.expression())()
 
 	t.Logf("%#v", result)
@@ -140,7 +140,7 @@ func TestSetLiteral(t *testing.T) {
 }
 
 // func TestClosureLiteral(t *testing.T) {
-// 	s := newState("'(+ #1 #2 3)")
+// 	s := newStateWithoutFile("'(+ #1 #2 3)")
 // 	result, err := s.Exhaust(s.expression())()
 
 // 	t.Logf("%#v", result)
@@ -153,7 +153,7 @@ func TestApp(t *testing.T) {
 	for _, str := range []string{
 		"(f)", "(f x)", "(f x y)", "(f ..x)", "(f . x 123)", "(f . x 123 y 456)",
 		"(func . ..kwargs)", "(f ..x (func x y) 123 456 ..foo . a 123 b 456 ..c ..(d 123 456 789))"} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		result, err := s.Exhaust(s.app())()
 		t.Logf("%#v", result)
 		assert.Equal(t, err, nil)
@@ -162,7 +162,7 @@ func TestApp(t *testing.T) {
 
 func TestArguments(t *testing.T) {
 	for _, str := range []string{"", "x", "x y", "..x", ". x 123", ". x 123 y 456", ". ..kwargs", "..x (func x y) 123 456 ..foo . a 123 b 456 ..c ..(d 123 456 789)"} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		result, err := s.Exhaust(s.arguments())()
 		t.Logf("%#v", result)
 		assert.Equal(t, err, nil)
@@ -170,7 +170,7 @@ func TestArguments(t *testing.T) {
 }
 
 func TestIdentifier(t *testing.T) {
-	result, err := newState(";ident").identifier()()
+	result, err := newStateWithoutFile(";ident").identifier()()
 
 	t.Log(err)
 
@@ -180,7 +180,7 @@ func TestIdentifier(t *testing.T) {
 
 func TestXFailIdentifier(t *testing.T) {
 	for _, str := range []string{"", ".", "..", ".foo"} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		result, err := s.identifier()()
 		assert.Equal(t, result, nil)
 		assert.NotEqual(t, err, nil)
@@ -189,7 +189,7 @@ func TestXFailIdentifier(t *testing.T) {
 
 func TestBlank(t *testing.T) {
 	for _, str := range []string{"", "   ", "\t", "\n\n", " ; laskdjf \n \t "} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		result, err := s.Exhaust(s.blank())()
 
 		t.Log(result, err)
@@ -201,7 +201,7 @@ func TestBlank(t *testing.T) {
 
 func TestQuote(t *testing.T) {
 	for _, str := range []string{"`foo", "`( foo ; lajdfs\n   bar )"} {
-		s := newState(str)
+		s := newStateWithoutFile(str)
 		result, err := s.Exhaust(s.expression())()
 
 		t.Logf("%#v", result)
@@ -209,4 +209,8 @@ func TestQuote(t *testing.T) {
 		assert.NotEqual(t, result, nil)
 		assert.Equal(t, err, nil)
 	}
+}
+
+func newStateWithoutFile(source string) *state {
+	return newState("", source)
 }

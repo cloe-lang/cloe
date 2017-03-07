@@ -3,6 +3,8 @@ package parse
 import (
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/parse/comb"
+	"io/ioutil"
+	"log"
 )
 
 const (
@@ -20,8 +22,14 @@ var reserveds = map[string]bool{
 	"rec":   true,
 }
 
-func Parse(source string) ([]interface{}, error) {
-	m, err := newState(source).module()()
+func Parse(file string) ([]interface{}, error) {
+	source, err := ioutil.ReadFile(file)
+
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+
+	m, err := newState(file, string(source)).module()()
 
 	if err != nil {
 		return nil, err
@@ -159,21 +167,37 @@ func (s *state) quote(p comb.Parser) comb.Parser {
 }
 
 func (s *state) appQuote(p comb.Parser) comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		return ast.NewApp(
-			"quote",
-			ast.NewArguments(
+	return s.appWithInfo(
+		p,
+		func(x interface{}) (interface{}, ast.Arguments) {
+			return "quote", ast.NewArguments(
 				[]ast.PositionalArgument{ast.NewPositionalArgument(x, false)},
 				[]ast.KeywordArgument{},
-				[]interface{}{}))
-	}, p)
+				[]interface{}{})
+		})
 }
 
 func (s *state) app() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
-		return ast.NewApp(xs[0], xs[1].(ast.Arguments))
-	}, s.list(s.expression(), s.arguments()))
+	return s.appWithInfo(
+		s.list(s.expression(), s.arguments()),
+		func(x interface{}) (interface{}, ast.Arguments) {
+			xs := x.([]interface{})
+			return xs[0], xs[1].(ast.Arguments)
+		})
+}
+
+func (s *state) appWithInfo(p comb.Parser, f func(interface{}) (interface{}, ast.Arguments)) comb.Parser {
+	return func() (interface{}, error) {
+		i := s.debugInfo()
+		x, err := p()
+
+		if err != nil {
+			return nil, err
+		}
+
+		f, args := f(x)
+		return ast.NewAppWithInfo(f, args, &i), nil
+	}
 }
 
 func (s *state) arguments() comb.Parser {
@@ -283,9 +307,11 @@ func (s *state) stringWrap(l string, p comb.Parser, r string) comb.Parser {
 }
 
 func (s *state) appFunc(ident string, p comb.Parser) comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		return ast.NewApp(ident, x.(ast.Arguments))
-	}, p)
+	return s.appWithInfo(
+		p,
+		func(x interface{}) (interface{}, ast.Arguments) {
+			return ident, x.(ast.Arguments)
+		})
 }
 
 func (s *state) strip(p comb.Parser) comb.Parser {

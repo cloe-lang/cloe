@@ -1,8 +1,10 @@
 package comb
 
+import "strings"
+
 type State struct {
-	source         []rune
-	line, position int
+	source               []rune
+	lineNumber, position int
 }
 
 func NewState(source string) *State {
@@ -23,8 +25,16 @@ func (s State) currentRune() rune {
 
 func (s *State) increment() {
 	if s.currentRune() == '\n' {
-		s.line++
+		s.lineNumber++
 	}
 
 	s.position++
+}
+
+func (s *State) LineNumber() int {
+	return s.lineNumber
+}
+
+func (s *State) Line() string {
+	return strings.Split(string(s.source), "\n")[s.lineNumber]
 }

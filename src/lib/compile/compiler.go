@@ -75,7 +75,10 @@ func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {
 			ds[i] = c.exprToThunk(d)
 		}
 
-		return core.App(c.exprToThunk(x.Function()), core.NewArguments(ps, ks, ds))
+		return core.AppWithInfo(
+			c.exprToThunk(x.Function()),
+			core.NewArguments(ps, ks, ds),
+			x.DebugInfo())
 	}
 
 	panic(fmt.Sprintf("Invalid type as an expression. %#v", expr))
@@ -136,7 +139,10 @@ func (c *compiler) exprToIR(sig ast.Signature, vars map[string]int, expr interfa
 			ds[i] = c.exprToIR(sig, vars, d)
 		}
 
-		return ir.NewApp(c.exprToIR(sig, vars, x.Function()), ir.NewArguments(ps, ks, ds))
+		return ir.NewAppWithInfo(
+			c.exprToIR(sig, vars, x.Function()),
+			ir.NewArguments(ps, ks, ds),
+			x.DebugInfo())
 	}
 
 	panic(fmt.Sprint("Invalid type.", expr))

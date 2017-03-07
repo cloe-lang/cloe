@@ -27,7 +27,7 @@ type Thunk struct {
 	args      Arguments
 	state     thunkState
 	blackHole sync.WaitGroup
-	info      *debug.Info
+	info      debug.Info
 }
 
 func Normal(o Object) *Thunk {
@@ -38,16 +38,16 @@ func Normal(o Object) *Thunk {
 
 // App creates a thunk applying a function to arguments.
 func App(f *Thunk, args Arguments) *Thunk {
-	return newThunk(f, args, nil)
+	return newThunk(f, args, debug.NewGoInfo(1))
 }
 
 // AppWithInfo is the same as App except that it stores debug information
 // in the thunk.
 func AppWithInfo(f *Thunk, args Arguments, i debug.Info) *Thunk {
-	return newThunk(f, args, &i)
+	return newThunk(f, args, i)
 }
 
-func newThunk(f *Thunk, args Arguments, i *debug.Info) *Thunk {
+func newThunk(f *Thunk, args Arguments, i debug.Info) *Thunk {
 	t := &Thunk{
 		function: f,
 		args:     args,

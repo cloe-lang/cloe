@@ -1,6 +1,9 @@
 package core
 
-import "reflect"
+import (
+	"github.com/raviqqe/tisp/src/lib/util"
+	"reflect"
+)
 
 // Object represents an object in the language.
 // Hackingly, it can be *Thunk so that tail calls are eliminated.
@@ -175,8 +178,27 @@ var Delete = NewStrictFunction(
 		return d
 	})
 
-// TODO: Create stringable interface with a method, toString.
-// It should be implemented for all types including error type.
+// stringable is an interface for something convertable into StringType.
+// This should be implemented for all types including error type.
+type stringable interface {
+	string() StringType
+}
+
+// ToString converts some object into one of StringType.
+var ToString = NewStrictFunction(
+	NewSignature(
+		[]string{"x"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(os ...Object) Object {
+		s, ok := os[0].(stringable)
+
+		if !ok {
+			util.Fail("%#v is not stringable.", os[0])
+		}
+
+		return s.string()
+	})
 
 // TODO: Create collection interface integrating some existing interfaces with
 // methods of index, insert, merge, delete, size (or len?), include and toList.

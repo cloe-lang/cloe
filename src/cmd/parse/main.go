@@ -4,19 +4,10 @@ import (
 	"github.com/docopt/docopt-go"
 	"github.com/kr/pretty"
 	"github.com/raviqqe/tisp/src/lib/parse"
-	"io/ioutil"
 )
 
 func main() {
-	args := getArgs()
-
-	source, err := ioutil.ReadFile(args["<filename>"].(string))
-
-	if err != nil {
-		panic(err.Error())
-	}
-
-	pretty.Println(parse.Parse(string(source)))
+	pretty.Println(parse.Parse(getArgs()["<filename>"].(string)))
 }
 
 func getArgs() map[string]interface{} {

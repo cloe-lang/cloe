@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/raviqqe/tisp/src/lib/compile"
 	"github.com/raviqqe/tisp/src/lib/core"
+	"os"
 	"sync"
 )
 
@@ -29,11 +30,7 @@ func Run(os []compile.Output) {
 
 		wg.Add(1)
 		outSem <- true
-		go func(o compile.Output) {
-			o.Value().Eval()
-			<-outSem
-			wg.Done()
-		}(o)
+		go runOutput(o.Value(), &wg)
 	}
 
 	wg.Wait()
@@ -55,14 +52,21 @@ func evalOutputList(t *core.Thunk) {
 
 		wg.Add(1)
 		outSem <- true
-		go func(t *core.Thunk) {
-			core.PApp(core.First, t).Eval() // TODO: Check error
-			<-outSem
-			wg.Done()
-		}(t)
+		go runOutput(core.PApp(core.First, t), &wg)
 
 		t = core.PApp(core.Rest, t)
 	}
 
 	wg.Wait()
+}
+
+func runOutput(t *core.Thunk, wg *sync.WaitGroup) {
+	o := t.Eval()
+
+	if err, ok := o.(core.ErrorType); ok {
+		fmt.Fprint(os.Stderr, err.Lines())
+	}
+
+	<-outSem
+	wg.Done()
 }

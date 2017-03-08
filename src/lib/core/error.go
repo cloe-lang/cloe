@@ -3,6 +3,7 @@ package core
 import (
 	"fmt"
 	"github.com/raviqqe/tisp/src/lib/debug"
+	"strings"
 )
 
 type ErrorType struct {
@@ -15,6 +16,16 @@ func NewError(n, m string, xs ...interface{}) *Thunk {
 		name:    n,
 		message: fmt.Sprintf(m, xs...),
 	})
+}
+
+func (e ErrorType) Lines() string {
+	ss := make([]string, 0, len(e.callTrace))
+
+	for i := range e.callTrace {
+		ss = append(ss, e.callTrace[len(e.callTrace)-1-i].Lines())
+	}
+
+	return strings.Join(ss, "") + e.name + ": " + e.message + "\n"
 }
 
 func TypeError(o Object, typ string) *Thunk {

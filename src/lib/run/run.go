@@ -12,6 +12,7 @@ const maxConcurrentOutputs = 256
 
 var outSem = make(chan bool, maxConcurrentOutputs)
 
+// Run runs outputs.
 func Run(os []compile.Output) {
 	// TODO: Ensure results are Outputs.
 

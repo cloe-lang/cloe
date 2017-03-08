@@ -29,7 +29,7 @@ func NewGoInfo(skip int) Info {
 	return NewInfo(file, line, "")
 }
 
-// Lines returns string representaion of Info which can be printed on stdout or
+// Lines returns string representation of Info which can be printed on stdout or
 // stderr as is.
 func (i Info) Lines() string {
 	return fmt.Sprintf("%s:%d:\t%s\n", i.file, i.lineNumber, i.source)

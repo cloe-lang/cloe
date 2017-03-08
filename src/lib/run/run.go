@@ -10,7 +10,7 @@ import (
 
 const maxConcurrentOutputs = 256
 
-var outSem = make(chan bool, maxConcurrentOutputs)
+var sem = make(chan bool, maxConcurrentOutputs)
 
 // Run runs outputs.
 func Run(os []compile.Output) {
@@ -19,19 +19,17 @@ func Run(os []compile.Output) {
 	wg := sync.WaitGroup{}
 
 	for _, o := range os {
+		wg.Add(1)
+
 		if o.Expanded() {
-			wg.Add(1)
 			go func() {
 				evalOutputList(o.Value())
 				wg.Done()
 			}()
-
-			continue
+		} else {
+			sem <- true
+			go runOutput(o.Value(), &wg)
 		}
-
-		wg.Add(1)
-		outSem <- true
-		go runOutput(o.Value(), &wg)
 	}
 
 	wg.Wait()
@@ -44,15 +42,13 @@ func evalOutputList(t *core.Thunk) {
 		o := core.PApp(core.Equal, t, core.EmptyList).Eval()
 
 		if b, ok := o.(core.BoolType); !ok {
-			// TODO: (write error)
-			fmt.Println(o)
-			break
+			failOnError(o.(core.ErrorType))
 		} else if b {
 			break
 		}
 
 		wg.Add(1)
-		outSem <- true
+		sem <- true
 		go runOutput(core.PApp(core.First, t), &wg)
 
 		t = core.PApp(core.Rest, t)
@@ -62,12 +58,15 @@ func evalOutputList(t *core.Thunk) {
 }
 
 func runOutput(t *core.Thunk, wg *sync.WaitGroup) {
-	o := t.Eval()
-
-	if err, ok := o.(core.ErrorType); ok {
-		fmt.Fprint(os.Stderr, err.Lines())
+	if err, ok := t.Eval().(core.ErrorType); ok {
+		failOnError(err)
 	}
 
-	<-outSem
+	<-sem
 	wg.Done()
+}
+
+func failOnError(err core.ErrorType) {
+	fmt.Fprint(os.Stderr, err.Lines())
+	os.Exit(1)
 }

@@ -32,6 +32,10 @@ func NewStrictFunction(s Signature, f func(...Object) Object) *Thunk {
 
 		for i, t := range ts {
 			os[i] = t.Eval()
+
+			if err, ok := os[i].(ErrorType); ok {
+				return err
+			}
 		}
 
 		return f(os...)

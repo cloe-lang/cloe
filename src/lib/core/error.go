@@ -44,3 +44,7 @@ func ValueError(m string) *Thunk {
 func NotDictionaryError(o Object) *Thunk {
 	return TypeError(o, "Dictionary")
 }
+
+func NotStringError(o Object) *Thunk {
+	return TypeError(o, "String")
+}

@@ -29,7 +29,7 @@ build:
 
     - script:
       name: command test
-      code: rake cmdtest
+      code: rake command_test
 
     - script:
       name: build

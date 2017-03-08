@@ -1,4 +1,4 @@
-bins = %i(parse tisp)
+bins = %w(tisp-parse tisp)
 
 
 bins.each do |bin|
@@ -11,16 +11,26 @@ end
 task :build => bins
 
 
-task :unittest do
+task :unit_test do
   sh 'go test -cover ./...'
 end
 
 
-task :cmdtest => :tisp do
+test_files = Dir.glob('test/*.tisp')
+
+
+task :parser_test => 'tisp-parse' do |t|
+  test_files.each do |file|
+    sh "bin/#{t.source} #{file} > /dev/null"
+  end
+end
+
+
+task :interpreter_test => 'tisp' do
   tmp_dir = 'tmp'
   mkdir_p tmp_dir
 
-  Dir.glob('test/*.tisp') do |file|
+  test_files.each do |file|
     shell_script = file.ext '.sh'
 
     if File.exist? shell_script
@@ -43,7 +53,10 @@ task :cmdtest => :tisp do
 end
 
 
-task :test => %i(unittest cmdtest)
+task :command_test => %i(parser_test interpreter_test)
+
+
+task :test => %i(unit_test command_test)
 
 
 task :lint do

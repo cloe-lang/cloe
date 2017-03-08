@@ -42,6 +42,8 @@ var prelude = func() env.Environment {
 		{"pow", core.Pow},
 
 		{"=", core.Equal},
+		{"toList", core.ToList},
+		{"toStr", core.ToString},
 
 		{"list", std.List},
 		{"$list", std.List},

@@ -45,6 +45,8 @@ var prelude = func() env.Environment {
 
 		{"list", std.List},
 		{"$list", std.List},
+		{"dict", std.Dictionary},
+		{"$dict", std.Dictionary},
 
 		{"y", std.Y},
 		{"ys", std.Ys},

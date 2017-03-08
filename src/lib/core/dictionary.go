@@ -88,7 +88,7 @@ var Get = NewLazyFunction(
 	})
 
 func notOrderedError(k Object) *Thunk {
-	return TypeError(k, "Ordered")
+	return TypeError(k, "ordered")
 }
 
 func (d DictionaryType) equal(e equalable) Object {

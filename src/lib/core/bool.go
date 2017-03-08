@@ -34,7 +34,7 @@ var If = NewLazyFunction(
 		b, ok := o.(BoolType)
 
 		if !ok {
-			return notBoolError(o)
+			return NotBoolError(o)
 		}
 
 		if b {
@@ -43,10 +43,6 @@ var If = NewLazyFunction(
 
 		return ts[2]
 	})
-
-func notBoolError(o Object) *Thunk {
-	return TypeError(o, "Bool")
-}
 
 func (b BoolType) less(o ordered) bool {
 	return bool(!b && o.(BoolType))

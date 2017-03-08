@@ -38,7 +38,7 @@ func (l ListType) equal(e equalable) Object {
 		b, ok := o.(BoolType)
 
 		if !ok {
-			return notBoolError(o)
+			return NotBoolError(o)
 		} else if !b {
 			return False
 		}
@@ -86,7 +86,7 @@ var First = NewStrictFunction(
 		l, ok := o.(ListType)
 
 		if !ok {
-			return notListError(o)
+			return NotListError(o)
 		} else if l == emptyList {
 			return emptyListError()
 		}
@@ -104,7 +104,7 @@ var Rest = NewStrictFunction(
 		l, ok := o.(ListType)
 
 		if !ok {
-			return notListError(o)
+			return NotListError(o)
 		} else if l == emptyList {
 			return emptyListError()
 		}
@@ -124,7 +124,7 @@ func appendFunc(ts ...*Thunk) Object {
 	l, ok := o.(ListType)
 
 	if !ok {
-		return notListError(o)
+		return NotListError(o)
 	}
 
 	if l == emptyList {
@@ -135,10 +135,6 @@ func appendFunc(ts ...*Thunk) Object {
 		l.first,
 		PApp(NewLazyFunction(appendFuncSignature, appendFunc), l.rest, ts[1]),
 	)
-}
-
-func notListError(o Object) *Thunk {
-	return TypeError(o, "List")
 }
 
 func emptyListError() *Thunk {
@@ -215,7 +211,7 @@ func (l ListType) ToThunks() ([]*Thunk, *Thunk) {
 		l, ok = o.(ListType)
 
 		if !ok {
-			return nil, notListError(o)
+			return nil, NotListError(o)
 		}
 	}
 

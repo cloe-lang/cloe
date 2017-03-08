@@ -29,33 +29,41 @@ func (e ErrorType) Lines() string {
 }
 
 func TypeError(o Object, typ string) *Thunk {
-	n, m := "TypeError", "%#v is not %s"
-
 	if e, ok := o.(ErrorType); ok {
 		return Normal(e)
 	}
 
-	return NewError(n, m, o, typ)
-}
-
-func NotCallableError(o Object) *Thunk {
-	return TypeError(o, "Callable")
+	return NewError("TypeError", "%#v is not a %s.", o, typ)
 }
 
 func NumArgsError(f, condition string) *Thunk {
-	return NewError(
-		"NumArgsError",
-		"Number of arguments to %s must be %s.", f, condition)
+	return NewError("NumArgsError", "Number of arguments to %s must be %s.", f, condition)
 }
 
 func ValueError(m string) *Thunk {
 	return NewError("ValueError", m)
 }
 
+func NotBoolError(o Object) *Thunk {
+	return TypeError(o, "bool")
+}
+
 func NotDictionaryError(o Object) *Thunk {
-	return TypeError(o, "Dictionary")
+	return TypeError(o, "dictionary")
+}
+
+func NotListError(o Object) *Thunk {
+	return TypeError(o, "list")
+}
+
+func NotNumberError(o Object) *Thunk {
+	return TypeError(o, "number")
 }
 
 func NotStringError(o Object) *Thunk {
-	return TypeError(o, "String")
+	return TypeError(o, "string")
+}
+
+func NotCallableError(o Object) *Thunk {
+	return TypeError(o, "funtion.")
 }

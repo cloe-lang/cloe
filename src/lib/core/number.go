@@ -26,7 +26,7 @@ var Add = NewLazyFunction(
 		l, ok := o.(ListType)
 
 		if !ok {
-			return notListError(o)
+			return NotListError(o)
 		}
 
 		os, err := l.ToObjects()
@@ -41,7 +41,7 @@ var Add = NewLazyFunction(
 			n, ok := o.(NumberType)
 
 			if !ok {
-				return notNumberError(o)
+				return NotNumberError(o)
 			}
 
 			sum += n
@@ -61,14 +61,14 @@ var Sub = NewLazyFunction(
 		n0, ok := o.(NumberType)
 
 		if !ok {
-			return notNumberError(o)
+			return NotNumberError(o)
 		}
 
 		o = ts[1].Eval()
 		l, ok := o.(ListType)
 
 		if !ok {
-			return notListError(o)
+			return NotListError(o)
 		}
 
 		os, err := l.ToObjects()
@@ -85,7 +85,7 @@ var Sub = NewLazyFunction(
 			n, ok := o.(NumberType)
 
 			if !ok {
-				return notNumberError(o)
+				return NotNumberError(o)
 			}
 
 			n0 -= n
@@ -104,7 +104,7 @@ var Mul = NewLazyFunction(
 		l, ok := o.(ListType)
 
 		if !ok {
-			return notListError(o)
+			return NotListError(o)
 		}
 
 		os, err := l.ToObjects()
@@ -119,7 +119,7 @@ var Mul = NewLazyFunction(
 			n, ok := o.(NumberType)
 
 			if !ok {
-				return notNumberError(o)
+				return NotNumberError(o)
 			}
 
 			prod *= n
@@ -138,14 +138,14 @@ var Div = NewLazyFunction(
 		n0, ok := o.(NumberType)
 
 		if !ok {
-			return notNumberError(o)
+			return NotNumberError(o)
 		}
 
 		o = ts[1].Eval()
 		l, ok := o.(ListType)
 
 		if !ok {
-			return notListError(o)
+			return NotListError(o)
 		}
 
 		os, err := l.ToObjects()
@@ -162,7 +162,7 @@ var Div = NewLazyFunction(
 			n, ok := o.(NumberType)
 
 			if !ok {
-				return notNumberError(o)
+				return NotNumberError(o)
 			}
 
 			n0 /= n
@@ -187,14 +187,14 @@ var Mod = NewStrictFunction(
 		n1, ok := o.(NumberType)
 
 		if !ok {
-			return notNumberError(o)
+			return NotNumberError(o)
 		}
 
 		o = os[1]
 		n2, ok := o.(NumberType)
 
 		if !ok {
-			return notNumberError(o)
+			return NotNumberError(o)
 		}
 
 		return NewNumber(math.Mod(float64(n1), float64(n2)))
@@ -210,22 +210,18 @@ var Pow = NewStrictFunction(
 		n1, ok := o.(NumberType)
 
 		if !ok {
-			return notNumberError(o)
+			return NotNumberError(o)
 		}
 
 		o = os[1]
 		n2, ok := o.(NumberType)
 
 		if !ok {
-			return notNumberError(o)
+			return NotNumberError(o)
 		}
 
 		return NewNumber(math.Pow(float64(n1), float64(n2)))
 	})
-
-func notNumberError(o Object) *Thunk {
-	return TypeError(o, "Number")
-}
 
 func (n NumberType) less(o ordered) bool {
 	return n < o.(NumberType)

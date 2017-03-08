@@ -118,7 +118,7 @@ var Merge = NewLazyFunction(
 		l, ok := o.(ListType)
 
 		if !ok {
-			return notListError(o)
+			return NotListError(o)
 		}
 
 		ts, err := l.ToThunks()
@@ -153,7 +153,7 @@ var Delete = NewStrictFunction(
 		l, ok := os[1].(ListType)
 
 		if !ok {
-			return notListError(os[1])
+			return NotListError(os[1])
 		}
 
 		os, err := l.ToObjects()

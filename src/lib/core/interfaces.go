@@ -14,6 +14,28 @@ type callable interface {
 	call(Arguments) Object
 }
 
+// stringable is an interface for something convertable into StringType.
+// This should be implemented for all types including error type.
+type stringable interface {
+	string() Object
+}
+
+// ToString converts some object into one of StringType.
+var ToString = NewStrictFunction(
+	NewSignature(
+		[]string{"x"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(os ...Object) Object {
+		s, ok := os[0].(stringable)
+
+		if !ok {
+			util.Fail("%#v is not stringable.", os[0])
+		}
+
+		return s.string()
+	})
+
 // equalable must be implemented for every type other than error type.
 type equalable interface {
 	equal(equalable) Object
@@ -44,26 +66,6 @@ var Equal = NewStrictFunction(
 		}
 
 		return es[0].equal(es[1])
-	})
-
-type listable interface {
-	toList() Object
-}
-
-var ToList = NewStrictFunction(
-	NewSignature(
-		[]string{"listLike"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
-	),
-	func(os ...Object) Object {
-		o := os[0]
-		l, ok := o.(listable)
-
-		if !ok {
-			return TypeError(o, "Listable")
-		}
-
-		return l.toList()
 	})
 
 // ordered must be implemented for every type other than error type.
@@ -178,26 +180,24 @@ var Delete = NewStrictFunction(
 		return d
 	})
 
-// stringable is an interface for something convertable into StringType.
-// This should be implemented for all types including error type.
-type stringable interface {
-	string() Object
+type listable interface {
+	toList() Object
 }
 
-// ToString converts some object into one of StringType.
-var ToString = NewStrictFunction(
+var ToList = NewStrictFunction(
 	NewSignature(
-		[]string{"x"}, []OptionalArgument{}, "",
+		[]string{"listLike"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
 	func(os ...Object) Object {
-		s, ok := os[0].(stringable)
+		o := os[0]
+		l, ok := o.(listable)
 
 		if !ok {
-			util.Fail("%#v is not stringable.", os[0])
+			return TypeError(o, "Listable")
 		}
 
-		return s.string()
+		return l.toList()
 	})
 
 // TODO: Create collection interface integrating some existing interfaces with

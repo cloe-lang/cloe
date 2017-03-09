@@ -96,6 +96,25 @@ func areSameType(x1, x2 interface{}) bool {
 	return reflect.TypeOf(x1) == reflect.TypeOf(x2)
 }
 
+type indexable interface {
+	index(Object) Object
+}
+
+var Index = NewStrictFunction(
+	NewSignature(
+		[]string{"collection", "key"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(os ...Object) Object {
+		i, ok := os[0].(indexable)
+
+		if !ok {
+			return TypeError(os[0], "indexable")
+		}
+
+		return i.index(os[1])
+	})
+
 type mergable interface {
 	merge(ts ...*Thunk) Object
 }

@@ -189,12 +189,13 @@ func (l ListType) string() Object {
 		}
 
 		o = PApp(ToString, Normal(o)).Eval()
+		s, ok := o.(StringType)
 
-		if err, ok := o.(ErrorType); ok {
-			return err
+		if !ok {
+			return NotStringError(o)
 		}
 
-		ss[i] = string(o.(StringType))
+		ss[i] = string(s)
 	}
 
 	return StringType("[" + strings.Join(ss, " ") + "]")

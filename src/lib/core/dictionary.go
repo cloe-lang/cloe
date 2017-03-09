@@ -142,12 +142,13 @@ func (d DictionaryType) less(o ordered) bool {
 
 func (d DictionaryType) string() Object {
 	o := PApp(ToList, Normal(d)).Eval()
+	l, ok := o.(ListType)
 
-	if err, ok := o.(ErrorType); ok {
-		return err
+	if !ok {
+		return NotListError(o)
 	}
 
-	os, err := o.(ListType).ToObjects()
+	os, err := l.ToObjects()
 
 	if err != nil {
 		return err.Eval()
@@ -172,12 +173,13 @@ func (d DictionaryType) string() Object {
 			}
 
 			o = PApp(ToString, Normal(o)).Eval()
+			s, ok := o.(StringType)
 
-			if err, ok := o.(ErrorType); ok {
-				return err
+			if !ok {
+				return NotStringError(o)
 			}
 
-			ss[2*i+j] = string(o.(StringType))
+			ss[2*i+j] = string(s)
 		}
 	}
 

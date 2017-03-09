@@ -42,7 +42,7 @@ func evalOutputList(t *core.Thunk) {
 		o := core.PApp(core.Equal, t, core.EmptyList).Eval()
 
 		if b, ok := o.(core.BoolType); !ok {
-			failOnError(o.(core.ErrorType))
+			failOnError(core.NotBoolError(o).Eval().(core.ErrorType))
 		} else if b {
 			break
 		}

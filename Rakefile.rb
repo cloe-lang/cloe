@@ -50,6 +50,10 @@ task :interpreter_test => 'tisp' do
     sh "diff #{expected_out_file} #{actual_out_file}" \
         if File.exist? expected_out_file
   end
+
+  Dir.glob('test/xfail/*.tisp') do |file|
+    sh "! bin/tisp #{file} > /dev/null 2>&1"
+  end
 end
 
 

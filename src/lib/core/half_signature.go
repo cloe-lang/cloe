@@ -18,12 +18,18 @@ func (hs halfSignature) arity() int {
 
 func (hs halfSignature) bindPositionals(args *Arguments) ([]*Thunk, *Thunk) {
 	ts := make([]*Thunk, 0, hs.arity())
+	restAreKeywords := false
 
 	for _, name := range hs.requireds {
-		t := args.searchKeyword(name)
+		t := (*Thunk)(nil)
+
+		if !restAreKeywords {
+			t = args.nextPositional()
+		}
 
 		if t == nil {
-			t = args.nextPositional()
+			t = args.searchKeyword(name)
+			restAreKeywords = true
 		}
 
 		if t == nil {
@@ -34,10 +40,15 @@ func (hs halfSignature) bindPositionals(args *Arguments) ([]*Thunk, *Thunk) {
 	}
 
 	for _, o := range hs.optionals {
-		t := args.searchKeyword(o.name)
+		t := (*Thunk)(nil)
+
+		if !restAreKeywords {
+			t = args.nextPositional()
+		}
 
 		if t == nil {
-			t = args.nextPositional()
+			t = args.searchKeyword(o.name)
+			restAreKeywords = true
 		}
 
 		if t == nil {
@@ -48,13 +59,7 @@ func (hs halfSignature) bindPositionals(args *Arguments) ([]*Thunk, *Thunk) {
 	}
 
 	if hs.rest != "" {
-		t := args.searchKeyword(hs.rest)
-
-		if t == nil {
-			t = args.restPositionals()
-		}
-
-		ts = append(ts, t)
+		ts = append(ts, args.restPositionals())
 	}
 
 	if len(ts) != hs.arity() {
@@ -88,13 +93,7 @@ func (hs halfSignature) bindKeywords(args *Arguments) ([]*Thunk, *Thunk) {
 	}
 
 	if hs.rest != "" {
-		t := args.searchKeyword(hs.rest)
-
-		if t == nil {
-			t = args.restKeywords()
-		}
-
-		ts = append(ts, t)
+		ts = append(ts, args.restKeywords())
 	}
 
 	if len(ts) != hs.arity() {

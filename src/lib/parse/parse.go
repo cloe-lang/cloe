@@ -23,6 +23,7 @@ var reserveds = map[string]bool{
 	"rec":   true,
 }
 
+// Parse parses a file into an AST of the language.
 func Parse(file string) ([]interface{}, error) {
 	source, err := ioutil.ReadFile(file)
 

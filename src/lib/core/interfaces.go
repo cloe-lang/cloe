@@ -1,9 +1,6 @@
 package core
 
-import (
-	"github.com/raviqqe/tisp/src/lib/util"
-	"reflect"
-)
+import "reflect"
 
 // Object represents an object in the language.
 // Hackingly, it can be *Thunk so that tail calls are eliminated.
@@ -30,7 +27,7 @@ var ToString = NewStrictFunction(
 		s, ok := os[0].(stringable)
 
 		if !ok {
-			util.Fail("%#v is not stringable.", os[0])
+			return TypeError(os[0], "stringable")
 		}
 
 		return s.string()
@@ -55,7 +52,7 @@ var Equal = NewStrictFunction(
 			e, ok := o.(equalable)
 
 			if !ok {
-				return TypeError(o, "Equalable")
+				return TypeError(o, "equalable")
 			}
 
 			es[i] = e
@@ -113,7 +110,7 @@ var Merge = NewLazyFunction(
 		m, ok := o.(mergable)
 
 		if !ok {
-			return TypeError(o, "Mergable")
+			return TypeError(o, "mergable")
 		}
 
 		o = ts[1].Eval()
@@ -149,7 +146,7 @@ var Delete = NewStrictFunction(
 		d, ok := os[0].(deletable)
 
 		if !ok {
-			return TypeError(os[0], "Deletable")
+			return TypeError(os[0], "deletable")
 		}
 
 		l, ok := os[1].(ListType)
@@ -194,7 +191,7 @@ var ToList = NewStrictFunction(
 		l, ok := o.(listable)
 
 		if !ok {
-			return TypeError(o, "Listable")
+			return TypeError(o, "listable")
 		}
 
 		return l.toList()

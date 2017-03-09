@@ -67,8 +67,16 @@ func (s *State) NotInString(str string) Parser {
 }
 
 func (s *State) Wrap(l, m, r Parser) Parser {
-	p := s.And(l, m, r)
+	return second(s.And(l, m, r))
+}
 
+// Prefix creates a parser with a prefix parser and content parser and returns
+// the latter's result.
+func (s *State) Prefix(pre, p Parser) Parser {
+	return second(s.And(pre, p))
+}
+
+func second(p Parser) Parser {
 	return func() (interface{}, error) {
 		results, err := p()
 
@@ -76,7 +84,7 @@ func (s *State) Wrap(l, m, r Parser) Parser {
 			return results[1], err
 		}
 
-		return results, err
+		return nil, err
 	}
 }
 

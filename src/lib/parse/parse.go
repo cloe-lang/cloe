@@ -41,8 +41,7 @@ func Parse(file string) ([]interface{}, error) {
 }
 
 func (s *state) module() comb.Parser {
-	// TODO: Pass error from s.output() through s.None().
-	return s.Exhaust(s.Wrap(s.blank(), s.Many(s.Or(s.let(), s.output())), s.None()))
+	return s.Exhaust(s.Prefix(s.blank(), s.Many(s.Or(s.let(), s.output()))))
 }
 
 func (s *state) let() comb.Parser {
@@ -119,7 +118,7 @@ func (s *state) signature() comb.Parser {
 			pas[0].([]string), pas[1].([]ast.OptionalArgument), pas[2].(string),
 			kas[0].([]string), kas[1].([]ast.OptionalArgument), kas[2].(string),
 		)
-	}, s.And(argSet, s.Maybe(s.Wrap(s.strippedString("."), argSet, s.None()))))
+	}, s.And(argSet, s.Maybe(s.Prefix(s.strippedString("."), argSet))))
 }
 
 func (s *state) output() comb.Parser {
@@ -136,7 +135,7 @@ func (s *state) output() comb.Parser {
 }
 
 func (s *state) expanded(p comb.Parser) comb.Parser {
-	return s.Wrap(s.String(".."), p, s.None())
+	return s.Prefix(s.String(".."), p)
 }
 
 func (s *state) strictExpressions() comb.Parser {
@@ -166,7 +165,7 @@ func (s *state) firstOrderExpression() comb.Parser {
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {
-	return s.appQuote(s.Wrap(s.Char('`'), p, s.None()))
+	return s.appQuote(s.Prefix(s.Char('`'), p))
 }
 
 func (s *state) appQuote(p comb.Parser) comb.Parser {
@@ -226,7 +225,7 @@ func (s *state) arguments() comb.Parser {
 		return ast.NewArguments(xs[0].([]ast.PositionalArgument), ks, dicts)
 	}, s.And(
 		s.positionalArguments(),
-		s.Maybe(s.Wrap(s.strippedString("."), s.keywordArguments(), s.None()))))
+		s.Maybe(s.Prefix(s.strippedString("."), s.keywordArguments()))))
 }
 
 func (s *state) positionalArguments() comb.Parser {

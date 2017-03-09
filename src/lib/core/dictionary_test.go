@@ -40,7 +40,7 @@ func TestXFailDictionarySet(t *testing.T) {
 	assert.True(t, ok)
 }
 
-func TestDictionaryGet(t *testing.T) {
+func TestDictionaryIndex(t *testing.T) {
 	for _, kvs := range kvss {
 		d := EmptyDictionary
 
@@ -58,18 +58,18 @@ func TestDictionaryGet(t *testing.T) {
 
 			t.Log(k.Eval())
 
-			if e, ok := PApp(Get, d, k).Eval().(ErrorType); ok {
-				t.Log(e.message)
+			if e, ok := PApp(d, k).Eval().(ErrorType); ok {
+				t.Log(e.Lines())
 			}
 
-			assert.True(t, testEqual(PApp(Get, d, k), v))
+			assert.True(t, testEqual(PApp(d, k), v))
 		}
 	}
 }
 
-func TestXFailDictionaryGet(t *testing.T) {
+func TestXFailDictionaryIndex(t *testing.T) {
 	l := NewList(NewError("you", "failed."))
-	o := PApp(Get, PApp(Set, EmptyDictionary, l, Nil), l, Nil).Eval()
+	o := PApp(PApp(Set, EmptyDictionary, l, Nil), l, Nil).Eval()
 	_, ok := o.(ErrorType)
 	t.Logf("%#v", o)
 	assert.True(t, ok)
@@ -115,7 +115,7 @@ func TestDictionaryToList(t *testing.T) {
 			kv := PApp(First, l)
 			k := PApp(First, kv)
 			lv := PApp(First, PApp(Rest, kv))
-			dv := PApp(Get, d, k)
+			dv := PApp(d, k)
 
 			t.Log("Key:", k.Eval())
 			t.Log("LIST Value:", lv.Eval())
@@ -143,7 +143,7 @@ func TestDictionaryWithDuplicateKeys(t *testing.T) {
 	assert.Equal(t, len(ks), dictionarySize(d))
 
 	for _, k := range ks {
-		assert.True(t, testEqual(PApp(Get, d, k), k))
+		assert.True(t, testEqual(PApp(d, k), k))
 	}
 }
 

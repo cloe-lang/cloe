@@ -52,40 +52,31 @@ var Set = NewLazyFunction(
 		return DictionaryType{d.Insert(k, ts[2])}
 	})
 
-var Get = NewLazyFunction(
-	NewSignature(
-		[]string{"dict", "key"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
-	),
-	func(ts ...*Thunk) (result Object) {
-		defer func() {
-			if r := recover(); r != nil {
-				result = r
-			}
-		}()
+func (d DictionaryType) call(args Arguments) Object {
+	return Index.Eval().(callable).call(NewPositionalArguments(Normal(d)).Merge(args))
+}
 
-		o := ts[0].Eval()
-		d, ok := o.(DictionaryType)
-
-		if !ok {
-			return NotDictionaryError(o)
+func (d DictionaryType) index(o Object) (result Object) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = r
 		}
+	}()
 
-		o = ts[1].Eval()
-		k, ok := o.(ordered)
+	k, ok := o.(ordered)
 
-		if !ok {
-			return notOrderedError(o)
-		}
+	if !ok {
+		return notOrderedError(o)
+	}
 
-		if v, ok := d.Search(k); ok {
-			return v.(*Thunk)
-		}
+	if v, ok := d.Search(k); ok {
+		return v.(*Thunk)
+	}
 
-		return NewError(
-			"KeyNotFoundError",
-			"The key %v is not found in a dictionary.", k)
-	})
+	return NewError(
+		"KeyNotFoundError",
+		"The key %v is not found in a dictionary.", k)
+}
 
 func notOrderedError(k Object) *Thunk {
 	return TypeError(k, "ordered")

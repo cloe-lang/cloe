@@ -12,7 +12,7 @@ import (
 func main() {
 	args := getArgs()
 
-	module, err := parse.Parse(args["<filename>"].(string))
+	module, err := parse.Parse(util.ReadFileOrStdin(args["<filename>"]))
 
 	if err != nil {
 		util.Fail(err.Error())
@@ -25,7 +25,7 @@ func getArgs() map[string]interface{} {
 	usage := `Tisp interpreter
 
 Usage:
-  tisp <filename>
+  tisp [<filename>]
 
 Options:
   -h --help     Show this help.`

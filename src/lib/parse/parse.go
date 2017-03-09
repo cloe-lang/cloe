@@ -4,8 +4,6 @@ import (
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/debug"
 	"github.com/raviqqe/tisp/src/lib/parse/comb"
-	"github.com/raviqqe/tisp/src/lib/util"
-	"io/ioutil"
 )
 
 const (
@@ -24,13 +22,7 @@ var reserveds = map[string]bool{
 }
 
 // Parse parses a file into an AST of the language.
-func Parse(file string) ([]interface{}, error) {
-	source, err := ioutil.ReadFile(file)
-
-	if err != nil {
-		util.Fail(err.Error())
-	}
-
+func Parse(file, source string) ([]interface{}, error) {
 	m, err := newState(file, string(source)).module()()
 
 	if err != nil {

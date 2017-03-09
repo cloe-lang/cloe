@@ -1,0 +1,8 @@
+(let (f x)
+  (let (g y)
+    (let (h z)
+      (+ x y z))
+    h)
+  ((g 456) 789))
+
+(write (f 123))

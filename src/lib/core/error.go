@@ -67,3 +67,13 @@ func NotStringError(o Object) *Thunk {
 func NotCallableError(o Object) *Thunk {
 	return TypeError(o, "function.")
 }
+
+// InputError creates a thunk which represents an input error.
+func InputError(m string, xs ...interface{}) *Thunk {
+	return NewError("InputError", m, xs...)
+}
+
+// OutputError creates a thunk which represents an output error.
+func OutputError(m string, xs ...interface{}) *Thunk {
+	return NewError("OutputError", m, xs...)
+}

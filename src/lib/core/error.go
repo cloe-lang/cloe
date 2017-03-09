@@ -65,5 +65,5 @@ func NotStringError(o Object) *Thunk {
 }
 
 func NotCallableError(o Object) *Thunk {
-	return TypeError(o, "funtion.")
+	return TypeError(o, "function.")
 }

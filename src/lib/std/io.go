@@ -3,6 +3,7 @@ package std
 import (
 	"fmt"
 	"github.com/raviqqe/tisp/src/lib/core"
+	osys "os"
 	"strings"
 )
 
@@ -13,6 +14,7 @@ var Write = core.NewStrictFunction(
 		[]string{}, []core.OptionalArgument{
 			core.NewOptionalArgument("sep", core.NewString(" ")),
 			core.NewOptionalArgument("end", core.NewString("\n")),
+			core.NewOptionalArgument("file", core.NewNumber(1)),
 		}, "",
 	),
 	func(os ...core.Object) core.Object {
@@ -37,7 +39,7 @@ var Write = core.NewStrictFunction(
 
 		var options [2]string
 
-		for i, o := range os[1:] {
+		for i, o := range os[1:3] {
 			s, ok := o.(core.StringType)
 
 			if !ok {
@@ -47,7 +49,25 @@ var Write = core.NewStrictFunction(
 			options[i] = string(s)
 		}
 
-		fmt.Print(strings.Join(ss, options[0]) + options[1])
+		file := osys.Stdout
+
+		if s, ok := os[3].(core.StringType); ok {
+			var err error
+			file, err = osys.OpenFile(
+				string(s),
+				osys.O_CREATE|osys.O_TRUNC|osys.O_WRONLY,
+				0777)
+
+			if err != nil {
+				return core.OutputError(err.Error())
+			}
+		} else if n, ok := os[3].(core.NumberType); ok && n == 2 {
+			file = osys.Stderr
+		} else if !(ok && n == 1) {
+			return core.ValueError("file optional argument's value must be 1 or 2, or a string filename. Got %#v.", os[3])
+		}
+
+		fmt.Fprint(file, strings.Join(ss, options[0])+options[1])
 
 		return core.Nil
 	})

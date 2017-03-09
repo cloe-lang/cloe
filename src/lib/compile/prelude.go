@@ -1,14 +1,13 @@
 package compile
 
 import (
-	"github.com/raviqqe/tisp/src/lib/compile/env"
 	"github.com/raviqqe/tisp/src/lib/core"
 	"github.com/raviqqe/tisp/src/lib/std"
 	"strconv"
 )
 
-var prelude = func() env.Environment {
-	e := env.NewEnvironment(func(s string) (*core.Thunk, error) {
+func prelude() environment {
+	e := newEnvironment(func(s string) (*core.Thunk, error) {
 		n, err := strconv.ParseFloat(s, 64)
 
 		if err != nil {
@@ -57,8 +56,8 @@ var prelude = func() env.Environment {
 
 		{"write", std.Write},
 	} {
-		e.Set(nv.name, nv.value)
+		e.set(nv.name, nv.value)
 	}
 
 	return e
-}()
+}

@@ -2,18 +2,17 @@ package compile
 
 import (
 	"github.com/raviqqe/tisp/src/lib/ast"
-	"github.com/raviqqe/tisp/src/lib/compile/env"
 	"github.com/raviqqe/tisp/src/lib/core"
 	"github.com/raviqqe/tisp/src/lib/ir"
 	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 type compiler struct {
-	env env.Environment
+	env environment
 }
 
 func newCompiler() compiler {
-	return compiler{env: prelude.Child()}
+	return compiler{env: prelude()}
 }
 
 func (c *compiler) compile(module []interface{}) []Output {
@@ -22,7 +21,7 @@ func (c *compiler) compile(module []interface{}) []Output {
 	for _, node := range module {
 		switch x := node.(type) {
 		case ast.LetConst:
-			c.env.Set(x.Name(), c.exprToThunk(x.Expr()))
+			c.env.set(x.Name(), c.exprToThunk(x.Expr()))
 		case ast.LetFunction:
 			sig := x.Signature()
 			ls := x.Lets()
@@ -36,7 +35,7 @@ func (c *compiler) compile(module []interface{}) []Output {
 				varIndices[cst.Name()] = sig.Arity() + i
 			}
 
-			c.env.Set(
+			c.env.set(
 				x.Name(),
 				ir.CompileFunction(
 					c.compileSignature(sig),
@@ -55,7 +54,7 @@ func (c *compiler) compile(module []interface{}) []Output {
 func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {
 	switch x := expr.(type) {
 	case string:
-		return getOrError(c.env, x)
+		return c.env.get(x)
 	case ast.App:
 		args := x.Arguments()
 
@@ -114,13 +113,7 @@ func (c *compiler) exprToIR(sig ast.Signature, vars map[string]int, expr interfa
 			return i
 		}
 
-		t, err := c.env.Get(x)
-
-		if err == nil {
-			return t
-		}
-
-		util.Fail(err.Error())
+		return c.env.get(x)
 	case ast.App:
 		args := x.Arguments()
 
@@ -147,14 +140,4 @@ func (c *compiler) exprToIR(sig ast.Signature, vars map[string]int, expr interfa
 
 	util.Fail("Invalid type.", expr)
 	panic("Unreachable")
-}
-
-func getOrError(e env.Environment, s string) *core.Thunk {
-	t, err := e.Get(s)
-
-	if err != nil {
-		util.Fail(err.Error())
-	}
-
-	return t
 }

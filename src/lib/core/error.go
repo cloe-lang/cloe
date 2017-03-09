@@ -40,8 +40,8 @@ func NumArgsError(f, condition string) *Thunk {
 	return NewError("NumArgsError", "Number of arguments to %s must be %s.", f, condition)
 }
 
-func ValueError(m string) *Thunk {
-	return NewError("ValueError", m)
+func ValueError(m string, xs ...interface{}) *Thunk {
+	return NewError("ValueError", m, xs...)
 }
 
 func NotBoolError(o Object) *Thunk {

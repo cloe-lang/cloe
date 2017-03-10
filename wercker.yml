@@ -10,7 +10,11 @@ build:
 
     - script:
       name: install dependencies
-      code: go get -t ./...
+      code: rake install_deps
+
+    - script:
+      name: lint
+      code: rake lint
 
     - script:
       name: unit test
@@ -34,3 +38,7 @@ build:
     - script:
       name: build
       code: rake build
+
+    - script:
+      name: install
+      code: rake install

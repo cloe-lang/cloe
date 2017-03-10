@@ -1,9 +1,10 @@
 package core
 
 import (
-	"github.com/stretchr/testify/assert"
 	"math"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var n1, n2 float64 = 123, 42

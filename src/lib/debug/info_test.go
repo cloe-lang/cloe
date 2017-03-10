@@ -1,9 +1,10 @@
 package debug
 
 import (
-	"github.com/stretchr/testify/assert"
 	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGoInfo(t *testing.T) {

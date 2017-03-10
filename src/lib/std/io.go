@@ -2,9 +2,10 @@ package std
 
 import (
 	"fmt"
-	"github.com/raviqqe/tisp/src/lib/core"
 	osys "os"
 	"strings"
+
+	"github.com/raviqqe/tisp/src/lib/core"
 )
 
 // Write writes string representation of arguments to stdout.

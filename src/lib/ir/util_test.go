@@ -1,11 +1,12 @@
 package ir
 
 import (
+	"math"
+	"testing"
+
 	"github.com/raviqqe/tisp/src/lib/core"
 	"github.com/raviqqe/tisp/src/lib/debug"
 	"github.com/stretchr/testify/assert"
-	"math"
-	"testing"
 )
 
 func TestCompileFunction(t *testing.T) {

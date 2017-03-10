@@ -1,9 +1,10 @@
 package core
 
 import (
-	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var kvss = [][][2]*Thunk{

@@ -2,10 +2,11 @@ package run
 
 import (
 	"fmt"
-	"github.com/raviqqe/tisp/src/lib/compile"
-	"github.com/raviqqe/tisp/src/lib/core"
 	"os"
 	"sync"
+
+	"github.com/raviqqe/tisp/src/lib/compile"
+	"github.com/raviqqe/tisp/src/lib/core"
 )
 
 const maxConcurrentOutputs = 256

@@ -1,8 +1,9 @@
 package comb
 
 import (
-	"github.com/raviqqe/tisp/src/lib/util"
 	"strings"
+
+	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 func (s *State) Char(r rune) Parser {

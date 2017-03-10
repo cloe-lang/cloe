@@ -1,9 +1,10 @@
 package rbt
 
 import (
-	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestTreeInsertRemoveRandomly(t *testing.T) {

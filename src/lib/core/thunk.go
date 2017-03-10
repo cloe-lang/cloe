@@ -1,10 +1,11 @@
 package core
 
 import (
-	"github.com/raviqqe/tisp/src/lib/debug"
-	"github.com/raviqqe/tisp/src/lib/util"
 	"sync"
 	"sync/atomic"
+
+	"github.com/raviqqe/tisp/src/lib/debug"
+	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 type thunkState int32

@@ -1,9 +1,10 @@
 package std
 
 import (
+	"testing"
+
 	"github.com/raviqqe/tisp/src/lib/core"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestY(t *testing.T) {

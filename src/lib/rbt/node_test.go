@@ -2,9 +2,10 @@ package rbt
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func less(x1, x2 interface{}) bool {

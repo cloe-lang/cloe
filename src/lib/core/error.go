@@ -2,8 +2,9 @@ package core
 
 import (
 	"fmt"
-	"github.com/raviqqe/tisp/src/lib/debug"
 	"strings"
+
+	"github.com/raviqqe/tisp/src/lib/debug"
 )
 
 // ErrorType represents errors in the language and traces function calls for

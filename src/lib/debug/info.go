@@ -2,8 +2,9 @@ package debug
 
 import (
 	"fmt"
-	"github.com/raviqqe/tisp/src/lib/util"
 	"runtime"
+
+	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 // Info represents metadata of a call.

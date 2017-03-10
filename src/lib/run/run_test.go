@@ -1,9 +1,10 @@
 package run
 
 import (
+	"testing"
+
 	"github.com/raviqqe/tisp/src/lib/compile"
 	"github.com/raviqqe/tisp/src/lib/core"
-	"testing"
 )
 
 func TestRunWithNoThunk(t *testing.T) {

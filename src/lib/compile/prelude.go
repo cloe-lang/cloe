@@ -1,9 +1,10 @@
 package compile
 
 import (
+	"strconv"
+
 	"github.com/raviqqe/tisp/src/lib/core"
 	"github.com/raviqqe/tisp/src/lib/std"
-	"strconv"
 )
 
 func prelude() environment {

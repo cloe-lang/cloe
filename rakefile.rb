@@ -1,32 +1,26 @@
 bins = %w(tisp-parse tisp)
 
-
 bins.each do |bin|
   task bin do
     sh "go build -o bin/#{bin} src/cmd/#{bin}/main.go"
   end
 end
 
-
-task :build => bins
-
+task build: bins
 
 task :unit_test do
   sh 'go test -cover -race ./...'
 end
 
-
 test_files = Dir.glob('test/*.tisp')
 
-
-task :parser_test => 'tisp-parse' do |t|
+task parser_test: 'tisp-parse' do |t|
   test_files.each do |file|
     sh "bin/#{t.source} #{file} > /dev/null"
   end
 end
 
-
-task :interpreter_test => 'tisp' do
+task interpreter_test: 'tisp' do
   tmp_dir = 'tmp'
   mkdir_p tmp_dir
 
@@ -42,9 +36,10 @@ task :interpreter_test => 'tisp' do
     expected_out_file = file.ext '.out'
     actual_out_file = File.join(tmp_dir, File.basename(expected_out_file))
 
-    sh %W(bin/tisp #{file}
-          #{File.exist?(in_file) ? "< #{in_file}" : ''}
-          #{File.exist?(expected_out_file) ? "> #{actual_out_file}" : ''}
+    sh %W(
+      bin/tisp #{file}
+      #{File.exist?(in_file) ? "< #{in_file}" : ''}
+      #{File.exist?(expected_out_file) ? "> #{actual_out_file}" : ''}
     ).join ' '
 
     sh "diff #{expected_out_file} #{actual_out_file}" \
@@ -56,12 +51,9 @@ task :interpreter_test => 'tisp' do
   end
 end
 
+task command_test: %i(parser_test interpreter_test)
 
-task :command_test => %i(parser_test interpreter_test)
-
-
-task :test => %i(unit_test command_test)
-
+task test: %i(unit_test command_test)
 
 task :lint do
   verbose(false) do
@@ -71,7 +63,7 @@ task :lint do
       'gosimple',
       'unused',
       'staticcheck',
-      'interfacer',
+      'interfacer'
     ].each do |command|
       puts "# #{command}"
       sh "#{command} ./..."
@@ -79,12 +71,16 @@ task :lint do
   end
 end
 
-
 task :format do
   sh 'go fix ./...'
   sh 'go fmt ./...'
-end
 
+  Dir.glob('**/*.go') do |file|
+    sh "goimports -w #{file}"
+  end
+
+  sh 'rubocop -a'
+end
 
 task :docker do
   tag = 'raviqqe/tisp-build'
@@ -92,9 +88,9 @@ task :docker do
   sh "sudo docker push #{tag}"
 end
 
-
 task :install_deps do
-  sh %w(go get -u
+  sh %w(
+    go get -u
     github.com/golang/lint/golint
     github.com/mvdan/interfacer/...
     golang.org/x/tools/cmd/...
@@ -104,14 +100,11 @@ task :install_deps do
   sh 'go get -d -t ./...'
 end
 
-
-task :install => %i(install_deps test build) do
+task install: %i(install_deps test build) do
   sh 'go get ./...'
 end
 
-
-task :default => %i(test build)
-
+task default: %i(test build)
 
 task :clean do
   sh 'git clean -dfx'

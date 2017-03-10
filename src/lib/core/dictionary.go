@@ -1,9 +1,10 @@
 package core
 
 import (
+	"strings"
+
 	"github.com/raviqqe/tisp/src/lib/rbt"
 	"github.com/raviqqe/tisp/src/lib/util"
-	"strings"
 )
 
 type DictionaryType struct{ rbt.Dictionary }

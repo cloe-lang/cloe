@@ -64,14 +64,25 @@ task :test => %i(unit_test command_test)
 
 
 task :lint do
-  sh 'go vet ./...; golint ./...'
+  verbose(false) do
+    [
+      'go vet',
+      'golint',
+      'gosimple',
+      'unused',
+      'staticcheck',
+      'interfacer',
+    ].each do |command|
+      puts "# #{command}"
+      sh "#{command} ./..."
+    end
+  end
 end
 
 
 task :format do
-  Dir.glob('src/**/*.go').each do |file|
-    sh "go fmt #{file}"
-  end
+  sh 'go fix ./...'
+  sh 'go fmt ./...'
 end
 
 

@@ -15,10 +15,10 @@ const (
 )
 
 var reserveds = map[string]bool{
-	"let":   true,
-	"macro": true,
-	"quote": true,
-	"rec":   true,
+	"let":       true,
+	"macro":     true,
+	quoteString: true,
+	"rec":       true,
 }
 
 // Parse parses a file into an AST of the language.
@@ -130,10 +130,6 @@ func (s *state) expanded(p comb.Parser) comb.Parser {
 	return s.Prefix(s.String(".."), p)
 }
 
-func (s *state) strictExpressions() comb.Parser {
-	return s.Many(s.expression())
-}
-
 func (s *state) expression() comb.Parser {
 	return s.Lazy(s.strictExpression)
 }
@@ -164,7 +160,7 @@ func (s *state) appQuote(p comb.Parser) comb.Parser {
 	return s.appWithInfo(
 		p,
 		func(x interface{}) (interface{}, ast.Arguments) {
-			return "quote", ast.NewArguments(
+			return quoteString, ast.NewArguments(
 				[]ast.PositionalArgument{ast.NewPositionalArgument(x, false)},
 				[]ast.KeywordArgument{},
 				[]interface{}{})

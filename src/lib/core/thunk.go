@@ -10,14 +10,11 @@ import (
 type thunkState int32
 
 const (
-	// States of illegal and locked are unnecessary and provided only for
-	// debuggability.
-	illegal thunkState = iota
-	normal
-	locked
+	normal thunkState = iota
 	app
 )
 
+// Thunk you all!
 type Thunk struct {
 	result    Object
 	function  *Thunk
@@ -117,7 +114,7 @@ func (t *Thunk) Eval() Object {
 }
 
 func (t *Thunk) lock() bool {
-	return t.compareAndSwapState(app, locked)
+	return t.compareAndSwapState(app, normal)
 }
 
 func (t *Thunk) delegateEval() (*Thunk, Arguments, bool) {

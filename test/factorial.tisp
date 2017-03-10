@@ -1,4 +1,3 @@
-(let (f factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))
-(let factorial (y f))
-
-(write (factorial 4))
+(let (factor f n) (if (= n 0) 1 (* (f (- n 1)) n)))
+(let f (y factor))
+(write (f 5))

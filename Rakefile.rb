@@ -100,11 +100,13 @@ task :install_deps do
     golang.org/x/tools/cmd/...
     honnef.co/go/tools/...
   ).join ' '
+
+  sh 'go get -d -t ./...'
 end
 
 
 task :install => %i(install_deps test build) do
-  sh 'go get -t ./...'
+  sh 'go get ./...'
 end
 
 

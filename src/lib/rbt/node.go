@@ -320,7 +320,7 @@ func (n *node) size() int {
 	return n.left.size() + 1 + n.right.size()
 }
 
-func (n *node) totalEqual(m *node) bool {
+func (n *node) equal(m *node) bool {
 	if n == nil && m == nil {
 		return true
 	} else if n == nil || m == nil {
@@ -329,6 +329,6 @@ func (n *node) totalEqual(m *node) bool {
 
 	return n.color == m.color &&
 		n.value == m.value &&
-		n.left.totalEqual(m.left) &&
-		n.right.totalEqual(m.right)
+		n.left.equal(m.left) &&
+		n.right.equal(m.right)
 }

@@ -122,7 +122,7 @@ func TestInsertRemovePersistency(t *testing.T) {
 
 		n.rank() // check ranks
 
-		if !(old.totalEqual(oldCopy) && n.checkColors()) {
+		if !(old.equal(oldCopy) && n.checkColors()) {
 			failWithDump(t, insert, k, old, n)
 		}
 	}

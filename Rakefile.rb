@@ -93,6 +93,21 @@ task :docker do
 end
 
 
+task :install_deps do
+  sh %w(go get -u
+    github.com/golang/lint/golint/...
+    github.com/mvdan/interfacer/...
+    golang.org/x/tools/cmd/...
+    honnef.co/go/tools/...
+  ).join ' '
+end
+
+
+task :install => %i(install_deps test build) do
+  sh 'go get -t ./...'
+end
+
+
 task :default => %i(test build)
 
 

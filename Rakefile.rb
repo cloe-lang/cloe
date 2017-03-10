@@ -12,7 +12,7 @@ task :build => bins
 
 
 task :unit_test do
-  sh 'go test -cover ./...'
+  sh 'go test -cover -race ./...'
 end
 
 

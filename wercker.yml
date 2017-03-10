@@ -4,7 +4,9 @@ build:
   steps:
     - script:
       name: env
-      code: export GOPATH=~
+      code: |
+        export GOPATH=~
+        export PATH=$GOPATH/bin:$PATH
 
     - setup-go-workspace
 

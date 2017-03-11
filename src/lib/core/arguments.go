@@ -130,6 +130,7 @@ func (args Arguments) restKeywords() *Thunk {
 	return t
 }
 
+// Merge merges 2 sets of arguments into one.
 func (args Arguments) Merge(merged Arguments) Arguments {
 	var new Arguments
 

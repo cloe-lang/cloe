@@ -9,13 +9,14 @@ func (c closureType) call(args Arguments) Object {
 	return App(c.function, c.freeVariables.Merge(args))
 }
 
-type RawFunction func(Arguments) Object
+type rawFunction func(Arguments) Object
 
-func (f RawFunction) call(args Arguments) Object {
+func (f rawFunction) call(args Arguments) Object {
 	return f(args)
 }
 
-var Partial = Normal(RawFunction(func(args Arguments) Object {
+// Partial creates a partially-applied function with arguments.
+var Partial = Normal(rawFunction(func(args Arguments) Object {
 	t := args.nextPositional()
 	return closureType{t, args}
 }))

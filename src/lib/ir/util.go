@@ -5,6 +5,7 @@ import (
 	"github.com/raviqqe/tisp/src/lib/util"
 )
 
+// CompileFunction compiles a function in IR into a thunk.
 func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) *core.Thunk {
 	return core.NewLazyFunction(
 		s,

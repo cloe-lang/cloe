@@ -24,7 +24,7 @@ func (t Tree) Insert(x interface{}) Tree {
 
 // Search searches an element in a tree.
 // It returns a found element in addition to a condition if the element is
-// found because a less funtion passed to NewTree can compare elements
+// found because a less function passed to NewTree can compare elements
 // partially.
 func (t Tree) Search(x interface{}) (interface{}, bool) {
 	return t.node.search(x, t.less)

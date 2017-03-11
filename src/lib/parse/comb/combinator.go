@@ -1,6 +1,7 @@
 package comb
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/raviqqe/tisp/src/lib/util"
@@ -9,7 +10,7 @@ import (
 func (s *State) Char(r rune) Parser {
 	return func() (interface{}, error) {
 		if s.currentRune() != r {
-			return nil, NewError("Invalid character. '%c'", s.currentRune())
+			return nil, fmt.Errorf("Invalid character. '%c'", s.currentRune())
 		}
 
 		s.increment()
@@ -21,7 +22,7 @@ func (s *State) Char(r rune) Parser {
 func (s *State) NotChar(r rune) Parser {
 	return func() (interface{}, error) {
 		if s.currentRune() == r {
-			return nil, NewError("Should not be '%c'.", r)
+			return nil, fmt.Errorf("Should not be '%c'.", r)
 		}
 
 		defer s.increment()
@@ -50,7 +51,7 @@ func (s *State) InString(str string) Parser {
 			return s.currentRune(), nil
 		}
 
-		return nil, NewError("Invalid character. '%c'", s.currentRune())
+		return nil, fmt.Errorf("Invalid character. '%c'", s.currentRune())
 	}
 }
 
@@ -63,7 +64,7 @@ func (s *State) NotInString(str string) Parser {
 			return s.currentRune(), nil
 		}
 
-		return nil, NewError("Invalid character. '%c'", s.currentRune())
+		return nil, fmt.Errorf("Invalid character. '%c'", s.currentRune())
 	}
 }
 
@@ -188,7 +189,7 @@ func (s *State) Exhaust(p Parser) Parser {
 		if err != nil {
 			return result, err
 		} else if !s.exhausted() {
-			return nil, NewError(
+			return nil, fmt.Errorf(
 				"Some characters are left in source. %#v",
 				string(s.source[s.position:]))
 		}

@@ -1,6 +1,8 @@
 package parse
 
 import (
+	"fmt"
+
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/debug"
 	"github.com/raviqqe/tisp/src/lib/parse/comb"
@@ -274,7 +276,7 @@ func (s *state) identifier() comb.Parser {
 		}
 
 		if _, ok := reserveds[x.(string)]; ok {
-			return nil, comb.NewError("%#v is a reserved identifier.", x)
+			return nil, fmt.Errorf("%#v is a reserved identifier.", x)
 		}
 
 		return x, nil

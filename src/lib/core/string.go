@@ -10,11 +10,11 @@ func NewString(s string) *Thunk {
 	return Normal(StringType(s))
 }
 
-func (s StringType) equal(e equalable) Object {
+func (s StringType) equal(e equalable) Value {
 	return rawBool(s == e)
 }
 
-func (s StringType) merge(ts ...*Thunk) Object {
+func (s StringType) merge(ts ...*Thunk) Value {
 	ts = append([]*Thunk{Normal(s)}, ts...)
 
 	for _, t := range ts {
@@ -24,11 +24,11 @@ func (s StringType) merge(ts ...*Thunk) Object {
 	ss := make([]string, len(ts))
 
 	for i, t := range ts {
-		o := t.Eval()
-		s, ok := o.(StringType)
+		v := t.Eval()
+		s, ok := v.(StringType)
 
 		if !ok {
-			return TypeError(o, "String")
+			return TypeError(v, "String")
 		}
 
 		ss[i] = string(s)
@@ -37,7 +37,7 @@ func (s StringType) merge(ts ...*Thunk) Object {
 	return StringType(strings.Join(ss, ""))
 }
 
-func (s StringType) toList() Object {
+func (s StringType) toList() Value {
 	if s == "" {
 		return emptyList
 	}
@@ -53,6 +53,6 @@ func (s StringType) less(o ordered) bool {
 	return s < o.(StringType)
 }
 
-func (s StringType) string() Object {
+func (s StringType) string() Value {
 	return s
 }

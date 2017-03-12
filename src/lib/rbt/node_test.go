@@ -42,12 +42,12 @@ func TestNodeTakeMax(t *testing.T) {
 	ks := []int{1, 2, 3, 4, 5, 6, 7, 8}
 	n := (*node)(nil)
 
-	for _, k := range ks {
-		n = n.insert(k, less)
+	for _, k1 := range ks {
+		n = n.insert(k1, less)
 		n.dump()
 
-		o, m, _ := n.takeMax()
-		assert.Equal(t, k, o.(int))
+		k2, m, _ := n.takeMax()
+		assert.Equal(t, k1, k2.(int))
 		m.dump()
 	}
 }

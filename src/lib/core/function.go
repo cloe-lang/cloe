@@ -2,10 +2,10 @@ package core
 
 type functionType struct {
 	signature Signature
-	function  func(...*Thunk) Object
+	function  func(...*Thunk) Value
 }
 
-func (f functionType) call(args Arguments) Object {
+func (f functionType) call(args Arguments) Value {
 	ts, err := f.signature.Bind(args)
 
 	if err != nil {
@@ -15,33 +15,33 @@ func (f functionType) call(args Arguments) Object {
 	return f.function(ts...)
 }
 
-func NewLazyFunction(s Signature, f func(...*Thunk) Object) *Thunk {
+func NewLazyFunction(s Signature, f func(...*Thunk) Value) *Thunk {
 	return Normal(functionType{
 		signature: s,
 		function:  f,
 	})
 }
 
-func NewStrictFunction(s Signature, f func(...Object) Object) *Thunk {
-	return NewLazyFunction(s, func(ts ...*Thunk) Object {
+func NewStrictFunction(s Signature, f func(...Value) Value) *Thunk {
+	return NewLazyFunction(s, func(ts ...*Thunk) Value {
 		for _, t := range ts {
 			go t.Eval()
 		}
 
-		os := make([]Object, len(ts))
+		vs := make([]Value, len(ts))
 
 		for i, t := range ts {
-			os[i] = t.Eval()
+			vs[i] = t.Eval()
 
-			if err, ok := os[i].(ErrorType); ok {
+			if err, ok := vs[i].(ErrorType); ok {
 				return err
 			}
 		}
 
-		return f(os...)
+		return f(vs...)
 	})
 }
 
-func (f functionType) string() Object {
+func (f functionType) string() Value {
 	return StringType("<function>")
 }

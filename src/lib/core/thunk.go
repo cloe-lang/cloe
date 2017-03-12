@@ -17,7 +17,7 @@ const (
 
 // Thunk you all!
 type Thunk struct {
-	result    Object
+	result    Value
 	function  *Thunk
 	args      Arguments
 	state     thunkState
@@ -25,10 +25,10 @@ type Thunk struct {
 	info      debug.Info
 }
 
-// Normal creates a thunk of a WHNF object as its result.
-func Normal(o Object) *Thunk {
-	checkObject("Normal's argument", o)
-	return &Thunk{result: o, state: normal}
+// Normal creates a thunk of a WHNF value as its result.
+func Normal(v Value) *Thunk {
+	checkValue("Normal's argument", v)
+	return &Thunk{result: v, state: normal}
 }
 
 // App creates a thunk applying a function to arguments.
@@ -54,22 +54,22 @@ func PApp(f *Thunk, ps ...*Thunk) *Thunk {
 	return AppWithInfo(f, NewPositionalArguments(ps...), debug.NewGoInfo(1))
 }
 
-// Eval evaluates a thunk and returns a WHNF object.
-func (t *Thunk) Eval() Object {
+// Eval evaluates a thunk and returns a WHNF value.
+func (t *Thunk) Eval() Value {
 	if t.lock() {
 		children := make([]*Thunk, 0, 1) // TODO: best capacity?
 
 		for {
-			o := t.function.Eval()
+			v := t.function.Eval()
 
-			if t.chainError(o) {
+			if t.chainError(v) {
 				break
 			}
 
-			f, ok := o.(callable)
+			f, ok := v.(callable)
 
 			if !ok {
-				t.result = NotCallableError(o).Eval()
+				t.result = NotCallableError(v).Eval()
 				break
 			}
 
@@ -96,7 +96,7 @@ func (t *Thunk) Eval() Object {
 			children = append(children, child)
 		}
 
-		checkObject("Thunk.result", t.result)
+		checkValue("Thunk.result", t.result)
 
 		for _, child := range children {
 			// TODO: Use children's debug informations, child.info?
@@ -109,7 +109,7 @@ func (t *Thunk) Eval() Object {
 		t.blackHole.Wait()
 	}
 
-	checkObject("Thunk.result", t.result)
+	checkValue("Thunk.result", t.result)
 
 	return t.result
 }
@@ -141,8 +141,8 @@ func (t *Thunk) storeState(new thunkState) {
 	atomic.StoreInt32((*int32)(&t.state), int32(new))
 }
 
-func (t *Thunk) chainError(o Object) bool {
-	if e, ok := o.(ErrorType); ok {
+func (t *Thunk) chainError(v Value) bool {
+	if e, ok := v.(ErrorType); ok {
 		e.callTrace = append(e.callTrace, t.info)
 		t.result = e
 		return true
@@ -151,8 +151,8 @@ func (t *Thunk) chainError(o Object) bool {
 	return false
 }
 
-func checkObject(s string, o Object) {
-	if _, ok := o.(*Thunk); ok {
+func checkValue(s string, v Value) {
+	if _, ok := v.(*Thunk); ok {
 		util.Fail(s + " is *Thunk.")
 	}
 }

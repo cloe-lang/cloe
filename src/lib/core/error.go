@@ -46,48 +46,48 @@ func ValueError(m string, xs ...interface{}) *Thunk {
 }
 
 // TypeError creates an error value for an invalid type.
-func TypeError(o Object, typ string) *Thunk {
-	if e, ok := o.(ErrorType); ok {
+func TypeError(v Value, typ string) *Thunk {
+	if e, ok := v.(ErrorType); ok {
 		return Normal(e)
 	}
 
-	return NewError("TypeError", "%#v is not a %s.", o, typ)
+	return NewError("TypeError", "%#v is not a %s.", v, typ)
 }
 
 // NotBoolError creates an error value for an invalid value which is not a
 // bool.
-func NotBoolError(o Object) *Thunk {
-	return TypeError(o, "bool")
+func NotBoolError(v Value) *Thunk {
+	return TypeError(v, "bool")
 }
 
 // NotDictionaryError creates an error value for an invalid value which is not
 // a dictionary.
-func NotDictionaryError(o Object) *Thunk {
-	return TypeError(o, "dictionary")
+func NotDictionaryError(v Value) *Thunk {
+	return TypeError(v, "dictionary")
 }
 
 // NotListError creates an error value for an invalid value which is not a
 // list.
-func NotListError(o Object) *Thunk {
-	return TypeError(o, "list")
+func NotListError(v Value) *Thunk {
+	return TypeError(v, "list")
 }
 
 // NotNumberError creates an error value for an invalid value which is not a
 // number.
-func NotNumberError(o Object) *Thunk {
-	return TypeError(o, "number")
+func NotNumberError(v Value) *Thunk {
+	return TypeError(v, "number")
 }
 
 // NotStringError creates an error value for an invalid value which is not a
 // string.
-func NotStringError(o Object) *Thunk {
-	return TypeError(o, "string")
+func NotStringError(v Value) *Thunk {
+	return TypeError(v, "string")
 }
 
 // NotCallableError creates an error value for an invalid value which is not a
 // callable.
-func NotCallableError(o Object) *Thunk {
-	return TypeError(o, "function.")
+func NotCallableError(v Value) *Thunk {
+	return TypeError(v, "function.")
 }
 
 // InputError creates a thunk which represents an input error.

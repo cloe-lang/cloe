@@ -35,7 +35,7 @@ var lazyFactorialImpl = core.NewLazyFunction(
 		[]string{"me", "num"}, []core.OptionalArgument{}, "",
 		[]string{}, []core.OptionalArgument{}, "",
 	),
-	func(ts ...*core.Thunk) core.Object {
+	func(ts ...*core.Thunk) core.Value {
 		return core.PApp(core.If,
 			core.PApp(core.Equal, ts[1], core.NewNumber(0)),
 			core.NewNumber(1),
@@ -50,7 +50,7 @@ func TestYsMultipleFs(t *testing.T) {
 			[]string{"fs", "dummyArg", "num"}, []core.OptionalArgument{}, "",
 			[]string{}, []core.OptionalArgument{}, "",
 		),
-		func(ts ...*core.Thunk) core.Object {
+		func(ts ...*core.Thunk) core.Value {
 			n := ts[2]
 
 			return core.PApp(core.If,
@@ -64,7 +64,7 @@ func TestYsMultipleFs(t *testing.T) {
 			[]string{"fs", "num"}, []core.OptionalArgument{}, "",
 			[]string{}, []core.OptionalArgument{}, "",
 		),
-		func(ts ...*core.Thunk) core.Object {
+		func(ts ...*core.Thunk) core.Value {
 			n := ts[1]
 
 			return core.PApp(core.If,

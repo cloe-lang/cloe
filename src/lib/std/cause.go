@@ -8,7 +8,7 @@ var Cause = core.NewLazyFunction(
 		[]string{}, []core.OptionalArgument{}, "outputs",
 		[]string{}, []core.OptionalArgument{}, "",
 	),
-	func(ts ...*core.Thunk) core.Object {
+	func(ts ...*core.Thunk) core.Value {
 		t := ts[0]
 		out := core.PApp(core.First, t)
 
@@ -19,11 +19,11 @@ var Cause = core.NewLazyFunction(
 
 			t = core.PApp(core.Rest, t)
 
-			o := core.PApp(core.Equal, t, core.EmptyList).Eval()
-			b, ok := o.(core.BoolType)
+			v := core.PApp(core.Equal, t, core.EmptyList).Eval()
+			b, ok := v.(core.BoolType)
 
 			if !ok {
-				return core.NotBoolError(o)
+				return core.NotBoolError(v)
 			} else if b {
 				break
 			}

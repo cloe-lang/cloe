@@ -8,6 +8,6 @@ var List = core.NewLazyFunction(
 		[]string{}, []core.OptionalArgument{}, "elems",
 		[]string{}, []core.OptionalArgument{}, "",
 	),
-	func(ts ...*core.Thunk) core.Object {
+	func(ts ...*core.Thunk) core.Value {
 		return ts[0]
 	})

@@ -9,7 +9,7 @@ import (
 func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) *core.Thunk {
 	return core.NewLazyFunction(
 		s,
-		func(ts ...*core.Thunk) core.Object {
+		func(ts ...*core.Thunk) core.Value {
 			return compileWithVars(ts, vars, expr)
 		})
 }

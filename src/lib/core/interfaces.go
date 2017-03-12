@@ -2,32 +2,32 @@ package core
 
 import "reflect"
 
-// Object represents an object in the language.
+// Value represents a value in the language.
 // Hackingly, it can be *Thunk so that tail calls are eliminated.
 // See also Thunk.Eval().
-type Object interface{}
+type Value interface{}
 
 type callable interface {
-	call(Arguments) Object
+	call(Arguments) Value
 }
 
 // stringable is an interface for something convertable into StringType.
 // This should be implemented for all types including error type.
 type stringable interface {
-	string() Object
+	string() Value
 }
 
-// ToString converts some object into one of StringType.
+// ToString converts some value into one of StringType.
 var ToString = NewStrictFunction(
 	NewSignature(
 		[]string{"x"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(os ...Object) Object {
-		s, ok := os[0].(stringable)
+	func(vs ...Value) Value {
+		s, ok := vs[0].(stringable)
 
 		if !ok {
-			return TypeError(os[0], "stringable")
+			return TypeError(vs[0], "stringable")
 		}
 
 		return s.string()
@@ -35,24 +35,24 @@ var ToString = NewStrictFunction(
 
 // equalable must be implemented for every type other than error type.
 type equalable interface {
-	equal(equalable) Object
+	equal(equalable) Value
 }
 
 // Equal returns true when arguments are equal and false otherwise.
-// Comparing error objects is invalid and it should return an error object.
+// Comparing error values is invalid and it should return an error value.
 var Equal = NewStrictFunction(
 	NewSignature(
 		[]string{"x", "y"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(os ...Object) Object {
+	func(vs ...Value) Value {
 		var es [2]equalable
 
-		for i, o := range os {
-			e, ok := o.(equalable)
+		for i, v := range vs {
+			e, ok := v.(equalable)
 
 			if !ok {
-				return TypeError(o, "equalable")
+				return TypeError(v, "equalable")
 			}
 
 			es[i] = e
@@ -97,7 +97,7 @@ func areSameType(x1, x2 interface{}) bool {
 }
 
 type indexable interface {
-	index(Object) Object
+	index(Value) Value
 }
 
 var Index = NewStrictFunction(
@@ -105,18 +105,18 @@ var Index = NewStrictFunction(
 		[]string{"collection", "key"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(os ...Object) Object {
-		i, ok := os[0].(indexable)
+	func(vs ...Value) Value {
+		i, ok := vs[0].(indexable)
 
 		if !ok {
-			return TypeError(os[0], "indexable")
+			return TypeError(vs[0], "indexable")
 		}
 
-		return i.index(os[1])
+		return i.index(vs[1])
 	})
 
 type mergable interface {
-	merge(ts ...*Thunk) Object
+	merge(ts ...*Thunk) Value
 }
 
 var Merge = NewLazyFunction(
@@ -124,19 +124,19 @@ var Merge = NewLazyFunction(
 		[]string{"x"}, []OptionalArgument{}, "ys",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(ts ...*Thunk) Object {
-		o := ts[0].Eval()
-		m, ok := o.(mergable)
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		m, ok := v.(mergable)
 
 		if !ok {
-			return TypeError(o, "mergable")
+			return TypeError(v, "mergable")
 		}
 
-		o = ts[1].Eval()
-		l, ok := o.(ListType)
+		v = ts[1].Eval()
+		l, ok := v.(ListType)
 
 		if !ok {
-			return NotListError(o)
+			return NotListError(v)
 		}
 
 		ts, err := l.ToThunks()
@@ -153,7 +153,7 @@ var Merge = NewLazyFunction(
 	})
 
 type deletable interface {
-	delete(Object) (deletable, Object)
+	delete(Value) (deletable, Value)
 }
 
 var Delete = NewStrictFunction(
@@ -161,32 +161,32 @@ var Delete = NewStrictFunction(
 		[]string{"collection"}, []OptionalArgument{}, "elems",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(os ...Object) Object {
-		d, ok := os[0].(deletable)
+	func(vs ...Value) Value {
+		d, ok := vs[0].(deletable)
 
 		if !ok {
-			return TypeError(os[0], "deletable")
+			return TypeError(vs[0], "deletable")
 		}
 
-		l, ok := os[1].(ListType)
+		l, ok := vs[1].(ListType)
 
 		if !ok {
-			return NotListError(os[1])
+			return NotListError(vs[1])
 		}
 
-		os, err := l.ToObjects()
+		vs, err := l.ToValues()
 
 		if err != nil {
 			return err
 		}
 
-		for _, o := range os {
-			if _, ok := o.(ErrorType); ok {
-				return o
+		for _, v := range vs {
+			if _, ok := v.(ErrorType); ok {
+				return v
 			}
 
-			var err Object
-			d, err = d.delete(o)
+			var err Value
+			d, err = d.delete(v)
 
 			if err != nil {
 				return err
@@ -197,7 +197,7 @@ var Delete = NewStrictFunction(
 	})
 
 type listable interface {
-	toList() Object
+	toList() Value
 }
 
 var ToList = NewStrictFunction(
@@ -205,12 +205,12 @@ var ToList = NewStrictFunction(
 		[]string{"listLike"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(os ...Object) Object {
-		o := os[0]
-		l, ok := o.(listable)
+	func(vs ...Value) Value {
+		v := vs[0]
+		l, ok := v.(listable)
 
 		if !ok {
-			return TypeError(o, "listable")
+			return TypeError(v, "listable")
 		}
 
 		return l.toList()

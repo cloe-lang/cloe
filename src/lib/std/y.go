@@ -7,7 +7,7 @@ var Y = core.NewLazyFunction(
 		[]string{"function"}, []core.OptionalArgument{}, "",
 		[]string{}, []core.OptionalArgument{}, "",
 	),
-	func(ts ...*core.Thunk) core.Object {
+	func(ts ...*core.Thunk) core.Value {
 		if len(ts) != 1 {
 			return core.NumArgsError("y", "1")
 		}
@@ -21,7 +21,7 @@ var fxx = core.NewLazyFunction(
 		[]string{"f", "x"}, []core.OptionalArgument{}, "",
 		[]string{}, []core.OptionalArgument{}, "",
 	),
-	func(ts ...*core.Thunk) core.Object {
+	func(ts ...*core.Thunk) core.Value {
 		return core.PApp(core.Partial, ts[0], core.PApp(ts[1], ts[1]))
 	})
 
@@ -30,9 +30,9 @@ var Ys = core.NewLazyFunction(
 		[]string{}, []core.OptionalArgument{}, "functions",
 		[]string{}, []core.OptionalArgument{}, "",
 	),
-	func(ts ...*core.Thunk) core.Object {
-		o := ts[0].Eval()
-		l, ok := o.(core.ListType)
+	func(ts ...*core.Thunk) core.Value {
+		v := ts[0].Eval()
+		l, ok := v.(core.ListType)
 
 		if !ok {
 			panic("Rest arguments must be a list.")
@@ -53,7 +53,7 @@ var Ys = core.NewLazyFunction(
 				[]string{"x"}, []core.OptionalArgument{}, "",
 				[]string{}, []core.OptionalArgument{}, "",
 			),
-			func(ps ...*core.Thunk) core.Object {
+			func(ps ...*core.Thunk) core.Value {
 				p := ps[0]
 
 				applyF := core.NewLazyFunction(
@@ -61,7 +61,7 @@ var Ys = core.NewLazyFunction(
 						[]string{"f"}, []core.OptionalArgument{}, "args",
 						[]string{}, []core.OptionalArgument{}, "kwargs",
 					),
-					func(qs ...*core.Thunk) core.Object {
+					func(qs ...*core.Thunk) core.Value {
 						return core.App(qs[0], core.NewArguments(
 							[]core.PositionalArgument{
 								core.NewPositionalArgument(core.PApp(p, p), false),
@@ -88,6 +88,6 @@ var xx = core.NewLazyFunction(
 		[]string{"x"}, []core.OptionalArgument{}, "",
 		[]string{}, []core.OptionalArgument{}, "",
 	),
-	func(ts ...*core.Thunk) core.Object {
+	func(ts ...*core.Thunk) core.Value {
 		return core.PApp(ts[0], ts[0])
 	})

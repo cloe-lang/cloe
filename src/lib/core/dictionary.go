@@ -9,9 +9,9 @@ import (
 
 type DictionaryType struct{ rbt.Dictionary }
 
-var EmptyDictionary = NewDictionary([]Object{}, []*Thunk{})
+var EmptyDictionary = NewDictionary([]Value{}, []*Thunk{})
 
-func NewDictionary(ks []Object, vs []*Thunk) *Thunk {
+func NewDictionary(ks []Value, vs []*Thunk) *Thunk {
 	if len(ks) != len(vs) {
 		util.Fail("Number of keys doesn't match with number of values.")
 	}
@@ -30,18 +30,18 @@ var Set = NewLazyFunction(
 		[]string{"dict", "key", "value"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(ts ...*Thunk) (result Object) {
+	func(ts ...*Thunk) (result Value) {
 		defer func() {
 			if r := recover(); r != nil {
 				result = r
 			}
 		}()
 
-		o := ts[0].Eval()
-		d, ok := o.(DictionaryType)
+		v := ts[0].Eval()
+		d, ok := v.(DictionaryType)
 
 		if !ok {
-			return NotDictionaryError(o)
+			return NotDictionaryError(v)
 		}
 
 		k := ts[1].Eval()
@@ -53,21 +53,21 @@ var Set = NewLazyFunction(
 		return DictionaryType{d.Insert(k, ts[2])}
 	})
 
-func (d DictionaryType) call(args Arguments) Object {
+func (d DictionaryType) call(args Arguments) Value {
 	return Index.Eval().(callable).call(NewPositionalArguments(Normal(d)).Merge(args))
 }
 
-func (d DictionaryType) index(o Object) (result Object) {
+func (d DictionaryType) index(v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = r
 		}
 	}()
 
-	k, ok := o.(ordered)
+	k, ok := v.(ordered)
 
 	if !ok {
-		return notOrderedError(o)
+		return notOrderedError(v)
 	}
 
 	if v, ok := d.Search(k); ok {
@@ -79,15 +79,15 @@ func (d DictionaryType) index(o Object) (result Object) {
 		"The key %v is not found in a dictionary.", k)
 }
 
-func notOrderedError(k Object) *Thunk {
+func notOrderedError(k Value) *Thunk {
 	return TypeError(k, "ordered")
 }
 
-func (d DictionaryType) equal(e equalable) Object {
+func (d DictionaryType) equal(e equalable) Value {
 	return d.toList().(ListType).equal(e.(DictionaryType).toList().(ListType))
 }
 
-func (d DictionaryType) toList() Object {
+func (d DictionaryType) toList() Value {
 	k, v, rest := d.FirstRest()
 
 	if k == nil {
@@ -95,21 +95,21 @@ func (d DictionaryType) toList() Object {
 	}
 
 	return cons(
-		NewList(Normal(k.(Object)), v.(*Thunk)),
+		NewList(Normal(k.(Value)), v.(*Thunk)),
 		PApp(ToList, Normal(DictionaryType{rest})))
 }
 
-func (d DictionaryType) merge(ts ...*Thunk) Object {
+func (d DictionaryType) merge(ts ...*Thunk) Value {
 	for _, t := range ts {
 		go t.Eval()
 	}
 
 	for _, t := range ts {
-		o := t.Eval()
-		dd, ok := o.(DictionaryType)
+		v := t.Eval()
+		dd, ok := v.(DictionaryType)
 
 		if !ok {
-			return NotDictionaryError(o)
+			return NotDictionaryError(v)
 		}
 
 		d = DictionaryType{d.Merge(dd.Dictionary)}
@@ -118,57 +118,57 @@ func (d DictionaryType) merge(ts ...*Thunk) Object {
 	return d
 }
 
-func (d DictionaryType) delete(o Object) (result deletable, err Object) {
+func (d DictionaryType) delete(v Value) (result deletable, err Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result, err = nil, r
 		}
 	}()
 
-	return DictionaryType{d.Remove(o)}, nil
+	return DictionaryType{d.Remove(v)}, nil
 }
 
 func (d DictionaryType) less(o ordered) bool {
 	return less(d.toList(), o.(DictionaryType).toList())
 }
 
-func (d DictionaryType) string() Object {
-	o := PApp(ToList, Normal(d)).Eval()
-	l, ok := o.(ListType)
+func (d DictionaryType) string() Value {
+	v := PApp(ToList, Normal(d)).Eval()
+	l, ok := v.(ListType)
 
 	if !ok {
-		return NotListError(o)
+		return NotListError(v)
 	}
 
-	os, err := l.ToObjects()
+	vs, err := l.ToValues()
 
 	if err != nil {
 		return err.Eval()
 	}
 
-	ss := make([]string, 2*len(os))
+	ss := make([]string, 2*len(vs))
 
-	for i, o := range os {
-		if err, ok := o.(ErrorType); ok {
+	for i, v := range vs {
+		if err, ok := v.(ErrorType); ok {
 			return err
 		}
 
-		os, err := o.(ListType).ToObjects()
+		vs, err := v.(ListType).ToValues()
 
 		if err != nil {
 			return err
 		}
 
-		for j, o := range os {
-			if err, ok := o.(ErrorType); ok {
+		for j, v := range vs {
+			if err, ok := v.(ErrorType); ok {
 				return err
 			}
 
-			o = PApp(ToString, Normal(o)).Eval()
-			s, ok := o.(StringType)
+			v = PApp(ToString, Normal(v)).Eval()
+			s, ok := v.(StringType)
 
 			if !ok {
-				return NotStringError(o)
+				return NotStringError(v)
 			}
 
 			ss[2*i+j] = string(s)

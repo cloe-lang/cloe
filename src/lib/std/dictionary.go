@@ -8,26 +8,26 @@ var Dictionary = core.NewLazyFunction(
 		[]string{}, []core.OptionalArgument{}, "keyValuePairs",
 		[]string{}, []core.OptionalArgument{}, "",
 	),
-	func(ts ...*core.Thunk) core.Object {
+	func(ts ...*core.Thunk) core.Value {
 		d := core.EmptyDictionary
 		l := ts[0]
 
 		for {
-			o := core.PApp(core.Equal, l, core.EmptyList).Eval()
-			b, ok := o.(core.BoolType)
+			v := core.PApp(core.Equal, l, core.EmptyList).Eval()
+			b, ok := v.(core.BoolType)
 
 			if !ok {
-				return core.NotBoolError(o)
+				return core.NotBoolError(v)
 			} else if b {
 				break
 			}
 
 			k := core.PApp(core.First, l)
 			l = core.PApp(core.Rest, l)
-			v := core.PApp(core.First, l)
+			val := core.PApp(core.First, l)
 			l = core.PApp(core.Rest, l)
 
-			d = core.PApp(core.Set, d, k, v)
+			d = core.PApp(core.Set, d, k, val)
 		}
 
 		return d

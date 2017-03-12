@@ -18,8 +18,8 @@ is equivalent to:
 ### Nondeterminism module
 
 ```
-(let (rally ..objects)
-     "Objects -> List. Sort by time when they are evaluated."
+(let (rally ..values)
+     "Values -> List. Sort by time when they are evaluated."
      (...))
 ```
 

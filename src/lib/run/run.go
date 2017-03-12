@@ -19,17 +19,17 @@ func Run(os []compile.Output) {
 
 	wg := sync.WaitGroup{}
 
-	for _, o := range os {
+	for _, v := range os {
 		wg.Add(1)
 
-		if o.Expanded() {
+		if v.Expanded() {
 			go func() {
-				evalOutputList(o.Value())
+				evalOutputList(v.Value())
 				wg.Done()
 			}()
 		} else {
 			sem <- true
-			go runOutput(o.Value(), &wg)
+			go runOutput(v.Value(), &wg)
 		}
 	}
 
@@ -40,10 +40,10 @@ func evalOutputList(t *core.Thunk) {
 	wg := sync.WaitGroup{}
 
 	for {
-		o := core.PApp(core.Equal, t, core.EmptyList).Eval()
+		v := core.PApp(core.Equal, t, core.EmptyList).Eval()
 
-		if b, ok := o.(core.BoolType); !ok {
-			failOnError(core.NotBoolError(o).Eval().(core.ErrorType))
+		if b, ok := v.(core.BoolType); !ok {
+			failOnError(core.NotBoolError(v).Eval().(core.ErrorType))
 		} else if b {
 			break
 		}

@@ -35,9 +35,9 @@ func TestDictionarySet(t *testing.T) {
 
 func TestXFailDictionarySet(t *testing.T) {
 	l := NewList(NewError("you", "failed."))
-	o := PApp(Set, PApp(Set, EmptyDictionary, l, Nil), l, Nil).Eval()
-	_, ok := o.(ErrorType)
-	t.Logf("%#v", o)
+	v := PApp(Set, PApp(Set, EmptyDictionary, l, Nil), l, Nil).Eval()
+	_, ok := v.(ErrorType)
+	t.Logf("%#v", v)
 	assert.True(t, ok)
 }
 
@@ -70,9 +70,9 @@ func TestDictionaryIndex(t *testing.T) {
 
 func TestXFailDictionaryIndex(t *testing.T) {
 	l := NewList(NewError("you", "failed."))
-	o := PApp(PApp(Set, EmptyDictionary, l, Nil), l, Nil).Eval()
-	_, ok := o.(ErrorType)
-	t.Logf("%#v", o)
+	v := PApp(PApp(Set, EmptyDictionary, l, Nil), l, Nil).Eval()
+	_, ok := v.(ErrorType)
+	t.Logf("%#v", v)
 	assert.True(t, ok)
 }
 
@@ -82,9 +82,9 @@ func TestDictionaryDeletable(t *testing.T) {
 
 func TestDictionaryDelete(t *testing.T) {
 	k := NewNumber(42)
-	o := PApp(Delete, PApp(Set, EmptyDictionary, k, Nil), k).Eval()
-	d, ok := o.(DictionaryType)
-	t.Logf("%#v", o)
+	v := PApp(Delete, PApp(Set, EmptyDictionary, k, Nil), k).Eval()
+	d, ok := v.(DictionaryType)
+	t.Logf("%#v", v)
 	assert.True(t, ok)
 	assert.Equal(t, 0, d.Size())
 }
@@ -92,9 +92,9 @@ func TestDictionaryDelete(t *testing.T) {
 func TestXFailDictionaryDelete(t *testing.T) {
 	l1 := NewList(NewError("you", "failed."))
 	l2 := NewList(NewNumber(42))
-	o := PApp(Delete, PApp(Set, EmptyDictionary, l1, Nil), l2).Eval()
-	_, ok := o.(ErrorType)
-	t.Logf("%#v", o)
+	v := PApp(Delete, PApp(Set, EmptyDictionary, l1, Nil), l2).Eval()
+	_, ok := v.(ErrorType)
+	t.Logf("%#v", v)
 	assert.True(t, ok)
 }
 

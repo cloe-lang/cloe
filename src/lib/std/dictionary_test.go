@@ -13,7 +13,7 @@ func TestDictionary(t *testing.T) {
 		{core.NewNumber(123), core.NewNumber(456)},
 		{core.NewNumber(123), core.True, core.NewNumber(456), core.False},
 	} {
-		ks := make([]core.Object, len(ts)/2)
+		ks := make([]core.Value, len(ts)/2)
 		vs := make([]*core.Thunk, len(ts)/2)
 
 		for i, t := range ts {

@@ -18,7 +18,7 @@ func rawBool(b bool) BoolType {
 	return BoolType(b)
 }
 
-func (b BoolType) equal(e equalable) Object {
+func (b BoolType) equal(e equalable) Value {
 	return rawBool(b == e.(BoolType))
 }
 
@@ -29,12 +29,12 @@ var If = NewLazyFunction(
 		[]string{"condition", "then", "else"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(ts ...*Thunk) Object {
-		o := ts[0].Eval()
-		b, ok := o.(BoolType)
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		b, ok := v.(BoolType)
 
 		if !ok {
-			return NotBoolError(o)
+			return NotBoolError(v)
 		}
 
 		if b {
@@ -48,6 +48,6 @@ func (b BoolType) less(o ordered) bool {
 	return bool(!b && o.(BoolType))
 }
 
-func (b BoolType) string() Object {
+func (b BoolType) string() Value {
 	return sprint(b)
 }

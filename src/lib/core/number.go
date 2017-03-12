@@ -6,12 +6,12 @@ import "math"
 // It will perhaps be represented by DEC64 in the future release.
 type NumberType float64
 
-// NewNumber creates a thunk containing a number object.
+// NewNumber creates a thunk containing a number value.
 func NewNumber(n float64) *Thunk {
 	return Normal(NumberType(n))
 }
 
-func (n NumberType) equal(e equalable) Object {
+func (n NumberType) equal(e equalable) Value {
 	return rawBool(n == e.(NumberType))
 }
 
@@ -21,15 +21,15 @@ var Add = NewLazyFunction(
 		[]string{}, []OptionalArgument{}, "nums",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(ts ...*Thunk) Object {
-		o := ts[0].Eval()
-		l, ok := o.(ListType)
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		l, ok := v.(ListType)
 
 		if !ok {
-			return NotListError(o)
+			return NotListError(v)
 		}
 
-		os, err := l.ToObjects()
+		vs, err := l.ToValues()
 
 		if err != nil {
 			return err
@@ -37,11 +37,11 @@ var Add = NewLazyFunction(
 
 		sum := NumberType(0)
 
-		for _, o := range os {
-			n, ok := o.(NumberType)
+		for _, v := range vs {
+			n, ok := v.(NumberType)
 
 			if !ok {
-				return NotNumberError(o)
+				return NotNumberError(v)
 			}
 
 			sum += n
@@ -56,36 +56,36 @@ var Sub = NewLazyFunction(
 		[]string{"minuend"}, []OptionalArgument{}, "subtrahends",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(ts ...*Thunk) Object {
-		o := ts[0].Eval()
-		n0, ok := o.(NumberType)
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		n0, ok := v.(NumberType)
 
 		if !ok {
-			return NotNumberError(o)
+			return NotNumberError(v)
 		}
 
-		o = ts[1].Eval()
-		l, ok := o.(ListType)
+		v = ts[1].Eval()
+		l, ok := v.(ListType)
 
 		if !ok {
-			return NotListError(o)
+			return NotListError(v)
 		}
 
-		os, err := l.ToObjects()
+		vs, err := l.ToValues()
 
 		if err != nil {
 			return err
 		}
 
-		if len(os) == 0 {
+		if len(vs) == 0 {
 			return NumArgsError("sub", ">= 1")
 		}
 
-		for _, o := range os {
-			n, ok := o.(NumberType)
+		for _, v := range vs {
+			n, ok := v.(NumberType)
 
 			if !ok {
-				return NotNumberError(o)
+				return NotNumberError(v)
 			}
 
 			n0 -= n
@@ -99,15 +99,15 @@ var Mul = NewLazyFunction(
 		[]string{}, []OptionalArgument{}, "nums",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(ts ...*Thunk) Object {
-		o := ts[0].Eval()
-		l, ok := o.(ListType)
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		l, ok := v.(ListType)
 
 		if !ok {
-			return NotListError(o)
+			return NotListError(v)
 		}
 
-		os, err := l.ToObjects()
+		vs, err := l.ToValues()
 
 		if err != nil {
 			return err
@@ -115,11 +115,11 @@ var Mul = NewLazyFunction(
 
 		prod := NumberType(1)
 
-		for _, o := range os {
-			n, ok := o.(NumberType)
+		for _, v := range vs {
+			n, ok := v.(NumberType)
 
 			if !ok {
-				return NotNumberError(o)
+				return NotNumberError(v)
 			}
 
 			prod *= n
@@ -133,36 +133,36 @@ var Div = NewLazyFunction(
 		[]string{"dividend"}, []OptionalArgument{}, "divisors",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(ts ...*Thunk) Object {
-		o := ts[0].Eval()
-		n0, ok := o.(NumberType)
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		n0, ok := v.(NumberType)
 
 		if !ok {
-			return NotNumberError(o)
+			return NotNumberError(v)
 		}
 
-		o = ts[1].Eval()
-		l, ok := o.(ListType)
+		v = ts[1].Eval()
+		l, ok := v.(ListType)
 
 		if !ok {
-			return NotListError(o)
+			return NotListError(v)
 		}
 
-		os, err := l.ToObjects()
+		vs, err := l.ToValues()
 
 		if err != nil {
 			return err
 		}
 
-		if len(os) == 0 {
+		if len(vs) == 0 {
 			return NumArgsError("div", ">= 1")
 		}
 
-		for _, o := range os {
-			n, ok := o.(NumberType)
+		for _, v := range vs {
+			n, ok := v.(NumberType)
 
 			if !ok {
-				return NotNumberError(o)
+				return NotNumberError(v)
 			}
 
 			n0 /= n
@@ -178,23 +178,23 @@ var Mod = NewStrictFunction(
 		[]string{"dividend", "divisor"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(os ...Object) Object {
-		if len(os) != 2 {
+	func(vs ...Value) Value {
+		if len(vs) != 2 {
 			return NumArgsError("mod", "2")
 		}
 
-		o := os[0]
-		n1, ok := o.(NumberType)
+		v := vs[0]
+		n1, ok := v.(NumberType)
 
 		if !ok {
-			return NotNumberError(o)
+			return NotNumberError(v)
 		}
 
-		o = os[1]
-		n2, ok := o.(NumberType)
+		v = vs[1]
+		n2, ok := v.(NumberType)
 
 		if !ok {
-			return NotNumberError(o)
+			return NotNumberError(v)
 		}
 
 		return NewNumber(math.Mod(float64(n1), float64(n2)))
@@ -205,19 +205,19 @@ var Pow = NewStrictFunction(
 		[]string{"base", "exponent"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(os ...Object) Object {
-		o := os[0]
-		n1, ok := o.(NumberType)
+	func(vs ...Value) Value {
+		v := vs[0]
+		n1, ok := v.(NumberType)
 
 		if !ok {
-			return NotNumberError(o)
+			return NotNumberError(v)
 		}
 
-		o = os[1]
-		n2, ok := o.(NumberType)
+		v = vs[1]
+		n2, ok := v.(NumberType)
 
 		if !ok {
-			return NotNumberError(o)
+			return NotNumberError(v)
 		}
 
 		return NewNumber(math.Pow(float64(n1), float64(n2)))
@@ -227,6 +227,6 @@ func (n NumberType) less(o ordered) bool {
 	return n < o.(NumberType)
 }
 
-func (n NumberType) string() Object {
+func (n NumberType) string() Value {
 	return sprint(n)
 }

@@ -5,22 +5,22 @@ type closureType struct {
 	freeVariables Arguments
 }
 
-func (c closureType) call(args Arguments) Object {
+func (c closureType) call(args Arguments) Value {
 	return App(c.function, c.freeVariables.Merge(args))
 }
 
-type rawFunction func(Arguments) Object
+type rawFunction func(Arguments) Value
 
-func (f rawFunction) call(args Arguments) Object {
+func (f rawFunction) call(args Arguments) Value {
 	return f(args)
 }
 
 // Partial creates a partially-applied function with arguments.
-var Partial = Normal(rawFunction(func(args Arguments) Object {
+var Partial = Normal(rawFunction(func(args Arguments) Value {
 	t := args.nextPositional()
 	return closureType{t, args}
 }))
 
-func (c closureType) string() Object {
+func (c closureType) string() Value {
 	return StringType("<closure>")
 }

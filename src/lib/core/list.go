@@ -27,7 +27,7 @@ func NewList(ts ...*Thunk) *Thunk {
 	return l
 }
 
-func (l ListType) equal(e equalable) Object {
+func (l ListType) equal(e equalable) Value {
 	ll := e.(ListType)
 
 	if l == emptyList || ll == emptyList {
@@ -39,11 +39,11 @@ func (l ListType) equal(e equalable) Object {
 		PApp(Equal, l.first, ll.first),
 		PApp(Equal, l.rest, ll.rest),
 	} {
-		o := t.Eval()
-		b, ok := o.(BoolType)
+		v := t.Eval()
+		b, ok := v.(BoolType)
 
 		if !ok {
-			return NotBoolError(o)
+			return NotBoolError(v)
 		} else if !b {
 			return False
 		}
@@ -58,9 +58,9 @@ var Prepend = NewLazyFunction(
 		[]string{}, []OptionalArgument{}, "elemsAndList",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(ts ...*Thunk) Object {
-		o := ts[0].Eval()
-		ts, err := o.(ListType).ToThunks()
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		ts, err := v.(ListType).ToThunks()
 
 		if err != nil {
 			return err
@@ -88,12 +88,12 @@ var First = NewStrictFunction(
 		[]string{"list"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(os ...Object) Object {
-		o := os[0]
-		l, ok := o.(ListType)
+	func(vs ...Value) Value {
+		v := vs[0]
+		l, ok := v.(ListType)
 
 		if !ok {
-			return NotListError(o)
+			return NotListError(v)
 		} else if l == emptyList {
 			return emptyListError()
 		}
@@ -107,12 +107,12 @@ var Rest = NewStrictFunction(
 		[]string{"list"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
-	func(os ...Object) Object {
-		o := os[0]
-		l, ok := o.(ListType)
+	func(vs ...Value) Value {
+		v := vs[0]
+		l, ok := v.(ListType)
 
 		if !ok {
-			return NotListError(o)
+			return NotListError(v)
 		} else if l == emptyList {
 			return emptyListError()
 		}
@@ -128,12 +128,12 @@ var appendFuncSignature = NewSignature(
 // Append appends an element at the end of a given list.
 var Append = NewLazyFunction(appendFuncSignature, appendFunc)
 
-func appendFunc(ts ...*Thunk) Object {
-	o := ts[0].Eval()
-	l, ok := o.(ListType)
+func appendFunc(ts ...*Thunk) Value {
+	v := ts[0].Eval()
+	l, ok := v.(ListType)
 
 	if !ok {
-		return NotListError(o)
+		return NotListError(v)
 	}
 
 	if l == emptyList {
@@ -150,7 +150,7 @@ func emptyListError() *Thunk {
 	return ValueError("The list is empty. You cannot apply rest.")
 }
 
-func (l ListType) merge(ts ...*Thunk) Object {
+func (l ListType) merge(ts ...*Thunk) Value {
 	if l == emptyList {
 		return PApp(Merge, ts...)
 	}
@@ -183,25 +183,25 @@ func (l ListType) less(ord ordered) bool {
 	return less(l.rest.Eval(), ll.rest.Eval())
 }
 
-func (l ListType) string() Object {
-	os, err := l.ToObjects()
+func (l ListType) string() Value {
+	vs, err := l.ToValues()
 
 	if err != nil {
 		return err.Eval()
 	}
 
-	ss := make([]string, len(os))
+	ss := make([]string, len(vs))
 
-	for i, o := range os {
-		if err, ok := o.(ErrorType); ok {
+	for i, v := range vs {
+		if err, ok := v.(ErrorType); ok {
 			return err
 		}
 
-		o = PApp(ToString, Normal(o)).Eval()
-		s, ok := o.(StringType)
+		v = PApp(ToString, Normal(v)).Eval()
+		s, ok := v.(StringType)
 
 		if !ok {
-			return NotStringError(o)
+			return NotStringError(v)
 		}
 
 		ss[i] = string(s)
@@ -217,35 +217,35 @@ func (l ListType) ToThunks() ([]*Thunk, *Thunk) {
 	for l != emptyList {
 		ts = append(ts, l.first)
 
-		o := l.rest.Eval()
+		v := l.rest.Eval()
 		var ok bool
-		l, ok = o.(ListType)
+		l, ok = v.(ListType)
 
 		if !ok {
-			return nil, NotListError(o)
+			return nil, NotListError(v)
 		}
 	}
 
 	return ts, nil
 }
 
-// ToObjects converts a list into a slice of its elements as objects.
-func (l ListType) ToObjects() ([]Object, *Thunk) {
+// ToValues converts a list into a slice of its elements as values.
+func (l ListType) ToValues() ([]Value, *Thunk) {
 	ts, err := l.ToThunks()
 
 	if err != nil {
 		return nil, err
 	}
 
-	os := make([]Object, len(ts))
+	vs := make([]Value, len(ts))
 
 	for _, t := range ts {
 		go t.Eval()
 	}
 
 	for i, t := range ts {
-		os[i] = t.Eval()
+		vs[i] = t.Eval()
 	}
 
-	return os, nil
+	return vs, nil
 }

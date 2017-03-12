@@ -98,11 +98,11 @@ func (args *Arguments) searchKeyword(s string) *Thunk {
 	}
 
 	for i, t := range args.expandedDicts {
-		o := t.Eval()
-		d, ok := o.(DictionaryType)
+		v := t.Eval()
+		d, ok := v.(DictionaryType)
 
 		if !ok {
-			return NotDictionaryError(o)
+			return NotDictionaryError(v)
 		}
 
 		k := StringType(s)

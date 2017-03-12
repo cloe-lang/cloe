@@ -1,6 +1,7 @@
 package compile
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/raviqqe/tisp/src/lib/core"
@@ -8,14 +9,16 @@ import (
 )
 
 func prelude() environment {
-	e := newEnvironment(func(s string) (*core.Thunk, error) {
-		n, err := strconv.ParseFloat(s, 64)
-
-		if err != nil {
-			return nil, err
+	e := newEnvironment(func(name string) (*core.Thunk, error) {
+		if n, err := strconv.ParseFloat(name, 64); err == nil {
+			return core.NewNumber(n), nil
 		}
 
-		return core.NewNumber(n), nil
+		if s, err := strconv.Unquote(name); err == nil {
+			return core.NewString(s), nil
+		}
+
+		return nil, fmt.Errorf("the name, %s not found", name)
 	})
 
 	for _, nv := range []struct {

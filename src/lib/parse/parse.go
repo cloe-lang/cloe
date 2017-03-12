@@ -276,7 +276,7 @@ func (s *state) identifier() comb.Parser {
 		}
 
 		if _, ok := reserveds[x.(string)]; ok {
-			return nil, fmt.Errorf("%#v is a reserved identifier.", x)
+			return nil, fmt.Errorf("%#v is a reserved identifier", x)
 		}
 
 		return x, nil
@@ -286,10 +286,10 @@ func (s *state) identifier() comb.Parser {
 func (s *state) stringLiteral() comb.Parser {
 	c := s.Char('"')
 
-	return s.appQuote(s.Stringify(s.Wrap(
+	return s.Stringify(s.And(
 		c,
 		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
-		s.strip(c))))
+		s.strip(c)))
 }
 
 func (s *state) list(ps ...comb.Parser) comb.Parser {

@@ -2,6 +2,8 @@ package core
 
 import "strings"
 
+// ListType represents a sequence of values.
+// They can have infinite number of elements inside.
 type ListType struct {
 	first *Thunk
 	rest  *Thunk
@@ -9,9 +11,12 @@ type ListType struct {
 
 var (
 	emptyList = ListType{nil, nil}
+
+	// EmptyList is a thunk of an empty list.
 	EmptyList = Normal(emptyList)
 )
 
+// NewList creates a list from its elements.
 func NewList(ts ...*Thunk) *Thunk {
 	l := Normal(emptyList)
 
@@ -47,6 +52,7 @@ func (l ListType) equal(e equalable) Object {
 	return True
 }
 
+// Prepend prepends multiple elements to a list of the last argument.
 var Prepend = NewLazyFunction(
 	NewSignature(
 		[]string{}, []OptionalArgument{}, "elemsAndList",
@@ -76,6 +82,7 @@ func cons(t1, t2 *Thunk) ListType {
 	return ListType{t1, t2}
 }
 
+// First takes the first element in a list.
 var First = NewStrictFunction(
 	NewSignature(
 		[]string{"list"}, []OptionalArgument{}, "",
@@ -94,6 +101,7 @@ var First = NewStrictFunction(
 		return l.first
 	})
 
+// Rest returns a list which has the second to last elements of a given list.
 var Rest = NewStrictFunction(
 	NewSignature(
 		[]string{"list"}, []OptionalArgument{}, "",
@@ -117,6 +125,7 @@ var appendFuncSignature = NewSignature(
 	[]string{}, []OptionalArgument{}, "",
 )
 
+// Append appends an element at the end of a given list.
 var Append = NewLazyFunction(appendFuncSignature, appendFunc)
 
 func appendFunc(ts ...*Thunk) Object {
@@ -201,6 +210,7 @@ func (l ListType) string() Object {
 	return StringType("[" + strings.Join(ss, " ") + "]")
 }
 
+// ToThunks converts a list into a slice of its elements as thunks.
 func (l ListType) ToThunks() ([]*Thunk, *Thunk) {
 	ts := make([]*Thunk, 0)
 
@@ -219,6 +229,7 @@ func (l ListType) ToThunks() ([]*Thunk, *Thunk) {
 	return ts, nil
 }
 
+// ToObjects converts a list into a slice of its elements as objects.
 func (l ListType) ToObjects() ([]Object, *Thunk) {
 	ts, err := l.ToThunks()
 

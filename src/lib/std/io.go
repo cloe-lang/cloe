@@ -16,6 +16,7 @@ var Write = core.NewStrictFunction(
 			core.NewOptionalArgument("sep", core.NewString(" ")),
 			core.NewOptionalArgument("end", core.NewString("\n")),
 			core.NewOptionalArgument("file", core.NewNumber(1)),
+			core.NewOptionalArgument("mode", core.NewNumber(0664)),
 		}, "",
 	),
 	func(os ...core.Object) core.Object {
@@ -53,11 +54,17 @@ var Write = core.NewStrictFunction(
 		file := osys.Stdout
 
 		if s, ok := os[3].(core.StringType); ok {
+			mode, ok := os[4].(core.NumberType)
+
+			if !ok {
+				return core.NotNumberError(os[4])
+			}
+
 			var err error
 			file, err = osys.OpenFile(
 				string(s),
 				osys.O_CREATE|osys.O_TRUNC|osys.O_WRONLY,
-				0777)
+				osys.FileMode(mode))
 
 			if err != nil {
 				return core.OutputError(err.Error())

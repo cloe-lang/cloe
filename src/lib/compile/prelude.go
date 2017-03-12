@@ -10,6 +10,10 @@ import (
 
 func prelude() environment {
 	e := newEnvironment(func(name string) (*core.Thunk, error) {
+		if n, err := strconv.ParseInt(name, 0, 64); err == nil && name[0] == '0' {
+			return core.NewNumber(float64(n)), nil
+		}
+
 		if n, err := strconv.ParseFloat(name, 64); err == nil {
 			return core.NewNumber(n), nil
 		}

@@ -28,10 +28,10 @@ func TestXFailModule(t *testing.T) {
 	}
 }
 
-func TestLetConst(t *testing.T) {
+func TestLetVar(t *testing.T) {
 	for _, str := range []string{"(let foo 123)", "(let foo (f x y))"} {
 		s := newStateWithoutFile(str)
-		_, err := s.Exhaust(s.letConst())()
+		_, err := s.Exhaust(s.letVar())()
 		assert.Equal(t, nil, err)
 	}
 }

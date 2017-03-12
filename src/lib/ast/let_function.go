@@ -23,7 +23,7 @@ func (f LetFunction) Signature() Signature {
 }
 
 // Lets returns let statements contained in this let-function statement.
-// Return values should be LetConst or LetFunction.
+// Return values should be LetVar or LetFunction.
 func (f LetFunction) Lets() []interface{} {
 	return f.lets
 }

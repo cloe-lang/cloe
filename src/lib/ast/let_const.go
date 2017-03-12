@@ -1,18 +1,18 @@
 package ast
 
-type LetConst struct {
+type LetVar struct {
 	name string
 	expr interface{}
 }
 
-func NewLetConst(name string, expr interface{}) LetConst {
-	return LetConst{name, expr}
+func NewLetVar(name string, expr interface{}) LetVar {
+	return LetVar{name, expr}
 }
 
-func (c LetConst) Name() string {
+func (c LetVar) Name() string {
 	return c.name
 }
 
-func (c LetConst) Expr() interface{} {
+func (c LetVar) Expr() interface{} {
 	return c.expr
 }

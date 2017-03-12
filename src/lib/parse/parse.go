@@ -43,13 +43,13 @@ func (s *state) let() comb.Parser {
 }
 
 func (s *state) strictLet() comb.Parser {
-	return s.Or(s.letConst(), s.letFunction())
+	return s.Or(s.letVar(), s.letFunction())
 }
 
-func (s *state) letConst() comb.Parser {
+func (s *state) letVar() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
-		return ast.NewLetConst(xs[1].(string), xs[2])
+		return ast.NewLetVar(xs[1].(string), xs[2])
 	}, s.list(s.strippedString("let"), s.identifier(), s.expression()))
 }
 

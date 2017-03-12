@@ -38,7 +38,7 @@ func desugarLetFunction(f ast.LetFunction) []interface{} {
 
 	for _, l := range f.Lets() {
 		switch l := l.(type) {
-		case ast.LetConst:
+		case ast.LetVar:
 			ls = append(ls, l)
 			names.add(l.Name())
 		case ast.LetFunction:
@@ -46,7 +46,7 @@ func desugarLetFunction(f ast.LetFunction) []interface{} {
 
 			usedNames := names.find(l.Body())
 			for _, l := range l.Lets() {
-				usedNames.merge(names.find(l.(ast.LetConst)))
+				usedNames.merge(names.find(l.(ast.LetVar)))
 			}
 			usedNames.subtract(signatureToNames(l.Signature()))
 
@@ -57,7 +57,7 @@ func desugarLetFunction(f ast.LetFunction) []interface{} {
 				l.Body(),
 				l.DebugInfo()))
 
-			ls = append(ls, ast.NewLetConst(
+			ls = append(ls, ast.NewLetVar(
 				l.Name(),
 				ast.NewApp(
 					"partial",

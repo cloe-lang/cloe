@@ -20,7 +20,7 @@ func (c *compiler) compile(module []interface{}) []Output {
 
 	for _, node := range module {
 		switch x := node.(type) {
-		case ast.LetConst:
+		case ast.LetVar:
 			c.env.set(x.Name(), c.exprToThunk(x.Expr()))
 		case ast.LetFunction:
 			sig := x.Signature()
@@ -30,7 +30,7 @@ func (c *compiler) compile(module []interface{}) []Output {
 			varIndices := map[string]int{}
 
 			for i, l := range ls {
-				cst := l.(ast.LetConst)
+				cst := l.(ast.LetVar)
 				vars[i] = c.exprToIR(sig, varIndices, cst.Expr())
 				varIndices[cst.Name()] = sig.Arity() + i
 			}

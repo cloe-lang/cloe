@@ -1,5 +1,5 @@
 (let foo 123)
-(let bar "constant documentation" 456)
+(let bar "variable documentation" 456)
 
 (let (func x y)
   "This function calculate (x + y)^3 + (x + y)^2 + (x + y)^1"

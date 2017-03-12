@@ -54,7 +54,7 @@ func (ns names) include(n string) bool {
 
 func (ns names) find(x interface{}) names {
 	switch x := x.(type) {
-	case ast.LetConst:
+	case ast.LetVar:
 		ns := ns.copy()
 		delete(ns, x.Name())
 		return ns.find(x.Expr())

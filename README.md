@@ -9,20 +9,43 @@
 ![inputs to outputs](img/inputs_to_outputs.png)
 
 Tisp is a "Time is Space" programming language.
+It aims to be simple, canonical, and practical.
 
 ## Features
 
 - Purely functional programming
-- Implicit parallelism
+  - Impure function calls in pure functions are detected and raise errors at
+    runtime.
+- Implicit parallelism and concurrency
+  - Most of the time, you don't need to parallelize your code explicitly.
+    Tisp does it all for you!
+  - Inherently, codes written in Tisp can be run concurrently.
+- Optional injection of parallelism and causality
+  - You can also increase parallelism of your code or run functions
+    sequentially using `par` or `seq` primitives.
 - Asynchronous IO
+- Dynamic typing
+
+## Current state
+
+See [the issues](https://github.com/raviqqe/tisp/issues).
+Tisp is actively developed and work in progress.
+Stay tuned!
 
 ## FAQ
 
-### Is it general-purpose?
+### What languages is Tisp inspired by?
 
-We would like to strive to make the language as general as possible.
-However, Tisp's programming model may restrict its domain.
-There is no proof about how general this language is so far.
+The following is their list and ideas which come from them.
+
+- Haskell
+  - The concept of "Time is Space"
+  - Lazy evaluation and data structures to realize it
+- Clojure
+  - Everything is a value; no object system
+  - The syntax and macro system
+- OCaml
+  - The syntax which is close to pure lambda calculus and mutual recursion
 
 ## License
 

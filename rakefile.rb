@@ -12,7 +12,7 @@ task :unit_test do
   sh 'go test -cover -race ./...'
 end
 
-test_files = Dir.glob('test/*.tisp')
+test_files = Dir.glob 'test/*.tisp'
 
 task parser_test: 'tisp-parse' do |t|
   test_files.each do |file|
@@ -46,7 +46,7 @@ task interpreter_test: 'tisp' do
         if File.exist? expected_out_file
   end
 
-  Dir.glob('test/xfail/*.tisp') do |file|
+  Dir.glob 'test/xfail/*.tisp' do |file|
     sh "! bin/tisp #{file} > /dev/null 2>&1"
   end
 end
@@ -56,7 +56,7 @@ task command_test: %i(parser_test interpreter_test)
 task test: %i(unit_test command_test)
 
 task :lint do
-  verbose(false) do
+  verbose false do
     [
       'go vet',
       'golint',
@@ -75,7 +75,7 @@ task :format do
   sh 'go fix ./...'
   sh 'go fmt ./...'
 
-  Dir.glob('**/*.go') do |file|
+  Dir.glob '**/*.go' do |file|
     sh "goimports -w #{file}"
   end
 
@@ -105,7 +105,7 @@ task install: %i(install_deps test build) do
 end
 
 task :images do
-  Dir.glob('img/*.svg') do |file|
+  Dir.glob 'img/*.svg' do |file|
     sh "inkscape --export-area-drawing --export-png #{file.ext 'png'} #{file}"
   end
 end

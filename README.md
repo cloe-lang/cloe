@@ -26,7 +26,7 @@ It aims to be simple, canonical, and practical.
 - Asynchronous IO
 - Dynamic typing
 
-## Current state
+## Current status
 
 See [the issues](https://github.com/raviqqe/tisp/issues).
 Tisp is actively developed and work in progress.

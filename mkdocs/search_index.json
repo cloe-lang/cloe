@@ -2,13 +2,18 @@
     "docs": [
         {
             "location": "/",
-            "text": "Tisp",
+            "text": "Tisp\n\n\nThe \"Time is Space\" programming language\n\n\nSpecial forms\n\n\n\n\nlet\n: Function or variable definition\n\n\nmr\n: Mutually recursive function definition\n\n\nmacro\n: Macro definition",
             "title": "Home"
         },
         {
             "location": "/#tisp",
-            "text": "",
+            "text": "The \"Time is Space\" programming language",
             "title": "Tisp"
+        },
+        {
+            "location": "/#special-forms",
+            "text": "let : Function or variable definition  mr : Mutually recursive function definition  macro : Macro definition",
+            "title": "Special forms"
         }
     ]
 }

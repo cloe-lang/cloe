@@ -45,7 +45,7 @@ The following is their list and ideas which come from them.
   - Everything is a value; no object system
   - The syntax and macro system
 - OCaml
-  - The syntax which is close to pure lambda calculus and mutual recursion
+  - The syntax close to pure lambda calculus and mutual recursion
 
 ## License
 

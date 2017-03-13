@@ -104,6 +104,10 @@ task install: %i(install_deps test build) do
   sh 'go get ./...'
 end
 
+task :doc do
+  sh 'mkdocs gh-deploy'
+end
+
 task :images do
   Dir.glob 'img/*.svg' do |file|
     sh "inkscape --export-area-drawing --export-png #{file.ext 'png'} #{file}"

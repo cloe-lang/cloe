@@ -11,6 +11,14 @@
 Tisp is a "Time is Space" programming language.
 It aims to be simple, canonical, and practical.
 
+## Installation
+
+```
+go get github.com/raviqqe/tisp/src/cmd/tisp
+```
+
+You need Go 1.8+.
+
 ## Features
 
 - Purely functional programming
@@ -31,6 +39,17 @@ It aims to be simple, canonical, and practical.
 See [the issues](https://github.com/raviqqe/tisp/issues).
 Tisp is actively developed and work in progress.
 Stay tuned!
+
+## Examples
+
+Try scripts in [test directory](test) (`test/*.tisp`) by running:
+
+```
+tisp test/$filename.tisp
+```
+
+Some examples in [examples directory](examples) work but not all because
+some features are not implemented yet.
 
 ## FAQ
 

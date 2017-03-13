@@ -6,6 +6,8 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/raviqqe/tisp)](https://goreportcard.com/report/github.com/raviqqe/tisp)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+![inputs to outputs](img/inputs_to_outputs.png)
+
 Tisp is a "Time is Space" programming language.
 
 ## Features

@@ -5,11 +5,16 @@
 [![codebeat badge](https://codebeat.co/badges/3a45a98c-ad7d-4a0a-8011-241f0ae4682c)](https://codebeat.co/projects/github-com-raviqqe-tisp-master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/raviqqe/tisp)](https://goreportcard.com/report/github.com/raviqqe/tisp)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Slack](https://img.shields.io/badge/join-slack-ff69b4.svg)](https://tisp-lang.signup.team)
 
 ![inputs to outputs](img/inputs_to_outputs.png)
 
 Tisp is a "Time is Space" programming language.
 It aims to be simple, canonical, and practical.
+
+This baby project is under heavy development.
+Any contributions would be appreciated.
+[Join the slack team today!](https://tisp-lang.signup.team)
 
 ## Installation
 
@@ -50,6 +55,11 @@ tisp test/$filename.tisp
 
 Some examples in [examples directory](examples) work but not all because
 some features are not implemented yet.
+
+## Contributing
+
+Please send pull requests, issues, questions or anything else.
+See also [the documentation](https://raviqqe.github.io/tisp/for_developers/) on how to develop Tisp.
 
 ## FAQ
 

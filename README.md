@@ -65,6 +65,9 @@ The following is their list and ideas which come from them.
   - The syntax and macro system
 - OCaml
   - The syntax close to pure lambda calculus and of mutual recursion
+- Python
+  - The Zen (See `python -c 'import this'`.)
+  - The syntax of function calls with positional and keyword arguments
 
 ## License
 

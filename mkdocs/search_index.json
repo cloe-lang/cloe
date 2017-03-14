@@ -14,6 +14,31 @@
             "location": "/#special-forms",
             "text": "let : Function or variable definition  mr : Mutually recursive function definition  macro : Macro definition",
             "title": "Special forms"
+        },
+        {
+            "location": "/for_developers/",
+            "text": "For Developers\n\n\nPreparing environment\n\n\nInstall Go 1.8+ and \nrake\n, the task runner in Ruby.\nThen, install Tisp's dependnecies.\n\n\nrake install_deps\n\n\n\n\nTesting\n\n\n\n\nrake unit_test\n runs unit tests.\n\n\nrake command_test\n runs command tests.\n\n\nrake test\n runs both.\n\n\n\n\nOther utility tasks\n\n\n\n\nrake format\n formats all files.\n\n\nrake lint\n lints all files.\n\n\nrake clean\n cleans up the repository directory.\n\n\n\n\nFor more information, see \nrakefile.rb\n.",
+            "title": "For Developers"
+        },
+        {
+            "location": "/for_developers/#for-developers",
+            "text": "",
+            "title": "For Developers"
+        },
+        {
+            "location": "/for_developers/#preparing-environment",
+            "text": "Install Go 1.8+ and  rake , the task runner in Ruby.\nThen, install Tisp's dependnecies.  rake install_deps",
+            "title": "Preparing environment"
+        },
+        {
+            "location": "/for_developers/#testing",
+            "text": "rake unit_test  runs unit tests.  rake command_test  runs command tests.  rake test  runs both.",
+            "title": "Testing"
+        },
+        {
+            "location": "/for_developers/#other-utility-tasks",
+            "text": "rake format  formats all files.  rake lint  lints all files.  rake clean  cleans up the repository directory.   For more information, see  rakefile.rb .",
+            "title": "Other utility tasks"
         }
     ]
 }

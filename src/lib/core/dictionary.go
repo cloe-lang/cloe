@@ -7,7 +7,9 @@ import (
 	"github.com/raviqqe/tisp/src/lib/util"
 )
 
-type DictionaryType struct{ rbt.Dictionary }
+type DictionaryType struct {
+	rbt.Dictionary
+}
 
 var EmptyDictionary = NewDictionary([]Value{}, []*Thunk{})
 
@@ -50,7 +52,7 @@ var Set = NewLazyFunction(
 			return notOrderedError(k)
 		}
 
-		return DictionaryType{d.Insert(k, ts[2])}
+		return d.Insert(k, ts[2])
 	})
 
 func (d DictionaryType) call(args Arguments) Value {
@@ -71,7 +73,7 @@ func (d DictionaryType) index(v Value) (result Value) {
 	}
 
 	if v, ok := d.Search(k); ok {
-		return v.(*Thunk)
+		return v
 	}
 
 	return NewError(
@@ -81,6 +83,44 @@ func (d DictionaryType) index(v Value) (result Value) {
 
 func notOrderedError(k Value) *Thunk {
 	return TypeError(k, "ordered")
+}
+
+// Insert wraps rbt.Dictionary.Insert().
+func (d DictionaryType) Insert(k Value, v *Thunk) DictionaryType {
+	return DictionaryType{d.Dictionary.Insert(k, v)}
+}
+
+// Search wraps rbt.Dictionary.Search().
+func (d DictionaryType) Search(k Value) (*Thunk, bool) {
+	v, ok := d.Dictionary.Search(k)
+
+	if !ok {
+		return nil, false
+	}
+
+	return v.(*Thunk), true
+}
+
+// Remove wraps rbt.Dictionary.Remove().
+func (d DictionaryType) Remove(k Value) DictionaryType {
+	return DictionaryType{d.Dictionary.Remove(k)}
+}
+
+// FirstRest wraps rbt.Dictionary.FirstRest().
+func (d DictionaryType) FirstRest() (Value, *Thunk, DictionaryType) {
+	k, v, rest := d.Dictionary.FirstRest()
+	d = DictionaryType{rest}
+
+	if k == nil {
+		return nil, nil, d
+	}
+
+	return k.(Value), v.(*Thunk), d
+}
+
+// Merge wraps rbt.Dictionary.Merge().
+func (d DictionaryType) Merge(dd DictionaryType) DictionaryType {
+	return DictionaryType{d.Dictionary.Merge(dd.Dictionary)}
 }
 
 func (d DictionaryType) equal(e equalable) Value {
@@ -95,8 +135,8 @@ func (d DictionaryType) toList() Value {
 	}
 
 	return cons(
-		NewList(Normal(k.(Value)), v.(*Thunk)),
-		PApp(ToList, Normal(DictionaryType{rest})))
+		NewList(Normal(k), v),
+		PApp(ToList, Normal(rest)))
 }
 
 func (d DictionaryType) merge(ts ...*Thunk) Value {
@@ -112,7 +152,7 @@ func (d DictionaryType) merge(ts ...*Thunk) Value {
 			return NotDictionaryError(v)
 		}
 
-		d = DictionaryType{d.Merge(dd.Dictionary)}
+		d = d.Merge(dd)
 	}
 
 	return d
@@ -125,7 +165,7 @@ func (d DictionaryType) delete(v Value) (result deletable, err Value) {
 		}
 	}()
 
-	return DictionaryType{d.Remove(v)}, nil
+	return d.Remove(v), nil
 }
 
 func (d DictionaryType) less(o ordered) bool {

@@ -109,7 +109,7 @@ func (args *Arguments) searchKeyword(s string) *Thunk {
 
 		if v, ok := d.Search(k); ok {
 			args.expandedDicts[i] = Normal(d.Remove(k))
-			return v.(*Thunk)
+			return v
 		}
 	}
 

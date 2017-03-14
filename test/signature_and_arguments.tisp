@@ -2,4 +2,4 @@
      (+ x1 x2 x3 x4 ..args y1 y2 y3 y4))
 (let foo 1)
 
-(write (func 1 1 1 ..[1 foo foo] . y1 1 y2 1 y3 1 foo 100000000 ..{}))
+(write (func 1 1 1 ..[1 foo foo] . y1 1 y3 1 foo 100000000 ..{"y2" 1}))

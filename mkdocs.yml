@@ -1,4 +1,5 @@
 site_name: Tisp
 pages:
   - Home: index.md
+  - Language Specification: language_specification.md
   - For Developers: for_developers.md

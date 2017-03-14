@@ -80,19 +80,91 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#language-specification">Language Specification</a></li>
+        <li class="main active"><a href="#language-specification-by-examples">Language Specification (by examples)</a></li>
+            <li><a href="#basics">Basics</a></li>
+            <li><a href="#data-structures">Data structures</a></li>
+            <li><a href="#function-calls">Function calls</a></li>
             <li><a href="#special-forms">Special forms</a></li>
+            <li><a href="#built-in-functions">Built-in functions</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="language-specification">Language Specification</h1>
+<h1 id="language-specification-by-examples">Language Specification (by examples)</h1>
+<blockquote>
+<p>Warning: Too many parentheses haunt here!</p>
+</blockquote>
+<h2 id="basics">Basics</h2>
+<h3 id="simple-function-calls">Simple function calls</h3>
+<pre><code>(function argument)
+(function argument1 argument2)
+(function argument1 argument2 argument3 argument4 argument5)
+</code></pre>
+
+<h2 id="data-structures">Data structures</h2>
+<h3 id="number">Number</h3>
+<pre><code>123
+1.1
+010
+0x10
+-123
+(+ 1 2 3)
+(- 3 2 1)
+(* 1 2 3)
+(/ 1 2)
+(** 2 3)
+(mod 42 5)
+</code></pre>
+
+<h3 id="string">String</h3>
+<pre><code>&quot;Foo bar baz.&quot;
+</code></pre>
+
+<h3 id="bool">Bool</h3>
+<pre><code>true
+false
+</code></pre>
+
+<h3 id="nil">Nil</h3>
+<pre><code>nil
+</code></pre>
+
+<h3 id="list">List</h3>
+<pre><code>[1 2 3]
+</code></pre>
+
+<h3 id="dictionary">Dictionary</h3>
+<pre><code>{&quot;key1&quot; 123 &quot;key2&quot; 456}
+</code></pre>
+
+<h2 id="function-calls">Function calls</h2>
+<pre><code>(function positionalArgument)
+(function positionalArgument1 positionalArgument2)
+(function ..expandedList)
+(function . keywordArgument itsValue)
+(function . keywordArgument1 itsValue1 keywordArgument2 itsValue2)
+(function . ..expandedDictionary)
+(function positionalArgument1 positionalArgument2 ..expandedList1
+          positionalArgument3 ..expandedList2
+          .
+          keywordArgument1 itsValue1
+          keywordArgument2 itsValue2
+          ..expandedDictionary1
+          ..expandedDictionary2)
+</code></pre>
+
 <h2 id="special-forms">Special forms</h2>
-<ul>
-<li><code>let</code>: Function or variable definition</li>
-<li><code>mr</code>: Mutually recursive function definition</li>
-<li><code>macro</code>: Macro definition</li>
-</ul></div>
+<h3 id="let-function-or-variable-definition"><code>let</code>: Function or variable definition</h3>
+<pre><code>(let myVariable 123)
+(let (myFunc x) (+ x 42))
+</code></pre>
+
+<h3 id="mr-mutually-recursive-function-definition"><code>mr</code>: Mutually recursive function definition</h3>
+<p>TBD</p>
+<h3 id="macro-macro-definition"><code>macro</code>: Macro definition</h3>
+<p>TBD</p>
+<h2 id="built-in-functions">Built-in functions</h2>
+<p>TBD</p></div>
         </div>
 
         <footer class="col-md-12">

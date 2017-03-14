@@ -93,6 +93,7 @@ task :install_deps do
     go get -u
     github.com/golang/lint/golint
     github.com/mvdan/interfacer/...
+    golang.org/x/tools/cmd/goimports
     honnef.co/go/tools/...
   ).join ' '
 

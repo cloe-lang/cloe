@@ -2,8 +2,8 @@ package std
 
 import "github.com/raviqqe/tisp/src/lib/core"
 
-// Cause runs arguments of outputs sequentially.
-var Cause = core.NewLazyFunction(
+// Seq runs arguments of outputs sequentially.
+var Seq = core.NewLazyFunction(
 	core.NewSignature(
 		[]string{}, []core.OptionalArgument{}, "outputs",
 		[]string{}, []core.OptionalArgument{}, "",

@@ -60,7 +60,7 @@ func prelude() environment {
 		{"y", std.Y},
 		{"ys", std.Ys},
 
-		{"cause", std.Cause},
+		{"seq", std.Seq},
 
 		{"write", std.Write},
 	} {

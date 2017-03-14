@@ -81,18 +81,18 @@ nil
 
 ## Special forms
 
-### `let`: Function or variable definition
+### Function or variable definition `let`
 
 ```
 (let myVariable 123)
 (let (myFunc x) (+ x 42))
 ```
 
-### `mr`: Mutually recursive function definition
+### Mutually recursive function definition `mr`
 
 TBD
 
-### `macro`: Macro definition
+### Macro definition `macro`
 
 TBD
 

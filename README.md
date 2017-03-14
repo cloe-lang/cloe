@@ -55,7 +55,7 @@ some features are not implemented yet.
 
 ### What languages is Tisp inspired by?
 
-The following is their list and ideas which come from them.
+The following is their list with ideas and technologies which come from them.
 
 - Haskell
   - The concept of "Time is Space"
@@ -68,6 +68,9 @@ The following is their list and ideas which come from them.
 - Python
   - The Zen (See `python -c 'import this'`.)
   - The syntax of function calls with positional and keyword arguments
+- Go
+  - Simplicity
+  - Tisp utilizes Go's coroutine runtime.
 
 ## License
 

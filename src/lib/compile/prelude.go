@@ -46,7 +46,7 @@ func prelude() environment {
 		{"*", core.Mul},
 		{"/", core.Div},
 		{"mod", core.Mod},
-		{"pow", core.Pow},
+		{"**", core.Pow},
 
 		{"=", core.Equal},
 		{"toList", core.ToList},

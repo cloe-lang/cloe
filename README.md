@@ -16,6 +16,12 @@ This baby project is under heavy development.
 Any contributions would be appreciated.
 [Join the slack team today!](https://tisp-lang.signup.team)
 
+## Current status
+
+See [the issues](https://github.com/raviqqe/tisp/issues).
+Tisp is actively developed and work in progress.
+Stay tuned!
+
 ## Installation
 
 ```
@@ -39,11 +45,9 @@ You need Go 1.8+.
 - Asynchronous IO
 - Dynamic typing
 
-## Current status
+## Documentation
 
-See [the issues](https://github.com/raviqqe/tisp/issues).
-Tisp is actively developed and work in progress.
-Stay tuned!
+Visit [here](https://raviqqe.github.io/tisp/).
 
 ## Examples
 

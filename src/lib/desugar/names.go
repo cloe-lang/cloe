@@ -84,12 +84,7 @@ func (ns names) find(x interface{}) names {
 		ms.merge(ns.find(x.Body()))
 		return ms
 	case ast.App:
-		ms := newNames()
-
-		ms.merge(ns.find(x.Function()))
-		ms.merge(ns.find(x.Arguments()))
-
-		return ms
+		return newNames(append(ns.find(x.Function()).slice(), ns.find(x.Arguments()).slice()...)...)
 	case ast.Arguments:
 		ms := newNames()
 
@@ -107,13 +102,11 @@ func (ns names) find(x interface{}) names {
 
 		return ms
 	case string:
-		ms := newNames()
-
 		if ns.include(x) {
-			ms.add(x)
+			return newNames(x)
 		}
 
-		return ms
+		return newNames()
 	}
 
 	util.Fail("Invalid type: %#v", x)

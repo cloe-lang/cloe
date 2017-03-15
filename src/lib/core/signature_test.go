@@ -26,3 +26,31 @@ func TestXFailSignatureBindOptionalKeywordArgument(t *testing.T) {
 	_, err := s.Bind(args)
 	assert.NotEqual(t, (*Thunk)(nil), err)
 }
+
+func TestSignatureBindExpandedDictionaries(t *testing.T) {
+	f := App(Partial, NewArguments(
+		[]PositionalArgument{
+			NewPositionalArgument(Set, false),
+			NewPositionalArgument(EmptyDictionary, false),
+		},
+		[]KeywordArgument{},
+		[]*Thunk{NewDictionary([]Value{NewString("key").Eval()}, []*Thunk{True})}))
+
+	v := App(f, NewArguments(
+		[]PositionalArgument{},
+		[]KeywordArgument{NewKeywordArgument("value", NewNumber(42))},
+		[]*Thunk{})).Eval()
+
+	_, ok := v.(DictionaryType)
+	assert.True(t, ok)
+
+	// Check if the Arguments passed to Partial is persistent.
+
+	v = App(f, NewArguments(
+		[]PositionalArgument{},
+		[]KeywordArgument{NewKeywordArgument("value", NewNumber(42))},
+		[]*Thunk{})).Eval()
+
+	_, ok = v.(DictionaryType)
+	assert.True(t, ok)
+}

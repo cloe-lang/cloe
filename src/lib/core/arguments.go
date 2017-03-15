@@ -113,7 +113,10 @@ func (args *Arguments) searchKeyword(s string) *Thunk {
 		k := StringType(s)
 
 		if v, ok := d.Search(k); ok {
-			args.expandedDicts[i] = Normal(d.Remove(k))
+			new := make([]*Thunk, len(args.expandedDicts))
+			copy(new, args.expandedDicts)
+			new[i] = Normal(d.Remove(k))
+			args.expandedDicts = new
 			return v
 		}
 	}

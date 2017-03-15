@@ -77,7 +77,12 @@ func (args *Arguments) nextPositional() *Thunk {
 	return PApp(First, args.expandedList)
 }
 
-func (args Arguments) restPositionals() *Thunk {
+func (args *Arguments) restPositionals() *Thunk {
+	defer func() {
+		args.positionals = nil
+		args.expandedList = nil
+	}()
+
 	if args.expandedList == nil {
 		return NewList(args.positionals...)
 	}
@@ -116,7 +121,12 @@ func (args *Arguments) searchKeyword(s string) *Thunk {
 	return nil
 }
 
-func (args Arguments) restKeywords() *Thunk {
+func (args *Arguments) restKeywords() *Thunk {
+	defer func() {
+		args.keywords = nil
+		args.expandedDicts = nil
+	}()
+
 	t := EmptyDictionary
 
 	for _, k := range args.keywords {
@@ -152,4 +162,34 @@ func (args Arguments) Merge(merged Arguments) Arguments {
 	new.expandedDicts = append(args.expandedDicts, merged.expandedDicts...)
 
 	return new
+}
+
+func (args Arguments) empty() *Thunk {
+	if args.positionals != nil && len(args.positionals) > 0 {
+		return argumentError("%d positional arguments are left", len(args.positionals))
+	}
+
+	// Testing args.expandedList is impossible because we cannot know its length
+	// without evaluating it.
+
+	n := 0
+
+	if args.expandedDicts != nil {
+		for _, t := range args.expandedDicts {
+			v := t.Eval()
+			d, ok := v.(DictionaryType)
+
+			if !ok {
+				return NotDictionaryError(v)
+			}
+
+			n += d.Size()
+		}
+	}
+
+	if n != 0 || args.keywords != nil && len(args.keywords) > 0 {
+		return argumentError("%d keyword arguments are left", len(args.keywords)+n)
+	}
+
+	return nil
 }

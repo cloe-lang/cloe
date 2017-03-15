@@ -45,6 +45,10 @@ func (s Signature) Bind(args Arguments) ([]*Thunk, *Thunk) {
 		return nil, argumentError("Number of arguments bound to names is different from signature's arity.")
 	}
 
+	if err := args.empty(); err != nil {
+		return nil, err
+	}
+
 	return ts, nil
 }
 
@@ -52,6 +56,6 @@ func (s Signature) arity() int {
 	return s.positionals.arity() + s.keywords.arity()
 }
 
-func argumentError(m string) *Thunk {
-	return NewError("ArgumentError", m)
+func argumentError(m string, xs ...interface{}) *Thunk {
+	return NewError("ArgumentError", m, xs...)
 }

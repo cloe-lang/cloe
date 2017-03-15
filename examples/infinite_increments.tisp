@@ -1,12 +1,10 @@
-(let (mapImpl map func list)
+(let (map func list)
      (if (= list [])
          []
          (prepend (func (first list))
                   (map func (rest list)))))
-(let map (y mapImpl))
 
-(let (numbersImpl numbers i)
+(let (numbers i)
      (prepend i (numbers (+ i 1))))
-(let numbers (y numbersImpl))
 
 (seq ..(map write (numbers 0)))

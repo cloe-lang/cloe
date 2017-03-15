@@ -7,30 +7,30 @@ import (
 
 // Desugar desugars a module of statements in AST.
 func Desugar(module []interface{}) []interface{} {
-	return desugarStatements(module)
+	return flattenStatements(module)
 }
 
-func desugarStatement(s interface{}) []interface{} {
-	switch s := s.(type) {
-	case ast.LetFunction:
-		return desugarLetFunction(s)
-	default:
-		return []interface{}{s}
-	}
-}
-
-func desugarStatements(old []interface{}) []interface{} {
+func flattenStatements(old []interface{}) []interface{} {
 	new := make([]interface{}, 0, 2*len(old)) // TODO: Best cap?
 
 	for _, s := range old {
-		new = append(new, desugarStatement(s)...)
+		new = append(new, flattenStatement(s)...)
 	}
 
 	return new
 }
 
-func desugarLetFunction(f ast.LetFunction) []interface{} {
-	f = desugarInnerStatements(f)
+func flattenStatement(s interface{}) []interface{} {
+	switch s := s.(type) {
+	case ast.LetFunction:
+		return flattenLetFunction(s)
+	default:
+		return []interface{}{s}
+	}
+}
+
+func flattenLetFunction(f ast.LetFunction) []interface{} {
+	f = flattenInnerStatements(f)
 
 	ss := make([]interface{}, 0)
 	ls := make([]interface{}, 0)
@@ -42,7 +42,7 @@ func desugarLetFunction(f ast.LetFunction) []interface{} {
 			ls = append(ls, l)
 			names.add(l.Name())
 		case ast.LetFunction:
-			unnested := f.Name() + "$" + l.Name()
+			flattened := f.Name() + "$" + l.Name()
 
 			usedNames := names.find(l.Body())
 			for _, l := range l.Lets() {
@@ -51,7 +51,7 @@ func desugarLetFunction(f ast.LetFunction) []interface{} {
 			usedNames.subtract(signatureToNames(l.Signature()))
 
 			ss = append(ss, ast.NewLetFunction(
-				unnested,
+				flattened,
 				prependPosReqsToSig(l.Signature(), usedNames.slice()),
 				l.Lets(),
 				l.Body(),
@@ -63,7 +63,7 @@ func desugarLetFunction(f ast.LetFunction) []interface{} {
 					"partial",
 					ast.NewArguments(
 						append(
-							[]ast.PositionalArgument{ast.NewPositionalArgument(unnested, false)},
+							[]ast.PositionalArgument{ast.NewPositionalArgument(flattened, false)},
 							namesToPosArgs(usedNames.slice())...,
 						), []ast.KeywordArgument{}, []interface{}{}),
 					f.DebugInfo())))
@@ -77,11 +77,11 @@ func desugarLetFunction(f ast.LetFunction) []interface{} {
 	return append(ss, ast.NewLetFunction(f.Name(), f.Signature(), ls, f.Body(), f.DebugInfo()))
 }
 
-func desugarInnerStatements(f ast.LetFunction) ast.LetFunction {
+func flattenInnerStatements(f ast.LetFunction) ast.LetFunction {
 	return ast.NewLetFunction(
 		f.Name(),
 		f.Signature(),
-		desugarStatements(f.Lets()),
+		flattenStatements(f.Lets()),
 		f.Body(),
 		f.DebugInfo())
 }

@@ -75,7 +75,7 @@ func (s *state) signature() comb.Parser {
 
 	expanded := s.strip(s.expanded(s.identifier()))
 
-	argSet := s.App(func(x interface{}) interface{} {
+	halfSig := s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 
 		xs0 := xs[0].([]interface{})
@@ -112,7 +112,7 @@ func (s *state) signature() comb.Parser {
 			pas[0].([]string), pas[1].([]ast.OptionalArgument), pas[2].(string),
 			kas[0].([]string), kas[1].([]ast.OptionalArgument), kas[2].(string),
 		)
-	}, s.And(argSet, s.Maybe(s.Prefix(s.strippedString("."), argSet))))
+	}, s.And(halfSig, s.Maybe(s.Prefix(s.strippedString("."), halfSig))))
 }
 
 func (s *state) output() comb.Parser {

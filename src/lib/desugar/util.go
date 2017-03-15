@@ -3,21 +3,13 @@ package desugar
 import "github.com/raviqqe/tisp/src/lib/ast"
 
 func signatureToNames(s ast.Signature) names {
-	ns := newNames()
-
-	for _, r := range s.PosReqs() {
-		ns.add(r)
-	}
+	ns := newNames(append(s.PosReqs(), s.KeyReqs()...)...)
 
 	for _, o := range s.PosOpts() {
 		ns.add(o.Name())
 	}
 
 	if r := s.PosRest(); r != "" {
-		ns.add(r)
-	}
-
-	for _, r := range s.KeyReqs() {
 		ns.add(r)
 	}
 

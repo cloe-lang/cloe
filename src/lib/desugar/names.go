@@ -7,8 +7,14 @@ import (
 
 type names map[string]bool
 
-func newNames() names {
-	return make(names)
+func newNames(ss ...string) names {
+	ns := make(names)
+
+	for _, s := range ss {
+		ns.add(s)
+	}
+
+	return ns
 }
 
 func (ns names) slice() []string {
@@ -54,10 +60,29 @@ func (ns names) include(n string) bool {
 
 func (ns names) find(x interface{}) names {
 	switch x := x.(type) {
+	case []interface{}:
+		ms := newNames()
+
+		for _, s := range x {
+			ms.merge(ns.find(s))
+		}
+
+		return ms
 	case ast.LetVar:
 		ns := ns.copy()
 		delete(ns, x.Name())
 		return ns.find(x.Expr())
+	case ast.LetFunction:
+		ns := ns.copy()
+
+		delete(ns, x.Name())
+		for _, n := range signatureToNames(x.Signature()).slice() {
+			delete(ns, n)
+		}
+
+		ms := ns.find(x.Lets())
+		ms.merge(ns.find(x.Body()))
+		return ms
 	case ast.App:
 		ms := newNames()
 

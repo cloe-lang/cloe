@@ -58,7 +58,9 @@ func prelude() environment {
 		{"$dict", std.Dictionary},
 
 		{"y", std.Y},
+		{"$y", std.Y},
 		{"ys", std.Ys},
+		{"$ys", std.Ys},
 
 		{"seq", std.Seq},
 

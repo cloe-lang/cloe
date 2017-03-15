@@ -1,0 +1,8 @@
+(let (createFactorial)
+     (let (factorial n)
+          (if (= n 0) 1 (* n (factorial (- n 1)))))
+     factorial)
+
+(let factorial (createFactorial))
+
+(write (factorial 5))

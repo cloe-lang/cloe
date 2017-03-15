@@ -86,6 +86,7 @@ nil
 ```
 (let myVariable 123)
 (let (myFunc x) (+ x 42))
+(let (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))
 ```
 
 ### Mutually recursive function definition `mr`

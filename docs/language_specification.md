@@ -1,6 +1,6 @@
 # Language Specification (by examples)
 
-> Warning: Too many parentheses haunt here!
+> Warning: Too many parentheses ahead!
 
 ## Basics
 

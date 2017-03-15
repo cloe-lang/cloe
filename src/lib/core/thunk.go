@@ -60,7 +60,7 @@ func (t *Thunk) Eval() Value {
 		children := make([]*Thunk, 0, 1) // TODO: Best cap?
 
 		for {
-			v := t.function.Eval()
+			v := t.moveFunction().Eval()
 
 			if t.chainError(v) {
 				break
@@ -73,7 +73,7 @@ func (t *Thunk) Eval() Value {
 				break
 			}
 
-			t.result = f.call(t.args)
+			t.result = f.call(t.moveArguments())
 
 			if t.chainError(t.result) {
 				break
@@ -120,10 +120,22 @@ func (t *Thunk) lock() bool {
 
 func (t *Thunk) delegateEval() (*Thunk, Arguments, bool) {
 	if t.lock() {
-		return t.function, t.args, true
+		return t.moveFunction(), t.moveArguments(), true
 	}
 
 	return nil, Arguments{}, false
+}
+
+func (t *Thunk) moveFunction() *Thunk {
+	f := t.function
+	t.function = nil
+	return f
+}
+
+func (t *Thunk) moveArguments() Arguments {
+	args := t.args
+	t.args = Arguments{}
+	return args
 }
 
 func (t *Thunk) finalize() {

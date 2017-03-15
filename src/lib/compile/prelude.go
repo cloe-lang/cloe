@@ -62,6 +62,7 @@ func prelude() environment {
 
 		{"seq", std.Seq},
 
+		{"read", std.Read},
 		{"write", std.Write},
 	} {
 		e.set(nv.name, nv.value)

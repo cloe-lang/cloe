@@ -1,0 +1,1 @@
+(write (read . file "test/read_file.out") . end "")

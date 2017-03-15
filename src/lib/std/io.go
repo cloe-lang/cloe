@@ -2,11 +2,42 @@ package std
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strings"
 
 	"github.com/raviqqe/tisp/src/lib/core"
 )
+
+// Read reads a string from stdin or a file.
+var Read = core.NewStrictFunction(
+	core.NewSignature(
+		[]string{}, []core.OptionalArgument{core.NewOptionalArgument("file", core.Nil)}, "",
+		[]string{}, []core.OptionalArgument{}, "",
+	),
+	func(vs ...core.Value) core.Value {
+		v := vs[0]
+		file := os.Stdin
+
+		if s, ok := v.(core.StringType); ok {
+			var err error
+			file, err = os.Open(string(s))
+
+			if err != nil {
+				return core.OutputError(err.Error())
+			}
+		} else if _, ok := v.(core.NilType); !ok {
+			return core.ValueError("file optional argument's value must be nil or a filename. Got %#v.", v)
+		}
+
+		s, err := ioutil.ReadAll(file)
+
+		if err != nil {
+			return core.OutputError(err.Error())
+		}
+
+		return core.NewString(string(s))
+	})
 
 // Write writes string representation of arguments to stdout.
 var Write = core.NewStrictFunction(

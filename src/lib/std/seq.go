@@ -25,11 +25,9 @@ var Seq = core.NewLazyFunction(
 			if !ok {
 				return core.NotBoolError(v)
 			} else if b {
-				break
+				return out
 			}
 
 			out = core.PApp(core.First, t)
 		}
-
-		return out
 	})

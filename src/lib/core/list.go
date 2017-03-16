@@ -150,6 +150,44 @@ func emptyListError() *Thunk {
 	return ValueError("The list is empty. You cannot apply rest.")
 }
 
+func (l ListType) call(args Arguments) Value {
+	return Index.Eval().(callable).call(NewPositionalArguments(Normal(l)).Merge(args))
+}
+
+func (l ListType) index(v Value) (result Value) {
+	n, ok := v.(NumberType)
+
+	if !ok {
+		return NotNumberError(v)
+	}
+
+	v = PApp(isInt, Normal(n)).Eval()
+	b, ok := v.(BoolType)
+
+	if !ok {
+		return NotBoolError(v)
+	} else if !b {
+		return NotIntError(n)
+	}
+
+	for {
+		if l == emptyList {
+			return OutOfRangeError()
+		} else if n == 0 {
+			return l.first
+		}
+
+		v = l.rest.Eval()
+		l, ok = v.(ListType)
+
+		if !ok {
+			return NotListError(v)
+		}
+
+		n--
+	}
+}
+
 func (l ListType) merge(ts ...*Thunk) Value {
 	if l == emptyList {
 		return PApp(Merge, ts...)

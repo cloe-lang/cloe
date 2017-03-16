@@ -78,6 +78,12 @@ func NotNumberError(v Value) *Thunk {
 	return TypeError(v, "number")
 }
 
+// NotIntError creates an error value for a number value which is not an
+// integer.
+func NotIntError(n NumberType) *Thunk {
+	return TypeError(n, "integer")
+}
+
 // NotStringError creates an error value for an invalid value which is not a
 // string.
 func NotStringError(v Value) *Thunk {
@@ -98,4 +104,9 @@ func InputError(m string, xs ...interface{}) *Thunk {
 // OutputError creates a thunk which represents an output error.
 func OutputError(m string, xs ...interface{}) *Thunk {
 	return NewError("OutputError", m, xs...)
+}
+
+// OutOfRangeError creates an error value for an out-of-range index to a list.
+func OutOfRangeError() *Thunk {
+	return NewError("OutOfRangeError", "Index is out of range.")
 }

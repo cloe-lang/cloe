@@ -111,3 +111,37 @@ func TestListToString(t *testing.T) {
 		assert.Equal(t, StringType(xs.expected), PApp(ToString, xs.thunk).Eval())
 	}
 }
+
+func TestListIndex(t *testing.T) {
+	a := NewString("I'm the answer.")
+
+	for _, li := range []struct {
+		list  *Thunk
+		index float64
+	}{
+		{NewList(a), 0},
+		{NewList(True, a), 1},
+		{NewList(a, False), 0},
+		{NewList(True, False, a), 2},
+		{NewList(Nil, Nil, Nil, Nil, a), 4},
+		{NewList(Nil, Nil, Nil, a, Nil), 3},
+	} {
+		assert.True(t, testEqual(a, PApp(li.list, NewNumber(li.index))))
+	}
+}
+
+func TestXFailListIndex(t *testing.T) {
+	for _, li := range []struct {
+		list  *Thunk
+		index float64
+	}{
+		{NewList(), 0},
+		{NewList(), 1},
+		{NewList(Nil), 1},
+	} {
+		v := PApp(li.list, NewNumber(li.index)).Eval()
+		_, ok := v.(ErrorType)
+		t.Log(v)
+		assert.True(t, ok)
+	}
+}

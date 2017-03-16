@@ -1,0 +1,10 @@
+(mr
+  (let (even? n)
+       (if (= n 0) true (odd? (- n 1))))
+  (let (odd? n)
+       (if (= n 0) false (even? (- n 1)))))
+
+(write (even? 0))
+(write (odd? 1))
+(write (even? 2))
+(write (odd? 3))

@@ -9,18 +9,20 @@ import (
 )
 
 const (
-	commentChar  = ';'
-	invalidChars = "\x00"
-	quoteString  = "quote"
-	spaceChars   = " \t\n\r"
-	specialChars = "()[]{}\"'`$"
+	commentChar     = ';'
+	invalidChars    = "\x00"
+	letString       = "let"
+	mutualRecString = "mr"
+	quoteString     = "quote"
+	spaceChars      = " \t\n\r"
+	specialChars    = "()[]{}\"'`$"
 )
 
 var reserveds = map[string]bool{
-	"let":       true,
-	"macro":     true,
-	quoteString: true,
-	"rec":       true,
+	letString:       true,
+	"macro":         true,
+	quoteString:     true,
+	mutualRecString: true,
 }
 
 // Parse parses a file into an AST of the language.
@@ -43,20 +45,20 @@ func (s *state) let() comb.Parser {
 }
 
 func (s *state) strictLet() comb.Parser {
-	return s.Or(s.letVar(), s.letFunction())
+	return s.Or(s.letVar(), s.letFunction(), s.mutuallyRecursiveLetFunctions())
 }
 
 func (s *state) letVar() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 		return ast.NewLetVar(xs[1].(string), xs[2])
-	}, s.list(s.strippedString("let"), s.identifier(), s.expression()))
+	}, s.list(s.strippedString(letString), s.identifier(), s.expression()))
 }
 
 func (s *state) letFunction() comb.Parser {
 	return s.withInfo(
 		s.list(
-			s.strippedString("let"),
+			s.strippedString(letString),
 			s.list(s.identifier(), s.signature()),
 			s.Many(s.let()),
 			s.expression()),
@@ -156,6 +158,19 @@ func (s *state) firstOrderExpression() comb.Parser {
 
 func (s *state) quote(p comb.Parser) comb.Parser {
 	return s.appQuote(s.Prefix(s.Char('`'), p))
+}
+
+func (s *state) mutuallyRecursiveLetFunctions() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})[1].([]interface{})
+		fs := make([]ast.LetFunction, len(xs))
+
+		for i, l := range xs {
+			fs[i] = l.(ast.LetFunction)
+		}
+
+		return ast.NewMutualRecursion(fs...)
+	}, s.list(s.strippedString(mutualRecString), s.Many(s.letFunction())))
 }
 
 func (s *state) appQuote(p comb.Parser) comb.Parser {

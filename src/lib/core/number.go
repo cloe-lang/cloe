@@ -223,6 +223,22 @@ var Pow = NewStrictFunction(
 		return NewNumber(math.Pow(float64(n1), float64(n2)))
 	})
 
+var isInt = NewStrictFunction(
+	NewSignature(
+		[]string{"number"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(vs ...Value) Value {
+		v := vs[0]
+		n, ok := v.(NumberType)
+
+		if !ok {
+			return NotNumberError(v)
+		}
+
+		return NewBool(math.Mod(float64(n), 1) == 0)
+	})
+
 func (n NumberType) less(o ordered) bool {
 	return n < o.(NumberType)
 }

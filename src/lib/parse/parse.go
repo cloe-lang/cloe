@@ -161,16 +161,18 @@ func (s *state) quote(p comb.Parser) comb.Parser {
 }
 
 func (s *state) mutuallyRecursiveLetFunctions() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})[1].([]interface{})
-		fs := make([]ast.LetFunction, len(xs))
+	return s.withInfo(
+		s.list(s.strippedString(mutualRecString), s.Many(s.letFunction())),
+		func(x interface{}, i debug.Info) (interface{}, error) {
+			xs := x.([]interface{})[1].([]interface{})
+			fs := make([]ast.LetFunction, len(xs))
 
-		for i, l := range xs {
-			fs[i] = l.(ast.LetFunction)
-		}
+			for i, l := range xs {
+				fs[i] = l.(ast.LetFunction)
+			}
 
-		return ast.NewMutualRecursion(fs...)
-	}, s.list(s.strippedString(mutualRecString), s.Many(s.letFunction())))
+			return ast.NewMutualRecursion(fs, i), nil
+		})
 }
 
 func (s *state) appQuote(p comb.Parser) comb.Parser {

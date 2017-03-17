@@ -1,6 +1,8 @@
 package ast
 
-import "github.com/raviqqe/tisp/src/lib/debug"
+import (
+	"github.com/raviqqe/tisp/src/lib/debug"
+)
 
 type App struct {
 	function interface{}
@@ -10,6 +12,16 @@ type App struct {
 
 func NewApp(f interface{}, args Arguments, info debug.Info) App {
 	return App{f, args, info}
+}
+
+func NewPApp(f interface{}, args []interface{}, info debug.Info) App {
+	ps := make([]PositionalArgument, 0, len(args))
+
+	for _, arg := range args {
+		ps = append(ps, NewPositionalArgument(arg, false))
+	}
+
+	return App{f, NewArguments(ps, []KeywordArgument{}, []interface{}{}), info}
 }
 
 func (a App) Function() interface{} {

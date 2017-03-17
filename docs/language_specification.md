@@ -89,9 +89,15 @@ nil
 (let (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))
 ```
 
-### Mutually recursive function definition `mr`
+### Mutually-recursive functions `mr`
 
-TBD
+```
+(mr
+  (let (even? n)
+       (if (= n 0) true (odd? (- n 1))))
+  (let (odd? n)
+       (if (= n 0) false (even? (- n 1)))))
+```
 
 ### Macro definition `macro`
 

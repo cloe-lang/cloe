@@ -138,6 +138,7 @@ func TestXFailListIndex(t *testing.T) {
 		{NewList(), 0},
 		{NewList(), 1},
 		{NewList(Nil), 1},
+		{NewList(Nil, Nil), 1.5},
 	} {
 		v := PApp(li.list, NewNumber(li.index)).Eval()
 		_, ok := v.(ErrorType)

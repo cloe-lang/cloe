@@ -20,19 +20,15 @@ func desugarMutualRecursionStatement(s interface{}) []interface{} {
 func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 	olds := mr.LetFunctions()
 	nonRecursives := make([]interface{}, 0, len(olds))
-	nonRecursiveNames := make([]interface{}, 0, len(olds))
-
-	const fsArg = "mr$functions$argument"
-	nameToIndex := indexLetFunctions(olds...)
 
 	for _, old := range olds {
-		nonRecursiveName := "nonRecursive$" + old.Name()
-		nonRecursiveNames = append(nonRecursiveNames, nonRecursiveName)
+		const fsArg = "mr$functions$argument"
+		nameToIndex := indexLetFunctions(olds...)
 
 		nonRecursives = append(
 			nonRecursives,
 			ast.NewLetFunction(
-				nonRecursiveName,
+				"nonRecursive$"+old.Name(),
 				prependPosReqsToSig(old.Signature(), []string{fsArg}),
 				replaceNames(fsArg, nameToIndex, old.Lets(), mr.DebugInfo()).([]interface{}),
 				replaceNames(fsArg, deleteNamesDefinedByLets(nameToIndex, old.Lets()), old.Body(), mr.DebugInfo()),
@@ -55,7 +51,7 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 		append(
 			[]interface{}{ast.NewLetVar(
 				mrFunctionList,
-				ast.NewPApp("$ys", nonRecursiveNames, mr.DebugInfo()))},
+				ast.NewPApp("$ys", util.StringsToAnys(letStatementsToNames(nonRecursives)), mr.DebugInfo()))},
 			news...)...)
 }
 
@@ -155,16 +151,26 @@ func copyNameToIndex(ni map[string]int) map[string]int {
 func deleteNamesDefinedByLets(ni map[string]int, ls []interface{}) map[string]int {
 	ni = copyNameToIndex(ni)
 
+	for _, n := range letStatementsToNames(ls) {
+		delete(ni, n)
+	}
+
+	return ni
+}
+
+func letStatementsToNames(ls []interface{}) []string {
+	names := make([]string, 0, len(ls))
+
 	for _, l := range ls {
 		switch l := l.(type) {
 		case ast.LetFunction:
-			delete(ni, l.Name())
+			names = append(names, l.Name())
 		case ast.LetVar:
-			delete(ni, l.Name())
+			names = append(names, l.Name())
 		default:
 			panic("Unreachable")
 		}
 	}
 
-	return ni
+	return names
 }

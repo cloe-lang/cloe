@@ -1,6 +1,7 @@
 (mr
   (let (even? n)
-       (if (= n 0) true (odd? (- n 1))))
+       (let o? odd?)
+       (if (= n 0) true (o? (- n 1))))
   (let (odd? n)
        (if (= n 0) false (even? (- n 1)))))
 

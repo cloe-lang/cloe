@@ -12,7 +12,7 @@
         },
         {
             "location": "/language_specification/",
-            "text": "Language Specification (by examples)\n\n\n\n\nWarning: Too many parentheses ahead!\n\n\n\n\nBasics\n\n\nSimple function calls\n\n\n(function argument)\n(function argument1 argument2)\n(function argument1 argument2 argument3 argument4 argument5)\n\n\n\n\nData types\n\n\nNumber\n\n\n123\n1.1\n010\n0x10\n-123\n(+ 1 2 3)\n(- 3 2 1)\n(* 1 2 3)\n(/ 1 2)\n(** 2 3)\n(mod 42 5)\n\n\n\n\nString\n\n\n\"Foo bar baz.\"\n\n\n\n\nBool\n\n\ntrue\nfalse\n\n\n\n\nNil\n\n\nnil\n\n\n\n\nList\n\n\n[1 2 3]\n\n\n\n\nDictionary\n\n\n{\"key1\" 123 \"key2\" 456}\n\n\n\n\nFunction calls\n\n\n(function positionalArgument)\n(function positionalArgument1 positionalArgument2)\n(function ..expandedList)\n(function . keywordArgument itsValue)\n(function . keywordArgument1 itsValue1 keywordArgument2 itsValue2)\n(function . ..expandedDictionary)\n(function positionalArgument1 positionalArgument2 ..expandedList1\n          positionalArgument3 ..expandedList2\n          .\n          keywordArgument1 itsValue1\n          keywordArgument2 itsValue2\n          ..expandedDictionary1\n          ..expandedDictionary2)\n\n\n\n\nSpecial forms\n\n\nFunction or variable definition \nlet\n\n\n(let myVariable 123)\n(let (myFunc x) (+ x 42))\n\n\n\n\nMutually recursive function definition \nmr\n\n\nTBD\n\n\nMacro definition \nmacro\n\n\nTBD\n\n\nBuilt-in functions\n\n\nTBD",
+            "text": "Language Specification (by examples)\n\n\n\n\nWarning: Too many parentheses ahead!\n\n\n\n\nBasics\n\n\nSimple function calls\n\n\n(function argument)\n(function argument1 argument2)\n(function argument1 argument2 argument3 argument4 argument5)\n\n\n\n\nData types\n\n\nNumber\n\n\n123\n1.1\n010\n0x10\n-123\n(+ 1 2 3)\n(- 3 2 1)\n(* 1 2 3)\n(/ 1 2)\n(** 2 3)\n(mod 42 5)\n\n\n\n\nString\n\n\n\"Foo bar baz.\"\n\n\n\n\nBool\n\n\ntrue\nfalse\n\n\n\n\nNil\n\n\nnil\n\n\n\n\nList\n\n\n[1 2 3]\n\n\n\n\nDictionary\n\n\n{\"key1\" 123 \"key2\" 456}\n\n\n\n\nFunction calls\n\n\n(function positionalArgument)\n(function positionalArgument1 positionalArgument2)\n(function ..expandedList)\n(function . keywordArgument itsValue)\n(function . keywordArgument1 itsValue1 keywordArgument2 itsValue2)\n(function . ..expandedDictionary)\n(function positionalArgument1 positionalArgument2 ..expandedList1\n          positionalArgument3 ..expandedList2\n          .\n          keywordArgument1 itsValue1\n          keywordArgument2 itsValue2\n          ..expandedDictionary1\n          ..expandedDictionary2)\n\n\n\n\nSpecial forms\n\n\nFunction or variable definition \nlet\n\n\n(let myVariable 123)\n(let (myFunc x) (+ x 42))\n(let (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))\n\n\n\n\nMutually-recursive functions \nmr\n\n\n(mr\n  (let (even? n)\n       (if (= n 0) true (odd? (- n 1))))\n  (let (odd? n)\n       (if (= n 0) false (even? (- n 1)))))\n\n\n\n\nMacro definition \nmacro\n\n\nTBD\n\n\nBuilt-in functions\n\n\nTBD",
             "title": "Language Specification"
         },
         {
@@ -77,13 +77,13 @@
         },
         {
             "location": "/language_specification/#function-or-variable-definition-let",
-            "text": "(let myVariable 123)\n(let (myFunc x) (+ x 42))",
+            "text": "(let myVariable 123)\n(let (myFunc x) (+ x 42))\n(let (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))",
             "title": "Function or variable definition let"
         },
         {
-            "location": "/language_specification/#mutually-recursive-function-definition-mr",
-            "text": "TBD",
-            "title": "Mutually recursive function definition mr"
+            "location": "/language_specification/#mutually-recursive-functions-mr",
+            "text": "(mr\n  (let (even? n)\n       (if (= n 0) true (odd? (- n 1))))\n  (let (odd? n)\n       (if (= n 0) false (even? (- n 1)))))",
+            "title": "Mutually-recursive functions mr"
         },
         {
             "location": "/language_specification/#macro-definition-macro",

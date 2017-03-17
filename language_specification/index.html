@@ -157,10 +157,17 @@ false
 <h3 id="function-or-variable-definition-let">Function or variable definition <code>let</code></h3>
 <pre><code>(let myVariable 123)
 (let (myFunc x) (+ x 42))
+(let (factorial n) (if (= n 0) 1 (* n (factorial (- n 1)))))
 </code></pre>
 
-<h3 id="mutually-recursive-function-definition-mr">Mutually recursive function definition <code>mr</code></h3>
-<p>TBD</p>
+<h3 id="mutually-recursive-functions-mr">Mutually-recursive functions <code>mr</code></h3>
+<pre><code>(mr
+  (let (even? n)
+       (if (= n 0) true (odd? (- n 1))))
+  (let (odd? n)
+       (if (= n 0) false (even? (- n 1)))))
+</code></pre>
+
 <h3 id="macro-definition-macro">Macro definition <code>macro</code></h3>
 <p>TBD</p>
 <h2 id="built-in-functions">Built-in functions</h2>

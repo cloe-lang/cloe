@@ -79,7 +79,6 @@ func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {
 			x.DebugInfo())
 	}
 
-	util.Fail("Invalid type as an expression. %#v", expr)
 	panic("Unreachable")
 }
 

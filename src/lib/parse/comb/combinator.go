@@ -3,8 +3,6 @@ package comb
 import (
 	"fmt"
 	"strings"
-
-	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 // Char creates a parser parsing a character.
@@ -278,6 +276,5 @@ func stringify(x interface{}) string {
 		return strings.Join(ss, "")
 	}
 
-	util.Fail("Invalid type.", x)
 	panic("Unreachable")
 }

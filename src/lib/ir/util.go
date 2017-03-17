@@ -1,9 +1,6 @@
 package ir
 
-import (
-	"github.com/raviqqe/tisp/src/lib/core"
-	"github.com/raviqqe/tisp/src/lib/util"
-)
+import "github.com/raviqqe/tisp/src/lib/core"
 
 // CompileFunction compiles a function in IR into a thunk.
 func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) *core.Thunk {
@@ -35,6 +32,5 @@ func compileExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 		return x.compile(args)
 	}
 
-	util.Fail("Invalid type. %v", expr)
 	panic("Unreachable")
 }

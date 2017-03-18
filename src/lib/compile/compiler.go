@@ -1,6 +1,8 @@
 package compile
 
 import (
+	"path"
+
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/core"
 	"github.com/raviqqe/tisp/src/lib/ir"
@@ -43,6 +45,10 @@ func (c *compiler) compile(module []interface{}) []Output {
 					c.exprToIR(sig, varIndices, x.Body())))
 		case ast.Output:
 			outputs = append(outputs, NewOutput(c.exprToThunk(x.Expr()), x.Expanded()))
+		case ast.Import:
+			for k, v := range SubModule(x.Path() + ".tisp") {
+				c.env.set(path.Base(x.Path())+"."+k, v)
+			}
 		default:
 			util.Fail("Invalid instruction.", x)
 		}

@@ -6,16 +6,15 @@ import (
 )
 
 // ReadFileOrStdin reads a file or stdin.
-// maybeFilename should be string or nil.
-func ReadFileOrStdin(maybeFilename interface{}) (string, string) {
-	filename := "<stdin>"
+// filename can be an empty string ("") to read stdin.
+func ReadFileOrStdin(filename string) (string, string) {
 	file := os.Stdin
 
-	if s, ok := maybeFilename.(string); ok {
-		filename = s
-
+	if filename == "" {
+		filename = "<stdin>"
+	} else {
 		var err error
-		file, err = os.Open(s)
+		file, err = os.Open(filename)
 
 		if err != nil {
 			Fail(err.Error())

@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	pretty.Println(parse.Parse(util.ReadFileOrStdin(getArgs()["<filename>"])))
+	pretty.Println(parse.Parse(util.ReadFileOrStdin(getArgs()["<filename>"].(string))))
 }
 
 func getArgs() map[string]interface{} {
@@ -20,7 +20,9 @@ Usage:
 	args, err := docopt.Parse(usage, nil, true, "Tisp 0.0.0", false)
 
 	if err != nil {
-		panic(err.Error())
+		util.Fail(err.Error())
+	} else if args["<filename>"] == nil {
+		args["<filename>"] = ""
 	}
 
 	return args

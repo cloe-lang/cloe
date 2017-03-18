@@ -14,6 +14,10 @@ func (s StringType) equal(e equalable) Value {
 	return rawBool(s == e)
 }
 
+func (s StringType) call(args Arguments) Value {
+	return Index.Eval().(callable).call(NewPositionalArguments(Normal(s)).Merge(args))
+}
+
 func (s StringType) index(v Value) Value {
 	n, ok := v.(NumberType)
 

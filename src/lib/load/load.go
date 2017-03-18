@@ -15,5 +15,5 @@ func MainModule(filename string) []compile.Output {
 		util.Fail(err.Error())
 	}
 
-	return compile.Compile(desugar.Desugar(module))
+	return compile.MainModule(desugar.Desugar(module))
 }

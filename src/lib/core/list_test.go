@@ -146,3 +146,8 @@ func TestXFailListIndex(t *testing.T) {
 		assert.True(t, ok)
 	}
 }
+
+func TestListToList(t *testing.T) {
+	_, ok := PApp(ToList, EmptyList).Eval().(ListType)
+	assert.True(t, ok)
+}

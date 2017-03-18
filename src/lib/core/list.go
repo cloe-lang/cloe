@@ -196,6 +196,10 @@ func (l ListType) merge(ts ...*Thunk) Value {
 	return cons(l.first, PApp(Merge, append([]*Thunk{l.rest}, ts...)...))
 }
 
+func (l ListType) toList() Value {
+	return l
+}
+
 func (l ListType) less(ord ordered) bool {
 	ll := ord.(ListType)
 

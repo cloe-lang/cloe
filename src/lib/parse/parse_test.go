@@ -6,9 +6,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestModule(t *testing.T) {
-	for _, str := range []string{"", "(foo bar)"} {
-		result, err := newStateWithoutFile(str).module()()
+func TestMainModule(t *testing.T) {
+	for _, str := range []string{"", "(let x 42) (let (f x) (+ x 123)) (write 123)"} {
+		result, err := newStateWithoutFile(str).mainModule()()
 
 		t.Log(result)
 
@@ -17,9 +17,31 @@ func TestModule(t *testing.T) {
 	}
 }
 
-func TestXFailModule(t *testing.T) {
+func TestXFailMainModule(t *testing.T) {
 	for _, str := range []string{"(", "(()"} {
-		result, err := newStateWithoutFile(str).module()()
+		result, err := newStateWithoutFile(str).mainModule()()
+
+		t.Log(err.Error())
+
+		assert.Equal(t, result, nil)
+		assert.NotEqual(t, err, nil)
+	}
+}
+
+func TestSubModule(t *testing.T) {
+	for _, str := range []string{"", "(let x 123) (let (f x) (+ x 123))"} {
+		result, err := newStateWithoutFile(str).subModule()()
+
+		t.Log(result)
+
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
+	}
+}
+
+func TestXFailSubModule(t *testing.T) {
+	for _, str := range []string{"(", "(()", "(write 123)"} {
+		result, err := newStateWithoutFile(str).subModule()()
 
 		t.Log(err.Error())
 

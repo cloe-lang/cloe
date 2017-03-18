@@ -9,7 +9,7 @@ import (
 
 // MainModule loads a main module as outputs.
 func MainModule(filename string) []compile.Output {
-	module, err := parse.Parse(util.ReadFileOrStdin(filename))
+	module, err := parse.MainModule(util.ReadFileOrStdin(filename))
 
 	if err != nil {
 		util.Fail(err.Error())

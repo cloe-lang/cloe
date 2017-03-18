@@ -25,9 +25,9 @@ var reserveds = map[string]bool{
 	mutualRecString: true,
 }
 
-// Parse parses a file into an AST of the language.
-func Parse(file, source string) ([]interface{}, error) {
-	m, err := newState(file, string(source)).module()()
+// MainModule parses a main module file into an AST.
+func MainModule(file, source string) ([]interface{}, error) {
+	m, err := newState(file, string(source)).mainModule()()
 
 	if err != nil {
 		return nil, err
@@ -36,8 +36,27 @@ func Parse(file, source string) ([]interface{}, error) {
 	return m.([]interface{}), nil
 }
 
-func (s *state) module() comb.Parser {
-	return s.Exhaust(s.Prefix(s.blank(), s.Many(s.Or(s.let(), s.output()))))
+// SubModule parses a sub module file into an AST.
+func SubModule(file, source string) ([]interface{}, error) {
+	m, err := newState(file, string(source)).subModule()()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return m.([]interface{}), nil
+}
+
+func (s *state) mainModule() comb.Parser {
+	return s.module(s.let(), s.output())
+}
+
+func (s *state) subModule() comb.Parser {
+	return s.module(s.let())
+}
+
+func (s *state) module(ps ...comb.Parser) comb.Parser {
+	return s.Exhaust(s.Prefix(s.blank(), s.Many(s.Or(ps...))))
 }
 
 func (s *state) let() comb.Parser {

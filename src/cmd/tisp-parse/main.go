@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	pretty.Println(parse.Parse(util.ReadFileOrStdin(getArgs()["<filename>"].(string))))
+	pretty.Println(parse.MainModule(util.ReadFileOrStdin(getArgs()["<filename>"].(string))))
 }
 
 func getArgs() map[string]interface{} {

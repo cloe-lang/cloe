@@ -2,14 +2,17 @@ package parse
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/debug"
 	"github.com/raviqqe/tisp/src/lib/parse/comb"
+	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 const (
 	commentChar     = ';'
+	importString    = "import"
 	invalidChars    = "\x00"
 	letString       = "let"
 	mutualRecString = "mr"
@@ -19,10 +22,11 @@ const (
 )
 
 var reserveds = map[string]bool{
-	letString:       true,
 	"macro":         true,
-	quoteString:     true,
+	importString:    true,
+	letString:       true,
 	mutualRecString: true,
+	quoteString:     true,
 }
 
 // MainModule parses a main module file into an AST.
@@ -48,15 +52,30 @@ func SubModule(file, source string) ([]interface{}, error) {
 }
 
 func (s *state) mainModule() comb.Parser {
-	return s.module(s.let(), s.output())
+	return s.module(s.importModule(), s.let(), s.output())
 }
 
 func (s *state) subModule() comb.Parser {
-	return s.module(s.let())
+	return s.module(s.importModule(), s.let())
 }
 
 func (s *state) module(ps ...comb.Parser) comb.Parser {
 	return s.Exhaust(s.Prefix(s.blank(), s.Many(s.Or(ps...))))
+}
+
+func (s *state) importModule() comb.Parser {
+	return s.withInfo(
+		s.list(s.strippedString(importString), s.stringLiteral()),
+		func(x interface{}, i debug.Info) (interface{}, error) {
+			xs := x.([]interface{})
+
+			path, err := strconv.Unquote(xs[1].(string))
+			if err != nil {
+				util.Fail(err.Error())
+			}
+
+			return ast.NewImport(path, i), nil
+		})
 }
 
 func (s *state) let() comb.Parser {

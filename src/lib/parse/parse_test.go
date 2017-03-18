@@ -50,6 +50,14 @@ func TestXFailSubModule(t *testing.T) {
 	}
 }
 
+func TestImportModule(t *testing.T) {
+	for _, str := range []string{`(import "foo")`, `(import "foo/bar")`} {
+		s := newStateWithoutFile(str)
+		_, err := s.Exhaust(s.importModule())()
+		assert.Equal(t, nil, err)
+	}
+}
+
 func TestLetVar(t *testing.T) {
 	for _, str := range []string{"(let foo 123)", "(let foo (f x y))"} {
 		s := newStateWithoutFile(str)
@@ -163,13 +171,13 @@ func TestSetLiteral(t *testing.T) {
 }
 
 // func TestClosureLiteral(t *testing.T) {
-// 	s := newStateWithoutFile("'(+ #1 #2 3)")
-// 	result, err := s.Exhaust(s.expression())()
+//	s := newStateWithoutFile("'(+ #1 #2 3)")
+//	result, err := s.Exhaust(s.expression())()
 
-// 	t.Logf("%#v", result)
+//	t.Logf("%#v", result)
 
-// 	assert.NotEqual(t, result, nil)
-// 	assert.Equal(t, err, nil)
+//	assert.NotEqual(t, result, nil)
+//	assert.Equal(t, err, nil)
 // }
 
 func TestApp(t *testing.T) {

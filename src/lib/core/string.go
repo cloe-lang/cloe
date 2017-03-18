@@ -14,6 +14,28 @@ func (s StringType) equal(e equalable) Value {
 	return rawBool(s == e)
 }
 
+func (s StringType) index(v Value) Value {
+	n, ok := v.(NumberType)
+
+	if !ok {
+		return NotNumberError(v)
+	}
+
+	v = PApp(isInt, Normal(n)).Eval()
+	b, ok := v.(BoolType)
+
+	if !ok {
+		return NotBoolError(v)
+	} else if !b {
+		return NotIntError(n)
+	} else if int(n) >= len(s) {
+		return OutOfRangeError()
+	}
+
+	i := int(n)
+	return s[i : i+1]
+}
+
 func (s StringType) merge(ts ...*Thunk) Value {
 	ts = append([]*Thunk{Normal(s)}, ts...)
 

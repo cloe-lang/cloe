@@ -1,16 +1,33 @@
 package compile
 
-import "github.com/raviqqe/tisp/src/lib/core"
+import (
+	"github.com/raviqqe/tisp/src/lib/core"
+	"github.com/raviqqe/tisp/src/lib/desugar"
+	"github.com/raviqqe/tisp/src/lib/parse"
+	"github.com/raviqqe/tisp/src/lib/util"
+)
 
-// MainModule compiles an AST into outputs of thunks.
-func MainModule(module []interface{}) []Output {
+// MainModule compiles a main module of a path into outputs of thunks.
+func MainModule(path string) []Output {
+	module, err := parse.MainModule(util.ReadFileOrStdin(path))
+
+	if err != nil {
+		util.Fail(err.Error())
+	}
+
 	c := newCompiler()
-	return c.compile(module)
+	return c.compile(desugar.Desugar(module))
 }
 
-// SubModule compiles an AST into a map of names to thunks..
-func SubModule(module []interface{}) map[string]*core.Thunk {
+// SubModule compiles a sub module of a path into a map of names to thunks.
+func SubModule(path string) map[string]*core.Thunk {
+	module, err := parse.SubModule(util.ReadFileOrStdin(path))
+
+	if err != nil {
+		util.Fail(err.Error())
+	}
+
 	c := newCompiler()
-	c.compile(module)
+	c.compile(desugar.Desugar(module))
 	return c.env.toMap()
 }

@@ -2,13 +2,13 @@ package main
 
 import (
 	"github.com/docopt/docopt-go"
-	"github.com/raviqqe/tisp/src/lib/load"
+	"github.com/raviqqe/tisp/src/lib/compile"
 	"github.com/raviqqe/tisp/src/lib/run"
 	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 func main() {
-	run.Run(load.MainModule(getArgs()["<filename>"].(string)))
+	run.Run(compile.MainModule(getArgs()["<filename>"].(string)))
 }
 
 func getArgs() map[string]interface{} {

@@ -2,6 +2,7 @@ package load
 
 import (
 	"github.com/raviqqe/tisp/src/lib/compile"
+	"github.com/raviqqe/tisp/src/lib/core"
 	"github.com/raviqqe/tisp/src/lib/desugar"
 	"github.com/raviqqe/tisp/src/lib/parse"
 	"github.com/raviqqe/tisp/src/lib/util"
@@ -16,4 +17,15 @@ func MainModule(filename string) []compile.Output {
 	}
 
 	return compile.MainModule(desugar.Desugar(module))
+}
+
+// SubModule loads a sub module as a map of names to thunks.
+func SubModule(filename string) map[string]*core.Thunk {
+	module, err := parse.SubModule(util.ReadFileOrStdin(filename))
+
+	if err != nil {
+		util.Fail(err.Error())
+	}
+
+	return compile.SubModule(desugar.Desugar(module))
 }

@@ -35,3 +35,7 @@ func (e environment) get(s string) *core.Thunk {
 	util.Fail("The name, %s is not found.", s)
 	panic("Unreachable")
 }
+
+func (e environment) toMap() map[string]*core.Thunk {
+	return e.me
+}

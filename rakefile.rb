@@ -9,6 +9,10 @@ end
 task build: bins
 
 task :unit_test do
+  sh 'go test -cover ./...'
+end
+
+task :full_unit_test do
   sh 'go test -cover -race ./...'
 end
 
@@ -92,6 +96,7 @@ task :install_deps do
   sh %w(
     go get -u
     github.com/golang/lint/golint
+    github.com/kr/pretty
     github.com/mvdan/interfacer/...
     golang.org/x/tools/cmd/goimports
     honnef.co/go/tools/...

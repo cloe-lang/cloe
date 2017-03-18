@@ -24,7 +24,7 @@ build:
         for dir in $(go list ./...)
         do
           profile_file=profile.out
-          go test -coverprofile=$profile_file -covermode=atomic $dir
+          go test -race -coverprofile=$profile_file -covermode=atomic $dir
           if [ -f $profile_file ]
           then
             cat $profile_file >> coverage.txt

@@ -133,7 +133,7 @@ func (args *Arguments) restKeywords() *Thunk {
 	t := EmptyDictionary
 
 	for _, k := range args.keywords {
-		t = PApp(Set, t, NewString(k.name), k.value)
+		t = PApp(Insert, t, NewString(k.name), k.value)
 	}
 
 	for _, tt := range args.expandedDicts {

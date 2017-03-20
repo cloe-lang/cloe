@@ -27,7 +27,7 @@ var Dictionary = core.NewLazyFunction(
 			val := core.PApp(core.First, l)
 			l = core.PApp(core.Rest, l)
 
-			d = core.PApp(core.Set, d, k, val)
+			d = core.PApp(core.Insert, d, k, val)
 		}
 
 		return d

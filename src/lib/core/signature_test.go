@@ -30,7 +30,7 @@ func TestXFailSignatureBindOptionalKeywordArgument(t *testing.T) {
 func TestSignatureBindExpandedDictionaries(t *testing.T) {
 	f := App(Partial, NewArguments(
 		[]PositionalArgument{
-			NewPositionalArgument(Set, false),
+			NewPositionalArgument(Insert, false),
 			NewPositionalArgument(EmptyDictionary, false),
 		},
 		[]KeywordArgument{},

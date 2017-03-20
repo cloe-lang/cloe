@@ -24,18 +24,18 @@ var kvss = [][][2]*Thunk{
 	},
 }
 
-func TestDictionarySet(t *testing.T) {
+func TestDictionaryInsert(t *testing.T) {
 	for _, k := range []*Thunk{
 		True, False, Nil, NewNumber(42), NewString("tisp"),
 	} {
-		_, ok := PApp(Set, EmptyDictionary, k, Nil).Eval().(DictionaryType)
+		_, ok := PApp(Insert, EmptyDictionary, k, Nil).Eval().(DictionaryType)
 		assert.True(t, ok)
 	}
 }
 
-func TestXFailDictionarySet(t *testing.T) {
+func TestXFailDictionaryInsert(t *testing.T) {
 	l := NewList(NewError("you", "failed."))
-	v := PApp(Set, PApp(Set, EmptyDictionary, l, Nil), l, Nil).Eval()
+	v := PApp(Insert, PApp(Insert, EmptyDictionary, l, Nil), l, Nil).Eval()
 	_, ok := v.(ErrorType)
 	t.Logf("%#v", v)
 	assert.True(t, ok)
@@ -46,8 +46,8 @@ func TestDictionaryIndex(t *testing.T) {
 		d := EmptyDictionary
 
 		for i, kv := range kvs {
-			t.Logf("Setting a %vth key...\n", i)
-			d = PApp(Set, d, kv[0], kv[1])
+			t.Logf("Insertting a %vth key...\n", i)
+			d = PApp(Insert, d, kv[0], kv[1])
 		}
 
 		assert.Equal(t, len(kvs), dictionarySize(d))
@@ -70,7 +70,7 @@ func TestDictionaryIndex(t *testing.T) {
 
 func TestXFailDictionaryIndex(t *testing.T) {
 	l := NewList(NewError("you", "failed."))
-	v := PApp(PApp(Set, EmptyDictionary, l, Nil), l, Nil).Eval()
+	v := PApp(PApp(Insert, EmptyDictionary, l, Nil), l, Nil).Eval()
 	_, ok := v.(ErrorType)
 	t.Logf("%#v", v)
 	assert.True(t, ok)
@@ -82,7 +82,7 @@ func TestDictionaryDeletable(t *testing.T) {
 
 func TestDictionaryDelete(t *testing.T) {
 	k := NewNumber(42)
-	v := PApp(Delete, PApp(Set, EmptyDictionary, k, Nil), k).Eval()
+	v := PApp(Delete, PApp(Insert, EmptyDictionary, k, Nil), k).Eval()
 	d, ok := v.(DictionaryType)
 	t.Logf("%#v", v)
 	assert.True(t, ok)
@@ -92,7 +92,7 @@ func TestDictionaryDelete(t *testing.T) {
 func TestXFailDictionaryDelete(t *testing.T) {
 	l1 := NewList(NewError("you", "failed."))
 	l2 := NewList(NewNumber(42))
-	v := PApp(Delete, PApp(Set, EmptyDictionary, l1, Nil), l2).Eval()
+	v := PApp(Delete, PApp(Insert, EmptyDictionary, l1, Nil), l2).Eval()
 	_, ok := v.(ErrorType)
 	t.Logf("%#v", v)
 	assert.True(t, ok)
@@ -104,8 +104,8 @@ func TestDictionaryToList(t *testing.T) {
 		d := EmptyDictionary
 
 		for i, kv := range kvs {
-			t.Logf("Setting a %vth key...\n", i)
-			d = PApp(Set, d, kv[0], kv[1])
+			t.Logf("Insertting a %vth key...\n", i)
+			d = PApp(Insert, d, kv[0], kv[1])
 		}
 
 		assert.Equal(t, len(kvs), dictionarySize(d))
@@ -138,7 +138,7 @@ func TestDictionaryWithDuplicateKeys(t *testing.T) {
 	d := EmptyDictionary
 
 	for _, i := range []int{0, 1, 2, 2, 7, 3, 0, 4, 6, 1, 1, 4, 5, 6, 0, 2, 8, 8} {
-		d = PApp(Set, d, ks[i], ks[i])
+		d = PApp(Insert, d, ks[i], ks[i])
 	}
 
 	assert.Equal(t, len(ks), dictionarySize(d))
@@ -164,7 +164,7 @@ func TestDictionaryEqual(t *testing.T) {
 
 	for i := range ds {
 		for _, j := range rand.Perm(len(kvs)) {
-			ds[i] = PApp(Set, ds[i], kvs[j][0], kvs[j][1])
+			ds[i] = PApp(Insert, ds[i], kvs[j][0], kvs[j][1])
 		}
 	}
 
@@ -182,11 +182,11 @@ func TestDictionaryLess(t *testing.T) {
 
 	for i := range ds {
 		for _, j := range rand.Perm(len(kvs)) {
-			ds[i] = PApp(Set, ds[i], kvs[j][0], kvs[j][1])
+			ds[i] = PApp(Insert, ds[i], kvs[j][0], kvs[j][1])
 		}
 	}
 
-	ds[1] = PApp(Set, ds[1], Nil, Nil)
+	ds[1] = PApp(Insert, ds[1], Nil, Nil)
 
 	assert.Equal(t, 2, ds[0].Eval().(DictionaryType).Size())
 	assert.Equal(t, 3, ds[1].Eval().(DictionaryType).Size())
@@ -199,8 +199,8 @@ func TestDictionaryToString(t *testing.T) {
 		thunk    *Thunk
 	}{
 		{"{}", EmptyDictionary},
-		{"{true nil}", PApp(Set, EmptyDictionary, True, Nil)},
-		{"{false nil true nil}", PApp(Set, PApp(Set, EmptyDictionary, True, Nil), False, Nil)},
+		{"{true nil}", PApp(Insert, EmptyDictionary, True, Nil)},
+		{"{false nil true nil}", PApp(Insert, PApp(Insert, EmptyDictionary, True, Nil), False, Nil)},
 	} {
 		assert.Equal(t, StringType(xs.expected), PApp(ToString, xs.thunk).Eval())
 	}

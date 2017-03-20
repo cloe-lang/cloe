@@ -21,13 +21,13 @@ func NewDictionary(ks []Value, vs []*Thunk) *Thunk {
 	d := Normal(DictionaryType{rbt.NewDictionary(less)})
 
 	for i, k := range ks {
-		d = PApp(Set, d, Normal(k), vs[i])
+		d = PApp(Insert, d, Normal(k), vs[i])
 	}
 
 	return d
 }
 
-var Set = NewLazyFunction(
+var Insert = NewLazyFunction(
 	NewSignature(
 		[]string{"dict", "key", "value"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",

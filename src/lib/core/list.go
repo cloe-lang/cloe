@@ -154,20 +154,11 @@ func (l ListType) call(args Arguments) Value {
 	return Index.Eval().(callable).call(NewPositionalArguments(Normal(l)).Merge(args))
 }
 
-func (l ListType) index(v Value) (result Value) {
-	n, ok := v.(NumberType)
+func (l ListType) index(v Value) Value {
+	n, err := checkIndex(v)
 
-	if !ok {
-		return NotNumberError(v)
-	}
-
-	v = PApp(isInt, Normal(n)).Eval()
-	b, ok := v.(BoolType)
-
-	if !ok {
-		return NotBoolError(v)
-	} else if !b {
-		return NotIntError(n)
+	if err != nil {
+		return err
 	}
 
 	for {
@@ -178,6 +169,7 @@ func (l ListType) index(v Value) (result Value) {
 		}
 
 		v = l.rest.Eval()
+		var ok bool
 		l, ok = v.(ListType)
 
 		if !ok {
@@ -194,6 +186,54 @@ func (l ListType) merge(ts ...*Thunk) Value {
 	}
 
 	return cons(l.first, PApp(Merge, append([]*Thunk{l.rest}, ts...)...))
+}
+
+func (l ListType) delete(v Value) Value {
+	n, err := checkIndex(v)
+
+	if err != nil {
+		return err
+	}
+
+	elems := make([]*Thunk, 0)
+
+	for {
+		if l == emptyList {
+			return OutOfRangeError()
+		} else if n == 0 {
+			return PApp(Merge, NewList(elems...), l.rest)
+		}
+
+		elems = append(elems, l.first)
+		v = l.rest.Eval()
+		var ok bool
+		l, ok = v.(ListType)
+
+		if !ok {
+			return NotListError(v)
+		}
+
+		n--
+	}
+}
+
+func checkIndex(v Value) (NumberType, Value) {
+	n, ok := v.(NumberType)
+
+	if !ok {
+		return 0, NotNumberError(v)
+	}
+
+	v = PApp(isInt, Normal(n)).Eval()
+	b, ok := v.(BoolType)
+
+	if !ok {
+		return 0, NotBoolError(v)
+	} else if !b {
+		return 0, NotIntError(n)
+	}
+
+	return n, nil
 }
 
 func (l ListType) toList() Value {

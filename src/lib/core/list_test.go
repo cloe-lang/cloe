@@ -151,3 +151,17 @@ func TestListToList(t *testing.T) {
 	_, ok := PApp(ToList, EmptyList).Eval().(ListType)
 	assert.True(t, ok)
 }
+
+func TestListDelete(t *testing.T) {
+	for _, test := range []struct {
+		list   *Thunk
+		index  float64
+		answer *Thunk
+	}{
+		{NewList(Nil), 0, NewList()},
+		{NewList(Nil, True), 1, NewList(Nil)},
+		{NewList(Nil, True, False), 2, NewList(Nil, True)},
+	} {
+		assert.True(t, testEqual(PApp(Delete, test.list, NewNumber(test.index)), test.answer))
+	}
+}

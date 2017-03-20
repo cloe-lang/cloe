@@ -63,6 +63,19 @@ func (s StringType) merge(ts ...*Thunk) Value {
 	return StringType(strings.Join(ss, ""))
 }
 
+func (s StringType) delete(v Value) Value {
+	n, err := checkIndex(v)
+	i := int(n)
+
+	if err != nil {
+		return err
+	} else if i >= len(s) {
+		return OutOfRangeError()
+	}
+
+	return s[:i] + s[i+1:]
+}
+
 func (s StringType) toList() Value {
 	if s == "" {
 		return emptyList

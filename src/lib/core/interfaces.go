@@ -153,12 +153,12 @@ var Merge = NewLazyFunction(
 	})
 
 type deletable interface {
-	delete(Value) (deletable, Value)
+	delete(Value) Value
 }
 
 var Delete = NewStrictFunction(
 	NewSignature(
-		[]string{"collection"}, []OptionalArgument{}, "elems",
+		[]string{"collection", "elem"}, []OptionalArgument{}, "",
 		[]string{}, []OptionalArgument{}, "",
 	),
 	func(vs ...Value) Value {
@@ -168,32 +168,7 @@ var Delete = NewStrictFunction(
 			return TypeError(vs[0], "deletable")
 		}
 
-		l, ok := vs[1].(ListType)
-
-		if !ok {
-			return NotListError(vs[1])
-		}
-
-		vs, err := l.ToValues()
-
-		if err != nil {
-			return err
-		}
-
-		for _, v := range vs {
-			if _, ok := v.(ErrorType); ok {
-				return v
-			}
-
-			var err Value
-			d, err = d.delete(v)
-
-			if err != nil {
-				return err
-			}
-		}
-
-		return d
+		return d.delete(vs[1])
 	})
 
 type listable interface {

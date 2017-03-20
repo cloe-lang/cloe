@@ -158,14 +158,14 @@ func (d DictionaryType) merge(ts ...*Thunk) Value {
 	return d
 }
 
-func (d DictionaryType) delete(v Value) (result deletable, err Value) {
+func (d DictionaryType) delete(v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
-			result, err = nil, r
+			result = r
 		}
 	}()
 
-	return d.Remove(v), nil
+	return d.Remove(v)
 }
 
 func (d DictionaryType) less(o ordered) bool {

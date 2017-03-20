@@ -99,3 +99,13 @@ func (s StringType) string() Value {
 func (s StringType) size() Value {
 	return NumberType(len(([]rune)(string(s))))
 }
+
+func (s StringType) include(v Value) Value {
+	ss, ok := v.(StringType)
+
+	if !ok {
+		return NotStringError(v)
+	}
+
+	return NewBool(strings.Contains(string(s), string(ss)))
+}

@@ -4,7 +4,7 @@ package core
 type collection interface {
 	callable
 
-	// include(Value) Value
+	include(Value) Value
 	index(Value) Value
 	// insert(Value) Value
 	merge(...*Thunk) Value
@@ -12,6 +12,26 @@ type collection interface {
 	toList() Value
 	size() Value
 }
+
+// Include returns true if a collection includes an element, or false otherwise.
+var Include = NewStrictFunction(
+	NewSignature(
+		[]string{"collection", "elem"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(vs ...Value) Value {
+		c, ok := vs[0].(collection)
+
+		if !ok {
+			return TypeError(vs[0], "collection")
+		}
+
+		if err, ok := vs[1].(ErrorType); ok {
+			return err
+		}
+
+		return c.include(vs[1])
+	})
 
 // Index extracts an element corresponding with a key.
 var Index = NewStrictFunction(

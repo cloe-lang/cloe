@@ -221,3 +221,8 @@ func (d DictionaryType) string() Value {
 func (d DictionaryType) size() Value {
 	return NumberType(d.Size())
 }
+
+func (d DictionaryType) include(v Value) Value {
+	_, ok := d.Search(v)
+	return NewBool(ok)
+}

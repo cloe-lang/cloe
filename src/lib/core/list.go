@@ -341,3 +341,20 @@ func (l ListType) size() Value {
 
 	return NumberType(len(ts))
 }
+
+func (l ListType) include(elem Value) Value {
+	if l == emptyList {
+		return False
+	}
+
+	v := PApp(Equal, l.first, Normal(elem)).Eval()
+	b, ok := v.(BoolType)
+
+	if !ok {
+		return NotBoolError(v)
+	} else if b {
+		return True
+	}
+
+	return PApp(Include, l.rest, Normal(elem))
+}

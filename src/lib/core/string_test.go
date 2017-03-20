@@ -67,3 +67,21 @@ func TestStringSize(t *testing.T) {
 		assert.Equal(t, test.size, PApp(Size, Normal(test.string)).Eval().(NumberType))
 	}
 }
+
+func TestStringInclude(t *testing.T) {
+	for _, test := range []struct {
+		string    StringType
+		substring StringType
+		answer    BoolType
+	}{
+		{"", "", true},
+		{"a", "", true},
+		{"a", "a", true},
+		{"abc", "ab", true},
+		{"abcdef", "cde", true},
+		{"", "a", false},
+		{"ab", "ac", false},
+	} {
+		assert.Equal(t, test.answer, PApp(Include, Normal(test.string), Normal(test.substring)).Eval().(BoolType))
+	}
+}

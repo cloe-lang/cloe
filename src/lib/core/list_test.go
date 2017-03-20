@@ -179,3 +179,19 @@ func TestListSize(t *testing.T) {
 		assert.Equal(t, test.size, PApp(Size, test.list).Eval().(NumberType))
 	}
 }
+
+func TestListInclude(t *testing.T) {
+	for _, test := range []struct {
+		list   *Thunk
+		elem   *Thunk
+		answer BoolType
+	}{
+		{NewList(), Nil, false},
+		{NewList(Nil), Nil, true},
+		{NewList(Nil, True), True, true},
+		{NewList(Nil, False), True, false},
+		{NewList(Nil, True, NewNumber(42.1), NewNumber(42), False), NewNumber(42), true},
+	} {
+		assert.Equal(t, test.answer, PApp(Include, test.list, test.elem).Eval().(BoolType))
+	}
+}

@@ -218,3 +218,18 @@ func TestDictionarySize(t *testing.T) {
 		assert.Equal(t, test.size, PApp(Size, test.dictionary).Eval().(NumberType))
 	}
 }
+
+func TestDictionaryInclude(t *testing.T) {
+	for _, test := range []struct {
+		dictionary *Thunk
+		key        *Thunk
+		answer     BoolType
+	}{
+		{EmptyDictionary, Nil, false},
+		{PApp(Insert, EmptyDictionary, False, Nil), False, true},
+		{PApp(Insert, PApp(Insert, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(42), true},
+		{PApp(Insert, PApp(Insert, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(2049), false},
+	} {
+		assert.Equal(t, test.answer, PApp(Include, test.dictionary, test.key).Eval().(BoolType))
+	}
+}

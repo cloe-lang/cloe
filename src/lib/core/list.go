@@ -331,3 +331,13 @@ func (l ListType) ToValues() ([]Value, *Thunk) {
 
 	return vs, nil
 }
+
+func (l ListType) size() Value {
+	ts, err := l.ToThunks()
+
+	if err != nil {
+		return err
+	}
+
+	return NumberType(len(ts))
+}

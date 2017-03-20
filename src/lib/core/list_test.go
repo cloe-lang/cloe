@@ -165,3 +165,17 @@ func TestListDelete(t *testing.T) {
 		assert.True(t, testEqual(PApp(Delete, test.list, NewNumber(test.index)), test.answer))
 	}
 }
+
+func TestListSize(t *testing.T) {
+	for _, test := range []struct {
+		list *Thunk
+		size NumberType
+	}{
+		{NewList(), 0},
+		{NewList(Nil), 1},
+		{NewList(Nil, True), 2},
+		{NewList(Nil, True, False), 3},
+	} {
+		assert.Equal(t, test.size, PApp(Size, test.list).Eval().(NumberType))
+	}
+}

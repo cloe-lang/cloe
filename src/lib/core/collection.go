@@ -10,7 +10,7 @@ type collection interface {
 	merge(...*Thunk) Value
 	delete(Value) Value
 	toList() Value
-	// size() Value
+	size() Value
 }
 
 // Index extracts an element corresponding with a key.
@@ -77,6 +77,23 @@ var Delete = NewStrictFunction(
 		}
 
 		return d.delete(vs[1])
+	})
+
+// Size returns a size of a collection.
+var Size = NewStrictFunction(
+	NewSignature(
+		[]string{"collection"}, []OptionalArgument{}, "",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(vs ...Value) Value {
+		v := vs[0]
+		c, ok := v.(collection)
+
+		if !ok {
+			return TypeError(v, "collection")
+		}
+
+		return c.size()
 	})
 
 // ToList converts a collection into a list of its elements.

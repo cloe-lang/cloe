@@ -205,3 +205,16 @@ func TestDictionaryToString(t *testing.T) {
 		assert.Equal(t, StringType(xs.expected), PApp(ToString, xs.thunk).Eval())
 	}
 }
+
+func TestDictionarySize(t *testing.T) {
+	for _, test := range []struct {
+		dictionary *Thunk
+		size       NumberType
+	}{
+		{EmptyDictionary, 0},
+		{PApp(Insert, EmptyDictionary, True, Nil), 1},
+		{PApp(Insert, PApp(Insert, EmptyDictionary, True, Nil), False, Nil), 2},
+	} {
+		assert.Equal(t, test.size, PApp(Size, test.dictionary).Eval().(NumberType))
+	}
+}

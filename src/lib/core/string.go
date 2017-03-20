@@ -95,3 +95,7 @@ func (s StringType) less(o ordered) bool {
 func (s StringType) string() Value {
 	return s
 }
+
+func (s StringType) size() Value {
+	return NumberType(len(([]rune)(string(s))))
+}

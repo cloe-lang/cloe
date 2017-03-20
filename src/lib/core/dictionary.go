@@ -217,3 +217,7 @@ func (d DictionaryType) string() Value {
 
 	return StringType("{" + strings.Join(ss, " ") + "}")
 }
+
+func (d DictionaryType) size() Value {
+	return NumberType(d.Size())
+}

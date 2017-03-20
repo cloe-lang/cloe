@@ -53,3 +53,17 @@ func TestStringDelete(t *testing.T) {
 			PApp(Delete, Normal(test.string), NewNumber(test.index)).Eval().(StringType))
 	}
 }
+
+func TestStringSize(t *testing.T) {
+	for _, test := range []struct {
+		string StringType
+		size   NumberType
+	}{
+		{"", 0},
+		{"a", 1},
+		{"ab", 2},
+		{"abc", 3},
+	} {
+		assert.Equal(t, test.size, PApp(Size, Normal(test.string)).Eval().(NumberType))
+	}
+}

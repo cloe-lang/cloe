@@ -77,7 +77,7 @@ func TestXFailDictionaryIndex(t *testing.T) {
 }
 
 func TestDictionaryDeletable(t *testing.T) {
-	t.Log(deletable(EmptyDictionary.Eval().(deletable)))
+	t.Log(collection(EmptyDictionary.Eval().(collection)))
 }
 
 func TestDictionaryDelete(t *testing.T) {

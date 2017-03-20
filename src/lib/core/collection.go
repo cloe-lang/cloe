@@ -1,14 +1,14 @@
 package core
 
-// TODO: Create collection interface integrating some existing interfaces with
-// methods of index, insert, merge, delete, size (or len?), include and toList.
-// It should be implemented by StringType, ListType, DictionaryType and SetType.
-
+// TODO: Complete implementations of collection interface.
 type collection interface {
+	// include(Value) Value
 	index(Value) Value
-	merge(ts ...*Thunk) Value
+	// insert(Value) Value
+	merge(...*Thunk) Value
 	delete(Value) Value
 	toList() Value
+	// size() Value
 }
 
 // Index extracts an element corresponding with a key.

@@ -15,6 +15,7 @@ func (f functionType) call(args Arguments) Value {
 	return f.function(ts...)
 }
 
+// NewLazyFunction creates a function whose arguments are evaluated lazily.
 func NewLazyFunction(s Signature, f func(...*Thunk) Value) *Thunk {
 	return Normal(functionType{
 		signature: s,
@@ -22,6 +23,7 @@ func NewLazyFunction(s Signature, f func(...*Thunk) Value) *Thunk {
 	})
 }
 
+// NewStrictFunction creates a function whose arguments are evaluated strictly.
 func NewStrictFunction(s Signature, f func(...Value) Value) *Thunk {
 	return NewLazyFunction(s, func(ts ...*Thunk) Value {
 		for _, t := range ts {

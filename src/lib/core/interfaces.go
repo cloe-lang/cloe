@@ -8,7 +8,7 @@ import "reflect"
 type Value interface{}
 
 type callable interface {
-	call(Arguments) Value
+	call(Arguments) Value // index as function calls
 }
 
 // stringable is an interface for something convertable into StringType.

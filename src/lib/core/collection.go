@@ -2,6 +2,8 @@ package core
 
 // TODO: Complete implementations of collection interface.
 type collection interface {
+	callable
+
 	// include(Value) Value
 	index(Value) Value
 	// insert(Value) Value

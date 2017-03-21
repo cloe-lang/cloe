@@ -1,12 +1,11 @@
 package core
 
-// TODO: Complete implementations of collection interface.
 type collection interface {
 	callable
 
 	include(Value) Value
 	index(Value) Value
-	// insert(Value) Value
+	insert(...*Thunk) Value
 	merge(...*Thunk) Value
 	delete(Value) Value
 	toList() Value
@@ -47,6 +46,36 @@ var Index = NewStrictFunction(
 		}
 
 		return i.index(vs[1])
+	})
+
+// Insert inserts an element into a collection.
+var Insert = NewLazyFunction(
+	NewSignature(
+		[]string{"collection"}, []OptionalArgument{}, "values",
+		[]string{}, []OptionalArgument{}, "",
+	),
+	func(ts ...*Thunk) (result Value) {
+		v := ts[0].Eval()
+		c, ok := v.(collection)
+
+		if !ok {
+			return NotCollectionError(v)
+		}
+
+		v = ts[1].Eval()
+		l, ok := v.(ListType)
+
+		if !ok {
+			return NotListError(v)
+		}
+
+		ts, err := l.ToThunks()
+
+		if err != nil {
+			return err
+		}
+
+		return c.insert(ts...)
 	})
 
 // Merge merges 2 collections.

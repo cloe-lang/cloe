@@ -195,3 +195,21 @@ func TestListInclude(t *testing.T) {
 		assert.Equal(t, test.answer, PApp(Include, test.list, test.elem).Eval().(BoolType))
 	}
 }
+
+func TestListInsert(t *testing.T) {
+	for _, test := range []struct {
+		list     *Thunk
+		index    NumberType
+		elem     *Thunk
+		expected *Thunk
+	}{
+		{NewList(), 0, Nil, NewList(Nil)},
+		{NewList(True), 0, False, NewList(False, True)},
+		{NewList(True), 1, False, NewList(True, False)},
+		{NewList(True, False), 0, Nil, NewList(Nil, True, False)},
+		{NewList(True, False), 1, Nil, NewList(True, Nil, False)},
+		{NewList(True, False), 2, Nil, NewList(True, False, Nil)},
+	} {
+		assert.True(t, testEqual(test.expected, PApp(Insert, test.list, Normal(test.index), test.elem)))
+	}
+}

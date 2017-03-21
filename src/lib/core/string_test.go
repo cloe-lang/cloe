@@ -85,3 +85,24 @@ func TestStringInclude(t *testing.T) {
 		assert.Equal(t, test.answer, PApp(Include, Normal(test.string), Normal(test.substring)).Eval().(BoolType))
 	}
 }
+
+func TestStringInsert(t *testing.T) {
+	for _, test := range []struct {
+		string   StringType
+		index    NumberType
+		elem     StringType
+		expected StringType
+	}{
+		{"", 0, "", ""},
+		{"", 0, "a", "a"},
+		{"a", 0, "b", "ba"},
+		{"a", 1, "b", "ab"},
+		{"ab", 0, "c", "cab"},
+		{"ab", 1, "c", "acb"},
+		{"ab", 2, "c", "abc"},
+	} {
+		assert.True(t, testEqual(
+			Normal(test.expected),
+			PApp(Insert, Normal(test.string), Normal(test.index), Normal(test.elem))))
+	}
+}

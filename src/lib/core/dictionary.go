@@ -27,33 +27,25 @@ func NewDictionary(ks []Value, vs []*Thunk) *Thunk {
 	return d
 }
 
-var Insert = NewLazyFunction(
-	NewSignature(
-		[]string{"dict", "key", "value"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
-	),
-	func(ts ...*Thunk) (result Value) {
-		defer func() {
-			if r := recover(); r != nil {
-				result = r
-			}
-		}()
-
-		v := ts[0].Eval()
-		d, ok := v.(DictionaryType)
-
-		if !ok {
-			return NotDictionaryError(v)
+func (d DictionaryType) insert(ts ...*Thunk) (result Value) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = r
 		}
+	}()
 
-		k := ts[1].Eval()
+	if len(ts) != 2 {
+		return NumArgsError("insert", "3 if a collection is a dictionary")
+	}
 
-		if _, ok := k.(ordered); !ok {
-			return notOrderedError(k)
-		}
+	v := ts[0].Eval()
 
-		return d.Insert(k, ts[2])
-	})
+	if _, ok := v.(ordered); !ok {
+		return notOrderedError(v)
+	}
+
+	return d.Insert(v, ts[1])
+}
 
 func (d DictionaryType) call(args Arguments) Value {
 	return Index.Eval().(callable).call(NewPositionalArguments(Normal(d)).Merge(args))

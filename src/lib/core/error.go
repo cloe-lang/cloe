@@ -93,7 +93,13 @@ func NotStringError(v Value) *Thunk {
 // NotCallableError creates an error value for an invalid value which is not a
 // callable.
 func NotCallableError(v Value) *Thunk {
-	return TypeError(v, "function.")
+	return TypeError(v, "callable")
+}
+
+// NotCollectionError creates an error value for an invalid value which is not
+// a collection.
+func NotCollectionError(v Value) *Thunk {
+	return TypeError(v, "collection")
 }
 
 // InputError creates a thunk which represents an input error.

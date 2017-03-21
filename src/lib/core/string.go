@@ -1,6 +1,8 @@
 package core
 
-import "strings"
+import (
+	"strings"
+)
 
 // StringType represents strings in the language.
 type StringType string
@@ -19,25 +21,43 @@ func (s StringType) call(args Arguments) Value {
 }
 
 func (s StringType) index(v Value) Value {
-	n, ok := v.(NumberType)
+	n, err := checkIndex(v)
 
-	if !ok {
-		return NotNumberError(v)
-	}
-
-	v = PApp(isInt, Normal(n)).Eval()
-	b, ok := v.(BoolType)
-
-	if !ok {
-		return NotBoolError(v)
-	} else if !b {
-		return NotIntError(n)
-	} else if int(n) >= len(s) {
-		return OutOfRangeError()
+	if err != nil {
+		return err
 	}
 
 	i := int(n)
+
+	if i >= len(s) {
+		return OutOfRangeError()
+	}
+
 	return s[i : i+1]
+}
+
+func (s StringType) insert(ts ...*Thunk) Value {
+	v := ts[0].Eval()
+	n, err := checkIndex(v)
+
+	if err != nil {
+		return err
+	}
+
+	i := int(n)
+
+	if i > len(s) {
+		return OutOfRangeError()
+	}
+
+	v = ts[1].Eval()
+	ss, ok := v.(StringType)
+
+	if !ok {
+		return NotStringError(v)
+	}
+
+	return s[:i] + ss + s[i:]
 }
 
 func (s StringType) merge(ts ...*Thunk) Value {

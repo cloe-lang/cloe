@@ -28,9 +28,18 @@ func TestXFailSignatureBindOptionalKeywordArgument(t *testing.T) {
 }
 
 func TestSignatureBindExpandedDictionaries(t *testing.T) {
+	insert := NewLazyFunction(
+		NewSignature(
+			[]string{"collection", "key", "value"}, []OptionalArgument{}, "",
+			[]string{}, []OptionalArgument{}, "",
+		),
+		func(ts ...*Thunk) (result Value) {
+			return PApp(Insert, ts...)
+		})
+
 	f := App(Partial, NewArguments(
 		[]PositionalArgument{
-			NewPositionalArgument(Insert, false),
+			NewPositionalArgument(insert, false),
 			NewPositionalArgument(EmptyDictionary, false),
 		},
 		[]KeywordArgument{},

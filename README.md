@@ -34,15 +34,18 @@ You need Go 1.8+.
 
 - Purely functional programming
   - Impure function calls in pure functions are detected and raise errors at
-    runtime.
+    runtime. (WIP)
 - Implicit parallelism and concurrency
   - Most of the time, you don't need to parallelize your code explicitly.
     Tisp does it all for you!
-  - Inherently, codes written in Tisp can be run concurrently.
+  - Inherently, programs written in Tisp run concurrently and can run
+    parallelly.
 - Optional injection of parallelism and causality
   - You can also increase parallelism of your code or run functions
     sequentially using `par` or `seq` primitives.
+    (`par` is not implemented yet.)
 - Asynchronous IO
+  - Every IO can be run asynchronously by the `par` primitive.
 - Dynamic typing
 
 ## Documentation

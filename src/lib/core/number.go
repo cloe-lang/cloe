@@ -94,6 +94,7 @@ var Sub = NewLazyFunction(
 		return n0
 	})
 
+// Mul multiplies numbers of arguments.
 var Mul = NewLazyFunction(
 	NewSignature(
 		[]string{}, []OptionalArgument{}, "nums",
@@ -128,6 +129,7 @@ var Mul = NewLazyFunction(
 		return prod
 	})
 
+// Div divides the first argument by arguments of the second to the last one by one.
 var Div = NewLazyFunction(
 	NewSignature(
 		[]string{"dividend"}, []OptionalArgument{}, "divisors",
@@ -173,6 +175,7 @@ var Div = NewLazyFunction(
 
 // TODO: Implement FloorDiv function.
 
+// Mod calculate a remainder of a division of the first argument by the second one.
 var Mod = NewStrictFunction(
 	NewSignature(
 		[]string{"dividend", "divisor"}, []OptionalArgument{}, "",
@@ -200,6 +203,8 @@ var Mod = NewStrictFunction(
 		return NewNumber(math.Mod(float64(n1), float64(n2)))
 	})
 
+// Pow calculates an exponentiation from a base of the first argument and an
+// exponent of the second argument.
 var Pow = NewStrictFunction(
 	NewSignature(
 		[]string{"base", "exponent"}, []OptionalArgument{}, "",

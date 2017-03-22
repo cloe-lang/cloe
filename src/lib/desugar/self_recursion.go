@@ -1,6 +1,9 @@
 package desugar
 
-import "github.com/raviqqe/tisp/src/lib/ast"
+import (
+	"github.com/raviqqe/tisp/src/lib/ast"
+	"github.com/raviqqe/tisp/src/lib/gensym"
+)
 
 func desugarSelfRecursiveStatement(s interface{}) []interface{} {
 	switch s := s.(type) {
@@ -18,7 +21,7 @@ func desugarSelfRecursiveFunction(f ast.LetFunction) []interface{} {
 		return []interface{}{f}
 	}
 
-	unrecursive := f.Name() + "$unrecursive"
+	unrecursive := gensym.GenSym(f.Name(), "unrecursive")
 
 	return []interface{}{
 		ast.NewLetFunction(

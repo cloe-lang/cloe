@@ -2,6 +2,7 @@ package desugar
 
 import (
 	"github.com/raviqqe/tisp/src/lib/ast"
+	"github.com/raviqqe/tisp/src/lib/gensym"
 	"github.com/raviqqe/tisp/src/lib/util"
 )
 
@@ -37,13 +38,13 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 			ls = append(ls, l)
 			names.add(l.Name())
 		case ast.LetFunction:
-			flattened := f.Name() + "$" + l.Name()
-
 			usedNames := names.find(l.Body())
 			for _, l := range l.Lets() {
 				usedNames.merge(names.find(l.(ast.LetVar)))
 			}
 			usedNames.subtract(signatureToNames(l.Signature()))
+
+			flattened := gensym.GenSym(f.Name(), l.Name())
 
 			ss = append(ss, ast.NewLetFunction(
 				flattened,

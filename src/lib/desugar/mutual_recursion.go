@@ -5,6 +5,7 @@ import (
 
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/debug"
+	"github.com/raviqqe/tisp/src/lib/gensym"
 	"github.com/raviqqe/tisp/src/lib/util"
 )
 
@@ -22,20 +23,20 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 	nonRecursives := make([]interface{}, 0, len(olds))
 
 	for _, old := range olds {
-		const fsArg = "mr$functions$argument"
+		fsArg := gensym.GenSym("mr", "functions", "argument")
 		nameToIndex := indexLetFunctions(olds...)
 
 		nonRecursives = append(
 			nonRecursives,
 			ast.NewLetFunction(
-				"nonRecursive$"+old.Name(),
+				gensym.GenSym("nonRecursive", old.Name()),
 				prependPosReqsToSig(old.Signature(), []string{fsArg}),
 				replaceNames(fsArg, nameToIndex, old.Lets(), mr.DebugInfo()).([]interface{}),
 				replaceNames(fsArg, deleteNamesDefinedByLets(nameToIndex, old.Lets()), old.Body(), mr.DebugInfo()),
 				old.DebugInfo()))
 	}
 
-	const mrFunctionList = "ys$mr$functions"
+	mrFunctionList := gensym.GenSym("ys", "mr", "functions")
 	news := make([]interface{}, 0, len(olds))
 
 	for i, old := range olds {

@@ -3,3 +3,5 @@ pages:
   - Home: index.md
   - Language Specification: language_specification.md
   - For Developers: for_developers.md
+theme: mkdocs
+theme_dir: theme

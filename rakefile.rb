@@ -109,15 +109,16 @@ task install: %i(install_deps test build) do
   sh 'go get ./...'
 end
 
-task :doc do
-  cd 'doc'
-  sh 'mkdocs gh-deploy -m "[skip ci] on Wercker"'
-end
-
 task :images do
   Dir.glob 'img/*.svg' do |file|
     sh "inkscape --export-area-drawing --export-png #{file.ext 'png'} #{file}"
   end
+end
+
+task doc: :images do
+  sh 'convert -resize 16x16 img/icon.png doc/theme/img/favicon.ico'
+  cd 'doc'
+  sh 'mkdocs gh-deploy -m "[skip ci] on Wercker"'
 end
 
 task default: %i(test build)

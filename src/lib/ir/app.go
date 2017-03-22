@@ -5,12 +5,14 @@ import (
 	"github.com/raviqqe/tisp/src/lib/debug"
 )
 
+// App represents an application of a function to arguments.
 type App struct {
 	function interface{}
 	args     Arguments
 	info     debug.Info
 }
 
+// NewApp creates an App from a function and arguments of expressions in IR.
 func NewApp(f interface{}, args Arguments, info debug.Info) App {
 	return App{f, args, info}
 }

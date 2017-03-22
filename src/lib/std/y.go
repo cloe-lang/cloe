@@ -2,6 +2,8 @@ package std
 
 import "github.com/raviqqe/tisp/src/lib/core"
 
+// Y is Y combinator which takes a function whose first argument is itself
+// applied to the combinator.
 var Y = core.NewLazyFunction(
 	core.NewSignature(
 		[]string{"function"}, []core.OptionalArgument{}, "",
@@ -25,6 +27,8 @@ var fxx = core.NewLazyFunction(
 		return core.PApp(core.Partial, ts[0], core.PApp(ts[1], ts[1]))
 	})
 
+// Ys is Y* combinator which takes functions whose first arguments are a list
+// of themselves applied to the combinator.
 var Ys = core.NewLazyFunction(
 	core.NewSignature(
 		[]string{}, []core.OptionalArgument{}, "functions",

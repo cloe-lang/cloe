@@ -2,11 +2,13 @@ package ir
 
 import "github.com/raviqqe/tisp/src/lib/core"
 
+// KeywordArgument represents a keyword argument passed to a function.
 type KeywordArgument struct {
 	name  string
 	value interface{}
 }
 
+// NewKeywordArgument creates a KeywordArgument from a bound name and its value.
 func NewKeywordArgument(n string, ir interface{}) KeywordArgument {
 	return KeywordArgument{
 		name:  n,

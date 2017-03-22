@@ -2,7 +2,7 @@ package core
 
 import "strings"
 
-// ListType represents a sequence of values.
+// ListType represents a list of values in the language.
 // They can have infinite number of elements inside.
 type ListType struct {
 	first *Thunk

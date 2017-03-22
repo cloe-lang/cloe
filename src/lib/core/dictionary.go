@@ -7,12 +7,16 @@ import (
 	"github.com/raviqqe/tisp/src/lib/util"
 )
 
+// DictionaryType represents a dictionary in the language.
 type DictionaryType struct {
 	rbt.Dictionary
 }
 
+// EmptyDictionary is a thunk of an empty dictionary.
 var EmptyDictionary = NewDictionary([]Value{}, []*Thunk{})
 
+// NewDictionary creates a dictionary from keys of values and their
+// corresponding values of thunks.
 func NewDictionary(ks []Value, vs []*Thunk) *Thunk {
 	if len(ks) != len(vs) {
 		util.Fail("Number of keys doesn't match with number of values.")

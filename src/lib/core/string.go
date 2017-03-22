@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-// StringType represents strings in the language.
+// StringType represents a string in the language.
 type StringType string
 
 // NewString creates a string in the language from one in Go.

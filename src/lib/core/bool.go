@@ -1,6 +1,6 @@
 package core
 
-// BoolType represents a type of boolean values in the language.
+// BoolType represents a boolean values in the language.
 type BoolType bool
 
 // True is a true value.

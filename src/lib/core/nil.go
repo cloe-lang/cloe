@@ -1,6 +1,6 @@
 package core
 
-// NilType is a type of Nil. You know.
+// NilType represents a nil value. You know.
 type NilType struct{}
 
 // Nil is the evil or million-dollar mistake.

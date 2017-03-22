@@ -2,7 +2,7 @@ package core
 
 import "math"
 
-// NumberType is a type of numbers in the language.
+// NumberType represents a number in the language.
 // It will perhaps be represented by DEC64 in the future release.
 type NumberType float64
 

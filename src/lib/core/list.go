@@ -55,8 +55,8 @@ func (l ListType) equal(e equalable) Value {
 // Prepend prepends multiple elements to a list of the last argument.
 var Prepend = NewLazyFunction(
 	NewSignature(
-		[]string{}, []OptionalArgument{}, "elemsAndList",
-		[]string{}, []OptionalArgument{}, "",
+		nil, nil, "elemsAndList",
+		nil, nil, "",
 	),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
@@ -85,8 +85,8 @@ func cons(t1, t2 *Thunk) ListType {
 // First takes the first element in a list.
 var First = NewStrictFunction(
 	NewSignature(
-		[]string{"list"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"list"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		v := vs[0]
@@ -104,8 +104,8 @@ var First = NewStrictFunction(
 // Rest returns a list which has the second to last elements of a given list.
 var Rest = NewStrictFunction(
 	NewSignature(
-		[]string{"list"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"list"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		v := vs[0]
@@ -121,8 +121,8 @@ var Rest = NewStrictFunction(
 	})
 
 var appendFuncSignature = NewSignature(
-	[]string{"list", "elem"}, []OptionalArgument{}, "",
-	[]string{}, []OptionalArgument{}, "",
+	[]string{"list", "elem"}, nil, "",
+	nil, nil, "",
 )
 
 // Append appends an element at the end of a given list.

@@ -12,8 +12,8 @@ import (
 // Read reads a string from stdin or a file.
 var Read = core.NewStrictFunction(
 	core.NewSignature(
-		[]string{}, []core.OptionalArgument{core.NewOptionalArgument("file", core.Nil)}, "",
-		[]string{}, []core.OptionalArgument{}, "",
+		nil, []core.OptionalArgument{core.NewOptionalArgument("file", core.Nil)}, "",
+		nil, nil, "",
 	),
 	func(vs ...core.Value) core.Value {
 		v := vs[0]
@@ -42,8 +42,8 @@ var Read = core.NewStrictFunction(
 // Write writes string representation of arguments to stdout.
 var Write = core.NewStrictFunction(
 	core.NewSignature(
-		[]string{}, []core.OptionalArgument{}, "args",
-		[]string{}, []core.OptionalArgument{
+		nil, nil, "args",
+		nil, []core.OptionalArgument{
 			core.NewOptionalArgument("sep", core.NewString(" ")),
 			core.NewOptionalArgument("end", core.NewString("\n")),
 			core.NewOptionalArgument("file", core.NewNumber(1)),

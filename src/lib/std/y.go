@@ -6,8 +6,8 @@ import "github.com/raviqqe/tisp/src/lib/core"
 // applied to the combinator.
 var Y = core.NewLazyFunction(
 	core.NewSignature(
-		[]string{"function"}, []core.OptionalArgument{}, "",
-		[]string{}, []core.OptionalArgument{}, "",
+		[]string{"function"}, nil, "",
+		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
 		if len(ts) != 1 {
@@ -20,8 +20,8 @@ var Y = core.NewLazyFunction(
 
 var fxx = core.NewLazyFunction(
 	core.NewSignature(
-		[]string{"f", "x"}, []core.OptionalArgument{}, "",
-		[]string{}, []core.OptionalArgument{}, "",
+		[]string{"f", "x"}, nil, "",
+		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
 		return core.PApp(core.Partial, ts[0], core.PApp(ts[1], ts[1]))
@@ -31,8 +31,8 @@ var fxx = core.NewLazyFunction(
 // of themselves applied to the combinator.
 var Ys = core.NewLazyFunction(
 	core.NewSignature(
-		[]string{}, []core.OptionalArgument{}, "functions",
-		[]string{}, []core.OptionalArgument{}, "",
+		nil, nil, "functions",
+		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
 		v := ts[0].Eval()
@@ -54,16 +54,16 @@ var Ys = core.NewLazyFunction(
 
 		f := core.NewLazyFunction(
 			core.NewSignature(
-				[]string{"x"}, []core.OptionalArgument{}, "",
-				[]string{}, []core.OptionalArgument{}, "",
+				[]string{"x"}, nil, "",
+				nil, nil, "",
 			),
 			func(ps ...*core.Thunk) core.Value {
 				p := ps[0]
 
 				applyF := core.NewLazyFunction(
 					core.NewSignature(
-						[]string{"f"}, []core.OptionalArgument{}, "args",
-						[]string{}, []core.OptionalArgument{}, "kwargs",
+						[]string{"f"}, nil, "args",
+						nil, nil, "kwargs",
 					),
 					func(qs ...*core.Thunk) core.Value {
 						return core.App(qs[0], core.NewArguments(
@@ -71,7 +71,7 @@ var Ys = core.NewLazyFunction(
 								core.NewPositionalArgument(core.PApp(p, p), false),
 								core.NewPositionalArgument(qs[1], true),
 							},
-							[]core.KeywordArgument{},
+							nil,
 							[]*core.Thunk{qs[2]}))
 					})
 
@@ -89,8 +89,8 @@ var Ys = core.NewLazyFunction(
 
 var xx = core.NewLazyFunction(
 	core.NewSignature(
-		[]string{"x"}, []core.OptionalArgument{}, "",
-		[]string{}, []core.OptionalArgument{}, "",
+		[]string{"x"}, nil, "",
+		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
 		return core.PApp(ts[0], ts[0])

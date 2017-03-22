@@ -14,8 +14,8 @@ func TestCompileFunction(t *testing.T) {
 
 	f := CompileFunction(
 		core.NewSignature(
-			[]string{"f", "x1", "x2", "x3"}, []core.OptionalArgument{}, "",
-			[]string{}, []core.OptionalArgument{}, "",
+			[]string{"f", "x1", "x2", "x3"}, nil, "",
+			nil, nil, "",
 		),
 		[]interface{}{},
 		newAppWithDummyInfo(0, newPositionalArguments(1, newAppWithDummyInfo(0, newPositionalArguments(2, 3)))))
@@ -32,8 +32,8 @@ func TestCompileFunctionWithVars(t *testing.T) {
 
 	f := CompileFunction(
 		core.NewSignature(
-			[]string{"f", "x1", "x2", "x3"}, []core.OptionalArgument{}, "",
-			[]string{}, []core.OptionalArgument{}, "",
+			[]string{"f", "x1", "x2", "x3"}, nil, "",
+			nil, nil, "",
 		),
 		[]interface{}{newAppWithDummyInfo(0, newPositionalArguments(2, 3))},
 		newAppWithDummyInfo(0, newPositionalArguments(1, 4)))
@@ -52,7 +52,7 @@ func newPositionalArguments(xs ...interface{}) Arguments {
 		ps[i] = NewPositionalArgument(x, false)
 	}
 
-	return NewArguments(ps, []KeywordArgument{}, []interface{}{})
+	return NewArguments(ps, nil, []interface{}{})
 }
 
 func newAppWithDummyInfo(f interface{}, args Arguments) App {

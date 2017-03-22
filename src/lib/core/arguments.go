@@ -15,12 +15,7 @@ func NewArguments(
 	ps []PositionalArgument,
 	ks []KeywordArgument,
 	expandedDicts []*Thunk) Arguments {
-	if ks == nil {
-		ks = []KeywordArgument{}
-	}
-
 	ts := make([]*Thunk, 0, len(ps))
-
 	l := (*Thunk)(nil)
 
 	for i, p := range ps {

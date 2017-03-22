@@ -20,8 +20,8 @@ type stringable interface {
 // ToString converts some value into one of StringType.
 var ToString = NewStrictFunction(
 	NewSignature(
-		[]string{"x"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"x"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		s, ok := vs[0].(stringable)
@@ -42,8 +42,8 @@ type equalable interface {
 // Comparing error values is invalid and it should return an error value.
 var Equal = NewStrictFunction(
 	NewSignature(
-		[]string{"x", "y"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"x", "y"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		var es [2]equalable

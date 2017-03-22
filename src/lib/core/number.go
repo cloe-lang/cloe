@@ -18,8 +18,8 @@ func (n NumberType) equal(e equalable) Value {
 // Add sums up numbers of arguments.
 var Add = NewLazyFunction(
 	NewSignature(
-		[]string{}, []OptionalArgument{}, "nums",
-		[]string{}, []OptionalArgument{}, "",
+		nil, nil, "nums",
+		nil, nil, "",
 	),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
@@ -53,8 +53,8 @@ var Add = NewLazyFunction(
 // Sub subtracts arguments of the second to the last from the first one as numbers.
 var Sub = NewLazyFunction(
 	NewSignature(
-		[]string{"minuend"}, []OptionalArgument{}, "subtrahends",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"minuend"}, nil, "subtrahends",
+		nil, nil, "",
 	),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
@@ -97,8 +97,8 @@ var Sub = NewLazyFunction(
 // Mul multiplies numbers of arguments.
 var Mul = NewLazyFunction(
 	NewSignature(
-		[]string{}, []OptionalArgument{}, "nums",
-		[]string{}, []OptionalArgument{}, "",
+		nil, nil, "nums",
+		nil, nil, "",
 	),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
@@ -132,8 +132,8 @@ var Mul = NewLazyFunction(
 // Div divides the first argument by arguments of the second to the last one by one.
 var Div = NewLazyFunction(
 	NewSignature(
-		[]string{"dividend"}, []OptionalArgument{}, "divisors",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"dividend"}, nil, "divisors",
+		nil, nil, "",
 	),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
@@ -178,8 +178,8 @@ var Div = NewLazyFunction(
 // Mod calculate a remainder of a division of the first argument by the second one.
 var Mod = NewStrictFunction(
 	NewSignature(
-		[]string{"dividend", "divisor"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"dividend", "divisor"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		if len(vs) != 2 {
@@ -207,8 +207,8 @@ var Mod = NewStrictFunction(
 // exponent of the second argument.
 var Pow = NewStrictFunction(
 	NewSignature(
-		[]string{"base", "exponent"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"base", "exponent"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		v := vs[0]
@@ -230,8 +230,8 @@ var Pow = NewStrictFunction(
 
 var isInt = NewStrictFunction(
 	NewSignature(
-		[]string{"number"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"number"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		v := vs[0]

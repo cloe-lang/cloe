@@ -15,8 +15,8 @@ type collection interface {
 // Include returns true if a collection includes an element, or false otherwise.
 var Include = NewStrictFunction(
 	NewSignature(
-		[]string{"collection", "elem"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"collection", "elem"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		c, ok := vs[0].(collection)
@@ -35,8 +35,8 @@ var Include = NewStrictFunction(
 // Index extracts an element corresponding with a key.
 var Index = NewStrictFunction(
 	NewSignature(
-		[]string{"collection", "key"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"collection", "key"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		i, ok := vs[0].(collection)
@@ -51,8 +51,8 @@ var Index = NewStrictFunction(
 // Insert inserts an element into a collection.
 var Insert = NewLazyFunction(
 	NewSignature(
-		[]string{"collection"}, []OptionalArgument{}, "values",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"collection"}, nil, "values",
+		nil, nil, "",
 	),
 	func(ts ...*Thunk) (result Value) {
 		v := ts[0].Eval()
@@ -81,8 +81,8 @@ var Insert = NewLazyFunction(
 // Merge merges 2 collections.
 var Merge = NewLazyFunction(
 	NewSignature(
-		[]string{"x"}, []OptionalArgument{}, "ys",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"x"}, nil, "ys",
+		nil, nil, "",
 	),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
@@ -115,8 +115,8 @@ var Merge = NewLazyFunction(
 // Delete deletes an element corresponding with a key.
 var Delete = NewStrictFunction(
 	NewSignature(
-		[]string{"collection", "elem"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"collection", "elem"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		d, ok := vs[0].(collection)
@@ -131,8 +131,8 @@ var Delete = NewStrictFunction(
 // Size returns a size of a collection.
 var Size = NewStrictFunction(
 	NewSignature(
-		[]string{"collection"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"collection"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		v := vs[0]
@@ -148,8 +148,8 @@ var Size = NewStrictFunction(
 // ToList converts a collection into a list of its elements.
 var ToList = NewStrictFunction(
 	NewSignature(
-		[]string{"listLike"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"listLike"}, nil, "",
+		nil, nil, "",
 	),
 	func(vs ...Value) Value {
 		v := vs[0]

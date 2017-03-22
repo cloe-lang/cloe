@@ -8,7 +8,7 @@ import (
 )
 
 func TestRunWithNoThunk(t *testing.T) {
-	Run([]compile.Output{})
+	Run(nil)
 }
 
 func TestRunWithOneThunk(t *testing.T) {

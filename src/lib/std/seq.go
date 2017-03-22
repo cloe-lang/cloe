@@ -5,8 +5,8 @@ import "github.com/raviqqe/tisp/src/lib/core"
 // Seq runs arguments of outputs sequentially.
 var Seq = core.NewLazyFunction(
 	core.NewSignature(
-		[]string{}, []core.OptionalArgument{}, "outputs",
-		[]string{}, []core.OptionalArgument{}, "",
+		nil, nil, "outputs",
+		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
 		t := ts[0]

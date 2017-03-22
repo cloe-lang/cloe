@@ -145,7 +145,7 @@ func (s *state) signature() comb.Parser {
 		kas, ok := xs[1].([3]interface{})
 
 		if !ok {
-			kas = [3]interface{}{[]string{}, []ast.OptionalArgument{}, ""}
+			kas = [3]interface{}{([]string)(nil), ([]ast.OptionalArgument)(nil), ""}
 		}
 
 		return ast.NewSignature(
@@ -219,7 +219,7 @@ func (s *state) appQuote(p comb.Parser) comb.Parser {
 		func(x interface{}) (interface{}, ast.Arguments) {
 			return quoteString, ast.NewArguments(
 				[]ast.PositionalArgument{ast.NewPositionalArgument(x, false)},
-				[]ast.KeywordArgument{},
+				nil,
 				[]interface{}{})
 		})
 }
@@ -259,7 +259,7 @@ func (s *state) arguments() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 
-		ks := []ast.KeywordArgument{}
+		ks := ([]ast.KeywordArgument)(nil)
 		dicts := []interface{}{}
 
 		if xs, ok := xs[1].([2]interface{}); ok {
@@ -353,7 +353,7 @@ func (s *state) list(ps ...comb.Parser) comb.Parser {
 
 func (s *state) sequence(l, r string) comb.Parser {
 	return s.App(func(x interface{}) interface{} {
-		return ast.NewArguments(x.([]ast.PositionalArgument), []ast.KeywordArgument{}, []interface{}{})
+		return ast.NewArguments(x.([]ast.PositionalArgument), nil, []interface{}{})
 	}, s.stringWrap(l, s.positionalArguments(), r))
 }
 

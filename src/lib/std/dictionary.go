@@ -5,8 +5,8 @@ import "github.com/raviqqe/tisp/src/lib/core"
 // Dictionary creates a new dictionary from pairs of a key and value.
 var Dictionary = core.NewLazyFunction(
 	core.NewSignature(
-		[]string{}, []core.OptionalArgument{}, "keyValuePairs",
-		[]string{}, []core.OptionalArgument{}, "",
+		nil, nil, "keyValuePairs",
+		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
 		d := core.EmptyDictionary

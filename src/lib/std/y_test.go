@@ -32,8 +32,8 @@ func lazyFactorial(t *core.Thunk) float64 {
 
 var lazyFactorialImpl = core.NewLazyFunction(
 	core.NewSignature(
-		[]string{"me", "num"}, []core.OptionalArgument{}, "",
-		[]string{}, []core.OptionalArgument{}, "",
+		[]string{"me", "num"}, nil, "",
+		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
 		return core.PApp(core.If,
@@ -47,8 +47,8 @@ var lazyFactorialImpl = core.NewLazyFunction(
 func TestYsMultipleFs(t *testing.T) {
 	evenWithExtraArg := core.NewLazyFunction(
 		core.NewSignature(
-			[]string{"fs", "dummyArg", "num"}, []core.OptionalArgument{}, "",
-			[]string{}, []core.OptionalArgument{}, "",
+			[]string{"fs", "dummyArg", "num"}, nil, "",
+			nil, nil, "",
 		),
 		func(ts ...*core.Thunk) core.Value {
 			n := ts[2]
@@ -61,8 +61,8 @@ func TestYsMultipleFs(t *testing.T) {
 
 	odd := core.NewLazyFunction(
 		core.NewSignature(
-			[]string{"fs", "num"}, []core.OptionalArgument{}, "",
-			[]string{}, []core.OptionalArgument{}, "",
+			[]string{"fs", "num"}, nil, "",
+			nil, nil, "",
 		),
 		func(ts ...*core.Thunk) core.Value {
 			n := ts[1]

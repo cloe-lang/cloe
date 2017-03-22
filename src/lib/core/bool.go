@@ -26,8 +26,8 @@ func (b BoolType) equal(e equalable) Value {
 // otherwise.
 var If = NewLazyFunction(
 	NewSignature(
-		[]string{"condition", "then", "else"}, []OptionalArgument{}, "",
-		[]string{}, []OptionalArgument{}, "",
+		[]string{"condition", "then", "else"}, nil, "",
+		nil, nil, "",
 	),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()

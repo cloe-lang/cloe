@@ -13,7 +13,7 @@ type DictionaryType struct {
 }
 
 // EmptyDictionary is a thunk of an empty dictionary.
-var EmptyDictionary = NewDictionary([]Value{}, []*Thunk{})
+var EmptyDictionary = NewDictionary(nil, []*Thunk{})
 
 // NewDictionary creates a dictionary from keys of values and their
 // corresponding values of thunks.

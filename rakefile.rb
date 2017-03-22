@@ -110,6 +110,7 @@ task install: %i(install_deps test build) do
 end
 
 task :doc do
+  cd 'doc'
   sh 'mkdocs gh-deploy -m "[skip ci] on Wercker"'
 end
 

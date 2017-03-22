@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Slack](https://img.shields.io/badge/join-slack-ff69b4.svg)](https://tisp-lang.signup.team)
 
-![inputs to outputs](img/inputs_to_outputs.png)
+![logo](img/front.png)
 
 Tisp is a "Time is Space" programming language.
 It aims to be simple, canonical, and practical.

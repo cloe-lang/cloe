@@ -107,15 +107,19 @@ func (s *state) letFunction() comb.Parser {
 		})
 }
 
-func (s *state) signature() comb.Parser {
-	optArg := s.App(func(x interface{}) interface{} {
+func (s *state) optionalArgument() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 		return ast.NewOptionalArgument(xs[0].(string), xs[1])
 	}, s.strip(s.list(s.identifier(), s.expression())))
+}
 
-	expanded := s.strip(s.expanded(s.identifier()))
+func (s *state) expandedArgument() comb.Parser {
+	return s.strip(s.expanded(s.identifier()))
+}
 
-	halfSig := s.App(func(x interface{}) interface{} {
+func (s *state) halfSignature() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 
 		xs0 := xs[0].([]interface{})
@@ -136,7 +140,10 @@ func (s *state) signature() comb.Parser {
 		}
 
 		return [3]interface{}{requireds, optionals, expanded}
-	}, s.And(s.Many(s.identifier()), s.Many(optArg), s.Maybe(expanded)))
+	}, s.And(s.Many(s.identifier()), s.Many(s.optionalArgument()), s.Maybe(s.expandedArgument())))
+}
+
+func (s *state) signature() comb.Parser {
 
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
@@ -152,7 +159,7 @@ func (s *state) signature() comb.Parser {
 			pas[0].([]string), pas[1].([]ast.OptionalArgument), pas[2].(string),
 			kas[0].([]string), kas[1].([]ast.OptionalArgument), kas[2].(string),
 		)
-	}, s.And(halfSig, s.Maybe(s.Prefix(s.strippedString("."), halfSig))))
+	}, s.And(s.halfSignature(), s.Maybe(s.Prefix(s.strippedString("."), s.halfSignature()))))
 }
 
 func (s *state) output() comb.Parser {

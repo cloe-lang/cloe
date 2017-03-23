@@ -5,7 +5,7 @@
 [![codebeat badge](https://codebeat.co/badges/3a45a98c-ad7d-4a0a-8011-241f0ae4682c)](https://codebeat.co/projects/github-com-raviqqe-tisp-master)
 [![Go Report Card](https://goreportcard.com/badge/github.com/raviqqe/tisp)](https://goreportcard.com/report/github.com/raviqqe/tisp)
 [![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Slack](https://img.shields.io/badge/join-slack-ff69b4.svg)](https://tisp-lang.signup.team)
+[![Google group](https://img.shields.io/badge/join-us-ff69b4.svg)](https://groups.google.com/forum/#!forum/tisp-aliens)
 
 ![logo](img/front.png)
 
@@ -14,7 +14,7 @@ It aims to be simple, canonical, and practical.
 
 This baby project is under heavy development.
 Any contributions would be appreciated.
-[Join the slack team today!](https://tisp-lang.signup.team)
+[Join the Google group today!](https://groups.google.com/forum/#!forum/tisp-aliens)
 
 ## Current status
 

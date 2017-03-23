@@ -1,7 +1,4 @@
-(macro (unless b t f) `(if b f t))
+(macro (unless cond then else) `(if ~cond ~else ~then))
 
 (macro (foo) `123)
 (write (+ (foo) bar))
-
-; Invalid and useless too; just use let.
-;(macro foo 123)

@@ -1,11 +1,11 @@
 # Tisp
 
-[![wercker status](https://app.wercker.com/status/68b66e4881f08974e109a864520e369f/s/master "wercker status")](https://app.wercker.com/project/byKey/68b66e4881f08974e109a864520e369f)
-[![codecov](https://codecov.io/gh/raviqqe/tisp/branch/master/graph/badge.svg)](https://codecov.io/gh/raviqqe/tisp)
-[![codebeat badge](https://codebeat.co/badges/3a45a98c-ad7d-4a0a-8011-241f0ae4682c)](https://codebeat.co/projects/github-com-raviqqe-tisp-master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/raviqqe/tisp)](https://goreportcard.com/report/github.com/raviqqe/tisp)
-[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Google group](https://img.shields.io/badge/join-us-ff69b4.svg)](https://groups.google.com/forum/#!forum/tisp-aliens)
+[![wercker](https://img.shields.io/wercker/ci/wercker/docs.svg?style=flat-square)](https://app.wercker.com/raviqqe/tisp/runs)
+[![codeclimate](https://img.shields.io/codeclimate/github/kabisaict/flow.svg?style=flat-square)](https://codeclimate.com/github/raviqqe/tisp)
+[![codecov](https://img.shields.io/codecov/c/github/raviqqe/tisp.svg?style=flat-square)](https://codecov.io/gh/raviqqe/tisp)
+[![Go Report Card](https://goreportcard.com/badge/github.com/raviqqe/tisp?style=flat-square)](https://goreportcard.com/report/github.com/raviqqe/tisp)
+[![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Google group](https://img.shields.io/badge/join-us-ff69b4.svg?style=flat-square)](https://groups.google.com/forum/#!forum/tisp-aliens)
 
 ![logo](img/front.png)
 

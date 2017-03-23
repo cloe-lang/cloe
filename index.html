@@ -54,6 +54,16 @@
             
     <li class="toctree-l2"><a href="#tisp">Tisp</a></li>
     
+        <ul>
+        
+            <li><a class="toctree-l3" href="#tldr">TL;DR</a></li>
+        
+            <li><a class="toctree-l3" href="#background">Background</a></li>
+        
+            <li><a class="toctree-l3" href="#how">How?</a></li>
+        
+        </ul>
+    
 
     </ul>
 	    </li>
@@ -102,6 +112,59 @@
               
                 <h1 id="tisp">Tisp</h1>
 <p>The "Time is Space" programming language</p>
+<p>Tisp is a functional programming language with implicit parallelism and
+concurrency.
+It aims to be simple, canonical, and practical.</p>
+<h2 id="tldr">TL;DR</h2>
+<ul>
+<li>Tisp evaluates every output of a program (such as printing a string and
+  sending an HTTP response to a client) parallelly and concurrently by default
+  leaving synchronization optional.</li>
+<li>Tisp keeps the other part of a program pure (i.e. without any output).</li>
+<li>Therefore, every program in Tisp can run parallelly and concurrently with
+  nothing special!</li>
+</ul>
+<h2 id="background">Background</h2>
+<p>Existing programming languages are synchronous by default.
+For example, when you write code in C like the below, the statements are run
+sequentially one by one even if they can be run in parallel.</p>
+<pre><code class="c">send(http_response);
+send(another_http_response);
+</code></pre>
+
+<p>Therefore, many libraries, frameworks, and language features for parallel,
+concurrent, and asynchronous programming have emerged in recent years.</p>
+<p>Tisp takes the opposite way to deal with this problem.
+It lets you write programs which are asynchronous, concurrent, and parallel
+inherently.</p>
+<h2 id="how">How?</h2>
+<blockquote>
+<p>Warning: This is an immature concept.
+Please post any feedbacks to improve or fix it in
+<a href="https://groups.google.com/forum/#!forum/tisp-aliens">the Google group</a>.</p>
+</blockquote>
+<p>Tisp assumes that time is space.
+If time is space, everything is constant because nothing changes over time.
+This fact lets us write programs as functions which map their inputs to
+outputs.</p>
+<p>Let's think about a program which takes input data <code>input[t]</code> and outputs
+something <code>output[t]</code> at every time step <code>t</code>.
+Then, every <code>output[t]</code> should be calculated from all inputs in the past.</p>
+<pre><code>input[0], input[1], ..., input[t-1] -&gt; output[t]
+</code></pre>
+
+<p>This is true for any <code>t</code>.
+Therefore, a program can be represented as a function which maps its inputs to
+outputs.</p>
+<pre><code>program : input[0], ..., input[T] -&gt; output[0], ..., output[T]
+</code></pre>
+
+<p>where <code>T</code> is infinite generally.
+Then, we can extract great parallelism of a program because the program as a
+function represents just data dependency.</p>
+<p>Tisp evaluates the outputs concurrently and parallelly.
+Programmers must specify their causality using the <code>seq</code> primitive function if
+necessary.</p>
               
             </div>
           </div>
@@ -148,5 +211,5 @@
 
 <!--
 MkDocs version : 0.16.2
-Build Date UTC : 2017-03-23 09:36:28
+Build Date UTC : 2017-03-23 13:49:51
 -->

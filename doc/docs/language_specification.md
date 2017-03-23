@@ -6,6 +6,9 @@
 
 ### Simple function calls
 
+A simple function call is represented by a function and some positional
+arguments.
+
 ```
 (function argument)
 (function argument1 argument2)
@@ -13,6 +16,8 @@
 ```
 
 ## Data types
+
+There are number, string, bool, nil, list, dictionary, and function types.
 
 ### Number
 
@@ -62,6 +67,9 @@ nil
 ```
 
 ## Function calls
+
+In addition to positional arguments, Tisp supports keyword arguments,
+positional rest arguments and keyword rest arguments.
 
 ```
 (function positionalArgument)

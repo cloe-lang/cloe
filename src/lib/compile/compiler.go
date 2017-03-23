@@ -18,7 +18,7 @@ func newCompiler() compiler {
 }
 
 func (c *compiler) compile(module []interface{}) []Output {
-	outputs := make([]Output, 0, 8) // TODO: Best cap?
+	outputs := make([]Output, 0)
 
 	for _, node := range module {
 		switch x := node.(type) {

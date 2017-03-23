@@ -16,7 +16,7 @@ func flattenStatement(s interface{}) []interface{} {
 }
 
 func flattenStatements(old []interface{}) []interface{} {
-	new := make([]interface{}, 0, 2*len(old)) // TODO: Best cap?
+	new := make([]interface{}, 0)
 
 	for _, s := range old {
 		new = append(new, flattenStatement(s)...)

@@ -57,7 +57,7 @@ func PApp(f *Thunk, ps ...*Thunk) *Thunk {
 // Eval evaluates a thunk and returns a WHNF value.
 func (t *Thunk) Eval() Value {
 	if t.lock() {
-		children := make([]*Thunk, 0, 1) // TODO: Best cap?
+		children := make([]*Thunk, 0)
 
 		for {
 			v := t.moveFunction().Eval()

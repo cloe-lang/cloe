@@ -10,7 +10,7 @@ last_mem=0
 
 for i in $(seq 10)
 do
-  mem=$(ps ho vsize $pid)
+  mem=$(ps ho vsize $pid | tail -1)
 
   if [ $last_mem -ge $mem ]
   then

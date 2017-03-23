@@ -120,12 +120,15 @@
 </blockquote>
 <h2 id="basics">Basics</h2>
 <h3 id="simple-function-calls">Simple function calls</h3>
+<p>A simple function call is represented by a function and some positional
+arguments.</p>
 <pre><code>(function argument)
 (function argument1 argument2)
 (function argument1 argument2 argument3 argument4 argument5)
 </code></pre>
 
 <h2 id="data-types">Data types</h2>
+<p>There are number, string, bool, nil, list, dictionary, and function types.</p>
 <h3 id="number">Number</h3>
 <pre><code>123
 1.1
@@ -162,6 +165,8 @@ false
 </code></pre>
 
 <h2 id="function-calls">Function calls</h2>
+<p>In addition to positional arguments, Tisp supports keyword arguments,
+positional rest arguments and keyword rest arguments.</p>
 <pre><code>(function positionalArgument)
 (function positionalArgument1 positionalArgument2)
 (function ..expandedList)

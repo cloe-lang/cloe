@@ -67,3 +67,8 @@ function represents just data dependency.
 Tisp evaluates the outputs concurrently and parallelly.
 Programmers must specify their causality using the `seq` primitive function if
 necessary.
+
+## References
+
+- [Haskell Language](https://www.haskell.org/)
+- [Glasgow Parallel Haskell](http://www.macs.hw.ac.uk/~dsg/gph/)

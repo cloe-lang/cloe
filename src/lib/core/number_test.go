@@ -42,6 +42,12 @@ func TestNumberDiv(t *testing.T) {
 		n1/n2)
 }
 
+func TestNumberFloorDiv(t *testing.T) {
+	assert.Equal(t,
+		float64(PApp(FloorDiv, NewNumber(n1), NewNumber(n2)).Eval().(NumberType)),
+		math.Floor(n1/n2))
+}
+
 func TestNumberMod(t *testing.T) {
 	assert.Equal(t,
 		float64(PApp(Mod, NewNumber(n1), NewNumber(n2)).Eval().(NumberType)),

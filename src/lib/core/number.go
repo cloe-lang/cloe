@@ -173,7 +173,49 @@ var Div = NewLazyFunction(
 		return n0
 	})
 
-// TODO: Implement FloorDiv function.
+// FloorDiv divides the first argument by arguments of the second to the last one by one.
+var FloorDiv = NewLazyFunction(
+	NewSignature(
+		[]string{"dividend"}, nil, "divisors",
+		nil, nil, "",
+	),
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		n0, ok := v.(NumberType)
+
+		if !ok {
+			return NotNumberError(v)
+		}
+
+		v = ts[1].Eval()
+		l, ok := v.(ListType)
+
+		if !ok {
+			return NotListError(v)
+		}
+
+		vs, err := l.ToValues()
+
+		if err != nil {
+			return err
+		}
+
+		if len(vs) == 0 {
+			return NumArgsError("floorDiv", ">= 1")
+		}
+
+		for _, v := range vs {
+			n, ok := v.(NumberType)
+
+			if !ok {
+				return NotNumberError(v)
+			}
+
+			n0 = NumberType(math.Floor(float64(n0 / n)))
+		}
+
+		return n0
+	})
 
 // Mod calculate a remainder of a division of the first argument by the second one.
 var Mod = NewStrictFunction(

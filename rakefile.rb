@@ -116,7 +116,7 @@ task :images do
 end
 
 task doc: :images do
-  sh 'convert -resize 16x16 img/icon_flat.png doc/theme/img/favicon.ico'
+  sh 'convert -resize 16x16 img/icon.png doc/theme/img/favicon.ico'
   cd 'doc'
   sh 'mkdocs gh-deploy -m "[skip ci] on Wercker"'
 end

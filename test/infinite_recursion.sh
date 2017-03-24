@@ -1,6 +1,6 @@
 #!/bin/sh
 
-bin/tisp test/infinite_recursion.tisp &
+bin/tisp test/infinite_recursion.tisp > /dev/null &
 pid=$!
 
 sleep 1 # Wait for memory usage to be stable.

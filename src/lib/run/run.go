@@ -59,7 +59,7 @@ func evalOutputList(t *core.Thunk) {
 }
 
 func runOutput(t *core.Thunk, wg *sync.WaitGroup) {
-	if err, ok := t.Eval().(core.ErrorType); ok {
+	if err, ok := t.EvalOutput().(core.ErrorType); ok {
 		failOnError(err)
 	}
 

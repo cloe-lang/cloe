@@ -34,7 +34,7 @@ You need Go 1.8+.
 
 - Purely functional programming
   - Impure function calls in pure functions are detected and raise errors at
-    runtime. (WIP)
+    runtime.
 - Implicit parallelism and concurrency
   - Most of the time, you don't need to parallelize your code explicitly.
     Tisp does it all for you!

@@ -13,7 +13,7 @@ var Seq = core.NewLazyFunction(
 		out := core.PApp(core.First, t)
 
 		for {
-			if err, ok := out.Eval().(core.ErrorType); ok {
+			if err, ok := out.EvalOutput().(core.ErrorType); ok {
 				return err
 			}
 

@@ -112,6 +112,16 @@ func OutputError(m string, xs ...interface{}) *Thunk {
 	return NewError("OutputError", m, xs...)
 }
 
+// NotOutputError creates an error value for a pure value which is expected to be an output value.
+func NotOutputError(v Value) *Thunk {
+	return TypeError(v, "output")
+}
+
+// ImpureFunctionError creates an error value for execution of an impure function.
+func ImpureFunctionError(v Value) *Thunk {
+	return TypeError(v, "pure value")
+}
+
 // OutOfRangeError creates an error value for an out-of-range index to a list.
 func OutOfRangeError() *Thunk {
 	return NewError("OutOfRangeError", "Index is out of range.")

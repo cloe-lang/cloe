@@ -54,8 +54,8 @@ func PApp(f *Thunk, ps ...*Thunk) *Thunk {
 	return AppWithInfo(f, NewPositionalArguments(ps...), debug.NewGoInfo(1))
 }
 
-// Eval evaluates a thunk and returns a WHNF value.
-func (t *Thunk) Eval() Value {
+// EvalAny evaluates a thunk and returns a pure or output value.
+func (t *Thunk) EvalAny(isPure bool) Value {
 	if t.lock() {
 		children := make([]*Thunk, 0)
 
@@ -88,7 +88,7 @@ func (t *Thunk) Eval() Value {
 			t.function, t.args, ok = child.delegateEval()
 
 			if !ok {
-				t.result = child.Eval()
+				t.result = child.EvalAny(isPure)
 				t.chainError(t.result)
 				break
 			}
@@ -97,6 +97,12 @@ func (t *Thunk) Eval() Value {
 		}
 
 		checkValue("Thunk.result", t.result)
+
+		if _, ok := t.result.(OutputType); isPure && ok {
+			t.result = ImpureFunctionError(t.result).Eval()
+		} else if !isPure && !ok {
+			t.result = NotOutputError(t.result).Eval()
+		}
 
 		for _, child := range children {
 			// TODO: Use children's debug informations, child.info?
@@ -167,4 +173,20 @@ func checkValue(s string, v Value) {
 	if _, ok := v.(*Thunk); ok {
 		util.Fail(s + " is *Thunk.")
 	}
+}
+
+// Eval evaluates a pure value.
+func (t *Thunk) Eval() Value {
+	return t.EvalAny(true)
+}
+
+// EvalOutput evaluates an output expression.
+func (t *Thunk) EvalOutput() Value {
+	v := t.EvalAny(false)
+
+	if err, ok := v.(ErrorType); ok {
+		return err
+	}
+
+	return v.(OutputType).value.Eval()
 }

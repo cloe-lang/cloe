@@ -14,5 +14,5 @@ func TestSeq(t *testing.T) {
 		core.PApp(
 			Seq,
 			core.PApp(Write, core.NewNumber(42)),
-			core.PApp(Write, core.NewString("OK!"))).Eval())
+			core.PApp(Write, core.NewString("OK!"))).EvalOutput())
 }

@@ -108,5 +108,5 @@ var Write = core.NewStrictFunction(
 
 		fmt.Fprint(file, strings.Join(ss, options[0])+options[1])
 
-		return core.Nil
+		return core.NewOutput(core.Nil)
 	})

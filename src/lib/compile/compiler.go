@@ -1,12 +1,12 @@
 package compile
 
 import (
+	"fmt"
 	"path"
 
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/core"
 	"github.com/raviqqe/tisp/src/lib/ir"
-	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 type compiler struct {
@@ -50,7 +50,7 @@ func (c *compiler) compile(module []interface{}) []Output {
 				c.env.set(path.Base(x.Path())+"."+k, v)
 			}
 		default:
-			util.Fail("Invalid instruction.", x)
+			panic(fmt.Errorf("Invalid type: %#v", x))
 		}
 	}
 
@@ -143,6 +143,5 @@ func (c *compiler) exprToIR(sig ast.Signature, vars map[string]int, expr interfa
 			x.DebugInfo())
 	}
 
-	util.Fail("Invalid type.", expr)
-	panic("Unreachable")
+	panic(fmt.Errorf("Invalid type: %#v", expr))
 }

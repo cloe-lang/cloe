@@ -7,7 +7,6 @@ import (
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/debug"
 	"github.com/raviqqe/tisp/src/lib/parse/comb"
-	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 const (
@@ -71,7 +70,7 @@ func (s *state) importModule() comb.Parser {
 
 			path, err := strconv.Unquote(xs[1].(string))
 			if err != nil {
-				util.Fail(err.Error())
+				panic(err)
 			}
 
 			return ast.NewImport(path, i), nil

@@ -1,9 +1,10 @@
 package desugar
 
 import (
+	"fmt"
+
 	"github.com/raviqqe/tisp/src/lib/ast"
 	"github.com/raviqqe/tisp/src/lib/gensym"
-	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 func flattenStatement(s interface{}) []interface{} {
@@ -66,7 +67,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 
 			names.add(l.Name())
 		default:
-			util.Fail("Invalid value: %#v\n", l)
+			panic(fmt.Errorf("Invalid value: %#v", l))
 		}
 	}
 

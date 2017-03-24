@@ -3,8 +3,6 @@ package debug
 import (
 	"fmt"
 	"runtime"
-
-	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 // Info represents metadata of a call.
@@ -24,7 +22,7 @@ func NewGoInfo(skip int) Info {
 	_, file, line, ok := runtime.Caller(skip + 1)
 
 	if !ok {
-		util.Fail("runtime.Caller failed.")
+		panic("runtime.Caller failed.")
 	}
 
 	return NewInfo(file, line, "")

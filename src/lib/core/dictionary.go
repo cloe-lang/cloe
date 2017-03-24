@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/raviqqe/tisp/src/lib/rbt"
-	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 // DictionaryType represents a dictionary in the language.
@@ -19,7 +18,7 @@ var EmptyDictionary = NewDictionary(nil, []*Thunk{})
 // corresponding values of thunks.
 func NewDictionary(ks []Value, vs []*Thunk) *Thunk {
 	if len(ks) != len(vs) {
-		util.Fail("Number of keys doesn't match with number of values.")
+		panic("Number of keys doesn't match with number of values.")
 	}
 
 	d := Normal(DictionaryType{rbt.NewDictionary(less)})

@@ -5,7 +5,6 @@ import (
 	"sync/atomic"
 
 	"github.com/raviqqe/tisp/src/lib/debug"
-	"github.com/raviqqe/tisp/src/lib/util"
 )
 
 type thunkState int32
@@ -27,7 +26,7 @@ type Thunk struct {
 
 // Normal creates a thunk of a WHNF value as its result.
 func Normal(v Value) *Thunk {
-	checkValue("Normal's argument", v)
+	assertValueIsWHNF("Normal's argument", v)
 	return &Thunk{result: v, state: normal}
 }
 
@@ -96,7 +95,7 @@ func (t *Thunk) EvalAny(isPure bool) Value {
 			children = append(children, child)
 		}
 
-		checkValue("Thunk.result", t.result)
+		assertValueIsWHNF("Thunk.result", t.result)
 
 		if _, ok := t.result.(OutputType); isPure && ok {
 			t.result = ImpureFunctionError(t.result).Eval()
@@ -115,7 +114,7 @@ func (t *Thunk) EvalAny(isPure bool) Value {
 		t.blackHole.Wait()
 	}
 
-	checkValue("Thunk.result", t.result)
+	assertValueIsWHNF("Thunk.result", t.result)
 
 	return t.result
 }
@@ -169,9 +168,9 @@ func (t *Thunk) chainError(v Value) bool {
 	return false
 }
 
-func checkValue(s string, v Value) {
+func assertValueIsWHNF(s string, v Value) {
 	if _, ok := v.(*Thunk); ok {
-		util.Fail(s + " is *Thunk.")
+		panic(s + " is *Thunk")
 	}
 }
 

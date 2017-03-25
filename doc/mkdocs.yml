@@ -3,5 +3,6 @@ pages:
   - Home: index.md
   - Language Specification: language_specification.md
   - For Developers: for_developers.md
+  - Program As Patch: program_as_patch.md
 theme: readthedocs
 theme_dir: theme

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Program As Patch - Tisp</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Program As Patch";
+    var mkdocs_page_input_path = "program_as_patch.md";
+    var mkdocs_page_url = "/program_as_patch/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Tisp</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="..">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../language_specification/">Language Specification</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../for_developers/">For Developers</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="./">Program As Patch</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#program-as-patch">Program As Patch</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#huh">Huh?</a></li>
+        
+            <li><a class="toctree-l3" href="#inputs-and-outputs">Inputs and outputs</a></li>
+        
+            <li><a class="toctree-l3" href="#implicit-parallelism-and-concurrency">Implicit parallelism and concurrency</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Tisp</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Program As Patch</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="program-as-patch">Program As Patch</h1>
+<h2 id="huh">Huh?</h2>
+<p>In Tisp, we view a program as a set of patches (or diffs) which are applied to
+<em>the world</em> by its runtime.
+Every top-level expressions are patches.
+For example, a following program in Tisp represents one consisting of a patch
+which changes a state of your terminal (part of <em>the world</em>) printing
+"Hello, world!" on it.</p>
+<pre><code>(write &quot;Hello, world!&quot;)
+</code></pre>
+
+<p>Another program below is a set of 2 patches.
+One prints "Hello, world!" on your terminal.
+The other prints "Hello, John!" there.</p>
+<pre><code>(write &quot;Hello, world!&quot;)
+(write &quot;Hello, John!&quot;)
+</code></pre>
+
+<p>Note that Tisp doesn't care about orders of patches by default.
+So, the result of the last program can be either:</p>
+<pre><code>Hello, world!
+Hello, John!
+</code></pre>
+
+<p>or</p>
+<pre><code>Hello, John!
+Hello, world!
+</code></pre>
+
+<p>When you want to apply patches sequentially one by one,
+you can use <code>seq</code> primitive function to do so.
+The result of <code>seq</code> function is also a patch.</p>
+<pre><code>(seq
+  (write &quot;Hello, world!&quot;)
+  (write &quot;Hello, John!&quot;))
+</code></pre>
+
+<p>Definitions of patches are allowed only as top-level expressions or arguments
+to the <code>seq</code> function.</p>
+<h2 id="inputs-and-outputs">Inputs and outputs</h2>
+<p>Patches are outputs of programs.
+It is not enough; we need a way to define inputs of programs.</p>
+<p>That said, we do not have to distinguish inputs of programs from usual
+expressions in Tisp.
+For example, <code>read</code> function reads stdin and returns its result as a string.</p>
+<pre><code>(write (read))
+</code></pre>
+
+<p>The program above just reads stdin and writes it back to stdout.
+A caveat is that every expression in Tisp is evaluated lazily; every expression
+is evaluated only when it is needed to calculate its result.
+For example, the following program reads nothing from stdin and writes "foo" on
+terminal.</p>
+<pre><code>(let (f x) &quot;foo&quot;)
+(write (f (read)))
+</code></pre>
+
+<p>This is a kind of a dangerous way to define inputs of programs because they are
+often patches too.
+For example, if a program reads stdin twice, the second result will be an empty
+string.
+Therefore, programmers must be sure that stdin is read only at one place in
+each program in Tisp.</p>
+<p>However, with this paradigm, we can write patches as usual expressions and
+extract parallelism and concurrency of programs easily.</p>
+<h2 id="implicit-parallelism-and-concurrency">Implicit parallelism and concurrency</h2>
+<p>Tisp runs each patches in a program parallelly and concurrently.
+This is how Tisp realizes implicit parallelism and concurrency.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="../for_developers/" class="btn btn-neutral" title="For Developers"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+    
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../for_developers/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script src="../js/theme.js"></script>
+
+</body>
+</html>

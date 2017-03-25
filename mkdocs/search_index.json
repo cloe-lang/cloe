@@ -139,6 +139,31 @@
             "location": "/for_developers/#other-utility-tasks",
             "text": "rake format  formats all files.  rake lint  lints all files.  rake clean  cleans up the repository directory.   For more information, see  rakefile.rb .",
             "title": "Other utility tasks"
+        },
+        {
+            "location": "/program_as_patch/",
+            "text": "Program As Patch\n\n\nHuh?\n\n\nIn Tisp, we view a program as a set of patches (or diffs) which are applied to\n\nthe world\n by its runtime.\nEvery top-level expressions are patches.\nFor example, a following program in Tisp represents one consisting of a patch\nwhich changes a state of your terminal (part of \nthe world\n) printing\n\"Hello, world!\" on it.\n\n\n(write \"Hello, world!\")\n\n\n\n\nAnother program below is a set of 2 patches.\nOne prints \"Hello, world!\" on your terminal.\nThe other prints \"Hello, John!\" there.\n\n\n(write \"Hello, world!\")\n(write \"Hello, John!\")\n\n\n\n\nNote that Tisp doesn't care about orders of patches by default.\nSo, the result of the last program can be either:\n\n\nHello, world!\nHello, John!\n\n\n\n\nor\n\n\nHello, John!\nHello, world!\n\n\n\n\nWhen you want to apply patches sequentially one by one,\nyou can use \nseq\n primitive function to do so.\nThe result of \nseq\n function is also a patch.\n\n\n(seq\n  (write \"Hello, world!\")\n  (write \"Hello, John!\"))\n\n\n\n\nDefinitions of patches are allowed only as top-level expressions or arguments\nto the \nseq\n function.\n\n\nInputs and outputs\n\n\nPatches are outputs of programs.\nIt is not enough; we need a way to define inputs of programs.\n\n\nThat said, we do not have to distinguish inputs of programs from usual\nexpressions in Tisp.\nFor example, \nread\n function reads stdin and returns its result as a string.\n\n\n(write (read))\n\n\n\n\nThe program above just reads stdin and writes it back to stdout.\nA caveat is that every expression in Tisp is evaluated lazily; every expression\nis evaluated only when it is needed to calculate its result.\nFor example, the following program reads nothing from stdin and writes \"foo\" on\nterminal.\n\n\n(let (f x) \"foo\")\n(write (f (read)))\n\n\n\n\nThis is a kind of a dangerous way to define inputs of programs because they are\noften patches too.\nFor example, if a program reads stdin twice, the second result will be an empty\nstring.\nTherefore, programmers must be sure that stdin is read only at one place in\neach program in Tisp.\n\n\nHowever, with this paradigm, we can write patches as usual expressions and\nextract parallelism and concurrency of programs easily.\n\n\nImplicit parallelism and concurrency\n\n\nTisp runs each patches in a program parallelly and concurrently.\nThis is how Tisp realizes implicit parallelism and concurrency.",
+            "title": "Program As Patch"
+        },
+        {
+            "location": "/program_as_patch/#program-as-patch",
+            "text": "",
+            "title": "Program As Patch"
+        },
+        {
+            "location": "/program_as_patch/#huh",
+            "text": "In Tisp, we view a program as a set of patches (or diffs) which are applied to the world  by its runtime.\nEvery top-level expressions are patches.\nFor example, a following program in Tisp represents one consisting of a patch\nwhich changes a state of your terminal (part of  the world ) printing\n\"Hello, world!\" on it.  (write \"Hello, world!\")  Another program below is a set of 2 patches.\nOne prints \"Hello, world!\" on your terminal.\nThe other prints \"Hello, John!\" there.  (write \"Hello, world!\")\n(write \"Hello, John!\")  Note that Tisp doesn't care about orders of patches by default.\nSo, the result of the last program can be either:  Hello, world!\nHello, John!  or  Hello, John!\nHello, world!  When you want to apply patches sequentially one by one,\nyou can use  seq  primitive function to do so.\nThe result of  seq  function is also a patch.  (seq\n  (write \"Hello, world!\")\n  (write \"Hello, John!\"))  Definitions of patches are allowed only as top-level expressions or arguments\nto the  seq  function.",
+            "title": "Huh?"
+        },
+        {
+            "location": "/program_as_patch/#inputs-and-outputs",
+            "text": "Patches are outputs of programs.\nIt is not enough; we need a way to define inputs of programs.  That said, we do not have to distinguish inputs of programs from usual\nexpressions in Tisp.\nFor example,  read  function reads stdin and returns its result as a string.  (write (read))  The program above just reads stdin and writes it back to stdout.\nA caveat is that every expression in Tisp is evaluated lazily; every expression\nis evaluated only when it is needed to calculate its result.\nFor example, the following program reads nothing from stdin and writes \"foo\" on\nterminal.  (let (f x) \"foo\")\n(write (f (read)))  This is a kind of a dangerous way to define inputs of programs because they are\noften patches too.\nFor example, if a program reads stdin twice, the second result will be an empty\nstring.\nTherefore, programmers must be sure that stdin is read only at one place in\neach program in Tisp.  However, with this paradigm, we can write patches as usual expressions and\nextract parallelism and concurrency of programs easily.",
+            "title": "Inputs and outputs"
+        },
+        {
+            "location": "/program_as_patch/#implicit-parallelism-and-concurrency",
+            "text": "Tisp runs each patches in a program parallelly and concurrently.\nThis is how Tisp realizes implicit parallelism and concurrency.",
+            "title": "Implicit parallelism and concurrency"
         }
     ]
 }

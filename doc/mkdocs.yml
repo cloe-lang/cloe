@@ -1,4 +1,5 @@
 site_name: Tisp
+repo_name: GitHub
 repo_url: https://github.com/raviqqe/tisp
 pages:
   - Home: index.md

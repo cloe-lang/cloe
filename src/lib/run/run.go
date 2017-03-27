@@ -15,8 +15,6 @@ var sem = make(chan bool, maxConcurrentOutputs)
 
 // Run runs outputs.
 func Run(os []compile.Output) {
-	// TODO: Ensure results are OutputTypes.
-
 	wg := sync.WaitGroup{}
 
 	for _, v := range os {

@@ -66,7 +66,8 @@ some features are not implemented yet.
 ## Contributing
 
 Please send pull requests, issues, questions or anything else.
-See also [the documentation](https://raviqqe.github.io/tisp/for_developers/) on how to develop Tisp.
+See also [the documentation](https://raviqqe.github.io/tisp/for_developers/)
+on how to develop Tisp.
 
 ## FAQ
 

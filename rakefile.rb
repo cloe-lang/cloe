@@ -1,4 +1,4 @@
-bins = %w(tisp-parse tisp)
+bins = %w[tisp-parse tisp]
 
 bins.each do |bin|
   task bin do
@@ -40,11 +40,11 @@ task interpreter_test: 'tisp' do
     expected_out_file = file.ext '.out'
     actual_out_file = File.join(tmp_dir, File.basename(expected_out_file))
 
-    sh %W(
+    sh %W[
       bin/tisp #{file}
       #{File.exist?(in_file) ? "< #{in_file}" : ''}
       #{File.exist?(expected_out_file) ? "> #{actual_out_file}" : ''}
-    ).join ' '
+    ].join ' '
 
     sh "diff #{expected_out_file} #{actual_out_file}" \
         if File.exist? expected_out_file
@@ -55,9 +55,9 @@ task interpreter_test: 'tisp' do
   end
 end
 
-task command_test: %i(parser_test interpreter_test)
+task command_test: %i[parser_test interpreter_test]
 
-task test: %i(unit_test command_test)
+task test: %i[unit_test command_test]
 
 task :lint do
   verbose false do
@@ -93,19 +93,19 @@ task :docker do
 end
 
 task :install_deps do
-  sh %w(
+  sh %w[
     go get -u
     github.com/golang/lint/golint
     github.com/kr/pretty
     github.com/mvdan/interfacer/...
     golang.org/x/tools/cmd/goimports
     honnef.co/go/tools/...
-  ).join ' '
+  ].join ' '
 
   sh 'go get -d -t ./...'
 end
 
-task install: %i(install_deps test build) do
+task install: %i[install_deps test build] do
   sh 'go get ./...'
 end
 
@@ -121,7 +121,7 @@ task doc: :images do
   sh 'mkdocs gh-deploy -m "[skip ci] on Wercker"'
 end
 
-task default: %i(test build)
+task default: %i[test build]
 
 task :clean do
   sh 'git clean -dfx'

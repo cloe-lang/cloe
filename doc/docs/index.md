@@ -11,7 +11,7 @@ It aims to be simple, canonical, and practical.
 - Tisp evaluates every output of a program (such as printing a string and
   sending an HTTP response to a client) parallelly and concurrently by default
   leaving synchronization optional.
-- Tisp keeps the other part of a program pure (i.e. without any output).
+- Tisp keeps the other part of a program pure; no side effect is allowed.
 - Therefore, every program in Tisp can run parallelly and concurrently with
   nothing special!
 

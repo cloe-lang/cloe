@@ -1,5 +1,7 @@
 # Program As Patch
 
+This page tries to explain Tisp without the concept of "time is space".
+
 ## Huh?
 
 In Tisp, we view a program as a set of patches (or diffs) which are applied to

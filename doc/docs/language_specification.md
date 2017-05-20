@@ -90,7 +90,7 @@ positional rest arguments and keyword rest arguments.
 
 ## Special forms
 
-### Function or variable definition `let`
+### Function and variable definition `let`
 
 ```
 (let myVariable 123)

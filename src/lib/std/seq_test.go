@@ -3,8 +3,8 @@ package std
 import (
 	"testing"
 
-	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/stretchr/testify/assert"
+	"github.com/tisp-lang/tisp/src/lib/core"
 )
 
 func TestSeq(t *testing.T) {

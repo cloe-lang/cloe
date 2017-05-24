@@ -3,8 +3,8 @@ package desugar
 import (
 	"testing"
 
-	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/stretchr/testify/assert"
+	"github.com/tisp-lang/tisp/src/lib/ast"
 )
 
 func TestLetStatementsToNames(t *testing.T) {

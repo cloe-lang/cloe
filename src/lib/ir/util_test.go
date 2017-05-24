@@ -4,9 +4,9 @@ import (
 	"math"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/debug"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCompileFunction(t *testing.T) {

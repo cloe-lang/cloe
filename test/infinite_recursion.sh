@@ -8,7 +8,7 @@ sleep 1 # Wait for memory usage to be stable.
 ok=false
 last_mem=0
 
-for i in $(seq 10)
+for _ in $(seq 10)
 do
   mem=$(ps ho vsize $pid | tail -1)
 

@@ -1,4 +1,4 @@
 #!/bin/sh
 
-cat test/source_from_stdin.tisp | bin/tisp-parse > /dev/null &&
-cat test/source_from_stdin.tisp | bin/tisp > /dev/null
+bin/tisp-parse < test/source_from_stdin.tisp > /dev/null &&
+bin/tisp < test/source_from_stdin.tisp > /dev/null

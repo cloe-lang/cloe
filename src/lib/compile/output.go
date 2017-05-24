@@ -1,6 +1,6 @@
 package compile
 
-import "github.com/raviqqe/tisp/src/lib/core"
+import "github.com/tisp-lang/tisp/src/lib/core"
 
 // Output represents an output of a program.
 type Output struct {

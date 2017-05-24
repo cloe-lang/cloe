@@ -4,7 +4,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/raviqqe/tisp/src/lib/debug"
+	"github.com/tisp-lang/tisp/src/lib/debug"
 )
 
 type thunkState int32

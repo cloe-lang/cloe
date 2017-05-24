@@ -1,6 +1,6 @@
 package ir
 
-import "github.com/raviqqe/tisp/src/lib/core"
+import "github.com/tisp-lang/tisp/src/lib/core"
 
 // KeywordArgument represents a keyword argument passed to a function.
 type KeywordArgument struct {

@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/raviqqe/tisp/src/lib/debug"
+import "github.com/tisp-lang/tisp/src/lib/debug"
 
 // LetFunction represents a let-function statement node in ASTs.
 type LetFunction struct {

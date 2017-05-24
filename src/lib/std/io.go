@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/raviqqe/tisp/src/lib/core"
+	"github.com/tisp-lang/tisp/src/lib/core"
 )
 
 // Read reads a string from stdin or a file.

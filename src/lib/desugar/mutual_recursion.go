@@ -3,10 +3,10 @@ package desugar
 import (
 	"fmt"
 
-	"github.com/raviqqe/tisp/src/lib/ast"
-	"github.com/raviqqe/tisp/src/lib/debug"
-	"github.com/raviqqe/tisp/src/lib/gensym"
-	"github.com/raviqqe/tisp/src/lib/util"
+	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/debug"
+	"github.com/tisp-lang/tisp/src/lib/gensym"
+	"github.com/tisp-lang/tisp/src/lib/util"
 )
 
 func desugarMutualRecursionStatement(s interface{}) []interface{} {

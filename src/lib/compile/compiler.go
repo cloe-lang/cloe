@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/raviqqe/tisp/src/lib/ast"
-	"github.com/raviqqe/tisp/src/lib/core"
-	"github.com/raviqqe/tisp/src/lib/ir"
+	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/tisp-lang/tisp/src/lib/ir"
 )
 
 type compiler struct {

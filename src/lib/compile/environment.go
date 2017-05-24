@@ -1,8 +1,8 @@
 package compile
 
 import (
-	"github.com/raviqqe/tisp/src/lib/core"
-	"github.com/raviqqe/tisp/src/lib/util"
+	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/tisp-lang/tisp/src/lib/util"
 )
 
 type environment struct {

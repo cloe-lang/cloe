@@ -1,6 +1,6 @@
 package ir
 
-import "github.com/raviqqe/tisp/src/lib/core"
+import "github.com/tisp-lang/tisp/src/lib/core"
 
 // CompileFunction compiles a function in IR into a thunk.
 func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) *core.Thunk {

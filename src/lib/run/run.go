@@ -5,8 +5,8 @@ import (
 	"os"
 	"sync"
 
-	"github.com/raviqqe/tisp/src/lib/compile"
-	"github.com/raviqqe/tisp/src/lib/core"
+	"github.com/tisp-lang/tisp/src/lib/compile"
+	"github.com/tisp-lang/tisp/src/lib/core"
 )
 
 const maxConcurrentOutputs = 256

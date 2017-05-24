@@ -1,6 +1,6 @@
 package std
 
-import "github.com/raviqqe/tisp/src/lib/core"
+import "github.com/tisp-lang/tisp/src/lib/core"
 
 // Y is Y combinator which takes a function whose first argument is itself
 // applied to the combinator.

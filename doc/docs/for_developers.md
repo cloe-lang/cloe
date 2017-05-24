@@ -21,4 +21,4 @@ rake install_deps
 - `rake lint` lints all files.
 - `rake clean` cleans up the repository directory.
 
-For more information, see [rakefile.rb](https://github.com/raviqqe/tisp/blob/master/rakefile.rb).
+For more information, see [rakefile.rb](https://github.com/tisp-lang/tisp/blob/master/rakefile.rb).

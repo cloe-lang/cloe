@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/raviqqe/tisp/src/lib/ast"
-	"github.com/raviqqe/tisp/src/lib/debug"
-	"github.com/raviqqe/tisp/src/lib/parse/comb"
+	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/debug"
+	"github.com/tisp-lang/tisp/src/lib/parse/comb"
 )
 
 const (

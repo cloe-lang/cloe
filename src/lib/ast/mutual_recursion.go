@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/raviqqe/tisp/src/lib/debug"
+import "github.com/tisp-lang/tisp/src/lib/debug"
 
 // MutualRecursion represents a definition of mutually-recursive functions.
 type MutualRecursion struct {

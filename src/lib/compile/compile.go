@@ -1,10 +1,10 @@
 package compile
 
 import (
-	"github.com/raviqqe/tisp/src/lib/core"
-	"github.com/raviqqe/tisp/src/lib/desugar"
-	"github.com/raviqqe/tisp/src/lib/parse"
-	"github.com/raviqqe/tisp/src/lib/util"
+	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/tisp-lang/tisp/src/lib/desugar"
+	"github.com/tisp-lang/tisp/src/lib/parse"
+	"github.com/tisp-lang/tisp/src/lib/util"
 )
 
 // MainModule compiles a main module of a path into outputs of thunks.

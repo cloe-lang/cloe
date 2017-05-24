@@ -1,6 +1,6 @@
 package ast
 
-import "github.com/raviqqe/tisp/src/lib/debug"
+import "github.com/tisp-lang/tisp/src/lib/debug"
 
 // Import represents an import of a sub module.
 type Import struct {

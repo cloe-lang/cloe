@@ -4,8 +4,8 @@ import (
 	"math"
 	"testing"
 
-	"github.com/raviqqe/tisp/src/lib/core"
-	"github.com/raviqqe/tisp/src/lib/debug"
+	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/tisp-lang/tisp/src/lib/debug"
 	"github.com/stretchr/testify/assert"
 )
 

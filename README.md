@@ -1,9 +1,9 @@
 # Tisp
 
-[![wercker](https://img.shields.io/wercker/ci/wercker/docs.svg?style=flat-square)](https://app.wercker.com/raviqqe/tisp/runs)
-[![codeclimate](https://img.shields.io/codeclimate/github/kabisaict/flow.svg?style=flat-square)](https://codeclimate.com/github/raviqqe/tisp)
-[![Go Report Card](https://goreportcard.com/badge/github.com/raviqqe/tisp?style=flat-square)](https://goreportcard.com/report/github.com/raviqqe/tisp)
-[![codecov](https://img.shields.io/codecov/c/github/raviqqe/tisp.svg?style=flat-square)](https://codecov.io/gh/raviqqe/tisp)
+[![wercker](https://img.shields.io/wercker/ci/wercker/docs.svg?style=flat-square)](https://app.wercker.com/tisp-lang/tisp/runs)
+[![codeclimate](https://img.shields.io/codeclimate/github/kabisaict/flow.svg?style=flat-square)](https://codeclimate.com/github/tisp-lang/tisp)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tisp-lang/tisp?style=flat-square)](https://goreportcard.com/report/github.com/tisp-lang/tisp)
+[![codecov](https://img.shields.io/codecov/c/github/tisp-lang/tisp.svg?style=flat-square)](https://codecov.io/gh/tisp-lang/tisp)
 [![MIT license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Google group](https://img.shields.io/badge/join-us-ff69b4.svg?style=flat-square)](https://groups.google.com/forum/#!forum/tisp-aliens)
 
@@ -18,14 +18,14 @@ Any contributions would be appreciated.
 
 ## Current status
 
-See [the issues](https://github.com/raviqqe/tisp/issues).
+See [the issues](https://github.com/tisp-lang/tisp/issues).
 Tisp is actively developed and work in progress.
 Stay tuned!
 
 ## Installation
 
 ```
-go get github.com/raviqqe/tisp/src/cmd/tisp
+go get github.com/tisp-lang/tisp/src/cmd/tisp
 ```
 
 You need Go 1.8+.
@@ -50,7 +50,7 @@ You need Go 1.8+.
 
 ## Documentation
 
-Visit [here](https://raviqqe.github.io/tisp/).
+Visit [here](https://tisp-lang.github.io/tisp/).
 
 ## Examples
 
@@ -66,7 +66,7 @@ some features are not implemented yet.
 ## Contributing
 
 Please send pull requests, issues, questions or anything else.
-See also [the documentation](https://raviqqe.github.io/tisp/for_developers/)
+See also [the documentation](https://tisp-lang.github.io/tisp/for_developers/)
 on how to develop Tisp.
 
 ## FAQ

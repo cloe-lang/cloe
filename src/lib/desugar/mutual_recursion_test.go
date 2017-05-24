@@ -3,7 +3,7 @@ package desugar
 import (
 	"testing"
 
-	"github.com/raviqqe/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/stretchr/testify/assert"
 )
 

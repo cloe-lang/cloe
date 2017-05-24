@@ -1,4 +1,4 @@
-box: raviqqe/tisp-build
+box: tisplang/tisp-build
 
 build:
   steps:

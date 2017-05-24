@@ -1,6 +1,6 @@
 package desugar
 
-import "github.com/raviqqe/tisp/src/lib/ast"
+import "github.com/tisp-lang/tisp/src/lib/ast"
 
 func signatureToNames(s ast.Signature) names {
 	ns := newNames(append(s.PosReqs(), s.KeyReqs()...)...)

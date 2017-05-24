@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/raviqqe/tisp/src/lib/debug"
+	"github.com/tisp-lang/tisp/src/lib/debug"
 )
 
 // ErrorType represents errors in the language and traces function calls for

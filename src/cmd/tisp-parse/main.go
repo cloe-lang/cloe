@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/docopt/docopt-go"
 	"github.com/kr/pretty"
-	"github.com/raviqqe/tisp/src/lib/parse"
-	"github.com/raviqqe/tisp/src/lib/util"
+	"github.com/tisp-lang/tisp/src/lib/parse"
+	"github.com/tisp-lang/tisp/src/lib/util"
 )
 
 func main() {

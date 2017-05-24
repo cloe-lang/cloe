@@ -3,7 +3,7 @@ package std
 import (
 	"testing"
 
-	. "github.com/raviqqe/tisp/src/lib/core"
+	. "github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/stretchr/testify/assert"
 )
 

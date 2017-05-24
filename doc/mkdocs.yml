@@ -1,6 +1,6 @@
 site_name: Tisp
 repo_name: GitHub
-repo_url: https://github.com/raviqqe/tisp
+repo_url: https://github.com/tisp-lang/tisp
 edit_uri: edit/master/doc/docs
 pages:
   - Home: index.md

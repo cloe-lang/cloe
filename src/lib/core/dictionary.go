@@ -3,7 +3,7 @@ package core
 import (
 	"strings"
 
-	"github.com/raviqqe/tisp/src/lib/rbt"
+	"github.com/tisp-lang/tisp/src/lib/rbt"
 )
 
 // DictionaryType represents a dictionary in the language.

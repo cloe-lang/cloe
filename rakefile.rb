@@ -87,7 +87,7 @@ task :format do
 end
 
 task :docker do
-  tag = 'raviqqe/tisp-build'
+  tag = 'tisplang/tisp-build'
   sh "sudo docker build --no-cache -t #{tag} etc/docker"
   sh "sudo docker push #{tag}"
 end

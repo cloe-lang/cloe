@@ -1,6 +1,6 @@
 package std
 
-import "github.com/raviqqe/tisp/src/lib/core"
+import "github.com/tisp-lang/tisp/src/lib/core"
 
 // Dictionary creates a new dictionary from pairs of a key and value.
 var Dictionary = core.NewLazyFunction(

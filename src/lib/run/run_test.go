@@ -3,9 +3,9 @@ package run
 import (
 	"testing"
 
-	"github.com/raviqqe/tisp/src/lib/compile"
-	"github.com/raviqqe/tisp/src/lib/core"
-	"github.com/raviqqe/tisp/src/lib/std"
+	"github.com/tisp-lang/tisp/src/lib/compile"
+	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/tisp-lang/tisp/src/lib/std"
 )
 
 func TestRunWithNoThunk(t *testing.T) {

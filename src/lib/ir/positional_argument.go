@@ -1,6 +1,6 @@
 package ir
 
-import "github.com/raviqqe/tisp/src/lib/core"
+import "github.com/tisp-lang/tisp/src/lib/core"
 
 // PositionalArgument represents a positional argument passed to a function.
 // It can be a list value and expanded into multiple arguments.

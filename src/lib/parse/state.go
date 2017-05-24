@@ -1,8 +1,8 @@
 package parse
 
 import (
-	"github.com/raviqqe/tisp/src/lib/debug"
-	"github.com/raviqqe/tisp/src/lib/parse/comb"
+	"github.com/tisp-lang/tisp/src/lib/debug"
+	"github.com/tisp-lang/tisp/src/lib/parse/comb"
 )
 
 type state struct {

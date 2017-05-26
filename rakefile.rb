@@ -12,7 +12,27 @@ end
 
 test_files = Dir.glob 'test/*.tisp'
 
-task command_test: :build do
+task :test_build do
+  sh 'go test -c -cover '\
+     "-coverpkg $(go list ./... | perl -0777 -pe 's/\\n(.)/,\\1/g') "\
+     './src/cmd/tisp'
+  mv 'tisp.test', 'bin'
+
+  File.write 'bin/tisp', [
+    '#!/bin/sh',
+    'file=/tmp/tisp-test-$$.out',
+    'coverage_file=/tmp/tisp-test-$$.coverage',
+    %(ARGS="$@" #{File.absolute_path 'bin/tisp.test'} )\
+    + '-test.coverprofile $coverage_file > $file &&',
+    "cat $file | perl -0777 -pe 's/(.*)PASS.*/\\1/s' &&",
+    'rm $file &&',
+    'cat $coverage_file >> coverage.txt &&',
+    'rm $coverage_file'
+  ].join("\n") + "\n"
+  chmod 0o755, 'bin/tisp'
+end
+
+task command_test: :test_build do
   tmp_dir = 'tmp'
   mkdir_p tmp_dir
 

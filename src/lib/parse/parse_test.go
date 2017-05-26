@@ -1,6 +1,8 @@
 package parse
 
 import (
+	"io/ioutil"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,6 +11,24 @@ import (
 func TestMainModule(t *testing.T) {
 	for _, str := range []string{"", "(let x 42) (let (f x) (+ x 123)) (write 123)"} {
 		result, err := newStateWithoutFile(str).mainModule()()
+
+		t.Log(result)
+
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
+	}
+}
+
+func TestMainModuleWithFiles(t *testing.T) {
+	fs, err := filepath.Glob("../../../test/*.tisp")
+	assert.Equal(t, nil, err)
+	assert.NotEqual(t, 0, len(fs))
+
+	for _, f := range fs {
+		bs, err := ioutil.ReadFile(f)
+		assert.Equal(t, nil, err)
+
+		result, err := MainModule(f, string(bs))
 
 		t.Log(result)
 

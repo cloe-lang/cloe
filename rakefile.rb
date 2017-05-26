@@ -1,12 +1,6 @@
-bins = %w[tisp-parse tisp]
-
-bins.each do |bin|
-  task bin do
-    sh "go build -o bin/#{bin} src/cmd/#{bin}/main.go"
-  end
+task :build do
+  sh 'go build -o bin/tisp src/cmd/tisp/main.go'
 end
-
-task build: bins
 
 task :unit_test do
   sh 'go test -cover ./...'
@@ -18,13 +12,7 @@ end
 
 test_files = Dir.glob 'test/*.tisp'
 
-task parser_test: 'tisp-parse' do |t|
-  test_files.each do |file|
-    sh "bin/#{t.source} #{file} > /dev/null"
-  end
-end
-
-task interpreter_test: 'tisp' do
+task command_test: :build do
   tmp_dir = 'tmp'
   mkdir_p tmp_dir
 
@@ -54,8 +42,6 @@ task interpreter_test: 'tisp' do
     sh "! bin/tisp #{file} > /dev/null 2>&1"
   end
 end
-
-task command_test: %i[parser_test interpreter_test]
 
 task test: %i[unit_test command_test]
 

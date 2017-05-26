@@ -54,7 +54,7 @@ func PApp(f *Thunk, ps ...*Thunk) *Thunk {
 }
 
 // EvalAny evaluates a thunk and returns a pure or impure (output) value.
-func (t *Thunk) EvalAny(isPure bool) Value {
+func (t *Thunk) EvalAny(pure bool) Value {
 	if t.lock() {
 		children := make([]*Thunk, 0)
 
@@ -87,7 +87,7 @@ func (t *Thunk) EvalAny(isPure bool) Value {
 			t.function, t.args, ok = child.delegateEval()
 
 			if !ok {
-				t.result = child.EvalAny(isPure)
+				t.result = child.EvalAny(pure)
 				t.chainError(t.result)
 				break
 			}
@@ -97,9 +97,9 @@ func (t *Thunk) EvalAny(isPure bool) Value {
 
 		assertValueIsWHNF("Thunk.result", t.result)
 
-		if _, ok := t.result.(OutputType); isPure && ok {
+		if _, impure := t.result.(OutputType); pure && impure {
 			t.result = ImpureFunctionError(t.result).Eval()
-		} else if !isPure && !ok {
+		} else if !pure && !impure {
 			t.result = NotOutputError(t.result).Eval()
 		}
 

@@ -20,22 +20,15 @@ build:
 
     - script:
       name: unit test
-      code: |
-        for dir in $(go list ./...)
-        do
-          profile_file=profile.out
-          go test -race -coverprofile=$profile_file -covermode=atomic $dir
-          if [ -f $profile_file ]
-          then
-            cat $profile_file >> coverage.txt
-            rm $profile_file
-          fi
-        done
-        bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+      code: rake unit_test
 
     - script:
       name: command test
       code: rake command_test
+
+    - script:
+      name: coverage report
+      code: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
 
     - script:
       name: build

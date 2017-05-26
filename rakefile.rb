@@ -1,21 +1,32 @@
+total_coverage_file = 'coverage.txt' # This path is specified by codecov.
+
 task :build do
   sh 'go build -o bin/tisp src/cmd/tisp/main.go'
 end
 
+task :fast_unit_test do
+  sh 'go test ./...'
+end
+
 task :unit_test do
-  sh 'go test -cover ./...'
-end
+  coverage_file = "/tmp/tisp-unit-test-#{Process.pid}.coverage"
 
-task :full_unit_test do
-  sh 'go test -cover -race ./...'
-end
+  `go list ./...`.split.each do |package|
+    sh "go test -covermode atomic -coverprofile #{coverage_file} -race "\
+       "#{package}"
 
-test_files = Dir.glob 'test/*.tisp'
+    if File.exist? coverage_file
+      sh "cat #{coverage_file} >> #{total_coverage_file}"
+      rm coverage_file
+    end
+  end
+end
 
 task :test_build do
   sh 'go test -c -cover '\
      "-coverpkg $(go list ./... | perl -0777 -pe 's/\\n(.)/,\\1/g') "\
      './src/cmd/tisp'
+  mkdir_p 'bin'
   mv 'tisp.test', 'bin'
 
   File.write 'bin/tisp', [
@@ -26,9 +37,10 @@ task :test_build do
     + '-test.coverprofile $coverage_file > $file &&',
     "cat $file | perl -0777 -pe 's/(.*)PASS.*/\\1/s' &&",
     'rm $file &&',
-    'cat $coverage_file >> coverage.txt &&',
+    "cat $coverage_file >> #{total_coverage_file} &&",
     'rm $coverage_file'
   ].join("\n") + "\n"
+
   chmod 0o755, 'bin/tisp'
 end
 
@@ -36,7 +48,7 @@ task command_test: :test_build do
   tmp_dir = 'tmp'
   mkdir_p tmp_dir
 
-  test_files.each do |file|
+  Dir.glob('test/*.tisp').each do |file|
     shell_script = file.ext '.sh'
 
     if File.exist? shell_script

@@ -8,7 +8,7 @@ type KeywordArgument struct {
 	value interface{}
 }
 
-// NewKeywordArgument creates a KeywordArgument from a bound name and its value.
+// NewKeywordArgument creates a keyword argument from a bound name and its value.
 func NewKeywordArgument(n string, ir interface{}) KeywordArgument {
 	return KeywordArgument{
 		name:  n,

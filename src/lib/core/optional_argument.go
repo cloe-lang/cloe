@@ -1,12 +1,12 @@
 package core
 
-// OptionalArgument contains its name and default value.
+// OptionalArgument represents an optional argument defined in a function.
 type OptionalArgument struct {
 	name         string
 	defaultValue *Thunk
 }
 
-// NewOptionalArgument defines a new OptionalArgument.
+// NewOptionalArgument creates an optional argument.
 func NewOptionalArgument(n string, v *Thunk) OptionalArgument {
 	return OptionalArgument{
 		name:         n,

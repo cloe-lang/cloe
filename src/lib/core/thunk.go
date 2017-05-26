@@ -53,7 +53,7 @@ func PApp(f *Thunk, ps ...*Thunk) *Thunk {
 	return AppWithInfo(f, NewPositionalArguments(ps...), debug.NewGoInfo(1))
 }
 
-// EvalAny evaluates a thunk and returns a pure or output value.
+// EvalAny evaluates a thunk and returns a pure or impure (output) value.
 func (t *Thunk) EvalAny(isPure bool) Value {
 	if t.lock() {
 		children := make([]*Thunk, 0)

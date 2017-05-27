@@ -1,4 +1,13 @@
 total_coverage_file = 'coverage.txt' # This path is specified by codecov.
+PACKAGES = `go list ./...`.split
+
+def go_test(*args)
+  sh %W[go test
+        -covermode atomic
+        -coverpkg #{PACKAGES.join ','}
+        #{`uname -m` =~ /x86_64/ ? '-race' : ''}
+        #{args.join ' '}].join ' '
+end
 
 task :build do
   sh 'go build -o bin/tisp src/cmd/tisp/main.go'
@@ -11,12 +20,8 @@ end
 task :unit_test do
   coverage_file = "/tmp/tisp-unit-test-#{Process.pid}.coverage"
 
-  `go list ./...`.split.each do |package|
-    sh %W[go test
-          -covermode atomic
-          -coverprofile #{coverage_file}
-          -race
-          #{package}].join ' '
+  PACKAGES.each do |package|
+    go_test '-coverprofile', coverage_file, package
 
     verbose false do
       if File.exist? coverage_file
@@ -28,9 +33,7 @@ task :unit_test do
 end
 
 task :test_build do
-  sh %w[go test -race -covermode atomic -c -cover
-        -coverpkg $(go list ./... | perl -0777 -pe 's/\\n(.)/,\\1/g')
-        ./src/cmd/tisp].join ' '
+  go_test '-c', './src/cmd/tisp'
   mkdir_p 'bin'
   mv 'tisp.test', 'bin'
 

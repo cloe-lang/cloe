@@ -28,7 +28,7 @@ task :unit_test do
 end
 
 task :test_build do
-  sh %w[go test -c -cover
+  sh %w[go test -race -covermode atomic -c -cover
         -coverpkg $(go list ./... | perl -0777 -pe 's/\\n(.)/,\\1/g')
         ./src/cmd/tisp].join ' '
   mkdir_p 'bin'

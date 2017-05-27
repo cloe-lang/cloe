@@ -62,7 +62,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 						append(
 							[]ast.PositionalArgument{ast.NewPositionalArgument(flattened, false)},
 							namesToPosArgs(usedNames.slice())...,
-						), nil, []interface{}{}),
+						), nil, nil),
 					f.DebugInfo())))
 
 			names.add(l.Name())

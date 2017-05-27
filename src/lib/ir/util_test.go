@@ -17,7 +17,7 @@ func TestCompileFunction(t *testing.T) {
 			[]string{"f", "x1", "x2", "x3"}, nil, "",
 			nil, nil, "",
 		),
-		[]interface{}{},
+		nil,
 		newAppWithDummyInfo(0, newPositionalArguments(1, newAppWithDummyInfo(0, newPositionalArguments(2, 3)))))
 
 	x1 := float64(core.PApp(f, core.Pow, core.NewNumber(n1), core.NewNumber(n2), core.NewNumber(n3)).Eval().(core.NumberType))
@@ -52,7 +52,7 @@ func newPositionalArguments(xs ...interface{}) Arguments {
 		ps[i] = NewPositionalArgument(x, false)
 	}
 
-	return NewArguments(ps, nil, []interface{}{})
+	return NewArguments(ps, nil, nil)
 }
 
 func newAppWithDummyInfo(f interface{}, args Arguments) App {

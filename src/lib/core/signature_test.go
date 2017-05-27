@@ -8,14 +8,14 @@ import (
 
 func TestXFailSignatureBindNoArgument(t *testing.T) {
 	s := NewSignature(nil, nil, "", nil, nil, "")
-	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, []*Thunk{})
+	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil)
 	_, err := s.Bind(args)
 	assert.NotEqual(t, (*Thunk)(nil), err)
 }
 
 func TestXFailSignatureBindRequiredKeywordArgument(t *testing.T) {
 	s := NewSignature(nil, nil, "", []string{"arg"}, nil, "")
-	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, []*Thunk{})
+	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil)
 	_, err := s.Bind(args)
 	assert.NotEqual(t, (*Thunk)(nil), err)
 }

@@ -24,7 +24,7 @@ func NewPApp(f interface{}, args []interface{}, info debug.Info) App {
 		ps = append(ps, NewPositionalArgument(arg, false))
 	}
 
-	return App{f, NewArguments(ps, nil, []interface{}{}), info}
+	return App{f, NewArguments(ps, nil, nil), info}
 }
 
 // Function returns a function of an application.

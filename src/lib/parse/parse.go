@@ -226,7 +226,7 @@ func (s *state) appQuote(p comb.Parser) comb.Parser {
 			return quoteString, ast.NewArguments(
 				[]ast.PositionalArgument{ast.NewPositionalArgument(x, false)},
 				nil,
-				[]interface{}{})
+				nil)
 		})
 }
 
@@ -359,7 +359,7 @@ func (s *state) list(ps ...comb.Parser) comb.Parser {
 
 func (s *state) sequence(l, r string) comb.Parser {
 	return s.App(func(x interface{}) interface{} {
-		return ast.NewArguments(x.([]ast.PositionalArgument), nil, []interface{}{})
+		return ast.NewArguments(x.([]ast.PositionalArgument), nil, nil)
 	}, s.stringWrap(l, s.positionalArguments(), r))
 }
 

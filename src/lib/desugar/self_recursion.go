@@ -34,7 +34,7 @@ func desugarSelfRecursiveFunction(f ast.LetFunction) []interface{} {
 			f.Name(),
 			ast.NewApp(
 				"$y",
-				ast.NewArguments([]ast.PositionalArgument{ast.NewPositionalArgument(unrecursive, false)}, nil, []interface{}{}),
+				ast.NewArguments([]ast.PositionalArgument{ast.NewPositionalArgument(unrecursive, false)}, nil, nil),
 				f.DebugInfo())),
 	}
 }

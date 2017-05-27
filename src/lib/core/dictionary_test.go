@@ -233,3 +233,27 @@ func TestDictionaryInclude(t *testing.T) {
 		assert.Equal(t, test.answer, PApp(Include, test.dictionary, test.key).Eval().(BoolType))
 	}
 }
+
+func TestDictionaryMerge(t *testing.T) {
+	d1 := NewDictionary(nil, nil)
+	d2kvs := make([][2]*Thunk, 0)
+
+	for _, kvs := range kvss {
+		d := NewDictionary(nil, nil)
+
+		for _, kv := range kvs {
+			d = PApp(Insert, d, kv[0], kv[1])
+		}
+
+		d1 = PApp(Merge, d1, d)
+		d2kvs = append(d2kvs, kvs...)
+	}
+
+	d2 := NewDictionary(nil, nil)
+
+	for _, kv := range d2kvs {
+		d2 = PApp(Insert, d2, kv[0], kv[1])
+	}
+
+	assert.True(t, testEqual(d1, d2))
+}

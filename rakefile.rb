@@ -16,7 +16,7 @@ task :unit_test do
           -covermode atomic
           -coverprofile #{coverage_file}
           -race
-          #{package}].join(' ')
+          #{package}].join ' '
 
     verbose false do
       if File.exist? coverage_file
@@ -28,9 +28,9 @@ task :unit_test do
 end
 
 task :test_build do
-  sh 'go test -c -cover '\
-     "-coverpkg $(go list ./... | perl -0777 -pe 's/\\n(.)/,\\1/g') "\
-     './src/cmd/tisp'
+  sh %w[go test -c -cover
+        -coverpkg $(go list ./... | perl -0777 -pe 's/\\n(.)/,\\1/g')
+        ./src/cmd/tisp].join ' '
   mkdir_p 'bin'
   mv 'tisp.test', 'bin'
 

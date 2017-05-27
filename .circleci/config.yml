@@ -30,9 +30,5 @@ jobs:
           command: rake command_test
 
       - run:
-          name: Coverage report
-          command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
-
-      - run:
           name: Install binary
           command: rake install

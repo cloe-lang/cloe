@@ -1,4 +1,4 @@
-total_coverage_file = 'coverage.txt' # This path is specified by codecov.
+TOTAL_COVERAGE_FILE = 'coverage.txt'.freeze # This path is specified by codecov.
 PACKAGES = `go list ./...`.split
 
 def go_test(*args)
@@ -25,7 +25,7 @@ task :unit_test do
 
     verbose false do
       if File.exist? coverage_file
-        sh "cat #{coverage_file} >> #{total_coverage_file}"
+        sh "cat #{coverage_file} >> #{TOTAL_COVERAGE_FILE}"
         rm coverage_file
       end
     end
@@ -45,7 +45,7 @@ task :test_build do
     + '-test.coverprofile $coverage_file > $file &&',
     "cat $file | perl -0777 -pe 's/(.*)PASS.*/\\1/s' &&",
     'rm $file &&',
-    "cat $coverage_file >> #{total_coverage_file} &&",
+    "cat $coverage_file >> #{TOTAL_COVERAGE_FILE} &&",
     'rm $coverage_file'
   ].join("\n") + "\n"
 

@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: golang:1.8.1
+    working_directory: /go/src/github.com/tisp-lang/tisp
+    steps:
+      - checkout
+
+      - run:
+          name: OS Setup
+          command: |
+            apt -y update --fix-missing
+            apt -y install rake
+
+      - run:
+          name: Install dependencies
+          command: rake install_deps
+
+      - run:
+          name: Lint
+          command: rake lint
+
+      - run:
+          name: Unit test
+          command: rake unit_test
+
+      - run:
+          name: Command test
+          command: rake command_test
+
+      - run:
+          name: Coverage report
+          command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+
+      - run:
+          name: Install binary
+          command: rake install

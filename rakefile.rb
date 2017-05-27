@@ -12,12 +12,17 @@ task :unit_test do
   coverage_file = "/tmp/tisp-unit-test-#{Process.pid}.coverage"
 
   `go list ./...`.split.each do |package|
-    sh "go test -covermode atomic -coverprofile #{coverage_file} -race "\
-       "#{package}"
+    sh %W[go test
+          -covermode atomic
+          -coverprofile #{coverage_file}
+          -race
+          #{package}].join(' ')
 
-    if File.exist? coverage_file
-      sh "cat #{coverage_file} >> #{total_coverage_file}"
-      rm coverage_file
+    verbose false do
+      if File.exist? coverage_file
+        sh "cat #{coverage_file} >> #{total_coverage_file}"
+        rm coverage_file
+      end
     end
   end
 end

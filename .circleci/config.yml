@@ -11,7 +11,7 @@ jobs:
           name: OS Setup
           command: |
             apt -y update --fix-missing
-            apt -y install rake
+            apt -y install rake bundler
 
       - run:
           name: Install dependencies

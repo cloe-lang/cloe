@@ -1,12 +1,18 @@
-box: tisplang/tisp-build
+box: golang
 
 build:
   steps:
     - script:
-      name: env
+      name: environment variables
       code: |
         export GOPATH=~
         export PATH=$GOPATH/bin:$PATH
+
+    - script:
+      name: os setup
+      code: |
+        apt -y update --fix-missing
+        apt -y install rake bundler
 
     - setup-go-workspace
 

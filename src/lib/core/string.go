@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -114,6 +115,10 @@ func (s StringType) less(o ordered) bool {
 
 func (s StringType) string() Value {
 	return s
+}
+
+func (s StringType) dump() Value {
+	return StringType(fmt.Sprintf("%#v", string(s)))
 }
 
 func (s StringType) size() Value {

@@ -1,3 +1,0 @@
-(let (factor f n) (if (= n 0) 1 (* (f (- n 1)) n)))
-(let f (y factor))
-(write (f 5))

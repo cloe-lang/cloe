@@ -1,5 +1,6 @@
 TOTAL_COVERAGE_FILE = 'coverage.txt'.freeze # This path is specified by codecov.
 PACKAGES = `go list ./...`.split
+BIN_PATH = File.absolute_path 'bin'
 
 def go_test(*args)
   sh %W[go test
@@ -41,7 +42,7 @@ task :test_build do
     '#!/bin/sh',
     'file=/tmp/tisp-test-$$.out',
     'coverage_file=/tmp/tisp-test-$$.coverage',
-    %(ARGS="$@" #{File.absolute_path 'bin/tisp.test'} )\
+    %(ARGS="$@" #{File.join BIN_PATH, 'tisp.test'} )\
     + '-test.coverprofile $coverage_file > $file &&',
     "cat $file | perl -0777 -pe 's/(.*)PASS.*/\\1/s' &&",
     'rm $file &&',
@@ -53,33 +54,9 @@ task :test_build do
 end
 
 task command_test: :test_build do
-  tmp_dir = 'tmp'
-  mkdir_p tmp_dir
-
-  Dir.glob('test/*.tisp').each do |file|
-    shell_script = file.ext '.sh'
-
-    if File.exist? shell_script
-      sh "sh #{shell_script}"
-      next
-    end
-
-    in_file = file.ext '.in'
-    expected_out_file = file.ext '.out'
-    actual_out_file = File.join(tmp_dir, File.basename(expected_out_file))
-
-    sh %W[
-      bin/tisp #{file}
-      #{File.exist?(in_file) ? "< #{in_file}" : ''}
-      #{File.exist?(expected_out_file) ? "> #{actual_out_file}" : ''}
-    ].join ' '
-
-    sh "diff #{expected_out_file} #{actual_out_file}" \
-        if File.exist? expected_out_file
-  end
-
-  Dir.glob 'test/xfail/*.tisp' do |file|
-    sh "! bin/tisp #{file} > /dev/null 2>&1"
+  cd 'test' do
+    sh 'bundler install'
+    sh "bundler exec cucumber PATH=#{BIN_PATH}:$PATH"
   end
 end
 

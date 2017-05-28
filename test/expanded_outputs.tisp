@@ -1,8 +1,0 @@
-(let (mapImpl map func list)
-     (if (= list [])
-         []
-         (prepend (func (first list))
-                  (map func (rest list)))))
-(let map (y mapImpl))
-
-..(map write [1 2 3 4 5])

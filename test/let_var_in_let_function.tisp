@@ -1,5 +1,0 @@
-(let (foo x)
-  (let bar (+ x x))
-  bar)
-
-(write (foo 21))

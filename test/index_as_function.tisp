@@ -1,5 +1,0 @@
-(let d {true 42
-        123  nil
-        nil  false})
-
-(write (d nil))

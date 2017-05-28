@@ -1,3 +1,0 @@
-(let (f me) (prepend (write 42) (me)))
-(let many42 (y f))
-..(many42)

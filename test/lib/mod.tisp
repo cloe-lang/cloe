@@ -1,2 +1,0 @@
-(let (map func list)
-     (if (= list []) [] (prepend (func (first list)) (map func (rest list)))))

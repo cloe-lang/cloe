@@ -17,6 +17,12 @@ build:
     - setup-go-workspace
 
     - script:
+      name: debug info
+      code: |
+        uname -a
+        go version
+
+    - script:
       name: install dependencies
       code: rake install_deps
 

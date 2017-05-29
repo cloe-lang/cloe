@@ -1,0 +1,15 @@
+language: go
+build:
+  pre_ci_boot:
+    image_name: golang
+    image_tag: latest
+    pull: true
+  ci:
+    - apt -y update --fix-missing
+    - apt -y install bundler rake
+    - rake install_deps
+    - rake lint
+    - rake unit_test
+    - rake command_test
+    - rake build
+    - rake install

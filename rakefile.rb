@@ -33,27 +33,7 @@ task :unit_test do
   end
 end
 
-task :test_build do
-  go_test '-c', './src/cmd/tisp'
-  mkdir_p 'bin'
-  mv 'tisp.test', 'bin'
-
-  File.write 'bin/tisp', [
-    '#!/bin/sh',
-    'file=/tmp/tisp-test-$$.out',
-    'coverage_file=/tmp/tisp-test-$$.coverage',
-    %(ARGS="$@" #{File.join BIN_PATH, 'tisp.test'} )\
-    + '-test.coverprofile $coverage_file > $file &&',
-    "cat $file | perl -0777 -pe 's/(.*)PASS.*/\\1/s' &&",
-    'rm $file &&',
-    "cat $coverage_file >> #{TOTAL_COVERAGE_FILE} &&",
-    'rm $coverage_file'
-  ].join("\n") + "\n"
-
-  chmod 0o755, 'bin/tisp'
-end
-
-task command_test: :test_build do
+task command_test: :build do
   cd 'test' do
     sh 'bundler install'
     sh "bundler exec cucumber PATH=#{BIN_PATH}:$PATH"

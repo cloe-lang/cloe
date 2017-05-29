@@ -30,24 +30,28 @@ Feature: Others
     When I run the following script:
     """
     tisp main.tisp > /dev/null &
+    pid=$!
 
     sleep 1 # Wait for memory usage to be stable.
 
+    ok=false
     last_mem=0
 
     for _ in $(seq 10)
     do
-      mem=$(ps ax k vsz o vsz | tail -1)
+      mem=$(ps ho vsz $pid)
 
       if [ $last_mem -ge $mem  ]
       then
-        exit
+        ok=true
+        break
       fi
 
       last_mem=$mem
       sleep 1
     done &&
 
-    false
+    kill $pid &&
+    $ok
     """
     Then the exit status should be 0

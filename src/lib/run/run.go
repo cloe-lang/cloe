@@ -7,6 +7,7 @@ import (
 
 	"github.com/tisp-lang/tisp/src/lib/compile"
 	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/tisp-lang/tisp/src/lib/systemt"
 )
 
 const maxConcurrentOutputs = 256
@@ -15,6 +16,8 @@ var sem = make(chan bool, maxConcurrentOutputs)
 
 // Run runs outputs.
 func Run(os []compile.Output) {
+	go systemt.RunDaemons()
+
 	wg := sync.WaitGroup{}
 
 	for _, v := range os {

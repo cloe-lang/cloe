@@ -2,6 +2,7 @@ package systemt
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -26,5 +27,6 @@ func TestRunDaemons(t *testing.T) {
 		})
 	}
 
+	time.Sleep(100 * time.Millisecond)
 	assert.Equal(t, 10, len(c))
 }

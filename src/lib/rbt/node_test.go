@@ -101,7 +101,8 @@ func TestNodeRemoveRandomly(t *testing.T) {
 		k := generateKey()
 		old := n
 
-		n, insert := n.insertOrRemove(t, k)
+		var insert bool
+		n, insert = n.insertOrRemove(t, k)
 
 		n.rank() // check ranks
 
@@ -119,7 +120,8 @@ func TestInsertRemovePersistency(t *testing.T) {
 		old := n
 		oldCopy := n.deepCopy()
 
-		n, insert := n.insertOrRemove(t, k)
+		var insert bool
+		n, insert = n.insertOrRemove(t, k)
 
 		n.rank() // check ranks
 

@@ -207,3 +207,11 @@ func TestNodeRankError(t *testing.T) {
 
 	n.rank()
 }
+
+func TestNodeCheckColorsError(t *testing.T) {
+	n := (*node)(nil).insert(0, less).insert(1, less).insert(2, less).insert(3, less)
+	n.dump()
+	n.right.color = red
+	n.dump()
+	assert.True(t, !n.checkColors())
+}

@@ -7,6 +7,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGoInfo(t *testing.T) {
+func TestNewGoInfo(t *testing.T) {
 	assert.Equal(t, "info_test.go", filepath.Base(NewGoInfo(0).file))
+}
+
+func TestNewGoInfoWithInvalidSkip(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fail()
+		}
+	}()
+
+	NewGoInfo(10)
+}
+
+func TestLines(t *testing.T) {
+	t.Log(NewGoInfo(0).Lines())
 }

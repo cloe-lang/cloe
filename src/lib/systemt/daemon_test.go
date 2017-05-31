@@ -18,8 +18,10 @@ func TestRunDaemons(t *testing.T) {
 	go RunDaemons()
 
 	for i := 0; i < 10; i++ {
+		j := i // To avoid data race of a loop variable.
+
 		Daemonize(func() {
-			if i%2 == 0 {
+			if j%2 == 0 {
 				c <- true
 			} else {
 				c <- false

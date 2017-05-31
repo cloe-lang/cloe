@@ -32,6 +32,32 @@ func TestRally(t *testing.T) {
 	assert.True(t, bool(core.PApp(core.Equal, core.EmptyList, l2).Eval().(core.BoolType)))
 }
 
+func TestRallyError(t *testing.T) {
+	go systemt.RunDaemons()
+
+	ts := []*core.Thunk{
+		core.True,
+		core.False,
+		core.Nil,
+		core.ValueError("I am the sentinel."),
+	}
+
+	l := core.App(Rally, core.NewArguments(
+		[]core.PositionalArgument{core.NewPositionalArgument(core.NewList(ts...), true)},
+		nil,
+		nil))
+
+	for i := 0; ; i++ {
+		assert.True(t, i < len(ts))
+
+		if _, ok := l.Eval().(core.ErrorType); ok {
+			break
+		}
+
+		l = core.PApp(core.Rest, l)
+	}
+}
+
 var indexOf = core.NewLazyFunction(
 	core.NewSignature([]string{"list", "elem"}, nil, "", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {

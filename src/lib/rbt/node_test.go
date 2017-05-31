@@ -104,6 +104,7 @@ func TestNodeRemoveRandomly(t *testing.T) {
 		var insert bool
 		n, insert = n.insertOrRemove(t, k)
 
+		n.dump()
 		n.rank() // check ranks
 
 		if !n.checkColors() {
@@ -123,6 +124,7 @@ func TestInsertRemovePersistency(t *testing.T) {
 		var insert bool
 		n, insert = n.insertOrRemove(t, k)
 
+		n.dump()
 		n.rank() // check ranks
 
 		if !(old.equal(oldCopy) && n.checkColors()) {

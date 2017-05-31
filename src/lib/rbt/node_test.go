@@ -192,3 +192,18 @@ func TestNodeEqual(t *testing.T) {
 		assert.Equal(t, test.equal, test.n1.equal(test.n2))
 	}
 }
+
+func TestNodeRankError(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fail()
+		}
+	}()
+
+	n := (*node)(nil).insert(0, less).insert(1, less).insert(2, less)
+	n.dump()
+	n.left.color = red
+	n.dump()
+
+	n.rank()
+}

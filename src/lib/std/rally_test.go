@@ -24,27 +24,34 @@ func TestRally(t *testing.T) {
 		t.Logf("%#v", e.Eval())
 		assert.True(t, bool(core.PApp(core.Include, l1, e).Eval().(core.BoolType)))
 
-		var n *core.Thunk
-		l1tmp := l1
-
-		for i := 0; ; i++ {
-			ee := core.PApp(core.First, l1tmp)
-			t.Logf("%#v", ee.Eval())
-
-			if core.PApp(core.Equal, e, ee).Eval().(core.BoolType) {
-				n = core.NewNumber(float64(i))
-				break
-			} else if i >= len(ts) {
-				t.FailNow()
-			}
-
-			l1tmp = core.PApp(core.Rest, l1tmp)
-		}
-
-		l1 = core.PApp(core.Delete, l1, n)
+		l1 = core.PApp(core.Delete, l1, core.PApp(indexOf, l1, e))
 		l2 = core.PApp(core.Rest, l2)
 	}
 
 	assert.True(t, bool(core.PApp(core.Equal, core.EmptyList, l1).Eval().(core.BoolType)))
 	assert.True(t, bool(core.PApp(core.Equal, core.EmptyList, l2).Eval().(core.BoolType)))
 }
+
+var indexOf = core.NewLazyFunction(
+	core.NewSignature([]string{"list", "elem"}, nil, "", nil, nil, ""),
+	func(ts ...*core.Thunk) core.Value {
+		l, e := ts[0], ts[1]
+
+		for i := 0; ; i++ {
+			v := core.PApp(core.Equal, l, core.EmptyList).Eval()
+			if b, ok := v.(core.BoolType); !ok {
+				return core.NotBoolError(v)
+			} else if b {
+				return core.ValueError("A value is not in a list.")
+			}
+
+			v = core.PApp(core.Equal, core.PApp(core.First, l), e).Eval()
+			if b, ok := v.(core.BoolType); !ok {
+				return core.NotBoolError(v)
+			} else if b {
+				return core.NewNumber(float64(i))
+			}
+
+			l = core.PApp(core.Rest, l)
+		}
+	})

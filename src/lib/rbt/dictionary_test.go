@@ -50,3 +50,7 @@ func TestDictionaryFirstRest(t *testing.T) {
 func keyToValue(k int) int {
 	return k + 1000
 }
+
+func TestDictionaryMerge(t *testing.T) {
+	NewDictionary(less).Merge(NewDictionary(less))
+}

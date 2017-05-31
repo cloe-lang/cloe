@@ -44,3 +44,7 @@ func TestSetFirstRest(t *testing.T) {
 	assert.Equal(t, nil, x)
 	assert.True(t, s.Empty())
 }
+
+func TestSetMerge(t *testing.T) {
+	NewSet(less).Merge(NewSet(less))
+}

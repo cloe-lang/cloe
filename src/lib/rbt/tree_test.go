@@ -88,3 +88,14 @@ func TestTreeMerge(t *testing.T) {
 
 	assert.Equal(t, tr1.Size()+tr2.Size(), tr1.Merge(tr2).Size())
 }
+
+func TestTreeDump(t *testing.T) {
+	tr := NewTree(less)
+	tr.Dump()
+	tr = tr.Insert(0)
+	tr.Dump()
+	tr = tr.Insert(1)
+	tr.Dump()
+	tr = tr.Insert(2)
+	tr.Dump()
+}

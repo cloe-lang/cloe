@@ -158,3 +158,33 @@ func failWithDump(t *testing.T, insert bool, k int, old, new *node) {
 	new.dump()
 	t.FailNow()
 }
+
+func TestNodeEqual(t *testing.T) {
+	n0 := (*node)(nil)
+	n1 := n0.insert(1, less)
+	n2 := n0.insert(2, less)
+	n3 := n1.insert(2, less)
+	n4 := n3.insert(3, less)
+
+	for _, test := range []struct {
+		n1, n2 *node
+		equal  bool
+	}{
+		{n0, n0, true},
+		{n1, n1, true},
+		{n2, n2, true},
+		{n3, n3, true},
+		{n4, n4, true},
+		{n0, n1, false},
+		{n0, n2, false},
+		{n0, n3, false},
+		{n0, n4, false},
+		{n1, n2, false},
+		{n1, n3, false},
+		{n2, n3, false},
+		{n2, n4, false},
+		{n3, n4, false},
+	} {
+		assert.Equal(t, test.equal, test.n1.equal(test.n2))
+	}
+}

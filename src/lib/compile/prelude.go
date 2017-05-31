@@ -65,6 +65,7 @@ func prelude() environment {
 		{"$ys", std.Ys},
 
 		{"seq", std.Seq},
+		{"rally", std.Rally},
 
 		{"read", std.Read},
 		{"write", std.Write},

@@ -32,6 +32,8 @@ var Rally = core.NewLazyFunction(
 					vs <- core.NotBoolError(v).Eval()
 					break
 				} else if b {
+					// HACK: Wait for other goroutines to put elements in a value channel
+					// for a while. This is only for unit test.
 					time.Sleep(channelCloseDuration)
 					vs <- nil
 					break

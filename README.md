@@ -1,5 +1,6 @@
 # Tisp
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/660075bc3b6b4823aab130fa3655b8a1)](https://www.codacy.com/app/raviqqe/tisp?utm_source=github.com&utm_medium=referral&utm_content=tisp-lang/tisp&utm_campaign=badger)
 [![wercker](https://img.shields.io/wercker/ci/wercker/docs.svg?style=flat-square)](https://app.wercker.com/tisp-lang/tisp/runs)
 [![codeclimate](https://img.shields.io/codeclimate/github/kabisaict/flow.svg?style=flat-square)](https://codeclimate.com/github/tisp-lang/tisp)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tisp-lang/tisp?style=flat-square)](https://goreportcard.com/report/github.com/tisp-lang/tisp)

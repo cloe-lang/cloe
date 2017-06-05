@@ -69,7 +69,7 @@ func TestNodeRemove(t *testing.T) {
 }
 
 const (
-	MaxIters = 2000
+	MaxIters = 256
 	MaxKey   = MaxIters / 2
 )
 

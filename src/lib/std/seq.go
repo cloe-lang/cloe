@@ -10,9 +10,9 @@ var Seq = core.NewLazyFunction(
 	),
 	func(ts ...*core.Thunk) core.Value {
 		t := ts[0]
-		out := core.PApp(core.First, t)
 
 		for {
+			out := core.PApp(core.First, t)
 			if err, ok := out.EvalOutput().(core.ErrorType); ok {
 				return err
 			}
@@ -27,7 +27,5 @@ var Seq = core.NewLazyFunction(
 			} else if b {
 				return out
 			}
-
-			out = core.PApp(core.First, t)
 		}
 	})

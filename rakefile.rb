@@ -67,12 +67,6 @@ task :format do
   sh 'rubocop -a'
 end
 
-task :docker do
-  tag = 'tisplang/tisp-build'
-  sh "sudo docker build --no-cache -t #{tag} etc/docker"
-  sh "sudo docker push #{tag}"
-end
-
 task :install_deps do
   sh %w[
     go get -u
@@ -88,11 +82,6 @@ end
 
 task install: %i[install_deps test build] do
   sh 'go get ./...'
-end
-
-task :doc do
-  cd 'doc'
-  sh 'mkdocs gh-deploy -m "[skip ci] on Wercker"'
 end
 
 task default: %i[test build]

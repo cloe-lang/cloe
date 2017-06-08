@@ -1,4 +1,15 @@
 Feature: Parallelism
+  Scenario: Evaluate outputs in parallel
+    Given a file named "main.tisp" with:
+    """
+    (write (par [1 2 3] [4 5 6] [7 8 9]))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    [7 8 9]
+    """
+
   Scenario: Evaluate outputs sequentially
     Given a file named "main.tisp" with:
     """

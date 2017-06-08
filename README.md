@@ -50,15 +50,11 @@ You need Go 1.8+.
 
 ## Documentation
 
-Visit [here](https://tisp-lang.github.io/tisp/).
+[Here](https://tisp-lang.gitbooks.io/tisp-programming-language/).
 
 ## Examples
 
-Try scripts in [test directory](test) (`test/*.tisp`) by running:
-
-```
-tisp test/$filename.tisp
-```
+Read and try [examples](test/features).
 
 Some examples in [examples directory](examples) work but not all because
 some features are not implemented yet.
@@ -66,7 +62,7 @@ some features are not implemented yet.
 ## Contributing
 
 Please send pull requests, issues, questions or anything else.
-See also [the documentation](https://tisp-lang.github.io/tisp/for_developers/)
+See also [the documentation](https://tisp-lang.gitbooks.io/tisp-programming-language/contribution_guide.html)
 on how to develop Tisp.
 
 ## FAQ

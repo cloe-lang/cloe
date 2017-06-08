@@ -54,7 +54,7 @@ You need Go 1.8+.
 
 ## Examples
 
-Read and try [examples](test/features).
+Read and try [examples](test/features) written in [Gherkin](https://cucumber.io/docs/reference).
 
 Some examples in [examples directory](examples) work but not all because
 some features are not implemented yet.

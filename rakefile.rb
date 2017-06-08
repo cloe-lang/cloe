@@ -1,13 +1,6 @@
 TOTAL_COVERAGE_FILE = 'coverage.txt'.freeze # This path is specified by codecov.
 BIN_PATH = File.absolute_path 'bin'
 
-def go_test(*args)
-  sh %W[go test
-        -covermode atomic
-        #{`uname -m` =~ /x86_64/ ? '-race' : ''}
-        #{args.join ' '}].join ' '
-end
-
 task :build do
   sh 'go build -o bin/tisp src/cmd/tisp/main.go'
 end
@@ -20,7 +13,11 @@ task :unit_test do
   coverage_file = "/tmp/tisp-unit-test-#{Process.pid}.coverage"
 
   `go list ./src/lib/...`.split.each do |package|
-    go_test '-coverprofile', coverage_file, package
+    sh %W[go test
+          -covermode atomic
+          -coverprofile #{coverage_file}
+          #{`uname -m` =~ /x86_64/ ? '-race' : ''}
+          #{package}].join ' '
 
     verbose false do
       if File.exist? coverage_file

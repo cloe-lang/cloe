@@ -43,3 +43,20 @@ var lazyFactorialImpl = core.NewLazyFunction(
 				ts[1],
 				core.PApp(ts[0], append([]*core.Thunk{core.PApp(core.Sub, ts[1], core.NewNumber(1))}, ts[2:]...)...)))
 	})
+
+func BenchmarkY(b *testing.B) {
+	b.Log(core.PApp(toZero, core.NewNumber(10000)).Eval())
+}
+
+var toZero = core.PApp(Y, core.NewLazyFunction(
+	core.NewSignature(
+		[]string{"me", "num"}, nil, "",
+		nil, nil, "",
+	),
+	func(ts ...*core.Thunk) core.Value {
+		return core.PApp(core.If,
+			core.PApp(core.Equal, ts[1], core.NewNumber(0)),
+			core.NewString("Benchmark finished!"),
+
+			core.PApp(ts[0], core.PApp(core.Sub, ts[1], core.NewNumber(1))))
+	}))

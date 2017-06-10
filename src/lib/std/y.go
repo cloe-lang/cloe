@@ -10,10 +10,6 @@ var Y = core.NewLazyFunction(
 		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
-		if len(ts) != 1 {
-			return core.NumArgsError("y", "1")
-		}
-
 		xfxx := core.PApp(core.Partial, fxx, ts[0])
 		return core.PApp(xfxx, xfxx)
 	})

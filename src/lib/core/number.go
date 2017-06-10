@@ -29,7 +29,7 @@ var Add = NewLazyFunction(
 			return NotListError(v)
 		}
 
-		vs, err := l.ToValues()
+		ts, err := l.ToValues()
 
 		if err != nil {
 			return err
@@ -37,7 +37,8 @@ var Add = NewLazyFunction(
 
 		sum := NumberType(0)
 
-		for _, v := range vs {
+		for _, t := range ts {
+			v := t.Eval()
 			n, ok := v.(NumberType)
 
 			if !ok {
@@ -71,17 +72,18 @@ var Sub = NewLazyFunction(
 			return NotListError(v)
 		}
 
-		vs, err := l.ToValues()
+		ts, err := l.ToValues()
 
 		if err != nil {
 			return err
 		}
 
-		if len(vs) == 0 {
+		if len(ts) == 0 {
 			return NumArgsError("sub", ">= 1")
 		}
 
-		for _, v := range vs {
+		for _, t := range ts {
+			v := t.Eval()
 			n, ok := v.(NumberType)
 
 			if !ok {
@@ -108,7 +110,7 @@ var Mul = NewLazyFunction(
 			return NotListError(v)
 		}
 
-		vs, err := l.ToValues()
+		ts, err := l.ToValues()
 
 		if err != nil {
 			return err
@@ -116,7 +118,8 @@ var Mul = NewLazyFunction(
 
 		prod := NumberType(1)
 
-		for _, v := range vs {
+		for _, t := range ts {
+			v := t.Eval()
 			n, ok := v.(NumberType)
 
 			if !ok {
@@ -150,17 +153,18 @@ var Div = NewLazyFunction(
 			return NotListError(v)
 		}
 
-		vs, err := l.ToValues()
+		ts, err := l.ToValues()
 
 		if err != nil {
 			return err
 		}
 
-		if len(vs) == 0 {
+		if len(ts) == 0 {
 			return NumArgsError("div", ">= 1")
 		}
 
-		for _, v := range vs {
+		for _, t := range ts {
+			v := t.Eval()
 			n, ok := v.(NumberType)
 
 			if !ok {
@@ -194,17 +198,18 @@ var FloorDiv = NewLazyFunction(
 			return NotListError(v)
 		}
 
-		vs, err := l.ToValues()
+		ts, err := l.ToValues()
 
 		if err != nil {
 			return err
 		}
 
-		if len(vs) == 0 {
+		if len(ts) == 0 {
 			return NumArgsError("floorDiv", ">= 1")
 		}
 
-		for _, v := range vs {
+		for _, t := range ts {
+			v := t.Eval()
 			n, ok := v.(NumberType)
 
 			if !ok {

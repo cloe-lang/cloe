@@ -1,6 +1,10 @@
 package core
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/tisp-lang/tisp/src/lib/systemt"
+)
 
 // ListType represents a list of values in the language.
 // They can have infinite number of elements inside.
@@ -285,15 +289,16 @@ func (l ListType) less(ord ordered) bool {
 }
 
 func (l ListType) string() Value {
-	vs, err := l.ToValues()
+	ts, err := l.ToValues()
 
 	if err != nil {
 		return err.Eval()
 	}
 
-	ss := make([]string, len(vs))
+	ss := make([]string, len(ts))
 
-	for i, v := range vs {
+	for i, t := range ts {
+		v := t.Eval()
 		s, err := dump(v)
 
 		if err != nil {
@@ -326,24 +331,19 @@ func (l ListType) ToThunks() ([]*Thunk, *Thunk) {
 }
 
 // ToValues converts a list into a slice of its elements as values.
-func (l ListType) ToValues() ([]Value, *Thunk) {
+func (l ListType) ToValues() ([]*Thunk, *Thunk) {
 	ts, err := l.ToThunks()
 
 	if err != nil {
 		return nil, err
 	}
 
-	vs := make([]Value, len(ts))
-
 	for _, t := range ts {
-		go t.Eval()
+		tt := t
+		systemt.Daemonize(func() { tt.Eval() })
 	}
 
-	for i, t := range ts {
-		vs[i] = t.Eval()
-	}
-
-	return vs, nil
+	return ts, nil
 }
 
 func (l ListType) size() Value {

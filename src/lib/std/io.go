@@ -66,8 +66,8 @@ var Write = core.NewStrictFunction(
 
 		ss := make([]string, len(elems))
 
-		for i, v := range elems {
-			v := core.PApp(core.ToString, core.Normal(v)).Eval()
+		for i, t := range elems {
+			v := core.PApp(core.ToString, t).Eval()
 			s, ok := v.(core.StringType)
 
 			if !ok {

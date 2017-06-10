@@ -175,26 +175,27 @@ func (d DictionaryType) string() Value {
 		return NotListError(v)
 	}
 
-	vs, err := l.ToValues()
+	ts, err := l.ToValues()
 
 	if err != nil {
 		return err.Eval()
 	}
 
-	ss := make([]string, 2*len(vs))
+	ss := make([]string, 2*len(ts))
 
-	for i, v := range vs {
+	for i, t := range ts {
+		v := t.Eval()
 		if err, ok := v.(ErrorType); ok {
 			return err
 		}
 
-		vs, err := v.(ListType).ToValues()
-
+		ts, err := v.(ListType).ToValues()
 		if err != nil {
 			return err
 		}
 
-		for j, v := range vs {
+		for j, t := range ts {
+			v := t.Eval()
 			if err, ok := v.(ErrorType); ok {
 				return err
 			}

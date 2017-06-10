@@ -83,13 +83,13 @@ func cons(t1, t2 *Thunk) ListType {
 }
 
 // First takes the first element in a list.
-var First = NewStrictFunction(
+var First = NewLazyFunction(
 	NewSignature(
 		[]string{"list"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		v := vs[0]
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
 		l, ok := v.(ListType)
 
 		if !ok {
@@ -102,13 +102,13 @@ var First = NewStrictFunction(
 	})
 
 // Rest returns a list which has the second to last elements of a given list.
-var Rest = NewStrictFunction(
+var Rest = NewLazyFunction(
 	NewSignature(
 		[]string{"list"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		v := vs[0]
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
 		l, ok := v.(ListType)
 
 		if !ok {

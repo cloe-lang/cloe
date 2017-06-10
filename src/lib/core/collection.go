@@ -18,18 +18,20 @@ var Include = NewStrictFunction(
 		[]string{"collection", "elem"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		c, ok := vs[0].(collection)
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		c, ok := v.(collection)
 
 		if !ok {
-			return TypeError(vs[0], "collection")
+			return TypeError(v, "collection")
 		}
 
-		if err, ok := vs[1].(ErrorType); ok {
+		v = ts[1].Eval()
+		if err, ok := v.(ErrorType); ok {
 			return err
 		}
 
-		return c.include(vs[1])
+		return c.include(v)
 	})
 
 // Index extracts an element corresponding with a key.
@@ -38,14 +40,15 @@ var Index = NewStrictFunction(
 		[]string{"collection", "key"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		i, ok := vs[0].(collection)
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		i, ok := v.(collection)
 
 		if !ok {
-			return TypeError(vs[0], "collection")
+			return TypeError(v, "collection")
 		}
 
-		return i.index(vs[1])
+		return i.index(ts[1].Eval())
 	})
 
 // Insert inserts an element into a collection.
@@ -118,24 +121,25 @@ var Delete = NewStrictFunction(
 		[]string{"collection", "elem"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		d, ok := vs[0].(collection)
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		d, ok := v.(collection)
 
 		if !ok {
-			return TypeError(vs[0], "collection")
+			return TypeError(v, "collection")
 		}
 
-		return d.delete(vs[1])
+		return d.delete(ts[1].Eval())
 	})
 
 // Size returns a size of a collection.
-var Size = NewStrictFunction(
+var Size = NewLazyFunction(
 	NewSignature(
 		[]string{"collection"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		v := vs[0]
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
 		c, ok := v.(collection)
 
 		if !ok {
@@ -146,13 +150,13 @@ var Size = NewStrictFunction(
 	})
 
 // ToList converts a collection into a list of its elements.
-var ToList = NewStrictFunction(
+var ToList = NewLazyFunction(
 	NewSignature(
 		[]string{"listLike"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		v := vs[0]
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
 		l, ok := v.(collection)
 
 		if !ok {

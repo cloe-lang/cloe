@@ -223,19 +223,15 @@ var Mod = NewStrictFunction(
 		[]string{"dividend", "divisor"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		if len(vs) != 2 {
-			return NumArgsError("mod", "2")
-		}
-
-		v := vs[0]
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
 		n1, ok := v.(NumberType)
 
 		if !ok {
 			return NotNumberError(v)
 		}
 
-		v = vs[1]
+		v = ts[1].Eval()
 		n2, ok := v.(NumberType)
 
 		if !ok {
@@ -252,15 +248,15 @@ var Pow = NewStrictFunction(
 		[]string{"base", "exponent"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		v := vs[0]
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
 		n1, ok := v.(NumberType)
 
 		if !ok {
 			return NotNumberError(v)
 		}
 
-		v = vs[1]
+		v = ts[1].Eval()
 		n2, ok := v.(NumberType)
 
 		if !ok {
@@ -270,13 +266,13 @@ var Pow = NewStrictFunction(
 		return NewNumber(math.Pow(float64(n1), float64(n2)))
 	})
 
-var isInt = NewStrictFunction(
+var isInt = NewLazyFunction(
 	NewSignature(
 		[]string{"number"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		v := vs[0]
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
 		n, ok := v.(NumberType)
 
 		if !ok {

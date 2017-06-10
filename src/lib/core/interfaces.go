@@ -18,16 +18,17 @@ type stringable interface {
 }
 
 // ToString converts some value into one of StringType.
-var ToString = NewStrictFunction(
+var ToString = NewLazyFunction(
 	NewSignature(
 		[]string{"x"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
-		s, ok := vs[0].(stringable)
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		s, ok := v.(stringable)
 
 		if !ok {
-			return TypeError(vs[0], "stringable")
+			return TypeError(v, "stringable")
 		}
 
 		return s.string()
@@ -45,10 +46,11 @@ var Equal = NewStrictFunction(
 		[]string{"x", "y"}, nil, "",
 		nil, nil, "",
 	),
-	func(vs ...Value) Value {
+	func(ts ...*Thunk) Value {
 		var es [2]equalable
 
-		for i, v := range vs {
+		for i, t := range ts {
+			v := t.Eval()
 			e, ok := v.(equalable)
 
 			if !ok {

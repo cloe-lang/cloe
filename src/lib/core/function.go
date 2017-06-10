@@ -1,5 +1,7 @@
 package core
 
+import "github.com/tisp-lang/tisp/src/lib/systemt"
+
 type functionType struct {
 	signature Signature
 	function  func(...*Thunk) Value
@@ -24,23 +26,13 @@ func NewLazyFunction(s Signature, f func(...*Thunk) Value) *Thunk {
 }
 
 // NewStrictFunction creates a function whose arguments are evaluated strictly.
-func NewStrictFunction(s Signature, f func(...Value) Value) *Thunk {
+func NewStrictFunction(s Signature, f func(...*Thunk) Value) *Thunk {
 	return NewLazyFunction(s, func(ts ...*Thunk) Value {
 		for _, t := range ts {
-			go t.Eval()
+			systemt.Daemonize(func() { t.Eval() })
 		}
 
-		vs := make([]Value, len(ts))
-
-		for i, t := range ts {
-			vs[i] = t.Eval()
-
-			if err, ok := vs[i].(ErrorType); ok {
-				return err
-			}
-		}
-
-		return f(vs...)
+		return f(ts...)
 	})
 }
 

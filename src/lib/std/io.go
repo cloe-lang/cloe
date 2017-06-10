@@ -10,13 +10,13 @@ import (
 )
 
 // Read reads a string from stdin or a file.
-var Read = core.NewStrictFunction(
+var Read = core.NewLazyFunction(
 	core.NewSignature(
 		nil, []core.OptionalArgument{core.NewOptionalArgument("file", core.Nil)}, "",
 		nil, nil, "",
 	),
-	func(vs ...core.Value) core.Value {
-		v := vs[0]
+	func(ts ...*core.Thunk) core.Value {
+		v := ts[0].Eval()
 		file := os.Stdin
 
 		if s, ok := v.(core.StringType); ok {
@@ -50,8 +50,15 @@ var Write = core.NewStrictFunction(
 			core.NewOptionalArgument("mode", core.NewNumber(0664)),
 		}, "",
 	),
-	func(vs ...core.Value) core.Value {
-		elems, err := vs[0].(core.ListType).ToValues()
+	func(ts ...*core.Thunk) core.Value {
+		v := ts[0].Eval()
+		l, ok := v.(core.ListType)
+
+		if !ok {
+			return core.NotListError(v)
+		}
+
+		elems, err := l.ToValues()
 
 		if err != nil {
 			return err
@@ -72,7 +79,8 @@ var Write = core.NewStrictFunction(
 
 		var options [2]string
 
-		for i, v := range vs[1:3] {
+		for i, t := range ts[1:3] {
+			v := t.Eval()
 			s, ok := v.(core.StringType)
 
 			if !ok {
@@ -84,11 +92,12 @@ var Write = core.NewStrictFunction(
 
 		file := os.Stdout
 
-		if s, ok := vs[3].(core.StringType); ok {
-			mode, ok := vs[4].(core.NumberType)
-
+		fileArg := ts[3].Eval()
+		if s, ok := fileArg.(core.StringType); ok {
+			v := ts[4].Eval()
+			mode, ok := v.(core.NumberType)
 			if !ok {
-				return core.NotNumberError(vs[4])
+				return core.NotNumberError(v)
 			}
 
 			var err error
@@ -100,10 +109,10 @@ var Write = core.NewStrictFunction(
 			if err != nil {
 				return core.OutputError(err.Error())
 			}
-		} else if n, ok := vs[3].(core.NumberType); ok && n == 2 {
+		} else if n, ok := fileArg.(core.NumberType); ok && n == 2 {
 			file = os.Stderr
 		} else if !(ok && n == 1) {
-			return core.ValueError("file optional argument's value must be 1 or 2, or a string filename. Got %#v.", vs[3])
+			return core.ValueError("file optional argument's value must be 1 or 2, or a string filename. Got %#v.", fileArg)
 		}
 
 		fmt.Fprint(file, strings.Join(ss, options[0])+options[1])

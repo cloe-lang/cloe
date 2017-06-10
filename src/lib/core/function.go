@@ -29,7 +29,8 @@ func NewLazyFunction(s Signature, f func(...*Thunk) Value) *Thunk {
 func NewStrictFunction(s Signature, f func(...*Thunk) Value) *Thunk {
 	return NewLazyFunction(s, func(ts ...*Thunk) Value {
 		for _, t := range ts {
-			systemt.Daemonize(func() { t.Eval() })
+			tt := t
+			systemt.Daemonize(func() { tt.Eval() })
 		}
 
 		return f(ts...)

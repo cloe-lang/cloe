@@ -12,7 +12,12 @@ type thunkState int32
 const (
 	normal thunkState = iota
 	app
+	spinLock
 )
+
+var identity = NewLazyFunction(
+	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	func(ts ...*Thunk) Value { return ts[0] })
 
 // Thunk you all!
 type Thunk struct {
@@ -55,11 +60,9 @@ func PApp(f *Thunk, ps ...*Thunk) *Thunk {
 
 // EvalAny evaluates a thunk and returns a pure or impure (output) value.
 func (t *Thunk) EvalAny(pure bool) Value {
-	if t.lock() {
-		children := make([]*Thunk, 0)
-
+	if t.lock(normal) {
 		for {
-			v := t.moveFunction().Eval()
+			v := t.swapFunction(nil).Eval()
 
 			if t.chainError(v) {
 				break
@@ -72,7 +75,7 @@ func (t *Thunk) EvalAny(pure bool) Value {
 				break
 			}
 
-			t.result = f.call(t.moveArguments())
+			t.result = f.call(t.swapArguments(Arguments{}))
 
 			if t.chainError(t.result) {
 				break
@@ -84,15 +87,13 @@ func (t *Thunk) EvalAny(pure bool) Value {
 				break
 			}
 
-			t.function, t.args, ok = child.delegateEval()
+			t.function, t.args, ok = child.delegateEval(t)
 
 			if !ok {
 				t.result = child.EvalAny(pure)
 				t.chainError(t.result)
 				break
 			}
-
-			children = append(children, child)
 		}
 
 		assertValueIsWHNF("Thunk.result", t.result)
@@ -101,12 +102,6 @@ func (t *Thunk) EvalAny(pure bool) Value {
 			t.result = ImpureFunctionError(t.result).Eval()
 		} else if !pure && !impure {
 			t.result = NotOutputError(t.result).Eval()
-		}
-
-		for _, child := range children {
-			// TODO: Use children's debug informations, child.info?
-			child.result = t.result
-			child.finalize()
 		}
 
 		t.finalize()
@@ -119,28 +114,40 @@ func (t *Thunk) EvalAny(pure bool) Value {
 	return t.result
 }
 
-func (t *Thunk) lock() bool {
-	return t.compareAndSwapState(app, normal)
+func (t *Thunk) lock(s thunkState) bool {
+	for {
+		switch t.loadState() {
+		case normal:
+			return false
+		case app:
+			if t.compareAndSwapState(app, s) {
+				return true
+			}
+		}
+	}
 }
 
-func (t *Thunk) delegateEval() (*Thunk, Arguments, bool) {
-	if t.lock() {
-		return t.moveFunction(), t.moveArguments(), true
+func (t *Thunk) delegateEval(parent *Thunk) (*Thunk, Arguments, bool) {
+	if t.lock(spinLock) {
+		f := t.swapFunction(identity)
+		args := t.swapArguments(Arguments{[]*Thunk{parent}, nil, nil, nil})
+		t.storeState(app)
+		return f, args, true
 	}
 
 	return nil, Arguments{}, false
 }
 
-func (t *Thunk) moveFunction() *Thunk {
-	f := t.function
-	t.function = nil
-	return f
+func (t *Thunk) swapFunction(new *Thunk) *Thunk {
+	old := t.function
+	t.function = new
+	return old
 }
 
-func (t *Thunk) moveArguments() Arguments {
-	args := t.args
-	t.args = Arguments{}
-	return args
+func (t *Thunk) swapArguments(new Arguments) Arguments {
+	old := t.args
+	t.args = new
+	return old
 }
 
 func (t *Thunk) finalize() {
@@ -152,6 +159,10 @@ func (t *Thunk) finalize() {
 
 func (t *Thunk) compareAndSwapState(old, new thunkState) bool {
 	return atomic.CompareAndSwapInt32((*int32)(&t.state), int32(old), int32(new))
+}
+
+func (t *Thunk) loadState() thunkState {
+	return thunkState(atomic.LoadInt32((*int32)(&t.state)))
 }
 
 func (t *Thunk) storeState(new thunkState) {

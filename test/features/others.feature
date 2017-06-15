@@ -1,4 +1,37 @@
 Feature: Others
+  Background:
+    Given an executable named "leak_memory.sh" with:
+    """
+    #!/bin/sh
+
+    set -e
+
+    tisp $1 > /dev/null &
+    pid=$!
+
+    sleep 1 # Wait for memory usage to be stable.
+
+    ok=false
+    last_mem=0
+
+    for _ in $(seq 10)
+    do
+      mem=$(ps ho vsz $pid)
+
+      if [ $last_mem -ge $mem  ]
+      then
+        ok=true
+        break
+      fi
+
+      last_mem=$mem
+      sleep 1
+    done
+
+    kill $pid
+    $ok
+    """
+
   Scenario: Run Tisp with an empty source
     Given a file named "main.tisp" with:
     """
@@ -27,31 +60,18 @@ Feature: Others
     (let (many42) (prepend (write 42) (many42)))
     ..(many42)
     """
-    When I run the following script:
+    When I run `sh leak_memory.sh main.tisp`
+    Then the exit status should be 0
+
+  Scenario: Ensure no memory leak with deep recursion
+    Given a file named "main.tisp" with:
     """
-    tisp main.tisp > /dev/null &
-    pid=$!
+    (let (f n)
+      (if (= n 0)
+          "OK!"
+          (f (- n 1))))
 
-    sleep 1 # Wait for memory usage to be stable.
-
-    ok=false
-    last_mem=0
-
-    for _ in $(seq 10)
-    do
-      mem=$(ps ho vsz $pid)
-
-      if [ $last_mem -ge $mem  ]
-      then
-        ok=true
-        break
-      fi
-
-      last_mem=$mem
-      sleep 1
-    done &&
-
-    kill $pid &&
-    $ok
+    (write (f 100000000))
     """
+    When I run `sh leak_memory.sh main.tisp`
     Then the exit status should be 0

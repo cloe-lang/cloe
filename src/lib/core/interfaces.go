@@ -37,11 +37,6 @@ var ToString = NewLazyFunction(
 		return s.string()
 	})
 
-// equalable must be implemented for every type other than error type.
-type equalable interface {
-	equal(equalable) Value
-}
-
 // Equal returns true when arguments are equal and false otherwise.
 // Comparing error values is invalid and it should return an error value.
 var Equal = NewStrictFunction(
@@ -49,25 +44,14 @@ var Equal = NewStrictFunction(
 		[]string{"x", "y"}, nil, "",
 		nil, nil, "",
 	),
-	func(ts ...*Thunk) Value {
-		var es [2]equalable
-
-		for i, t := range ts {
-			v := t.Eval()
-			e, ok := v.(equalable)
-
-			if !ok {
-				return TypeError(v, "equalable")
+	func(ts ...*Thunk) (v Value) {
+		defer func() {
+			if r := recover(); r != nil {
+				v = r
 			}
+		}()
 
-			es[i] = e
-		}
-
-		if !areSameType(es[0], es[1]) {
-			return False
-		}
-
-		return es[0].equal(es[1])
+		return BoolType(compare(ts[0].Eval(), ts[1].Eval()) == 0)
 	})
 
 // ordered must be implemented for every type other than error type.

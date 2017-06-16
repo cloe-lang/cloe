@@ -31,31 +31,6 @@ func NewList(ts ...*Thunk) *Thunk {
 	return l
 }
 
-func (l ListType) equal(e equalable) Value {
-	ll := e.(ListType)
-
-	if l == emptyList || ll == emptyList {
-		return rawBool(l == ll)
-	}
-
-	for _, t := range []*Thunk{
-		// Don't evaluate these parallelly for short circuit behavior.
-		PApp(Equal, l.first, ll.first),
-		PApp(Equal, l.rest, ll.rest),
-	} {
-		v := t.Eval()
-		b, ok := v.(BoolType)
-
-		if !ok {
-			return NotBoolError(v)
-		} else if !b {
-			return False
-		}
-	}
-
-	return True
-}
-
 // Prepend prepends multiple elements to a list of the last argument.
 var Prepend = NewLazyFunction(
 	NewSignature(

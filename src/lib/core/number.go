@@ -11,10 +11,6 @@ func NewNumber(n float64) *Thunk {
 	return Normal(NumberType(n))
 }
 
-func (n NumberType) equal(e equalable) Value {
-	return rawBool(n == e.(NumberType))
-}
-
 // Add sums up numbers of arguments.
 var Add = NewLazyFunction(
 	NewSignature(

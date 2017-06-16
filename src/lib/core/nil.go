@@ -6,10 +6,6 @@ type NilType struct{}
 // Nil is the evil or million-dollar mistake.
 var Nil = Normal(NilType{})
 
-func (n NilType) equal(e equalable) Value {
-	return True
-}
-
 func (NilType) compare(ordered) int {
 	return 0
 }

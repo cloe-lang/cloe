@@ -13,10 +13,6 @@ func NewString(s string) *Thunk {
 	return Normal(StringType(s))
 }
 
-func (s StringType) equal(e equalable) Value {
-	return rawBool(s == e)
-}
-
 func (s StringType) call(args Arguments) Value {
 	return Index.Eval().(callable).call(NewPositionalArguments(Normal(s)).Merge(args))
 }

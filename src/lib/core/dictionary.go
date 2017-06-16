@@ -118,10 +118,6 @@ func (d DictionaryType) Merge(dd DictionaryType) DictionaryType {
 	return DictionaryType{d.Dictionary.Merge(dd.Dictionary)}
 }
 
-func (d DictionaryType) equal(e equalable) Value {
-	return d.toList().(ListType).equal(e.(DictionaryType).toList().(ListType))
-}
-
 func (d DictionaryType) toList() Value {
 	k, v, rest := d.FirstRest()
 

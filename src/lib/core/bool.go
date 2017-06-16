@@ -18,10 +18,6 @@ func rawBool(b bool) BoolType {
 	return BoolType(b)
 }
 
-func (b BoolType) equal(e equalable) Value {
-	return rawBool(b == e.(BoolType))
-}
-
 // If returns the second argument when the first one is true or the third one
 // otherwise.
 var If = NewLazyFunction(

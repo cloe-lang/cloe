@@ -4,8 +4,8 @@ package rbt
 type Set struct{ Tree }
 
 // NewSet creates an empty Set from a function which determines orders of values inside.
-func NewSet(less func(interface{}, interface{}) bool) Set {
-	return Set{NewTree(less)}
+func NewSet(compare func(interface{}, interface{}) int) Set {
+	return Set{NewTree(compare)}
 }
 
 // Insert inserts a value to a set.

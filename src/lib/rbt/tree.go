@@ -2,39 +2,40 @@ package rbt
 
 // Tree represents an red-black tree.
 type Tree struct {
-	node *node
-	less func(interface{}, interface{}) bool
+	node    *node
+	compare func(interface{}, interface{}) int
 }
 
 // NewTree creates a empty red-black tree.
-func NewTree(less func(interface{}, interface{}) bool) Tree {
+// The compare function should return a negative when x < y, 0 when x = y, and a postive when x > y.
+func NewTree(compare func(interface{}, interface{}) int) Tree {
 	return Tree{
-		node: nil,
-		less: less,
+		node:    nil,
+		compare: compare,
 	}
 }
 
 // Insert inserts an element into a tree.
 func (t Tree) Insert(x interface{}) Tree {
 	return Tree{
-		node: t.node.insert(x, t.less),
-		less: t.less,
+		node:    t.node.insert(x, t.compare),
+		compare: t.compare,
 	}
 }
 
 // Search searches an element in a tree.
 // It returns a found element in addition to a condition if the element is
-// found because a less function passed to NewTree can compare elements
+// found because a compare function passed to NewTree can compare elements
 // partially.
 func (t Tree) Search(x interface{}) (interface{}, bool) {
-	return t.node.search(x, t.less)
+	return t.node.search(x, t.compare)
 }
 
 // Remove removes an element in a tree.
 func (t Tree) Remove(x interface{}) Tree {
 	return Tree{
-		node: t.node.remove(x, t.less),
-		less: t.less,
+		node:    t.node.remove(x, t.compare),
+		compare: t.compare,
 	}
 }
 
@@ -43,7 +44,7 @@ func (t Tree) FirstRest() (interface{}, Tree) {
 	x := t.node.min()
 
 	if x == nil {
-		return nil, NewTree(t.less)
+		return nil, NewTree(t.compare)
 	}
 
 	return x, t.Remove(x)

@@ -8,7 +8,7 @@ import (
 )
 
 func TestSetInsertRemoveRandomly(t *testing.T) {
-	s := NewSet(less)
+	s := NewSet(compare)
 
 	for i := 0; i < MaxIters; i++ {
 		x := generateKey()
@@ -27,7 +27,7 @@ func TestSetInsertRemoveRandomly(t *testing.T) {
 
 func TestSetFirstRest(t *testing.T) {
 	xs := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	s := NewSet(less)
+	s := NewSet(compare)
 
 	for _, x := range xs {
 		s = s.Insert(x)
@@ -46,5 +46,5 @@ func TestSetFirstRest(t *testing.T) {
 }
 
 func TestSetMerge(t *testing.T) {
-	NewSet(less).Merge(NewSet(less))
+	NewSet(compare).Merge(NewSet(compare))
 }

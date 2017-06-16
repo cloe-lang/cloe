@@ -8,7 +8,7 @@ import (
 )
 
 func TestTreeInsertRemoveRandomly(t *testing.T) {
-	tr := NewTree(less)
+	tr := NewTree(compare)
 
 	for i := 0; i < MaxIters; i++ {
 		x := generateKey()
@@ -40,7 +40,7 @@ func TestTreeInsertRemoveRandomly(t *testing.T) {
 
 func TestTreeFirstRest(t *testing.T) {
 	xs := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	tr := NewTree(less)
+	tr := NewTree(compare)
 
 	for _, x := range xs {
 		tr = tr.Insert(x)
@@ -59,7 +59,7 @@ func TestTreeFirstRest(t *testing.T) {
 }
 
 func TestTreeSize(t *testing.T) {
-	tr := NewTree(less)
+	tr := NewTree(compare)
 	assert.Equal(t, 0, tr.Size())
 	tr = tr.Insert(0)
 	assert.Equal(t, 1, tr.Size())
@@ -76,12 +76,12 @@ func TestTreeSize(t *testing.T) {
 }
 
 func TestTreeMerge(t *testing.T) {
-	tr1 := NewTree(less)
+	tr1 := NewTree(compare)
 	tr1 = tr1.Insert(0)
 	tr1 = tr1.Insert(1)
 	tr1 = tr1.Insert(2)
 
-	tr2 := NewTree(less)
+	tr2 := NewTree(compare)
 	tr2 = tr2.Insert(3)
 	tr2 = tr2.Insert(4)
 	tr2 = tr2.Insert(5)
@@ -90,7 +90,7 @@ func TestTreeMerge(t *testing.T) {
 }
 
 func TestTreeDump(t *testing.T) {
-	tr := NewTree(less)
+	tr := NewTree(compare)
 	tr.Dump()
 	tr = tr.Insert(0)
 	tr.Dump()

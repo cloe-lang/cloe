@@ -8,7 +8,7 @@ import (
 )
 
 func TestDictionaryInsertRemoveRandomly(t *testing.T) {
-	d := NewDictionary(less)
+	d := NewDictionary(compare)
 
 	for i := 0; i < MaxIters; i++ {
 		k := generateKey()
@@ -27,7 +27,7 @@ func TestDictionaryInsertRemoveRandomly(t *testing.T) {
 
 func TestDictionaryFirstRest(t *testing.T) {
 	ks := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	d := NewDictionary(less)
+	d := NewDictionary(compare)
 
 	for _, k := range ks {
 		d = d.Insert(k, keyToValue(k))
@@ -52,5 +52,5 @@ func keyToValue(k int) int {
 }
 
 func TestDictionaryMerge(t *testing.T) {
-	NewDictionary(less).Merge(NewDictionary(less))
+	NewDictionary(compare).Merge(NewDictionary(compare))
 }

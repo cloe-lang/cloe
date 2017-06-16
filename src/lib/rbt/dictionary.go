@@ -8,8 +8,8 @@ type keyValue struct {
 type Dictionary struct{ Tree }
 
 // NewDictionary creates an empty dictionary.
-func NewDictionary(less func(interface{}, interface{}) bool) Dictionary {
-	lessKV := func(x1, x2 interface{}) bool {
+func NewDictionary(compare func(interface{}, interface{}) int) Dictionary {
+	compareKV := func(x1, x2 interface{}) int {
 		if kv, ok := x1.(keyValue); ok {
 			x1 = kv.Key
 		}
@@ -18,10 +18,10 @@ func NewDictionary(less func(interface{}, interface{}) bool) Dictionary {
 			x2 = kv.Key
 		}
 
-		return less(x1, x2)
+		return compare(x1, x2)
 	}
 
-	return Dictionary{NewTree(lessKV)}
+	return Dictionary{NewTree(compareKV)}
 }
 
 // Insert inserts a key and a corresponding value to a dictionary.
@@ -51,7 +51,7 @@ func (d Dictionary) FirstRest() (interface{}, interface{}, Dictionary) {
 	x, t := d.Tree.FirstRest()
 
 	if x == nil {
-		return nil, nil, Dictionary{NewTree(d.less)}
+		return nil, nil, Dictionary{NewTree(d.compare)}
 	}
 
 	kv := x.(keyValue)

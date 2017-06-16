@@ -44,21 +44,22 @@ func (n *node) min() interface{} {
 	return n.left.min()
 }
 
-func (n *node) insert(x interface{}, less func(interface{}, interface{}) bool) *node {
-	return n.insertRed(x, less).paint(black)
+func (n *node) insert(x interface{}, compare func(interface{}, interface{}) int) *node {
+	return n.insertRed(x, compare).paint(black)
 }
 
-func (n *node) insertRed(x interface{}, less func(interface{}, interface{}) bool) *node {
+func (n *node) insertRed(x interface{}, compare func(interface{}, interface{}) int) *node {
 	if n == nil {
 		return newNode(red, x, nil, nil)
 	}
 
 	m := *n
 
-	if less(x, n.value) {
-		m.left = m.left.insertRed(x, less)
-	} else if less(n.value, x) {
-		m.right = m.right.insertRed(x, less)
+	c := compare(x, n.value)
+	if c < 0 {
+		m.left = m.left.insertRed(x, compare)
+	} else if c > 0 {
+		m.right = m.right.insertRed(x, compare)
 	} else {
 		return n
 	}
@@ -114,20 +115,23 @@ func (n *node) balance() *node {
 	return n
 }
 
-func (n *node) search(x interface{}, less func(interface{}, interface{}) bool) (interface{}, bool) {
+func (n *node) search(x interface{}, compare func(interface{}, interface{}) int) (interface{}, bool) {
 	if n == nil {
 		return nil, false
-	} else if less(x, n.value) {
-		return n.left.search(x, less)
-	} else if less(n.value, x) {
-		return n.right.search(x, less)
+	}
+
+	c := compare(x, n.value)
+	if c < 0 {
+		return n.left.search(x, compare)
+	} else if c > 0 {
+		return n.right.search(x, compare)
 	}
 
 	return n.value, true
 }
 
-func (n *node) remove(x interface{}, less func(interface{}, interface{}) bool) *node {
-	n, _ = n.removeOne(x, less)
+func (n *node) remove(x interface{}, compare func(interface{}, interface{}) int) *node {
+	n, _ = n.removeOne(x, compare)
 
 	if n == nil {
 		return nil
@@ -136,11 +140,11 @@ func (n *node) remove(x interface{}, less func(interface{}, interface{}) bool) *
 	return n.paint(black)
 }
 
-func (n *node) removeOne(x interface{}, less func(interface{}, interface{}) bool) (*node, bool) {
+func (n *node) removeOne(x interface{}, compare func(interface{}, interface{}) int) (*node, bool) {
 	if n == nil {
 		return nil, true
-	} else if less(x, n.value) {
-		l, balanced := n.left.removeOne(x, less)
+	} else if compare(x, n.value) < 0 {
+		l, balanced := n.left.removeOne(x, compare)
 		m := *n
 		m.left = l
 
@@ -149,8 +153,8 @@ func (n *node) removeOne(x interface{}, less func(interface{}, interface{}) bool
 		}
 
 		return m.balanceLeft()
-	} else if less(n.value, x) {
-		r, balanced := n.right.removeOne(x, less)
+	} else if compare(n.value, x) < 0 {
+		r, balanced := n.right.removeOne(x, compare)
 		m := *n
 		m.right = r
 

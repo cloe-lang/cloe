@@ -8,9 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func less(x1, x2 interface{}) bool {
-	i1, i2 := x1.(int), x2.(int)
-	return i1 < i2
+func compare(x, y interface{}) int {
+	return x.(int) - y.(int)
 }
 
 func TestNode(t *testing.T) {
@@ -18,10 +17,10 @@ func TestNode(t *testing.T) {
 
 	n := (*node)(nil)
 	t.Log(n)
-	n = n.insert(k, less)
+	n = n.insert(k, compare)
 	t.Log(n)
 
-	kk, ok := n.search(k, less)
+	kk, ok := n.search(k, compare)
 	assert.True(t, ok)
 	assert.Equal(t, kk, k)
 }
@@ -32,7 +31,7 @@ func TestNodeBalance(t *testing.T) {
 
 	for _, k := range ks {
 		n.dump()
-		n = n.insert(k, less)
+		n = n.insert(k, compare)
 	}
 
 	n.dump()
@@ -43,7 +42,7 @@ func TestNodeTakeMax(t *testing.T) {
 	n := (*node)(nil)
 
 	for _, k1 := range ks {
-		n = n.insert(k1, less)
+		n = n.insert(k1, compare)
 		n.dump()
 
 		k2, m, _ := n.takeMax()
@@ -57,13 +56,13 @@ func TestNodeRemove(t *testing.T) {
 	n := (*node)(nil)
 
 	for _, k := range ks {
-		n = n.insert(k, less)
+		n = n.insert(k, compare)
 	}
 
 	n.dump()
 
 	for _, k := range ks {
-		n = n.remove(k, less)
+		n = n.remove(k, compare)
 		n.dump()
 	}
 }
@@ -84,7 +83,7 @@ func TestNodeInsertRandomly(t *testing.T) {
 		k := generateKey()
 		old := n
 
-		n = n.insert(k, less)
+		n = n.insert(k, compare)
 
 		n.rank() // check ranks
 
@@ -137,12 +136,12 @@ func (n *node) insertOrRemove(t *testing.T, x interface{}) (*node, bool) {
 	insert := rand.Int()%2 == 0
 
 	if insert {
-		n = n.insert(x, less)
+		n = n.insert(x, compare)
 	} else {
-		n = n.remove(x, less)
+		n = n.remove(x, compare)
 	}
 
-	_, ok := n.search(x, less)
+	_, ok := n.search(x, compare)
 	assert.True(t, insert && ok || !insert && !ok)
 
 	return n, insert
@@ -165,10 +164,10 @@ func failWithDump(t *testing.T, insert bool, k int, old, new *node) {
 
 func TestNodeEqual(t *testing.T) {
 	n0 := (*node)(nil)
-	n1 := n0.insert(1, less)
-	n2 := n0.insert(2, less)
-	n3 := n1.insert(2, less)
-	n4 := n3.insert(3, less)
+	n1 := n0.insert(1, compare)
+	n2 := n0.insert(2, compare)
+	n3 := n1.insert(2, compare)
+	n4 := n3.insert(3, compare)
 
 	for _, test := range []struct {
 		n1, n2 *node
@@ -200,7 +199,7 @@ func TestNodeRankError(t *testing.T) {
 		}
 	}()
 
-	n := (*node)(nil).insert(0, less).insert(1, less).insert(2, less)
+	n := (*node)(nil).insert(0, compare).insert(1, compare).insert(2, compare)
 	n.dump()
 	n.left.color = red
 	n.dump()
@@ -209,7 +208,7 @@ func TestNodeRankError(t *testing.T) {
 }
 
 func TestNodeCheckColorsError(t *testing.T) {
-	n := (*node)(nil).insert(0, less).insert(1, less).insert(2, less).insert(3, less)
+	n := (*node)(nil).insert(0, compare).insert(1, compare).insert(2, compare).insert(3, compare)
 	n.dump()
 	n.right.color = red
 	n.dump()

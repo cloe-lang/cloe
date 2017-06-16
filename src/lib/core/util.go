@@ -28,3 +28,18 @@ func dump(v Value) (string, Value) {
 
 	return string(s), nil
 }
+
+var equal = NewStrictFunction(
+	NewSignature(
+		[]string{"x", "y"}, nil, "",
+		nil, nil, "",
+	),
+	func(ts ...*Thunk) (v Value) {
+		defer func() {
+			if r := recover(); r != nil {
+				v = r
+			}
+		}()
+
+		return BoolType(compare(ts[0].Eval(), ts[1].Eval()) == 0)
+	})

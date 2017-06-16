@@ -37,23 +37,6 @@ var ToString = NewLazyFunction(
 		return s.string()
 	})
 
-// Equal returns true when arguments are equal and false otherwise.
-// Comparing error values is invalid and it should return an error value.
-var Equal = NewStrictFunction(
-	NewSignature(
-		[]string{"x", "y"}, nil, "",
-		nil, nil, "",
-	),
-	func(ts ...*Thunk) (v Value) {
-		defer func() {
-			if r := recover(); r != nil {
-				v = r
-			}
-		}()
-
-		return BoolType(compare(ts[0].Eval(), ts[1].Eval()) == 0)
-	})
-
 // ordered must be implemented for every type other than error type.
 // This interface should not be used in exported functions and exists only to
 // make keys for collections in rbt package.

@@ -2,8 +2,8 @@ package core
 
 import "testing"
 
-func testEqual(ts ...*Thunk) bool {
-	return bool(PApp(Equal, ts...).Eval().(BoolType))
+func testEqual(t1, t2 *Thunk) bool {
+	return compare(t1.Eval(), t2.Eval()) == 0
 }
 
 func testLess(t1, t2 *Thunk) bool {

@@ -7,18 +7,18 @@ import (
 )
 
 func TestBoolEqual(t *testing.T) {
-	for _, ts := range [][]*Thunk{
+	for _, ts := range [][2]*Thunk{
 		{True, True},
 		{False, False},
 	} {
-		assert.True(t, testEqual(ts...))
+		assert.True(t, testEqual(ts[0], ts[1]))
 	}
 
-	for _, ts := range [][]*Thunk{
+	for _, ts := range [][2]*Thunk{
 		{True, False},
 		{False, True},
 	} {
-		assert.True(t, !testEqual(ts...))
+		assert.True(t, !testEqual(ts[0], ts[1]))
 	}
 }
 

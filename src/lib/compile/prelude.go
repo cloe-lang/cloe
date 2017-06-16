@@ -49,7 +49,7 @@ func prelude() environment {
 		{"mod", core.Mod},
 		{"**", core.Pow},
 
-		{"=", core.Equal},
+		{"=", std.Equal},
 		{"toList", core.ToList},
 		{"toStr", core.ToString},
 		{"merge", core.Merge},

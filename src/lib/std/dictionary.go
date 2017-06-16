@@ -13,13 +13,8 @@ var Dictionary = core.NewLazyFunction(
 		l := ts[0]
 
 		for {
-			v := core.PApp(core.Equal, l, core.EmptyList).Eval()
-			b, ok := v.(core.BoolType)
-
-			if !ok {
-				return core.NotBoolError(v)
-			} else if b {
-				break
+			if v := checkEmptyList(l, d); v != nil {
+				return v
 			}
 
 			k := core.PApp(core.First, l)
@@ -29,6 +24,4 @@ var Dictionary = core.NewLazyFunction(
 
 			d = core.PApp(core.Insert, d, k, val)
 		}
-
-		return d
 	})

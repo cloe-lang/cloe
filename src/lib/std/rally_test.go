@@ -64,14 +64,11 @@ var indexOf = core.NewLazyFunction(
 		l, e := ts[0], ts[1]
 
 		for i := 0; ; i++ {
-			v := core.PApp(core.Equal, l, core.EmptyList).Eval()
-			if b, ok := v.(core.BoolType); !ok {
-				return core.NotBoolError(v)
-			} else if b {
-				return core.ValueError("A value is not in a list.")
+			if v := checkEmptyList(l, core.ValueError("A value is not in a list.")); v != nil {
+				return v
 			}
 
-			v = core.PApp(core.Equal, core.PApp(core.First, l), e).Eval()
+			v := core.PApp(core.Equal, core.PApp(core.First, l), e).Eval()
 			if b, ok := v.(core.BoolType); !ok {
 				return core.NotBoolError(v)
 			} else if b {

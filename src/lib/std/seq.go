@@ -9,23 +9,18 @@ var Seq = core.NewLazyFunction(
 		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
-		t := ts[0]
+		l := ts[0]
 
 		for {
-			out := core.PApp(core.First, t)
+			out := core.PApp(core.First, l)
 			if err, ok := out.EvalOutput().(core.ErrorType); ok {
 				return err
 			}
 
-			t = core.PApp(core.Rest, t)
+			l = core.PApp(core.Rest, l)
 
-			v := core.PApp(core.Equal, t, core.EmptyList).Eval()
-			b, ok := v.(core.BoolType)
-
-			if !ok {
-				return core.NotBoolError(v)
-			} else if b {
-				return out
+			if v := checkEmptyList(l, out); v != nil {
+				return v
 			}
 		}
 	})

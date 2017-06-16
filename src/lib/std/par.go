@@ -30,16 +30,3 @@ var Par = core.NewLazyFunction(
 			}
 		}
 	})
-
-func checkEmptyList(l *core.Thunk, ifTrue core.Value) core.Value {
-	v := core.PApp(core.Equal, l, core.EmptyList).Eval()
-	b, ok := v.(core.BoolType)
-
-	if !ok {
-		return core.NotBoolError(v)
-	} else if b {
-		return ifTrue
-	}
-
-	return nil
-}

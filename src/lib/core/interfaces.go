@@ -63,3 +63,26 @@ func compare(x1, x2 interface{}) int {
 
 	return o1.compare(o2)
 }
+
+// Compare compares 2 values and returns -1 when x < y, 0 when x = y, and 1 when x > y.
+var Compare = NewStrictFunction(
+	NewSignature(
+		[]string{"x", "y"}, nil, "",
+		nil, nil, "",
+	),
+	func(ts ...*Thunk) (v Value) {
+		defer func() {
+			if r := recover(); r != nil {
+				v = r
+			}
+		}()
+
+		c := compare(ts[0].Eval(), ts[1].Eval())
+		if c < 0 {
+			return NewNumber(-1)
+		} else if c > 0 {
+			return NewNumber(1)
+		}
+
+		return NewNumber(0)
+	})

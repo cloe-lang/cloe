@@ -106,3 +106,9 @@ func TestStringInsert(t *testing.T) {
 			PApp(Insert, Normal(test.string), Normal(test.index), Normal(test.elem))))
 	}
 }
+
+func TestStringCompare(t *testing.T) {
+	assert.True(t, testCompare(NewString("foo"), NewString("foo")) == 0)
+	assert.True(t, testCompare(NewString("foo"), NewString("bar")) == 1)
+	assert.True(t, testCompare(NewString("bar"), NewString("foo")) == -1)
+}

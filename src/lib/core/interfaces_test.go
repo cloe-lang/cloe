@@ -19,3 +19,7 @@ func TestXFailLess(t *testing.T) {
 
 	compare(NewNumber(42).Eval(), NewError("you", "failed.").Eval())
 }
+
+func testCompare(t1, t2 *Thunk) NumberType {
+	return PApp(Compare, t1, t2).Eval().(NumberType)
+}

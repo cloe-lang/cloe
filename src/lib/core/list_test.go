@@ -213,3 +213,16 @@ func TestListInsert(t *testing.T) {
 		assert.True(t, testEqual(test.expected, PApp(Insert, test.list, Normal(test.index), test.elem)))
 	}
 }
+
+func TestListCompare(t *testing.T) {
+	assert.True(t, testCompare(NewList(), NewList()) == 0)
+	assert.True(t, testCompare(NewList(NewNumber(42)), NewList()) == 1)
+	assert.True(t, testCompare(NewList(), NewList(NewNumber(42))) == -1)
+	assert.True(t, testCompare(NewList(NewNumber(42)), NewList(NewNumber(42))) == 0)
+	assert.True(t, testCompare(NewList(NewNumber(42)), NewList(NewNumber(2049))) == -1)
+	assert.True(t, testCompare(NewList(NewNumber(2049)), NewList(NewNumber(42))) == 1)
+	assert.True(t, testCompare(NewList(NewNumber(2049)), NewList(NewNumber(42), NewNumber(1))) == 1)
+	assert.True(t, testCompare(
+		NewList(NewNumber(42), NewNumber(2049)),
+		NewList(NewNumber(42), NewNumber(1))) == 1)
+}

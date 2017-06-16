@@ -71,3 +71,11 @@ func TestNumberToString(t *testing.T) {
 		assert.Equal(t, StringType(xs.expected), PApp(ToString, NewNumber(xs.number)).Eval())
 	}
 }
+
+func TestNumberCompare(t *testing.T) {
+	assert.True(t, testCompare(NewNumber(42), NewNumber(42)) == 0)
+	assert.True(t, testCompare(NewNumber(0), NewNumber(1)) == -1)
+	assert.True(t, testCompare(NewNumber(1), NewNumber(0)) == 1)
+	assert.True(t, testCompare(NewNumber(-1), NewNumber(0)) == -1)
+	assert.True(t, testCompare(NewNumber(0), NewNumber(-1)) == 1)
+}

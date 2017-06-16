@@ -331,7 +331,7 @@ func (l ListType) include(elem Value) Value {
 		return False
 	}
 
-	v := PApp(equal, l.first, Normal(elem)).Eval()
+	v := PApp(Equal, l.first, Normal(elem)).Eval()
 	b, ok := v.(BoolType)
 
 	if !ok {

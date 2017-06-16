@@ -29,7 +29,8 @@ func dump(v Value) (string, Value) {
 	return string(s), nil
 }
 
-var equal = NewStrictFunction(
+// Equal checks if 2 values are equal or not.
+var Equal = NewStrictFunction(
 	NewSignature(
 		[]string{"x", "y"}, nil, "",
 		nil, nil, "",

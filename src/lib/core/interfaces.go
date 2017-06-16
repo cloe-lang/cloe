@@ -57,13 +57,9 @@ func compare(x1, x2 interface{}) int {
 		panic(notOrderedError(x2))
 	}
 
-	if !areSameType(o1, o2) {
+	if reflect.TypeOf(o1) != reflect.TypeOf(o2) {
 		return strings.Compare(reflect.TypeOf(o1).Name(), reflect.TypeOf(o2).Name())
 	}
 
 	return o1.compare(o2)
-}
-
-func areSameType(x1, x2 interface{}) bool {
-	return reflect.TypeOf(x1) == reflect.TypeOf(x2)
 }

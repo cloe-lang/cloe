@@ -44,8 +44,14 @@ var If = NewLazyFunction(
 		return ts[2]
 	})
 
-func (b BoolType) less(o ordered) bool {
-	return bool(!b && o.(BoolType))
+func (b BoolType) compare(o ordered) int {
+	if b == o.(BoolType) {
+		return 0
+	} else if b {
+		return 1
+	}
+
+	return -1
 }
 
 func (b BoolType) string() Value {

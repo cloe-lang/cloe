@@ -263,29 +263,24 @@ func (l ListType) toList() Value {
 	return l
 }
 
-func (l ListType) less(ord ordered) bool {
-	ll := ord.(ListType)
+func (l ListType) compare(o ordered) int {
+	ll := o.(ListType)
 
-	if ll == emptyList {
-		return false
+	if l == emptyList && ll == emptyList {
+		return 0
 	} else if l == emptyList {
-		return true
+		return -1
+	} else if ll == emptyList {
+		return 1
 	}
 
-	// Compare firsts
+	c := compare(l.first.Eval(), ll.first.Eval())
 
-	o1 := l.first.Eval()
-	o2 := ll.first.Eval()
-
-	if less(o1, o2) {
-		return true
-	} else if less(o2, o1) {
-		return false
+	if c == 0 {
+		return compare(l.rest.Eval(), ll.rest.Eval())
 	}
 
-	// Compare rests
-
-	return less(l.rest.Eval(), ll.rest.Eval())
+	return c
 }
 
 func (l ListType) string() Value {

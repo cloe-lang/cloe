@@ -109,8 +109,8 @@ func (s StringType) toList() Value {
 		PApp(ToList, NewString(string(rs[1:]))))
 }
 
-func (s StringType) less(o ordered) bool {
-	return s < o.(StringType)
+func (s StringType) compare(o ordered) int {
+	return strings.Compare(string(s), string(o.(StringType)))
 }
 
 func (s StringType) string() Value {

@@ -287,8 +287,14 @@ var isInt = NewLazyFunction(
 		return NewBool(math.Mod(float64(n), 1) == 0)
 	})
 
-func (n NumberType) less(o ordered) bool {
-	return n < o.(NumberType)
+func (n NumberType) compare(o ordered) int {
+	if n < o.(NumberType) {
+		return -1
+	} else if n > o.(NumberType) {
+		return 1
+	}
+
+	return 0
 }
 
 func (n NumberType) string() Value {

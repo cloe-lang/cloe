@@ -21,7 +21,7 @@ func NewDictionary(ks []Value, vs []*Thunk) *Thunk {
 		panic("Number of keys doesn't match with number of values.")
 	}
 
-	d := Normal(DictionaryType{rbt.NewDictionary(less)})
+	d := Normal(DictionaryType{rbt.NewDictionary(compare)})
 
 	for i, k := range ks {
 		d = PApp(Insert, d, Normal(k), vs[i])
@@ -163,8 +163,8 @@ func (d DictionaryType) delete(v Value) (result Value) {
 	return d.Remove(v)
 }
 
-func (d DictionaryType) less(o ordered) bool {
-	return less(d.toList(), o.(DictionaryType).toList())
+func (d DictionaryType) compare(o ordered) int {
+	return compare(d.toList(), o.(DictionaryType).toList())
 }
 
 func (d DictionaryType) string() Value {

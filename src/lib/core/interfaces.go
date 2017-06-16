@@ -1,6 +1,9 @@
 package core
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 // Value represents a value in the language.
 // Hackingly, it can be *Thunk so that tail calls are eliminated.
@@ -71,10 +74,10 @@ var Equal = NewStrictFunction(
 // This interface should not be used in exported functions and exists only to
 // make keys for collections in rbt package.
 type ordered interface {
-	less(ordered) bool // can panic
+	compare(ordered) int // can panic
 }
 
-func less(x1, x2 interface{}) bool {
+func compare(x1, x2 interface{}) int {
 	o1, ok := x1.(ordered)
 
 	if !ok {
@@ -88,10 +91,10 @@ func less(x1, x2 interface{}) bool {
 	}
 
 	if !areSameType(o1, o2) {
-		return reflect.TypeOf(o1).Name() < reflect.TypeOf(o2).Name()
+		return strings.Compare(reflect.TypeOf(o1).Name(), reflect.TypeOf(o2).Name())
 	}
 
-	return o1.less(o2)
+	return o1.compare(o2)
 }
 
 func areSameType(x1, x2 interface{}) bool {

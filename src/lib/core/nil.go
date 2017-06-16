@@ -10,8 +10,8 @@ func (n NilType) equal(e equalable) Value {
 	return True
 }
 
-func (NilType) less(o ordered) bool {
-	return false
+func (NilType) compare(ordered) int {
+	return 0
 }
 
 func (NilType) string() Value {

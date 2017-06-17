@@ -126,3 +126,7 @@ func ImpureFunctionError(v Value) *Thunk {
 func OutOfRangeError() *Thunk {
 	return NewError("OutOfRangeError", "Index is out of range.")
 }
+
+func notComparableError(v Value) *Thunk {
+	return TypeError(v, "comparable")
+}

@@ -76,10 +76,6 @@ func (d DictionaryType) index(v Value) (result Value) {
 		"The key %v is not found in a dictionary.", k)
 }
 
-func notComparableError(k Value) *Thunk {
-	return TypeError(k, "comparable")
-}
-
 // Insert wraps rbt.Dictionary.Insert().
 func (d DictionaryType) Insert(k Value, v *Thunk) DictionaryType {
 	return DictionaryType{d.Dictionary.Insert(k, v)}

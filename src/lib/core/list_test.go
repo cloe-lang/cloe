@@ -24,7 +24,7 @@ func TestListEqual(t *testing.T) {
 	}
 }
 
-func TestListOrdered(t *testing.T) {
+func TestListComparable(t *testing.T) {
 	for _, tss := range [][2][]*Thunk{
 		{{}, {True}},
 		{{False}, {True}},

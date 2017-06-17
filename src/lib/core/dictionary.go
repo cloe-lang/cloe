@@ -43,8 +43,8 @@ func (d DictionaryType) insert(ts ...*Thunk) (result Value) {
 
 	v := ts[0].Eval()
 
-	if _, ok := v.(ordered); !ok {
-		return notOrderedError(v)
+	if _, ok := v.(comparable); !ok {
+		return notComparableError(v)
 	}
 
 	return d.Insert(v, ts[1])
@@ -61,10 +61,10 @@ func (d DictionaryType) index(v Value) (result Value) {
 		}
 	}()
 
-	k, ok := v.(ordered)
+	k, ok := v.(comparable)
 
 	if !ok {
-		return notOrderedError(v)
+		return notComparableError(v)
 	}
 
 	if v, ok := d.Search(k); ok {
@@ -76,8 +76,8 @@ func (d DictionaryType) index(v Value) (result Value) {
 		"The key %v is not found in a dictionary.", k)
 }
 
-func notOrderedError(k Value) *Thunk {
-	return TypeError(k, "ordered")
+func notComparableError(k Value) *Thunk {
+	return TypeError(k, "comparable")
 }
 
 // Insert wraps rbt.Dictionary.Insert().
@@ -159,8 +159,8 @@ func (d DictionaryType) delete(v Value) (result Value) {
 	return d.Remove(v)
 }
 
-func (d DictionaryType) compare(o ordered) int {
-	return compare(d.toList(), o.(DictionaryType).toList())
+func (d DictionaryType) compare(c comparable) int {
+	return compare(d.toList(), c.(DictionaryType).toList())
 }
 
 func (d DictionaryType) string() Value {

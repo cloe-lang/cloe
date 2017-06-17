@@ -37,24 +37,24 @@ var ToString = NewLazyFunction(
 		return s.string()
 	})
 
-// ordered must be implemented for every type other than error type.
+// comparable must be implemented for every type other than error type.
 // This interface should not be used in exported functions and exists only to
 // make keys for collections in rbt package.
-type ordered interface {
-	compare(ordered) int // can panic
+type comparable interface {
+	compare(comparable) int // can panic
 }
 
 func compare(x1, x2 interface{}) int {
-	o1, ok := x1.(ordered)
+	o1, ok := x1.(comparable)
 
 	if !ok {
-		panic(notOrderedError(x1))
+		panic(notComparableError(x1))
 	}
 
-	o2, ok := x2.(ordered)
+	o2, ok := x2.(comparable)
 
 	if !ok {
-		panic(notOrderedError(x2))
+		panic(notComparableError(x2))
 	}
 
 	if reflect.TypeOf(o1) != reflect.TypeOf(o2) {

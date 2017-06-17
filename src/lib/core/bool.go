@@ -40,8 +40,8 @@ var If = NewLazyFunction(
 		return ts[2]
 	})
 
-func (b BoolType) compare(o ordered) int {
-	if b == o.(BoolType) {
+func (b BoolType) compare(c comparable) int {
+	if b == c.(BoolType) {
 		return 0
 	} else if b {
 		return 1

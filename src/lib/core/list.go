@@ -238,8 +238,8 @@ func (l ListType) toList() Value {
 	return l
 }
 
-func (l ListType) compare(o ordered) int {
-	ll := o.(ListType)
+func (l ListType) compare(x comparable) int {
+	ll := x.(ListType)
 
 	if l == emptyList && ll == emptyList {
 		return 0

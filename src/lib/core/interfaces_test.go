@@ -7,7 +7,7 @@ func testEqual(t1, t2 *Thunk) bool {
 }
 
 func testLess(t1, t2 *Thunk) bool {
-	return t1.Eval().(ordered).compare(t2.Eval().(ordered)) < 0
+	return t1.Eval().(comparable).compare(t2.Eval().(comparable)) < 0
 }
 
 func TestXFailLess(t *testing.T) {

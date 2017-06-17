@@ -283,10 +283,10 @@ var isInt = NewLazyFunction(
 		return NewBool(math.Mod(float64(n), 1) == 0)
 	})
 
-func (n NumberType) compare(o ordered) int {
-	if n < o.(NumberType) {
+func (n NumberType) compare(c comparable) int {
+	if n < c.(NumberType) {
 		return -1
-	} else if n > o.(NumberType) {
+	} else if n > c.(NumberType) {
 		return 1
 	}
 

@@ -64,25 +64,45 @@ func compare(x1, x2 interface{}) int {
 	return o1.compare(o2)
 }
 
+type ordered interface {
+	comparable
+	ordered()
+}
+
 // Compare compares 2 values and returns -1 when x < y, 0 when x = y, and 1 when x > y.
 var Compare = NewStrictFunction(
-	NewSignature(
-		[]string{"x", "y"}, nil, "",
-		nil, nil, "",
-	),
-	func(ts ...*Thunk) (v Value) {
-		defer func() {
-			if r := recover(); r != nil {
-				v = r
-			}
-		}()
+	NewSignature([]string{"x", "y"}, nil, "", nil, nil, ""),
+	rawCompare)
 
-		c := compare(ts[0].Eval(), ts[1].Eval())
-		if c < 0 {
-			return NewNumber(-1)
-		} else if c > 0 {
-			return NewNumber(1)
-		}
+func rawCompare(ts ...*Thunk) Value {
+	v := ts[0].Eval()
+	o1, ok := v.(ordered)
 
-		return NewNumber(0)
-	})
+	if !ok {
+		return notOrderedError(v)
+	}
+
+	v = ts[1].Eval()
+	o2, ok := v.(ordered)
+
+	if !ok {
+		return notOrderedError(v)
+	}
+
+	if reflect.TypeOf(o1) != reflect.TypeOf(o2) {
+		return TypeError(o1, reflect.TypeOf(o2).Name())
+	}
+
+	if l1, ok := o1.(ListType); ok {
+		return compareListsAsOrdered(l1, o2.(ListType))
+	}
+
+	c := o1.compare(o2)
+	if c < 0 {
+		return NewNumber(-1)
+	} else if c > 0 {
+		return NewNumber(1)
+	}
+
+	return NewNumber(0)
+}

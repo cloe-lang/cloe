@@ -109,6 +109,8 @@ func (s StringType) compare(c comparable) int {
 	return strings.Compare(string(s), string(c.(StringType)))
 }
 
+func (StringType) ordered() {}
+
 func (s StringType) string() Value {
 	return s
 }

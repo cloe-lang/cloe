@@ -258,6 +258,29 @@ func (l ListType) compare(x comparable) int {
 	return c
 }
 
+func (ListType) ordered() {}
+
+func compareListsAsOrdered(l, ll ListType) Value {
+	if l == emptyList && ll == emptyList {
+		return NewNumber(0)
+	} else if l == emptyList {
+		return NewNumber(-1)
+	} else if ll == emptyList {
+		return NewNumber(1)
+	}
+
+	v := ensureWHNF(rawCompare(l.first, ll.first))
+	n, ok := v.(NumberType)
+
+	if !ok {
+		return NotNumberError(v)
+	} else if n == 0 {
+		return rawCompare(l.rest, ll.rest)
+	}
+
+	return n
+}
+
 func (l ListType) string() Value {
 	ts, err := l.ToValues()
 

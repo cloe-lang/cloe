@@ -44,3 +44,14 @@ var Equal = NewStrictFunction(
 
 		return BoolType(compare(ts[0].Eval(), ts[1].Eval()) == 0)
 	})
+
+// ensureWHNF evaluates nested thunks into WHNF values.
+// This function must be used with care because it prevents tail call
+// elimination.
+func ensureWHNF(v Value) Value {
+	if t, ok := v.(*Thunk); ok {
+		return t.Eval()
+	}
+
+	return v
+}

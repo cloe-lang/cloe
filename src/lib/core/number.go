@@ -293,6 +293,8 @@ func (n NumberType) compare(c comparable) int {
 	return 0
 }
 
+func (NumberType) ordered() {}
+
 func (n NumberType) string() Value {
 	return sprint(n)
 }

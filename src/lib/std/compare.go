@@ -38,9 +38,6 @@ func compare(checkOrder func(core.NumberType) bool) func(ts ...*core.Thunk) core
 }
 
 // Less checks if arguments are aligned in ascending order or not.
-var Less = core.NewStrictFunction(
-	core.NewSignature(
-		[]string{}, nil, "xs",
-		nil, nil, "",
-	),
+var Less = core.NewLazyFunction(
+	core.NewSignature([]string{}, nil, "xs", nil, nil, ""),
 	compare(func(n core.NumberType) bool { return n == -1 }))

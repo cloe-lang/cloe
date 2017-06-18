@@ -28,7 +28,6 @@ func TestLessTrue(t *testing.T) {
 
 func TestLessFalse(t *testing.T) {
 	for _, ts := range [][]*core.Thunk{
-		{core.True, core.False},
 		{core.NewNumber(42), core.NewNumber(0)},
 		{core.NewNumber(0), core.NewNumber(42), core.NewNumber(42)},
 		{core.NewNumber(0), core.NewNumber(0), core.NewNumber(42)},
@@ -41,7 +40,7 @@ func TestLessFalse(t *testing.T) {
 			core.NewList(core.NewList(core.NewNumber(42), core.NewNumber(42))),
 			core.NewList(core.NewList(core.NewNumber(42), core.NewNumber(2049)))},
 	} {
-		assert.True(t, !bool(core.PApp(Equal, ts...).Eval().(core.BoolType)))
+		assert.True(t, !bool(core.PApp(Less, ts...).Eval().(core.BoolType)))
 	}
 }
 

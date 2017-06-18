@@ -8,7 +8,7 @@ var Equal = core.NewStrictFunction(
 		[]string{}, nil, "xs",
 		nil, nil, "",
 	),
-	func(ts ...*core.Thunk) (v core.Value) {
+	func(ts ...*core.Thunk) core.Value {
 		l := ts[0]
 
 		if v := checkEmptyList(l, core.True); v != nil {

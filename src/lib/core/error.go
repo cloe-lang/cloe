@@ -134,3 +134,7 @@ func notComparableError(v Value) *Thunk {
 func notOrderedError(v Value) *Thunk {
 	return TypeError(v, "ordered")
 }
+
+func emptyListError() *Thunk {
+	return ValueError("The list is empty. You cannot apply rest.")
+}

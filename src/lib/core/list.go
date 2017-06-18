@@ -125,10 +125,6 @@ func appendFunc(ts ...*Thunk) Value {
 	)
 }
 
-func emptyListError() *Thunk {
-	return ValueError("The list is empty. You cannot apply rest.")
-}
-
 func (l ListType) call(args Arguments) Value {
 	return Index.Eval().(callable).call(NewPositionalArguments(Normal(l)).Merge(args))
 }

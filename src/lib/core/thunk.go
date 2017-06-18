@@ -15,10 +15,6 @@ const (
 	spinLock
 )
 
-var identity = NewLazyFunction(
-	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value { return ts[0] })
-
 // Thunk you all!
 type Thunk struct {
 	result    Value

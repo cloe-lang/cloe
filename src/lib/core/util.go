@@ -55,3 +55,7 @@ func ensureWHNF(v Value) Value {
 
 	return v
 }
+
+var identity = NewLazyFunction(
+	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	func(ts ...*Thunk) Value { return ts[0] })

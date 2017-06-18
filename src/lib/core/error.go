@@ -131,7 +131,7 @@ func notComparableError(v Value) *Thunk {
 	return TypeError(v, "comparable")
 }
 
-func notOrderedError(v Value) *Thunk {
+func NotOrderedError(v Value) *Thunk {
 	return TypeError(v, "ordered")
 }
 

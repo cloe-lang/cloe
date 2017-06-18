@@ -79,14 +79,14 @@ func rawCompare(ts ...*Thunk) Value {
 	o1, ok := v.(ordered)
 
 	if !ok {
-		return notOrderedError(v)
+		return NotOrderedError(v)
 	}
 
 	v = ts[1].Eval()
 	o2, ok := v.(ordered)
 
 	if !ok {
-		return notOrderedError(v)
+		return NotOrderedError(v)
 	}
 
 	if reflect.TypeOf(o1) != reflect.TypeOf(o2) {

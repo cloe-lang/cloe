@@ -44,6 +44,22 @@ func TestLessFalse(t *testing.T) {
 	}
 }
 
+func TestLessError(t *testing.T) {
+	for _, ts := range [][]*core.Thunk{
+		{core.Nil},
+		{core.True},
+		{core.False},
+		{core.NewDictionary(nil, nil)},
+		{core.NewNumber(42), core.Nil},
+		{core.NewString("foo"), core.Nil},
+	} {
+		v := core.PApp(Less, ts...).Eval()
+		t.Log(v)
+		_, ok := v.(core.ErrorType)
+		assert.True(t, ok)
+	}
+}
+
 func TestLessEqTrue(t *testing.T) {
 	for _, ts := range [][]*core.Thunk{
 		{},

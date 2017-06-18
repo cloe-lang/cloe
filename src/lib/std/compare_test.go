@@ -81,3 +81,52 @@ func TestLessEqFalse(t *testing.T) {
 		assert.True(t, !bool(core.PApp(LessEq, ts...).Eval().(core.BoolType)))
 	}
 }
+
+func TestGreaterTrue(t *testing.T) {
+	for _, ts := range [][]*core.Thunk{
+		{},
+		{core.NewNumber(42)},
+		{core.NewString("foo")},
+		{core.NewList(core.NewNumber(42))},
+		{core.NewNumber(0.000001), core.NewNumber(0.0000000000001)},
+		{core.NewString("foo"), core.NewString("baz"), core.NewString("bar")},
+	} {
+		assert.True(t, bool(core.PApp(Greater, ts...).Eval().(core.BoolType)))
+	}
+}
+
+func TestGreaterFalse(t *testing.T) {
+	for _, ts := range [][]*core.Thunk{
+		{core.NewNumber(42), core.NewNumber(2049)},
+		{core.NewString("bar"), core.NewString("baz")},
+		{core.NewNumber(42), core.NewNumber(42)},
+		{core.NewString("foo"), core.NewString("bar"), core.NewString("bar")},
+	} {
+		assert.True(t, !bool(core.PApp(Greater, ts...).Eval().(core.BoolType)))
+	}
+}
+
+func TestGreaterEqTrue(t *testing.T) {
+	for _, ts := range [][]*core.Thunk{
+		{},
+		{core.NewNumber(42)},
+		{core.NewString("foo")},
+		{core.NewList(core.NewNumber(42))},
+		{core.NewNumber(0.000001), core.NewNumber(0.0000000000001)},
+		{core.NewString("foo"), core.NewString("baz"), core.NewString("bar")},
+
+		{core.NewNumber(42), core.NewNumber(42)},
+		{core.NewString("foo"), core.NewString("bar"), core.NewString("bar")},
+	} {
+		assert.True(t, bool(core.PApp(GreaterEq, ts...).Eval().(core.BoolType)))
+	}
+}
+
+func TestGreaterEqFalse(t *testing.T) {
+	for _, ts := range [][]*core.Thunk{
+		{core.NewNumber(42), core.NewNumber(2049)},
+		{core.NewString("bar"), core.NewString("baz")},
+	} {
+		assert.True(t, !bool(core.PApp(GreaterEq, ts...).Eval().(core.BoolType)))
+	}
+}

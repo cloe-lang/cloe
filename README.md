@@ -45,9 +45,7 @@ You need Go 1.8+.
 - Optional injection of parallelism and causality
   - You can also increase parallelism of your code or run functions
     sequentially using `par` or `seq` primitives.
-    (`par` is not implemented yet.)
 - Asynchronous IO
-  - Every IO can be run asynchronously by the `par` primitive.
 - Dynamic typing
 
 ## Documentation

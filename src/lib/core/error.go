@@ -138,3 +138,7 @@ func notOrderedError(v Value) *Thunk {
 func emptyListError() *Thunk {
 	return ValueError("The list is empty. You cannot apply rest.")
 }
+
+func keyNotFoundError(v Value) *Thunk {
+	return NewError("KeyNotFoundError", "The key %v is not found in a dictionary.", v)
+}

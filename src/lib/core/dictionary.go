@@ -71,9 +71,7 @@ func (d DictionaryType) index(v Value) (result Value) {
 		return v
 	}
 
-	return NewError(
-		"KeyNotFoundError",
-		"The key %v is not found in a dictionary.", k)
+	return keyNotFoundError(k)
 }
 
 // Insert wraps rbt.Dictionary.Insert().

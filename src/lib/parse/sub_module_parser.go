@@ -20,3 +20,9 @@ func (p *SubModuleParser) Parse() (interface{}, error) {
 
 	return s, nil
 }
+
+// Finished checks if parsing is finished or not.
+func (p *SubModuleParser) Finished() bool {
+	_, err := p.Exhaust(p.blank())()
+	return err == nil
+}

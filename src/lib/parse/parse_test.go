@@ -6,47 +6,55 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMainModule(t *testing.T) {
-	for _, str := range []string{"", "(let x 42) (let (f x) (+ x 123)) (write 123)"} {
-		result, err := newStateWithoutFile(str).mainModule()()
+func TestMainModuleParser(t *testing.T) {
+	for _, s := range []string{"", "(let x 42) (let (f x) (+ x 123)) (write 123)"} {
+		p := NewMainModuleParser("main.tisp", s)
 
-		t.Log(result)
+		for !p.Finished() {
+			s, err := p.Parse()
 
-		assert.NotEqual(t, result, nil)
-		assert.Equal(t, err, nil)
+			t.Log(s)
+
+			assert.NotEqual(t, nil, s)
+			assert.Equal(t, nil, err)
+		}
 	}
 }
 
-func TestXFailMainModule(t *testing.T) {
-	for _, str := range []string{"(", "(()"} {
-		result, err := newStateWithoutFile(str).mainModule()()
+func TestMainModuleParserError(t *testing.T) {
+	for _, s := range []string{"(", "(()"} {
+		s, err := NewMainModuleParser("main.tisp", s).Parse()
 
-		t.Log(err.Error())
+		t.Log(s)
 
-		assert.Equal(t, result, nil)
-		assert.NotEqual(t, err, nil)
+		assert.Equal(t, nil, s)
+		assert.NotEqual(t, nil, err)
 	}
 }
 
-func TestSubModule(t *testing.T) {
-	for _, str := range []string{"", "(let x 123) (let (f x) (+ x 123))"} {
-		result, err := newStateWithoutFile(str).subModule()()
+func TestSubModuleParser(t *testing.T) {
+	for _, s := range []string{"", "(let x 123) (let (f x) (+ x 123))"} {
+		p := NewSubModuleParser("sub.tisp", s)
 
-		t.Log(result)
+		for !p.Finished() {
+			s, err := p.Parse()
 
-		assert.NotEqual(t, result, nil)
-		assert.Equal(t, err, nil)
+			t.Log(s)
+
+			assert.NotEqual(t, nil, s)
+			assert.Equal(t, nil, err)
+		}
 	}
 }
 
-func TestXFailSubModule(t *testing.T) {
-	for _, str := range []string{"(", "(()", "(write 123)"} {
-		result, err := newStateWithoutFile(str).subModule()()
+func TestSubModuleParserError(t *testing.T) {
+	for _, s := range []string{"(", "(()", "(write 123)"} {
+		s, err := NewSubModuleParser("sub.tisp", s).Parse()
 
-		t.Log(err.Error())
+		t.Log(s)
 
-		assert.Equal(t, result, nil)
-		assert.NotEqual(t, err, nil)
+		assert.Equal(t, nil, s)
+		assert.NotEqual(t, nil, err)
 	}
 }
 
@@ -243,5 +251,6 @@ func TestQuote(t *testing.T) {
 }
 
 func newStateWithoutFile(source string) *state {
-	return newState("", source)
+	s := newState("", source)
+	return &s
 }

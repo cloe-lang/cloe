@@ -30,7 +30,7 @@ var reserveds = map[string]bool{
 
 // MainModule parses a main module file into an AST.
 func MainModule(file, source string) ([]interface{}, error) {
-	m, err := newState(file, string(source)).mainModule()()
+	m, err := newState(file, source).mainModule()()
 
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func MainModule(file, source string) ([]interface{}, error) {
 
 // SubModule parses a sub module file into an AST.
 func SubModule(file, source string) ([]interface{}, error) {
-	m, err := newState(file, string(source)).subModule()()
+	m, err := newState(file, source).subModule()()
 
 	if err != nil {
 		return nil, err

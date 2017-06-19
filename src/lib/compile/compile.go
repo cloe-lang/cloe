@@ -13,11 +13,7 @@ func MainModule(path string) []Output {
 	p := parse.NewMainModuleParser(util.ReadFileOrStdin(path))
 	c := newCompiler()
 
-	for {
-		if p.Finished() {
-			return os
-		}
-
+	for !p.Finished() {
 		s, err := p.Parse()
 		if err != nil {
 			util.PanicError(err)
@@ -29,6 +25,8 @@ func MainModule(path string) []Output {
 			}
 		}
 	}
+
+	return os
 }
 
 // SubModule compiles a sub module of a path into a map of names to thunks.
@@ -36,11 +34,7 @@ func SubModule(path string) map[string]*core.Thunk {
 	p := parse.NewSubModuleParser(util.ReadFileOrStdin(path))
 	c := newCompiler()
 
-	for {
-		if p.Finished() {
-			return c.env.toMap()
-		}
-
+	for !p.Finished() {
 		s, err := p.Parse()
 		if err != nil {
 			util.PanicError(err)
@@ -50,4 +44,6 @@ func SubModule(path string) map[string]*core.Thunk {
 			c.compile(s)
 		}
 	}
+
+	return c.env.toMap()
 }

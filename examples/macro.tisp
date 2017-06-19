@@ -1,4 +1,0 @@
-(macro (unless cond then else) `(if ~cond ~else ~then))
-
-(macro (foo) `123)
-(write (+ (foo) bar))

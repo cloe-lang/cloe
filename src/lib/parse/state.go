@@ -10,8 +10,8 @@ type state struct {
 	file string
 }
 
-func newState(file, source string) *state {
-	return &state{comb.NewState(source), file}
+func newState(file, source string) state {
+	return state{comb.NewState(source), file}
 }
 
 func (s state) debugInfo() debug.Info {

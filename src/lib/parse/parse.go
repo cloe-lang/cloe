@@ -28,38 +28,8 @@ var reserveds = map[string]bool{
 	quoteString:     true,
 }
 
-// MainModule parses a main module file into an AST.
-func MainModule(file, source string) ([]interface{}, error) {
-	m, err := newState(file, source).mainModule()()
-
-	if err != nil {
-		return nil, err
-	}
-
-	return m.([]interface{}), nil
-}
-
-// SubModule parses a sub module file into an AST.
-func SubModule(file, source string) ([]interface{}, error) {
-	m, err := newState(file, source).subModule()()
-
-	if err != nil {
-		return nil, err
-	}
-
-	return m.([]interface{}), nil
-}
-
-func (s *state) mainModule() comb.Parser {
-	return s.module(s.importModule(), s.let(), s.output())
-}
-
-func (s *state) subModule() comb.Parser {
-	return s.module(s.importModule(), s.let())
-}
-
-func (s *state) module(ps ...comb.Parser) comb.Parser {
-	return s.Exhaust(s.Prefix(s.blank(), s.Many(s.Or(ps...))))
+func (s *state) statement(ps ...comb.Parser) comb.Parser {
+	return s.Prefix(s.blank(), s.Or(ps...))
 }
 
 func (s *state) importModule() comb.Parser {

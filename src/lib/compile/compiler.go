@@ -17,44 +17,40 @@ func newCompiler() compiler {
 	return compiler{env: prelude()}
 }
 
-func (c *compiler) compile(module []interface{}) []Output {
-	outputs := make([]Output, 0)
+func (c *compiler) compile(s interface{}) (Output, bool) {
+	switch x := s.(type) {
+	case ast.LetVar:
+		c.env.set(x.Name(), c.exprToThunk(x.Expr()))
+	case ast.LetFunction:
+		sig := x.Signature()
+		ls := x.Lets()
 
-	for _, node := range module {
-		switch x := node.(type) {
-		case ast.LetVar:
-			c.env.set(x.Name(), c.exprToThunk(x.Expr()))
-		case ast.LetFunction:
-			sig := x.Signature()
-			ls := x.Lets()
+		vars := make([]interface{}, len(ls))
+		varIndices := map[string]int{}
 
-			vars := make([]interface{}, len(ls))
-			varIndices := map[string]int{}
-
-			for i, l := range ls {
-				cst := l.(ast.LetVar)
-				vars[i] = c.exprToIR(sig, varIndices, cst.Expr())
-				varIndices[cst.Name()] = sig.Arity() + i
-			}
-
-			c.env.set(
-				x.Name(),
-				ir.CompileFunction(
-					c.compileSignature(sig),
-					vars,
-					c.exprToIR(sig, varIndices, x.Body())))
-		case ast.Output:
-			outputs = append(outputs, NewOutput(c.exprToThunk(x.Expr()), x.Expanded()))
-		case ast.Import:
-			for k, v := range SubModule(x.Path() + ".tisp") {
-				c.env.set(path.Base(x.Path())+"."+k, v)
-			}
-		default:
-			panic(fmt.Errorf("Invalid type: %#v", x))
+		for i, l := range ls {
+			cst := l.(ast.LetVar)
+			vars[i] = c.exprToIR(sig, varIndices, cst.Expr())
+			varIndices[cst.Name()] = sig.Arity() + i
 		}
+
+		c.env.set(
+			x.Name(),
+			ir.CompileFunction(
+				c.compileSignature(sig),
+				vars,
+				c.exprToIR(sig, varIndices, x.Body())))
+	case ast.Output:
+		return NewOutput(c.exprToThunk(x.Expr()), x.Expanded()), true
+	case ast.Import:
+		for k, v := range SubModule(x.Path() + ".tisp") {
+			c.env.set(path.Base(x.Path())+"."+k, v)
+		}
+	default:
+		panic(fmt.Errorf("Invalid type: %#v", x))
 	}
 
-	return outputs
+	return Output{}, false
 }
 
 func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {

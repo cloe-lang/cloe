@@ -9,25 +9,45 @@ import (
 
 // MainModule compiles a main module of a path into outputs of thunks.
 func MainModule(path string) []Output {
-	module, err := parse.MainModule(util.ReadFileOrStdin(path))
-
-	if err != nil {
-		util.PanicError(err)
-	}
-
+	os := make([]Output, 0)
+	p := parse.NewMainModuleParser(util.ReadFileOrStdin(path))
 	c := newCompiler()
-	return c.compile(desugar.Desugar(module))
+
+	for {
+		if p.Finished() {
+			return os
+		}
+
+		s, err := p.Parse()
+		if err != nil {
+			util.PanicError(err)
+		}
+
+		for _, s := range desugar.Desugar(s) {
+			if o, ok := c.compile(s); ok {
+				os = append(os, o)
+			}
+		}
+	}
 }
 
 // SubModule compiles a sub module of a path into a map of names to thunks.
 func SubModule(path string) map[string]*core.Thunk {
-	module, err := parse.SubModule(util.ReadFileOrStdin(path))
-
-	if err != nil {
-		util.PanicError(err)
-	}
-
+	p := parse.NewSubModuleParser(util.ReadFileOrStdin(path))
 	c := newCompiler()
-	c.compile(desugar.Desugar(module))
-	return c.env.toMap()
+
+	for {
+		if p.Finished() {
+			return c.env.toMap()
+		}
+
+		s, err := p.Parse()
+		if err != nil {
+			util.PanicError(err)
+		}
+
+		for _, s := range desugar.Desugar(s) {
+			c.compile(s)
+		}
+	}
 }

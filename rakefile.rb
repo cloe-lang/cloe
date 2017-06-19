@@ -29,10 +29,11 @@ task :unit_test do
 end
 
 task command_test: :build do
-  cd 'test' do
-    sh 'bundler install'
-    sh "bundler exec cucumber PATH=#{BIN_PATH}:$PATH"
-  end
+  sh 'bundler install'
+  sh %W[bundler exec cucumber
+        -r examples/aruba.rb
+        PATH=#{BIN_PATH}:$PATH
+        examples].join ' '
 end
 
 task test: %i[unit_test command_test]

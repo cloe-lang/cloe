@@ -11,6 +11,7 @@ func NewMainModuleParser(file, source string) Parser {
 
 // Parse parses a statement.
 func (p *mainModuleParser) Parse(macros map[string]func(...interface{}) interface{}) (interface{}, error) {
+	p.macros = macros
 	s, err := p.statement(p.importModule(), p.let(), p.output())()
 
 	if err != nil {

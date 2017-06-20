@@ -7,11 +7,12 @@ import (
 
 type state struct {
 	*comb.State
-	file string
+	file   string
+	macros map[string]func(...interface{}) interface{}
 }
 
 func newState(file, source string) state {
-	return state{comb.NewState(source), file}
+	return state{comb.NewState(source), file, nil}
 }
 
 func (s state) debugInfo() debug.Info {

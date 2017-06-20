@@ -16,11 +16,11 @@ func main() {
 func getArgs() map[string]interface{} {
 	usage := `Tisp interpreter
 
-	Usage:
-	tisp [<filename>]
+Usage:
+  tisp [<filename>]
 
-	Options:
-	-h --help     Show this help.`
+Options:
+  -h, --help  Show this help.`
 
 	args, err := docopt.Parse(usage, nil, true, "Tisp 0.0.0", false)
 

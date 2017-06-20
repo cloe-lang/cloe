@@ -1,17 +1,16 @@
 package parse
 
-// SubModuleParser is a parser for main modules.
-type SubModuleParser struct {
+type subModuleParser struct {
 	state
 }
 
 // NewSubModuleParser creates a new main module parser.
 func NewSubModuleParser(file, source string) Parser {
-	return &SubModuleParser{newState(file, source)}
+	return &subModuleParser{newState(file, source)}
 }
 
 // Parse parses a statement.
-func (p *SubModuleParser) Parse() (interface{}, error) {
+func (p *subModuleParser) Parse() (interface{}, error) {
 	s, err := p.statement(p.importModule(), p.let())()
 
 	if err != nil {
@@ -22,7 +21,7 @@ func (p *SubModuleParser) Parse() (interface{}, error) {
 }
 
 // Finished checks if parsing is finished or not.
-func (p *SubModuleParser) Finished() bool {
+func (p *subModuleParser) Finished() bool {
 	_, err := p.Exhaust(p.blank())()
 	return err == nil
 }

@@ -1,17 +1,16 @@
 package parse
 
-// MainModuleParser is a parser for main modules.
-type MainModuleParser struct {
+type mainModuleParser struct {
 	state
 }
 
 // NewMainModuleParser creates a new main module parser.
 func NewMainModuleParser(file, source string) Parser {
-	return &MainModuleParser{newState(file, source)}
+	return &mainModuleParser{newState(file, source)}
 }
 
 // Parse parses a statement.
-func (p *MainModuleParser) Parse() (interface{}, error) {
+func (p *mainModuleParser) Parse() (interface{}, error) {
 	s, err := p.statement(p.importModule(), p.let(), p.output())()
 
 	if err != nil {
@@ -22,7 +21,7 @@ func (p *MainModuleParser) Parse() (interface{}, error) {
 }
 
 // Finished checks if parsing is finished or not.
-func (p *MainModuleParser) Finished() bool {
+func (p *mainModuleParser) Finished() bool {
 	_, err := p.Exhaust(p.blank())()
 	return err == nil
 }

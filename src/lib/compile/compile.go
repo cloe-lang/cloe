@@ -3,6 +3,7 @@ package compile
 import (
 	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/desugar"
+	"github.com/tisp-lang/tisp/src/lib/macro"
 	"github.com/tisp-lang/tisp/src/lib/parse"
 	"github.com/tisp-lang/tisp/src/lib/util"
 )
@@ -14,7 +15,7 @@ func MainModule(path string) []Output {
 	c := newCompiler()
 
 	for !p.Finished() {
-		s, err := p.Parse()
+		s, err := p.Parse(macro.FunctionsToMacros(c.env.toMap()))
 		if err != nil {
 			util.PanicError(err)
 		}
@@ -35,7 +36,7 @@ func SubModule(path string) map[string]*core.Thunk {
 	c := newCompiler()
 
 	for !p.Finished() {
-		s, err := p.Parse()
+		s, err := p.Parse(macro.FunctionsToMacros(c.env.toMap()))
 		if err != nil {
 			util.PanicError(err)
 		}

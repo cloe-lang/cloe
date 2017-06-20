@@ -6,12 +6,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var macros = map[string]func(...interface{}) interface{}{}
+
 func TestMainModuleParser(t *testing.T) {
 	for _, s := range []string{"", "(let x 42) (let (f x) (+ x 123)) (write 123)"} {
 		p := NewMainModuleParser("main.tisp", s)
 
 		for !p.Finished() {
-			s, err := p.Parse()
+			s, err := p.Parse(macros)
 
 			t.Log(s)
 
@@ -23,7 +25,7 @@ func TestMainModuleParser(t *testing.T) {
 
 func TestMainModuleParserError(t *testing.T) {
 	for _, s := range []string{"(", "(()"} {
-		s, err := NewMainModuleParser("main.tisp", s).Parse()
+		s, err := NewMainModuleParser("main.tisp", s).Parse(macros)
 
 		t.Log(s)
 
@@ -37,7 +39,7 @@ func TestSubModuleParser(t *testing.T) {
 		p := NewSubModuleParser("sub.tisp", s)
 
 		for !p.Finished() {
-			s, err := p.Parse()
+			s, err := p.Parse(macros)
 
 			t.Log(s)
 
@@ -49,7 +51,7 @@ func TestSubModuleParser(t *testing.T) {
 
 func TestSubModuleParserError(t *testing.T) {
 	for _, s := range []string{"(", "(()", "(write 123)"} {
-		s, err := NewSubModuleParser("sub.tisp", s).Parse()
+		s, err := NewSubModuleParser("sub.tisp", s).Parse(macros)
 
 		t.Log(s)
 

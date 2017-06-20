@@ -10,7 +10,7 @@ func NewSubModuleParser(file, source string) Parser {
 }
 
 // Parse parses a statement.
-func (p *subModuleParser) Parse() (interface{}, error) {
+func (p *subModuleParser) Parse(macros map[string]func(...interface{}) interface{}) (interface{}, error) {
 	s, err := p.statement(p.importModule(), p.let())()
 
 	if err != nil {

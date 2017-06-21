@@ -12,7 +12,7 @@ func MainModule(path string) []Output {
 	module, err := parse.MainModule(util.ReadFileOrStdin(path))
 
 	if err != nil {
-		util.Fail(err.Error())
+		util.PanicError(err)
 	}
 
 	c := newCompiler()
@@ -24,7 +24,7 @@ func SubModule(path string) map[string]*core.Thunk {
 	module, err := parse.SubModule(util.ReadFileOrStdin(path))
 
 	if err != nil {
-		util.Fail(err.Error())
+		util.PanicError(err)
 	}
 
 	c := newCompiler()

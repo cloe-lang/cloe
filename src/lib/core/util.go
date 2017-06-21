@@ -42,7 +42,7 @@ func internalDumpOrFail(v Value) string {
 
 	switch x := v.(type) {
 	case ErrorType:
-		util.Fail(x.Lines())
+		util.PanicError(x)
 	case dumpable:
 		v = x.dump()
 	case stringable:
@@ -55,7 +55,7 @@ func internalDumpOrFail(v Value) string {
 	case StringType:
 		return string(x)
 	case ErrorType:
-		util.Fail(x.Lines())
+		util.PanicError(x)
 	}
 
 	panic(fmt.Sprintf("Invalid value detected: %#v", v))
@@ -68,7 +68,7 @@ func DumpOrFail(v Value) string {
 	s, ok := v.(StringType)
 
 	if !ok {
-		util.Fail(NotStringError(v).Eval().(ErrorType).Lines())
+		util.PanicError(NotStringError(v).Eval().(ErrorType))
 	}
 
 	return string(s)

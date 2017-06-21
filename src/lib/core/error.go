@@ -34,6 +34,11 @@ func (e ErrorType) Lines() string {
 	return strings.Join(ss, "") + e.name + ": " + e.message + "\n"
 }
 
+// Error is implemented for error built-in interface.
+func (e ErrorType) Error() string {
+	return e.Lines()
+}
+
 // NumArgsError creates an error value for an invalid number of arguments
 // passed to a function.
 func NumArgsError(f, condition string) *Thunk {

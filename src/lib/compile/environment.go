@@ -1,6 +1,8 @@
 package compile
 
 import (
+	"fmt"
+
 	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/util"
 )
@@ -32,7 +34,7 @@ func (e environment) get(s string) *core.Thunk {
 		return t
 	}
 
-	util.Fail("The name, %s is not found.", s)
+	util.PanicError(fmt.Errorf("The name, %s is not found", s))
 	panic("Unreachable")
 }
 

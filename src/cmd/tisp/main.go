@@ -25,7 +25,7 @@ Options:
 	args, err := docopt.Parse(usage, nil, true, "Tisp 0.0.0", false)
 
 	if err != nil {
-		util.Fail(err.Error())
+		util.PanicError(err)
 	} else if args["<filename>"] == nil {
 		args["<filename>"] = ""
 	}

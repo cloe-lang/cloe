@@ -17,14 +17,14 @@ func ReadFileOrStdin(filename string) (string, string) {
 		file, err = os.Open(filename)
 
 		if err != nil {
-			Fail(err.Error())
+			PanicError(err)
 		}
 	}
 
 	source, err := ioutil.ReadAll(file)
 
 	if err != nil {
-		Fail(err.Error())
+		PanicError(err)
 	}
 
 	return filename, string(source)

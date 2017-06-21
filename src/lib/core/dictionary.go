@@ -190,7 +190,7 @@ func (d DictionaryType) string() Value {
 				return err
 			}
 
-			v = PApp(ToString, Normal(v)).Eval()
+			v = PApp(Dump, Normal(v)).Eval()
 			s, ok := v.(StringType)
 
 			if !ok {

@@ -59,6 +59,7 @@ func prelude() environment {
 		{"toList", core.ToList},
 		{"toStr", core.ToString},
 		{"merge", core.Merge},
+		{"dump", core.Dump},
 
 		{"list", std.List},
 		{"$list", std.List},

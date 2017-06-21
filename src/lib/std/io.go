@@ -27,7 +27,7 @@ var Read = core.NewLazyFunction(
 				return core.OutputError(err.Error())
 			}
 		} else if _, ok := v.(core.NilType); !ok {
-			return core.ValueError("file optional argument's value must be nil or a filename. Got %#v.", v)
+			return core.ValueError("file optional argument's value must be nil or a filename. Got %s.", core.DumpOrFail(v))
 		}
 
 		s, err := ioutil.ReadAll(file)
@@ -112,7 +112,7 @@ var Write = core.NewStrictFunction(
 		} else if n, ok := fileArg.(core.NumberType); ok && n == 2 {
 			file = os.Stderr
 		} else if !(ok && n == 1) {
-			return core.ValueError("file optional argument's value must be 1 or 2, or a string filename. Got %#v.", fileArg)
+			return core.ValueError("file optional argument's value must be 1 or 2, or a string filename. Got %s.", core.DumpOrFail(fileArg))
 		}
 
 		fmt.Fprint(file, strings.Join(ss, options[0])+options[1])

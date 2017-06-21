@@ -287,14 +287,14 @@ func (l ListType) string() Value {
 	ss := make([]string, len(ts))
 
 	for i, t := range ts {
-		v := t.Eval()
-		s, err := dump(v)
+		v := PApp(Dump, t).Eval()
+		s, ok := v.(StringType)
 
-		if err != nil {
-			return err
+		if !ok {
+			return NotStringError(v)
 		}
 
-		ss[i] = s
+		ss[i] = string(s)
 	}
 
 	return StringType("[" + strings.Join(ss, " ") + "]")

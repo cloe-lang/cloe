@@ -1,6 +1,10 @@
 package core
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/tisp-lang/tisp/src/lib/util"
+)
 
 func sprint(x interface{}) StringType {
 	return StringType(fmt.Sprint(x))
@@ -10,23 +14,39 @@ type dumpable interface {
 	dump() Value
 }
 
-func dump(v Value) (string, Value) {
-	if err, ok := v.(ErrorType); ok {
-		return "", err
-	}
+// Dump dumps a value into a string type value.
+var Dump = NewLazyFunction(
+	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
 
-	if d, ok := v.(dumpable); ok {
-		v = d.dump()
-	} else {
-		v = PApp(ToString, Normal(v)).Eval()
-	}
+		switch x := v.(type) {
+		case ErrorType:
+			return x
+		case dumpable:
+			v = x.dump()
+		default:
+			v = PApp(ToString, Normal(v)).Eval()
+		}
 
+		if _, ok := v.(StringType); !ok {
+			return NotStringError(v)
+		}
+
+		return v
+	})
+
+// DumpOrFail dumps a value into a string value or fail exiting a process.
+// This function should be used only to create strings of error information.
+func DumpOrFail(v Value) string {
+	v = PApp(Dump, Normal(v)).Eval()
 	s, ok := v.(StringType)
+
 	if !ok {
-		return "", NotStringError(v)
+		util.Fail(NotStringError(v).Eval().(ErrorType).Lines())
 	}
 
-	return string(s), nil
+	return string(s)
 }
 
 // Equal checks if 2 values are equal or not.

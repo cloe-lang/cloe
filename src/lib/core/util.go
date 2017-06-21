@@ -36,6 +36,27 @@ var Dump = NewLazyFunction(
 		return v
 	})
 
+// internalDumpOrFail is the same as DumpOrFail
+func internalDumpOrFail(v Value) string {
+	switch x := v.(type) {
+	case ErrorType:
+		util.Fail(x.Lines())
+	case dumpable:
+		v = x.dump()
+	case stringable:
+		v = x.string()
+	}
+
+	switch x := v.(type) {
+	case StringType:
+		return string(x)
+	case ErrorType:
+		util.Fail(x.Lines())
+	}
+
+	panic(fmt.Sprintf("Invalid value detected: %#v", v))
+}
+
 // DumpOrFail dumps a value into a string value or fail exiting a process.
 // This function should be used only to create strings of error information.
 func DumpOrFail(v Value) string {

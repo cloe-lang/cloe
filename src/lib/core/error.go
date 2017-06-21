@@ -51,7 +51,7 @@ func TypeError(v Value, typ string) *Thunk {
 		return Normal(e)
 	}
 
-	return NewError("TypeError", "%#v is not a %s.", v, typ)
+	return NewError("TypeError", "%s is not a %s.", internalDumpOrFail(v), typ)
 }
 
 // NotBoolError creates an error value for an invalid value which is not a
@@ -140,5 +140,5 @@ func emptyListError() *Thunk {
 }
 
 func keyNotFoundError(v Value) *Thunk {
-	return NewError("KeyNotFoundError", "The key %v is not found in a dictionary.", v)
+	return NewError("KeyNotFoundError", "The key %s is not found in a dictionary.", internalDumpOrFail(v))
 }

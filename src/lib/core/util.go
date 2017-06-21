@@ -38,6 +38,8 @@ var Dump = NewLazyFunction(
 
 // internalDumpOrFail is the same as DumpOrFail
 func internalDumpOrFail(v Value) string {
+	v = ensureWHNF(v)
+
 	switch x := v.(type) {
 	case ErrorType:
 		util.Fail(x.Lines())
@@ -45,6 +47,8 @@ func internalDumpOrFail(v Value) string {
 		v = x.dump()
 	case stringable:
 		v = x.string()
+	default:
+		panic(fmt.Sprintf("Invalid value detected: %#v", v))
 	}
 
 	switch x := v.(type) {

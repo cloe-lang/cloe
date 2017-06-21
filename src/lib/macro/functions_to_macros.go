@@ -55,7 +55,7 @@ func thunkToAST(t *core.Thunk) interface{} {
 		ts, err := v.ToThunks()
 
 		if err != nil {
-			util.Fail(err.Eval().(core.ErrorType).Lines())
+			util.PanicError(err.Eval().(core.ErrorType))
 		}
 
 		as := make([]interface{}, 0, len(ts))

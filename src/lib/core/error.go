@@ -136,6 +136,7 @@ func notComparableError(v Value) *Thunk {
 	return TypeError(v, "comparable")
 }
 
+// NotOrderedError creates an error value for an invalid value which is not ordered.
 func NotOrderedError(v Value) *Thunk {
 	return TypeError(v, "ordered")
 }

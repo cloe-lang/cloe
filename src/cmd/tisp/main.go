@@ -10,7 +10,6 @@ import (
 	"github.com/docopt/docopt-go"
 	"github.com/tisp-lang/tisp/src/lib/compile"
 	"github.com/tisp-lang/tisp/src/lib/run"
-	"github.com/tisp-lang/tisp/src/lib/util"
 )
 
 func main() {
@@ -42,7 +41,8 @@ Options:
 	args, err := docopt.Parse(usage, nil, true, "Tisp 0.0.0", false)
 
 	if err != nil {
-		util.PanicError(err)
+		printToStderr(err.Error())
+		os.Exit(1)
 	} else if args["<filename>"] == nil {
 		args["<filename>"] = ""
 	}

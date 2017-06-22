@@ -24,9 +24,7 @@ func main() {
 				case string:
 					printToStderr(x)
 				default:
-					if x != nil {
-						panic(x)
-					}
+					panic(x)
 				}
 
 				os.Exit(1)

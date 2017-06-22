@@ -13,29 +13,38 @@ import (
 )
 
 func main() {
-	defer func() {
-		switch x := recover().(type) {
-		case error:
-			printToStderr(x.Error())
-		case string:
-			printToStderr(x)
-		default:
-			if x != nil {
-				panic(x)
-			}
-		}
-	}()
+	args := getArgs()
 
-	run.Run(compile.MainModule(getArgs()["<filename>"].(string)))
+	if !args["--debug"].(bool) {
+		defer func() {
+			if r := recover(); r != nil {
+				switch x := r.(type) {
+				case error:
+					printToStderr(x.Error())
+				case string:
+					printToStderr(x)
+				default:
+					if x != nil {
+						panic(x)
+					}
+				}
+
+				os.Exit(1)
+			}
+		}()
+	}
+
+	run.Run(compile.MainModule(args["<filename>"].(string)))
 }
 
 func getArgs() map[string]interface{} {
 	usage := `Tisp interpreter
 
 Usage:
-  tisp [<filename>]
+  tisp [-d] [<filename>]
 
 Options:
+  -d, --debug  Turn on debug mode.
   -h, --help  Show this help.`
 
 	args, err := docopt.Parse(usage, nil, true, "Tisp 0.0.0", false)

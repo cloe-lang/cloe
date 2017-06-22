@@ -160,16 +160,6 @@ func TestQuotedExpression(t *testing.T) {
 	}
 }
 
-func TestSetLiteral(t *testing.T) {
-	s := newStateWithoutFile("'{1 2 3}")
-	result, err := s.Exhaust(s.expression())()
-
-	t.Logf("%#v", result)
-
-	assert.NotEqual(t, result, nil)
-	assert.Equal(t, err, nil)
-}
-
 // func TestClosureLiteral(t *testing.T) {
 //	s := newStateWithoutFile("'(+ #1 #2 3)")
 //	result, err := s.Exhaust(s.expression())()

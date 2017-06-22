@@ -3,6 +3,10 @@
 package main
 
 import (
+	"fmt"
+	"os"
+	"strings"
+
 	"github.com/docopt/docopt-go"
 	"github.com/tisp-lang/tisp/src/lib/compile"
 	"github.com/tisp-lang/tisp/src/lib/run"
@@ -10,6 +14,19 @@ import (
 )
 
 func main() {
+	defer func() {
+		switch x := recover().(type) {
+		case error:
+			printToStderr(x.Error())
+		case string:
+			printToStderr(x)
+		default:
+			if x != nil {
+				panic(x)
+			}
+		}
+	}()
+
 	run.Run(compile.MainModule(getArgs()["<filename>"].(string)))
 }
 
@@ -31,4 +48,8 @@ Options:
 	}
 
 	return args
+}
+
+func printToStderr(s string) {
+	fmt.Fprintf(os.Stderr, strings.TrimSpace(s)+"\n")
 }

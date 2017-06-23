@@ -28,13 +28,13 @@ func (c *compiler) compile(module []interface{}) []Output {
 			sig := x.Signature()
 			ls := x.Lets()
 
-			vars := make([]interface{}, len(ls))
-			varIndices := map[string]int{}
+			vars := make([]interface{}, 0, len(ls))
+			varToIndex := sig.NameToIndex()
 
-			for i, l := range ls {
-				cst := l.(ast.LetVar)
-				vars[i] = c.exprToIR(sig, varIndices, cst.Expr())
-				varIndices[cst.Name()] = sig.Arity() + i
+			for _, l := range ls {
+				v := l.(ast.LetVar)
+				vars = append(vars, c.exprToIR(varToIndex, v.Expr()))
+				varToIndex[v.Name()] = len(varToIndex)
 			}
 
 			c.env.set(
@@ -42,7 +42,7 @@ func (c *compiler) compile(module []interface{}) []Output {
 				ir.CompileFunction(
 					c.compileSignature(sig),
 					vars,
-					c.exprToIR(sig, varIndices, x.Body())))
+					c.exprToIR(varToIndex, x.Body())))
 		case ast.Output:
 			outputs = append(outputs, NewOutput(c.exprToThunk(x.Expr()), x.Expanded()))
 		case ast.Import:
@@ -61,7 +61,7 @@ func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {
 	return core.PApp(ir.CompileFunction(
 		core.NewSignature(nil, nil, "", nil, nil, ""),
 		nil,
-		c.exprToIR(ast.NewSignature(nil, nil, "", nil, nil, ""), nil, expr)))
+		c.exprToIR(nil, expr)))
 }
 
 func (c *compiler) compileSignature(sig ast.Signature) core.Signature {
@@ -81,16 +81,10 @@ func (c *compiler) compileOptionalArguments(opts []ast.OptionalArgument) []core.
 	return coreOpts
 }
 
-func (c *compiler) exprToIR(sig ast.Signature, vars map[string]int, expr interface{}) interface{} {
+func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interface{} {
 	switch x := expr.(type) {
 	case string:
-		if i, ok := vars[x]; ok {
-			return i
-		}
-
-		i, err := sig.NameToIndex(x)
-
-		if err == nil {
+		if i, ok := varToIndex[x]; ok {
 			return i
 		}
 
@@ -100,21 +94,21 @@ func (c *compiler) exprToIR(sig ast.Signature, vars map[string]int, expr interfa
 
 		ps := make([]ir.PositionalArgument, len(args.Positionals()))
 		for i, p := range args.Positionals() {
-			ps[i] = ir.NewPositionalArgument(c.exprToIR(sig, vars, p.Value()), p.Expanded())
+			ps[i] = ir.NewPositionalArgument(c.exprToIR(varToIndex, p.Value()), p.Expanded())
 		}
 
 		ks := make([]ir.KeywordArgument, len(args.Keywords()))
 		for i, k := range args.Keywords() {
-			ks[i] = ir.NewKeywordArgument(k.Name(), c.exprToIR(sig, vars, k.Value()))
+			ks[i] = ir.NewKeywordArgument(k.Name(), c.exprToIR(varToIndex, k.Value()))
 		}
 
 		ds := make([]interface{}, len(args.ExpandedDicts()))
 		for i, d := range args.ExpandedDicts() {
-			ds[i] = c.exprToIR(sig, vars, d)
+			ds[i] = c.exprToIR(varToIndex, d)
 		}
 
 		return ir.NewApp(
-			c.exprToIR(sig, vars, x.Function()),
+			c.exprToIR(varToIndex, x.Function()),
 			ir.NewArguments(ps, ks, ds),
 			x.DebugInfo())
 	}

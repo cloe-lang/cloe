@@ -1,7 +1,5 @@
 package ast
 
-import "fmt"
-
 // Signature represents a signature of a function.
 type Signature struct {
 	positionals halfSignature
@@ -57,61 +55,27 @@ func (s Signature) KeyRest() string {
 	return s.keywords.rest
 }
 
-// Arity returns a number of arguments in a signature.
-func (s Signature) Arity() int {
-	return s.positionals.arity() + s.keywords.arity()
-}
-
-func (as halfSignature) arity() int {
-	rest := 0
-
-	if as.rest != "" {
-		rest = 1
-	}
-
-	return len(as.requireds) + len(as.optionals) + rest
-}
-
 // NameToIndex converts an argument name into an index in arguments inside a signature.
-func (s Signature) NameToIndex(name string) (int, error) {
-	i, ok := s.positionals.nameToIndex(name)
+func (s Signature) NameToIndex() map[string]int {
+	m := map[string]int{}
 
-	if ok {
-		return i, nil
+	for i, n := range append(s.positionals.names(), s.keywords.names()...) {
+		m[n] = i
 	}
 
-	j, ok := s.keywords.nameToIndex(name)
-
-	if ok {
-		return i + j, nil
-	}
-
-	return -1, fmt.Errorf("name %#v was not found in a signature", name)
+	return m
 }
 
-func (as halfSignature) nameToIndex(name string) (int, bool) {
-	i := 0
+func (hs halfSignature) names() []string {
+	ns := hs.requireds
 
-	for _, r := range as.requireds {
-		if name == r {
-			return i, true
-		}
-		i++
+	for _, o := range hs.optionals {
+		ns = append(ns, o.name)
 	}
 
-	for _, o := range as.optionals {
-		if name == o.name {
-			return i, true
-		}
-		i++
+	if hs.rest != "" {
+		ns = append(ns, hs.rest)
 	}
 
-	if as.rest != "" {
-		if name == as.rest {
-			return i, true
-		}
-		i++
-	}
-
-	return i, false
+	return ns
 }

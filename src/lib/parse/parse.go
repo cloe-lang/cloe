@@ -16,6 +16,7 @@ const (
 	letString       = "let"
 	mutualRecString = "mr"
 	quoteString     = "quote"
+	matchString     = "match"
 	spaceChars      = " \t\n\r"
 	specialChars    = "()[]{}\"'`$"
 )
@@ -24,6 +25,7 @@ var reserveds = map[string]bool{
 	"macro":         true,
 	importString:    true,
 	letString:       true,
+	matchString:     true,
 	mutualRecString: true,
 	quoteString:     true,
 }
@@ -192,11 +194,35 @@ func (s *state) firstOrderExpression() comb.Parser {
 	return s.Or(
 		s.identifier(),
 		s.stringLiteral(),
+		s.match(),
 		s.app(),
-		s.appFunc("$list", s.sequence("[", "]")),
-		s.appFunc("$dict", s.sequence("{", "}")),
+		s.listLiteral(),
+		s.dictLiteral(),
 		// s.appFunc("lambda", s.sequence("'(", ")")),
 	)
+}
+
+func (s *state) listLiteral() comb.Parser {
+	return s.appFunc("$list", s.sequence("[", "]"))
+}
+
+func (s *state) dictLiteral() comb.Parser {
+	return s.appFunc("$dict", s.sequence("{", "}"))
+}
+
+func (s *state) match() comb.Parser {
+	return s.list(
+		s.strippedString(matchString),
+		s.expression(),
+		s.Many1(s.And(s.pattern(), s.expression())))
+}
+
+func (s *state) pattern() comb.Parser {
+	return s.Or(
+		s.identifier(),
+		s.stringLiteral(),
+		s.listLiteral(),
+		s.dictLiteral())
 }
 
 func (s *state) quote(p comb.Parser) comb.Parser {

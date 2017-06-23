@@ -170,6 +170,22 @@ func TestQuotedExpression(t *testing.T) {
 //	assert.Equal(t, err, nil)
 // }
 
+func TestMatchExpression(t *testing.T) {
+	for _, str := range []string{
+		"(match 123 123 true)",
+		"(match (foo bar) [123 ..elems] (process elems) xs (write xs))",
+		"(match (foo bar) [\"foo\" 123 ..rest] (process rest) xs (write xs))",
+	} {
+		s := newStateWithoutFile(str)
+		result, err := s.Exhaust(s.match())()
+
+		t.Logf("%#v", result)
+
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
+	}
+}
+
 func TestApp(t *testing.T) {
 	for _, str := range []string{
 		"(f)", "(f x)", "(f x y)", "(f ..x)", "(f . x 123)", "(f . x 123 y 456)",

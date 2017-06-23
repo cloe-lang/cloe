@@ -211,10 +211,22 @@ func (s *state) dictLiteral() comb.Parser {
 }
 
 func (s *state) match() comb.Parser {
-	return s.list(
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		ks := xs[2].([]interface{})
+
+		cs := make([]ast.Case, 0, len(ks))
+
+		for _, k := range ks {
+			xs := k.([]interface{})
+			cs = append(cs, ast.NewCase(xs[0], xs[1]))
+		}
+
+		return ast.NewMatch(xs[1], cs)
+	}, s.list(
 		s.strippedString(matchString),
 		s.expression(),
-		s.Many1(s.And(s.pattern(), s.expression())))
+		s.Many1(s.And(s.pattern(), s.expression()))))
 }
 
 func (s *state) pattern() comb.Parser {

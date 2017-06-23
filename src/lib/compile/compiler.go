@@ -58,34 +58,10 @@ func (c *compiler) compile(module []interface{}) []Output {
 }
 
 func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {
-	switch x := expr.(type) {
-	case string:
-		return c.env.get(x)
-	case ast.App:
-		args := x.Arguments()
-
-		ps := make([]core.PositionalArgument, len(args.Positionals()))
-		for i, p := range args.Positionals() {
-			ps[i] = core.NewPositionalArgument(c.exprToThunk(p.Value()), p.Expanded())
-		}
-
-		ks := make([]core.KeywordArgument, len(args.Keywords()))
-		for i, k := range args.Keywords() {
-			ks[i] = core.NewKeywordArgument(k.Name(), c.exprToThunk(k.Value()))
-		}
-
-		ds := make([]*core.Thunk, len(args.ExpandedDicts()))
-		for i, d := range args.ExpandedDicts() {
-			ds[i] = c.exprToThunk(d)
-		}
-
-		return core.AppWithInfo(
-			c.exprToThunk(x.Function()),
-			core.NewArguments(ps, ks, ds),
-			x.DebugInfo())
-	}
-
-	panic("Unreachable")
+	return core.PApp(ir.CompileFunction(
+		core.NewSignature(nil, nil, "", nil, nil, ""),
+		nil,
+		c.exprToIR(ast.NewSignature(nil, nil, "", nil, nil, ""), nil, expr)))
 }
 
 func (c *compiler) compileSignature(sig ast.Signature) core.Signature {

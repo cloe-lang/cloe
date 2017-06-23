@@ -128,6 +128,7 @@ func (t *Thunk) delegateEval(parent *Thunk) (*Thunk, Arguments, bool) {
 		f := t.swapFunction(identity)
 		args := t.swapArguments(Arguments{[]*Thunk{parent}, nil, nil, nil})
 		t.storeState(app)
+		parent.info = t.info
 		return f, args, true
 	}
 

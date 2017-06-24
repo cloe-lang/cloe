@@ -47,8 +47,7 @@ func desugarMatchExpression(x interface{}) interface{} {
 	case ast.LetVar:
 		return ast.NewLetVar(x.Name(), desugarMatchExpression(x.Expr()))
 	case ast.Match:
-		// TODO: Implement desugaring of match expressions.
-		panic("Not implemented.")
+		return desugarMatchIntoApp(x)
 	case ast.Output:
 		return ast.NewOutput(desugarMatchExpression(x.Expr()), x.Expanded())
 	case ast.PositionalArgument:
@@ -56,4 +55,9 @@ func desugarMatchExpression(x interface{}) interface{} {
 	default:
 		return x
 	}
+}
+
+func desugarMatchIntoApp(m ast.Match) interface{} {
+	// TODO: Implement desugaring of match expressions.
+	panic("Not implemented.")
 }

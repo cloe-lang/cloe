@@ -1,9 +1,21 @@
 package desugar
 
 import (
+	"fmt"
+
 	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/tisp-lang/tisp/src/lib/debug"
 	"github.com/tisp-lang/tisp/src/lib/gensym"
+	"github.com/tisp-lang/tisp/src/lib/scalar"
+)
+
+type patternType int
+
+const (
+	listPattern patternType = iota
+	dictPattern
+	scalarPattern
+	namePattern
 )
 
 func desugarMatchExpression(x interface{}) interface{} {
@@ -72,16 +84,70 @@ func desugarMatchIntoApp(m ast.Match) interface{} {
 }
 
 func createMatchFunction(cs []ast.Case) interface{} {
-	body, ls := convertCases(cs)
+	arg := gensym.GenSym("match", "argument")
+	body, ls := convertCases(arg, cs)
 
 	return ast.NewLetFunction(
-		gensym.GenSym("match"),
-		ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+		gensym.GenSym("match", "function"),
+		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
 		ls,
 		body,
 		debug.NewGoInfo(0))
 }
 
-func convertCases(cs []ast.Case) (interface{}, []interface{}) {
+func convertCases(v string, cs []ast.Case) (interface{}, []interface{}) {
+	var body interface{}
+	ls := []interface{}{}
+
+	for _, cs := range groupCases(cs) {
+		var nestedLs []interface{}
+		body, nestedLs = matchCasesOfSamePatterns(v, cs)
+		ls = append(ls, nestedLs...)
+	}
+
+	return body, ls
+}
+
+func matchCasesOfSamePatterns(v string, cs []ast.Case) (interface{}, []interface{}) {
+	// TODO: Implement this function.
+
+	switch getPatternType(cs[0].Pattern()) {
+	case listPattern:
+	case dictPattern:
+	case scalarPattern:
+	case namePattern:
+	}
+
 	panic("Not implemented")
+}
+
+func groupCases(cs []ast.Case) map[patternType][]ast.Case {
+	m := map[patternType][]ast.Case{}
+
+	for _, c := range cs {
+		p := getPatternType(c.Pattern())
+		m[p] = append(m[p], c)
+	}
+
+	return m
+}
+
+func getPatternType(p interface{}) patternType {
+	switch x := p.(type) {
+	case string:
+		if scalar.Defined(x) {
+			return scalarPattern
+		}
+
+		return namePattern
+	case ast.App:
+		switch x.Function().(string) {
+		case "$list":
+			return listPattern
+		case "$dict":
+			return dictPattern
+		}
+	}
+
+	panic(fmt.Errorf("Invalid pattern: %#v", p))
 }

@@ -3,6 +3,7 @@ package desugar
 import (
 	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/tisp-lang/tisp/src/lib/debug"
+	"github.com/tisp-lang/tisp/src/lib/gensym"
 )
 
 func desugarMatchExpression(x interface{}) interface{} {
@@ -71,5 +72,16 @@ func desugarMatchIntoApp(m ast.Match) interface{} {
 }
 
 func createMatchFunction(cs []ast.Case) interface{} {
-	panic("Not implemented.")
+	body, ls := convertCases(cs)
+
+	return ast.NewLetFunction(
+		gensym.GenSym("match"),
+		ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+		ls,
+		body,
+		debug.NewGoInfo(0))
+}
+
+func convertCases(cs []ast.Case) (interface{}, []interface{}) {
+	panic("Not implemented")
 }

@@ -1,6 +1,9 @@
 package desugar
 
-import "github.com/tisp-lang/tisp/src/lib/ast"
+import (
+	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/debug"
+)
 
 func desugarMatchExpression(x interface{}) interface{} {
 	switch x := x.(type) {
@@ -58,6 +61,15 @@ func desugarMatchExpression(x interface{}) interface{} {
 }
 
 func desugarMatchIntoApp(m ast.Match) interface{} {
-	// TODO: Implement desugaring of match expressions.
+	return ast.NewApp(
+		createMatchFunction(m.Cases()),
+		ast.NewArguments(
+			[]ast.PositionalArgument{ast.NewPositionalArgument(m.Value(), false)},
+			nil,
+			nil),
+		debug.NewGoInfo(0))
+}
+
+func createMatchFunction(cs []ast.Case) interface{} {
 	panic("Not implemented.")
 }

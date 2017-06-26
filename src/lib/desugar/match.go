@@ -95,31 +95,66 @@ func createMatchFunction(cs []ast.Case) interface{} {
 		debug.NewGoInfo(0))
 }
 
-func convertCases(v string, cs []ast.Case) (interface{}, []interface{}) {
-	var body interface{}
-	ls := []interface{}{}
+func convertCases(matched interface{}, cs []ast.Case) (interface{}, []interface{}) {
+	fs := []interface{}{}
 
 	for _, cs := range groupCases(cs) {
-		var nestedLs []interface{}
-		body, nestedLs = matchCasesOfSamePatterns(v, cs)
-		ls = append(ls, nestedLs...)
+		fs = append(fs, createFunctionOfSameCases(cs))
 	}
 
-	return body, ls
+	ls := []interface{}{}
+
+	body := app("error", "MatchError", "\"Failed to match a value with patterns.\"")
+	for _, f := range fs {
+		result := gensym.GenSym("match", "intermediate", "result")
+		value := gensym.GenSym("match", "intermediate", "value")
+		ok := gensym.GenSym("match", "intermediate", "ok")
+
+		ls = append(
+			ls,
+			ast.NewLetVar(result, app(f, matched)),
+			ast.NewLetVar(value, app("first", result)),
+			ast.NewLetVar(ok, app("first", app("rest", result))))
+
+		body = app("if", ok, value, body)
+	}
+
+	return body, append(fs, ls...)
 }
 
-func matchCasesOfSamePatterns(v string, cs []ast.Case) (interface{}, []interface{}) {
-	// TODO: Implement this function.
+func app(xs ...interface{}) interface{} {
+	return ast.NewPApp(xs[0], xs[1:], debug.NewGoInfo(0))
+}
 
-	switch getPatternType(cs[0].Pattern()) {
-	case listPattern:
-	case dictPattern:
-	case scalarPattern:
-	case namePattern:
-	}
-
+func createFunctionOfSameCases(cs []ast.Case) interface{} {
+	// Functions should return [result, ok: bool].
 	panic("Not implemented")
 }
+
+// func matchCasesOfSamePatterns(v string, cs []ast.Case) (interface{}, []interface{}) {
+//	// TODO: Implement this function.
+
+//	switch getPatternType(cs[0].Pattern()) {
+//	case listPattern:
+//		matchType(v, "list")
+//	case dictPattern:
+//	case scalarPattern:
+//	case namePattern:
+//		return nil, nil
+//	}
+
+//	panic("Not implemented")
+// }
+
+// func matchType(v string, typ string, then interface{}, els interface{}) interface{} {
+//	return ast.NewPApp(
+//		"if",
+//		[]interface{}{
+//			ast.NewPApp("=", []interface{}{ast.NewPApp("typeOf", v), typ}),
+//			then,
+//			els},
+//		debug.NewGoInfo(0))
+// }
 
 func groupCases(cs []ast.Case) map[patternType][]ast.Case {
 	m := map[patternType][]ast.Case{}

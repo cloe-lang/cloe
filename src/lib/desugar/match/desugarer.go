@@ -76,13 +76,12 @@ func (d *desugarer) desugarMatchExpression(x interface{}) interface{} {
 
 func (d *desugarer) createMatchFunction(cs []ast.Case) interface{} {
 	arg := gensym.GenSym("match", "argument")
-	body := d.convertCases(arg, cs)
 
 	f := ast.NewLetFunction(
 		gensym.GenSym("match", "function"),
 		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
 		d.lets,
-		body,
+		d.convertCases(arg, cs),
 		debug.NewGoInfo(0))
 
 	d.lets = []interface{}{f}

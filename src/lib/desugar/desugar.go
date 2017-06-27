@@ -10,9 +10,7 @@ func Desugar(module []interface{}) []interface{} {
 		for _, s := range match.Desugar(s) {
 			for _, s := range desugarMutualRecursionStatement(s) {
 				for _, s := range desugarSelfRecursiveStatement(s) {
-					for _, s := range flattenStatement(s) {
-						new = append(new, s)
-					}
+					new = append(new, flattenStatement(s)...)
 				}
 			}
 		}

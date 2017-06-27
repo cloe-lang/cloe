@@ -1,4 +1,4 @@
-package desugar
+package match
 
 import (
 	"fmt"
@@ -17,6 +17,11 @@ const (
 	scalarPattern
 	namePattern
 )
+
+// Desugar desugars match expressions in an AST node.
+func Desugar(x interface{}) []interface{} {
+	return []interface{}{desugarMatchExpression(x)}
+}
 
 func desugarMatchExpression(x interface{}) interface{} {
 	switch x := x.(type) {

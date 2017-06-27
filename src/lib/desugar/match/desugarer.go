@@ -81,7 +81,7 @@ func (d *desugarer) createMatchFunction(cs []ast.Case) interface{} {
 		gensym.GenSym("match", "function"),
 		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
 		d.lets,
-		d.convertCases(arg, cs),
+		d.casesToBody(arg, cs),
 		debug.NewGoInfo(0))
 
 	d.lets = []interface{}{f}
@@ -89,7 +89,7 @@ func (d *desugarer) createMatchFunction(cs []ast.Case) interface{} {
 	return f.Name()
 }
 
-func (d *desugarer) convertCases(matched interface{}, cs []ast.Case) interface{} {
+func (d *desugarer) casesToBody(matched interface{}, cs []ast.Case) interface{} {
 	fs := []interface{}{}
 
 	for _, cs := range groupCases(cs) {

@@ -90,68 +90,56 @@ func (d *desugarer) createMatchFunction(cs []ast.Case) interface{} {
 	return f.Name()
 }
 
-func (d *desugarer) casesToBody(matched interface{}, cs []ast.Case) interface{} {
-	fs := []interface{}{}
+func (d *desugarer) casesToBody(arg string, cs []ast.Case) interface{} {
+	cs = renameBoundNamesInCases(cs)
+	body := app("error", "MatchError", "\"Failed to match a value with patterns.\"")
 
 	for _, cs := range groupCases(cs) {
-		fs = append(fs, createFunctionOfSameCases(cs))
+		result, ok := matchCasesOfSamePatterns(arg, cs)
+
+		body = app(
+			"if",
+			ok,
+			result,
+			body)
 	}
-
-	ls := []interface{}{}
-
-	body := app("error", "MatchError", "\"Failed to match a value with patterns.\"")
-	for _, f := range fs {
-		result := gensym.GenSym("match", "intermediate", "result")
-		value := gensym.GenSym("match", "intermediate", "value")
-		ok := gensym.GenSym("match", "intermediate", "ok")
-
-		ls = append(
-			ls,
-			ast.NewLetVar(result, app(f, matched)),
-			ast.NewLetVar(value, app("first", result)),
-			ast.NewLetVar(ok, app("first", app("rest", result))))
-
-		body = app("if", ok, value, body)
-	}
-
-	d.lets = append(d.lets, append(fs, ls...)...)
 
 	return body
+}
+
+func renameBoundNamesInCases(cs []ast.Case) []ast.Case {
+	panic("Not implemented")
 }
 
 func app(xs ...interface{}) interface{} {
 	return ast.NewPApp(xs[0], xs[1:], debug.NewGoInfo(0))
 }
 
-func createFunctionOfSameCases(cs []ast.Case) interface{} {
-	// Functions should return [result, ok: bool].
-	panic("Not implemented")
+func matchCasesOfSamePatterns(v string, cs []ast.Case) (interface{}, interface{}) {
+	// TODO: Implement this function.
+
+	switch getPatternType(cs[0].Pattern()) {
+	case listPattern:
+		// matchType(v, "list")
+		panic("Not implemented")
+	case dictPattern:
+		panic("Not implemented")
+	case scalarPattern:
+		panic("Not implemented")
+	case namePattern:
+		panic("Not implemented")
+	}
+
+	panic(fmt.Errorf("Invalid cases: %#v", cs))
 }
 
-// func matchCasesOfSamePatterns(v string, cs []ast.Case) (interface{}, []interface{}) {
-//	// TODO: Implement this function.
-
-//	switch getPatternType(cs[0].Pattern()) {
-//	case listPattern:
-//		matchType(v, "list")
-//	case dictPattern:
-//	case scalarPattern:
-//	case namePattern:
-//		return nil, nil
-//	}
-
-//	panic("Not implemented")
-// }
-
-// func matchType(v string, typ string, then interface{}, els interface{}) interface{} {
-//	return ast.NewPApp(
-//		"if",
-//		[]interface{}{
-//			ast.NewPApp("=", []interface{}{ast.NewPApp("typeOf", v), typ}),
-//			then,
-//			els},
-//		debug.NewGoInfo(0))
-// }
+func matchType(v string, typ string, then interface{}, els interface{}) interface{} {
+	return app(
+		"if",
+		app("=", app("typeOf", v), typ),
+		then,
+		els)
+}
 
 func groupCases(cs []ast.Case) map[patternType][]ast.Case {
 	m := map[patternType][]ast.Case{}

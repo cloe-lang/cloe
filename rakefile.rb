@@ -51,6 +51,8 @@ task :lint do
       puts "# #{command}"
       sh "#{command} ./..."
     end
+
+    sh 'misspell -error .'
   end
 end
 
@@ -68,6 +70,7 @@ end
 task :install_deps do
   sh %w[
     go get -u
+    github.com/client9/misspell/cmd/misspell
     github.com/golang/lint/golint
     github.com/kr/pretty
     github.com/mvdan/interfacer/...

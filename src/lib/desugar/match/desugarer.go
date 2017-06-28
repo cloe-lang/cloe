@@ -74,6 +74,14 @@ func (d *desugarer) desugarMatchExpression(x interface{}) interface{} {
 	}
 }
 
+func (d *desugarer) letVar(v interface{}) string {
+	s := gensym.GenSym("match", "intermediate")
+
+	d.lets = append(d.lets, ast.NewLetVar(s, v))
+
+	return s
+}
+
 func (d *desugarer) createMatchFunction(cs []ast.Case) interface{} {
 	arg := gensym.GenSym("match", "argument")
 	body := d.casesToBody(arg, cs)
@@ -95,13 +103,8 @@ func (d *desugarer) casesToBody(arg string, cs []ast.Case) interface{} {
 	body := app("error", "MatchError", "\"Failed to match a value with patterns.\"")
 
 	for _, cs := range groupCases(cs) {
-		result, ok := matchCasesOfSamePatterns(arg, cs)
-
-		body = app(
-			"if",
-			ok,
-			result,
-			body)
+		result, ok := d.matchCasesOfSamePatterns(arg, cs)
+		body = app("if", ok, result, body)
 	}
 
 	return body
@@ -111,21 +114,28 @@ func renameBoundNamesInCases(cs []ast.Case) []ast.Case {
 	panic("Not implemented")
 }
 
-func app(xs ...interface{}) interface{} {
-	return ast.NewPApp(xs[0], xs[1:], debug.NewGoInfo(0))
+func app(f interface{}, args ...interface{}) interface{} {
+	return ast.NewPApp(f, args, debug.NewGoInfo(0))
 }
 
-func matchCasesOfSamePatterns(v string, cs []ast.Case) (interface{}, interface{}) {
+func (d *desugarer) matchCasesOfSamePatterns(v string, cs []ast.Case) (interface{}, interface{}) {
 	// TODO: Implement this function.
 
 	switch getPatternType(cs[0].Pattern()) {
 	case listPattern:
-		// matchType(v, "list")
 		panic("Not implemented")
 	case dictPattern:
 		panic("Not implemented")
 	case scalarPattern:
-		panic("Not implemented")
+		ss := make([]interface{}, 0, 2*len(cs))
+
+		for _, c := range cs {
+			ss = append(ss, c.Pattern(), c.Value())
+		}
+
+		dict := d.letVar(app("dict", ss...))
+
+		return app(dict, v), app("include", dict, v)
 	case namePattern:
 		panic("Not implemented")
 	}
@@ -133,12 +143,8 @@ func matchCasesOfSamePatterns(v string, cs []ast.Case) (interface{}, interface{}
 	panic(fmt.Errorf("Invalid cases: %#v", cs))
 }
 
-func matchType(v string, typ string, then interface{}, els interface{}) interface{} {
-	return app(
-		"if",
-		app("=", app("typeOf", v), typ),
-		then,
-		els)
+func matchType(v string, typ string) interface{} {
+	return app("=", app("typeOf", v), typ)
 }
 
 func groupCases(cs []ast.Case) map[patternType][]ast.Case {

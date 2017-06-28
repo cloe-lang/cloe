@@ -111,7 +111,8 @@ func (d *desugarer) casesToBody(arg string, cs []ast.Case) interface{} {
 }
 
 func renameBoundNamesInCases(cs []ast.Case) []ast.Case {
-	panic("Not implemented")
+	// TODO: Implement this function.
+	return cs
 }
 
 func app(f interface{}, args ...interface{}) interface{} {
@@ -119,8 +120,6 @@ func app(f interface{}, args ...interface{}) interface{} {
 }
 
 func (d *desugarer) matchCasesOfSamePatterns(v string, cs []ast.Case) (interface{}, interface{}) {
-	// TODO: Implement this function.
-
 	switch getPatternType(cs[0].Pattern()) {
 	case listPattern:
 		panic("Not implemented")

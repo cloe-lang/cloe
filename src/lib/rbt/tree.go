@@ -7,7 +7,7 @@ type Tree struct {
 }
 
 // NewTree creates a empty red-black tree.
-// The compare function should return a negative when x < y, 0 when x = y, and a postive when x > y.
+// The compare function should return a negative when x < y, 0 when x = y, and a positive when x > y.
 func NewTree(compare func(interface{}, interface{}) int) Tree {
 	return Tree{
 		node:    nil,

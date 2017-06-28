@@ -39,21 +39,18 @@ end
 task test: %i[unit_test command_test]
 
 task :lint do
-  verbose false do
-    [
-      'go vet',
-      'golint',
-      'gosimple',
-      'unused',
-      'staticcheck',
-      'interfacer'
-    ].each do |command|
-      puts "# #{command}"
-      sh "#{command} ./..."
-    end
-
-    sh 'misspell -error .'
+  [
+    'go vet',
+    'golint',
+    'gosimple',
+    'unused',
+    'staticcheck',
+    'interfacer'
+  ].each do |command|
+    sh "#{command} ./..."
   end
+
+  sh 'misspell -error .'
 end
 
 task :format do

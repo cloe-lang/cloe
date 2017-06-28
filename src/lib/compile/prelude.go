@@ -41,6 +41,7 @@ func prelude() environment {
 
 		{"nil", core.Nil},
 
+		{"typeOf", core.TypeOf},
 		{"isOrdered", core.IsOrdered},
 
 		{"+", core.Add},

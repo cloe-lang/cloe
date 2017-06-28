@@ -104,3 +104,34 @@ func ensureWHNF(v Value) Value {
 var identity = NewLazyFunction(
 	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value { return ts[0] })
+
+// TypeOf returns a type name of an argument as a string.
+var TypeOf = NewLazyFunction(
+	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	func(ts ...*Thunk) Value {
+		// No case of OutputType should be here.
+		switch ts[0].Eval().(type) {
+		case BoolType:
+			return NewString("bool")
+		case DictionaryType:
+			return NewString("dict")
+		case ListType:
+			return NewString("list")
+		case NilType:
+			return NewString("nil")
+		case NumberType:
+			return NewString("number")
+		case StringType:
+			return NewString("string")
+
+		case functionType:
+			return NewString("function")
+		case closureType:
+			return NewString("function")
+
+		case ErrorType:
+			return NewString("error")
+		}
+
+		panic(fmt.Errorf("Invalid value: %#v", ts[0].Eval()))
+	})

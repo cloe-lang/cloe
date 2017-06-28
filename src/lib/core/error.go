@@ -148,3 +148,24 @@ func emptyListError() *Thunk {
 func keyNotFoundError(v Value) *Thunk {
 	return NewError("KeyNotFoundError", "The key %s is not found in a dictionary.", internalDumpOrFail(v))
 }
+
+// Error creates an error value with an error name and message.
+var Error = NewLazyFunction(
+	NewSignature([]string{"name", "messasge"}, nil, "", nil, nil, ""),
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		n, ok := v.(StringType)
+
+		if !ok {
+			return NotStringError(v)
+		}
+
+		v = ts[1].Eval()
+		m, ok := v.(StringType)
+
+		if !ok {
+			return NotStringError(v)
+		}
+
+		return ErrorType{string(n), string(m), []debug.Info{debug.NewGoInfo(1)}}
+	})

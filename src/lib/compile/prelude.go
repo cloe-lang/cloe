@@ -65,6 +65,7 @@ func prelude() environment {
 		{"$list", std.List},
 		{"dict", std.Dictionary},
 		{"$dict", std.Dictionary},
+		{"error", core.Error},
 
 		{"y", std.Y},
 		{"$y", std.Y},

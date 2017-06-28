@@ -142,9 +142,9 @@ func (d *desugarer) matchCasesOfSamePatterns(v string, cs []ast.Case) (interface
 	panic(fmt.Errorf("Invalid cases: %#v", cs))
 }
 
-func matchType(v string, typ string) interface{} {
-	return app("=", app("typeOf", v), typ)
-}
+// func matchType(v string, typ string) interface{} {
+// 	return app("=", app("typeOf", v), typ)
+// }
 
 func groupCases(cs []ast.Case) map[patternType][]ast.Case {
 	m := map[patternType][]ast.Case{}

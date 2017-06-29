@@ -57,10 +57,16 @@ func prelude() environment {
 		{"<=", std.LessEq},
 		{">", std.Greater},
 		{">=", std.GreaterEq},
-		{"toList", core.ToList},
+
 		{"toStr", core.ToString},
-		{"merge", core.Merge},
 		{"dump", core.Dump},
+
+		{"delete", core.Delete},
+		{"include", core.Include},
+		{"insert", core.Insert},
+		{"merge", core.Merge},
+		{"size", core.Size},
+		{"toList", core.ToList},
 
 		{"list", std.List},
 		{"$list", std.List},

@@ -100,7 +100,7 @@ func (d *desugarer) createMatchFunction(cs []ast.Case) interface{} {
 
 func (d *desugarer) casesToBody(arg string, cs []ast.Case) interface{} {
 	cs = renameBoundNamesInCases(cs)
-	body := app("error", "MatchError", "\"Failed to match a value with patterns.\"")
+	body := app("error", "\"MatchError\"", "\"Failed to match a value with patterns.\"")
 
 	for _, cs := range groupCases(cs) {
 		result, ok := d.matchCasesOfSamePatterns(arg, cs)

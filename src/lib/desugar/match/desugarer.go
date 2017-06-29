@@ -111,8 +111,18 @@ func (d *desugarer) casesToBody(arg string, cs []ast.Case) interface{} {
 }
 
 func renameBoundNamesInCases(cs []ast.Case) []ast.Case {
-	// TODO: Implement this function.
-	return cs
+	new := make([]ast.Case, 0, len(cs))
+
+	for _, c := range cs {
+		new = append(new, renameBoundNamesInCase(c))
+	}
+
+	return new
+}
+
+func renameBoundNamesInCase(c ast.Case) ast.Case {
+	p, ns := newPatternRenamer().rename(c.Pattern())
+	return ast.NewCase(p, newValueRenamer(ns).rename(c.Value()))
 }
 
 func app(f interface{}, args ...interface{}) interface{} {
@@ -143,7 +153,7 @@ func (d *desugarer) matchCasesOfSamePatterns(v string, cs []ast.Case) (interface
 }
 
 // func matchType(v string, typ string) interface{} {
-// 	return app("=", app("typeOf", v), typ)
+//	return app("=", app("typeOf", v), typ)
 // }
 
 func groupCases(cs []ast.Case) map[patternType][]ast.Case {

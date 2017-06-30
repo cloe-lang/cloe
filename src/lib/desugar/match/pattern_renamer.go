@@ -13,7 +13,7 @@ type patternRenamer struct {
 }
 
 func newPatternRenamer() *patternRenamer {
-	return &patternRenamer{}
+	return &patternRenamer{map[string]string{}}
 }
 
 func (r *patternRenamer) rename(p interface{}) (interface{}, map[string]string) {

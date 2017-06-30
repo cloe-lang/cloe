@@ -150,8 +150,13 @@ func (d *desugarer) matchCasesOfSamePatterns(v interface{}, cs []ast.Case) (inte
 
 		return app(dict, v), app("include", dict, v)
 	case namePattern:
-		d.letVar(x, v)
-		return x, "true"
+		if len(cs) != 1 {
+			panic(fmt.Errorf("Dupicate name patterns: %v", len(cs)))
+		}
+
+		c := cs[0]
+		d.letVar(c.Pattern().(string), v)
+		return c.Value(), "true"
 	}
 
 	panic(fmt.Errorf("Invalid cases: %#v", cs))

@@ -81,12 +81,8 @@ func (d *desugarer) desugarMatchExpression(x interface{}) interface{} {
 	}
 }
 
-func (d *desugarer) letVar(v interface{}) string {
-	s := gensym.GenSym("match", "intermediate")
-
+func (d *desugarer) letVar(s string, v interface{}) {
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
-
-	return s
 }
 
 func (d *desugarer) createMatchFunction(cs []ast.Case) interface{} {
@@ -136,7 +132,7 @@ func app(f interface{}, args ...interface{}) interface{} {
 	return ast.NewPApp(f, args, debug.NewGoInfo(0))
 }
 
-func (d *desugarer) matchCasesOfSamePatterns(v string, cs []ast.Case) (interface{}, interface{}) {
+func (d *desugarer) matchCasesOfSamePatterns(v interface{}, cs []ast.Case) (interface{}, interface{}) {
 	switch getPatternType(cs[0].Pattern()) {
 	case listPattern:
 		panic("Not implemented")
@@ -149,11 +145,13 @@ func (d *desugarer) matchCasesOfSamePatterns(v string, cs []ast.Case) (interface
 			ss = append(ss, c.Pattern(), c.Value())
 		}
 
-		dict := d.letVar(app("dict", ss...))
+		dict := gensym.GenSym("match", "scalar", "dict")
+		d.letVar(dict, app("dict", ss...))
 
 		return app(dict, v), app("include", dict, v)
 	case namePattern:
-		panic("Not implemented")
+		d.letVar(x, v)
+		return x, "true"
 	}
 
 	panic(fmt.Errorf("Invalid cases: %#v", cs))

@@ -64,7 +64,14 @@ func (d *desugarer) desugarMatchExpression(x interface{}) interface{} {
 	case ast.LetVar:
 		return ast.NewLetVar(x.Name(), d.desugarMatchExpression(x.Expr()))
 	case ast.Match:
-		return app(d.createMatchFunction(x.Cases()), d.desugarMatchExpression(x.Value()))
+		cs := x.Cases()
+		new := make([]ast.Case, 0, len(cs))
+
+		for _, c := range cs {
+			new = append(new, ast.NewCase(c.Pattern(), d.desugarMatchExpression(c.Value())))
+		}
+
+		return app(d.createMatchFunction(new), d.desugarMatchExpression(x.Value()))
 	case ast.Output:
 		return ast.NewOutput(d.desugarMatchExpression(x.Expr()), x.Expanded())
 	case ast.PositionalArgument:

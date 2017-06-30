@@ -186,6 +186,10 @@ func getPatternType(p interface{}) patternType {
 
 		return namePattern
 	case ast.App:
+		if len(x.Arguments().Positionals()) == 0 {
+			return scalarPattern
+		}
+
 		switch x.Function().(string) {
 		case "$list":
 			return listPattern

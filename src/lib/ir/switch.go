@@ -8,6 +8,7 @@ import (
 
 // Switch represents a switch expression.
 type Switch struct {
+	value    interface{}
 	patterns []core.Value
 	values   []int
 }

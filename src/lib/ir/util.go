@@ -4,6 +4,8 @@ import "github.com/tisp-lang/tisp/src/lib/core"
 
 // CompileFunction compiles a function in IR into a thunk.
 func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) *core.Thunk {
+	// TODO: Compile everything into bytecode here.
+
 	return core.NewLazyFunction(
 		s,
 		func(ts ...*core.Thunk) core.Value {
@@ -25,6 +27,17 @@ func interpretExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 		return x
 	case App:
 		return x.interpret(args)
+	case Switch:
+		// TODO: Compile dictionary ahead.
+
+		v := core.PApp(x.compileToDict(), interpretExpression(args, x.value)).Eval()
+		n, ok := v.(core.NumberType)
+
+		if !ok {
+			return core.NotNumberError(v)
+		}
+
+		return args[int(n)]
 	}
 
 	panic("Unreachable")

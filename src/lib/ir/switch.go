@@ -21,7 +21,7 @@ func NewSwitch(v interface{}, cs []Case) Switch {
 	return Switch{v, cs}
 }
 
-func (s Switch) compileToDict() core.DictionaryType {
+func (s Switch) compileToDict() *core.Thunk {
 	ks := make([]core.Value, 0, len(s.cases))
 	vs := make([]*core.Thunk, 0, len(s.cases))
 
@@ -30,5 +30,5 @@ func (s Switch) compileToDict() core.DictionaryType {
 		vs = append(vs, core.NewNumber(float64(c.value)))
 	}
 
-	return core.NewDictionary(ks, vs).Eval().(core.DictionaryType)
+	return core.NewDictionary(ks, vs)
 }

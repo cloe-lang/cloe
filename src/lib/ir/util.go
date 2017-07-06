@@ -7,19 +7,14 @@ func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) *co
 	return core.NewLazyFunction(
 		s,
 		func(ts ...*core.Thunk) core.Value {
-			return compileWithVars(ts, vars, expr)
+			args := append(make([]*core.Thunk, 0, len(ts)+len(vars)), ts...)
+
+			for _, v := range vars {
+				args = append(args, compileExpression(args, v))
+			}
+
+			return compileExpression(args, expr)
 		})
-}
-
-func compileWithVars(args []*core.Thunk, vars []interface{}, expr interface{}) *core.Thunk {
-	if len(vars) == 0 {
-		return compileExpression(args, expr)
-	}
-
-	return compileWithVars(
-		append(args, compileExpression(args, vars[0])),
-		vars[1:],
-		expr)
 }
 
 func compileExpression(args []*core.Thunk, expr interface{}) *core.Thunk {

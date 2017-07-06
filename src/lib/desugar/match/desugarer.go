@@ -65,10 +65,10 @@ func (d *desugarer) desugarMatchExpression(x interface{}) interface{} {
 		return ast.NewLetVar(x.Name(), d.desugarMatchExpression(x.Expr()))
 	case ast.Match:
 		cs := x.Cases()
-		new := make([]ast.Case, 0, len(cs))
+		new := make([]ast.MatchCase, 0, len(cs))
 
 		for _, c := range cs {
-			new = append(new, ast.NewCase(c.Pattern(), d.desugarMatchExpression(c.Value())))
+			new = append(new, ast.NewMatchCase(c.Pattern(), d.desugarMatchExpression(c.Value())))
 		}
 
 		return app(d.createMatchFunction(new), d.desugarMatchExpression(x.Value()))
@@ -85,7 +85,7 @@ func (d *desugarer) letVar(s string, v interface{}) {
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
 }
 
-func (d *desugarer) createMatchFunction(cs []ast.Case) interface{} {
+func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 	arg := gensym.GenSym("match", "argument")
 	body := d.casesToBody(arg, cs)
 
@@ -101,7 +101,7 @@ func (d *desugarer) createMatchFunction(cs []ast.Case) interface{} {
 	return f.Name()
 }
 
-func (d *desugarer) casesToBody(arg string, cs []ast.Case) interface{} {
+func (d *desugarer) casesToBody(arg string, cs []ast.MatchCase) interface{} {
 	cs = renameBoundNamesInCases(cs)
 	body := app("error", "\"MatchError\"", "\"Failed to match a value with patterns.\"")
 
@@ -113,8 +113,8 @@ func (d *desugarer) casesToBody(arg string, cs []ast.Case) interface{} {
 	return body
 }
 
-func renameBoundNamesInCases(cs []ast.Case) []ast.Case {
-	new := make([]ast.Case, 0, len(cs))
+func renameBoundNamesInCases(cs []ast.MatchCase) []ast.MatchCase {
+	new := make([]ast.MatchCase, 0, len(cs))
 
 	for _, c := range cs {
 		new = append(new, renameBoundNamesInCase(c))
@@ -123,16 +123,16 @@ func renameBoundNamesInCases(cs []ast.Case) []ast.Case {
 	return new
 }
 
-func renameBoundNamesInCase(c ast.Case) ast.Case {
+func renameBoundNamesInCase(c ast.MatchCase) ast.MatchCase {
 	p, ns := newPatternRenamer().rename(c.Pattern())
-	return ast.NewCase(p, newValueRenamer(ns).rename(c.Value()))
+	return ast.NewMatchCase(p, newValueRenamer(ns).rename(c.Value()))
 }
 
 func app(f interface{}, args ...interface{}) interface{} {
 	return ast.NewPApp(f, args, debug.NewGoInfo(0))
 }
 
-func (d *desugarer) matchCasesOfSamePatterns(v interface{}, cs []ast.Case) (interface{}, interface{}) {
+func (d *desugarer) matchCasesOfSamePatterns(v interface{}, cs []ast.MatchCase) (interface{}, interface{}) {
 	switch getPatternType(cs[0].Pattern()) {
 	case listPattern:
 		panic("Not implemented")
@@ -166,8 +166,8 @@ func (d *desugarer) matchCasesOfSamePatterns(v interface{}, cs []ast.Case) (inte
 //	return app("=", app("typeOf", v), typ)
 // }
 
-func groupCases(cs []ast.Case) map[patternType][]ast.Case {
-	m := map[patternType][]ast.Case{}
+func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {
+	m := map[patternType][]ast.MatchCase{}
 
 	for _, c := range cs {
 		p := getPatternType(c.Pattern())

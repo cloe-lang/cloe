@@ -215,11 +215,11 @@ func (s *state) match() comb.Parser {
 		xs := x.([]interface{})
 		ks := xs[2].([]interface{})
 
-		cs := make([]ast.Case, 0, len(ks))
+		cs := make([]ast.MatchCase, 0, len(ks))
 
 		for _, k := range ks {
 			xs := k.([]interface{})
-			cs = append(cs, ast.NewCase(xs[0], xs[1]))
+			cs = append(cs, ast.NewMatchCase(xs[0], xs[1]))
 		}
 
 		return ast.NewMatch(xs[1], cs)

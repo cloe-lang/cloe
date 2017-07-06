@@ -10,21 +10,21 @@ func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) *co
 			args := append(make([]*core.Thunk, 0, len(ts)+len(vars)), ts...)
 
 			for _, v := range vars {
-				args = append(args, compileExpression(args, v))
+				args = append(args, interpretExpression(args, v))
 			}
 
-			return compileExpression(args, expr)
+			return interpretExpression(args, expr)
 		})
 }
 
-func compileExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
+func interpretExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 	switch x := expr.(type) {
 	case int:
 		return args[x]
 	case *core.Thunk:
 		return x
 	case App:
-		return x.compile(args)
+		return x.interpret(args)
 	}
 
 	panic("Unreachable")

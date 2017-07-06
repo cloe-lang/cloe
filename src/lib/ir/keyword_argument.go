@@ -16,6 +16,6 @@ func NewKeywordArgument(n string, ir interface{}) KeywordArgument {
 	}
 }
 
-func (k KeywordArgument) compile(args []*core.Thunk) core.KeywordArgument {
-	return core.NewKeywordArgument(k.name, compileExpression(args, k.value))
+func (k KeywordArgument) interpret(args []*core.Thunk) core.KeywordArgument {
+	return core.NewKeywordArgument(k.name, interpretExpression(args, k.value))
 }

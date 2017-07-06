@@ -17,6 +17,6 @@ func NewPositionalArgument(ir interface{}, expanded bool) PositionalArgument {
 	}
 }
 
-func (p PositionalArgument) compile(args []*core.Thunk) core.PositionalArgument {
-	return core.NewPositionalArgument(compileExpression(args, p.value), p.expanded)
+func (p PositionalArgument) interpret(args []*core.Thunk) core.PositionalArgument {
+	return core.NewPositionalArgument(interpretExpression(args, p.value), p.expanded)
 }

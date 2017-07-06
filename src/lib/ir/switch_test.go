@@ -7,19 +7,7 @@ import (
 )
 
 func TestNewSwitch(t *testing.T) {
-	NewSwitch([]core.Value{core.Nil.Eval()}, []int{1})
-}
-
-func TestNewSwitchUnmatchedNumbersOfPatternsAndValues(t *testing.T) {
-	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
-	}()
-
-	NewSwitch(
-		[]core.Value{core.NewNumber(123).Eval(), core.NewNumber(456).Eval()},
-		[]int{1})
+	NewSwitch(0, []Case{NewCase(core.Nil, 1)})
 }
 
 func TestNewSwitchNoPattern(t *testing.T) {
@@ -29,9 +17,9 @@ func TestNewSwitchNoPattern(t *testing.T) {
 		}
 	}()
 
-	NewSwitch([]core.Value{}, []int{})
+	NewSwitch(0, []Case{})
 }
 
 func TestSwitchCompileToDict(t *testing.T) {
-	NewSwitch([]core.Value{core.Nil.Eval()}, []int{1}).compileToDict()
+	NewSwitch(0, []Case{NewCase(core.Nil, 1)}).compileToDict()
 }

@@ -8,31 +8,27 @@ import (
 
 // Switch represents a switch expression.
 type Switch struct {
-	value    interface{}
-	patterns []core.Value
-	values   []int
+	value interface{}
+	cases []Case
 }
 
 // NewSwitch creates a switch expression.
-func NewSwitch(ps []core.Value, vs []int) Switch {
-	if len(ps) != len(vs) {
-		panic(fmt.Errorf(
-			"A number of patterns (%d) doesn't match with a number of corresponding values (%d)",
-			len(ps),
-			len(vs)))
-	} else if len(ps) == 0 {
-		panic(fmt.Errorf("A number of patterns must be more than 0"))
+func NewSwitch(v interface{}, cs []Case) Switch {
+	if len(cs) == 0 {
+		panic(fmt.Errorf("A number of cases in switch expressions must be more than 0"))
 	}
 
-	return Switch{ps, vs}
+	return Switch{v, cs}
 }
 
 func (s Switch) compileToDict() core.DictionaryType {
-	ts := make([]*core.Thunk, 0, len(s.values))
+	ks := make([]core.Value, 0, len(s.cases))
+	vs := make([]*core.Thunk, 0, len(s.cases))
 
-	for _, v := range s.values {
-		ts = append(ts, core.NewNumber(float64(v)))
+	for _, c := range s.cases {
+		ks = append(ks, c.pattern.Eval())
+		vs = append(vs, core.NewNumber(float64(c.value)))
 	}
 
-	return core.NewDictionary(s.patterns, ts).Eval().(core.DictionaryType)
+	return core.NewDictionary(ks, vs).Eval().(core.DictionaryType)
 }

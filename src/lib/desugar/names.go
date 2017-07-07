@@ -98,6 +98,18 @@ func (ns names) find(x interface{}) names {
 		}
 
 		return ms
+	case ast.Switch:
+		ms := ns.find(x.Value())
+
+		for _, c := range x.Cases() {
+			ms.merge(ns.find(c.Value()))
+		}
+
+		if x.DefaultCase() != nil {
+			ms.merge(ns.find(x.DefaultCase()))
+		}
+
+		return ms
 	case string:
 		if ns.include(x) {
 			return newNames(x)

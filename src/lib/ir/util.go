@@ -37,7 +37,7 @@ func interpretExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 			return core.NotNumberError(v)
 		}
 
-		return args[int(n)]
+		return interpretExpression(args, x.cases[int(n)].value)
 	}
 
 	panic("Unreachable")

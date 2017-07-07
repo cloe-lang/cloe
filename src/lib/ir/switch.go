@@ -25,9 +25,9 @@ func (s Switch) compileToDict() *core.Thunk {
 	ks := make([]core.Value, 0, len(s.cases))
 	vs := make([]*core.Thunk, 0, len(s.cases))
 
-	for _, c := range s.cases {
+	for i, c := range s.cases {
 		ks = append(ks, c.pattern.Eval())
-		vs = append(vs, core.NewNumber(float64(c.value)))
+		vs = append(vs, core.NewNumber(float64(i)))
 	}
 
 	return core.NewDictionary(ks, vs)

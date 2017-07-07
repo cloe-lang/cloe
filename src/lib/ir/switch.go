@@ -8,17 +8,18 @@ import (
 
 // Switch represents a switch expression.
 type Switch struct {
-	value interface{}
-	cases []Case
+	value       interface{}
+	cases       []Case
+	defaultCase interface{}
 }
 
 // NewSwitch creates a switch expression.
-func NewSwitch(v interface{}, cs []Case) Switch {
-	if len(cs) == 0 {
+func NewSwitch(v interface{}, cs []Case, d interface{}) Switch {
+	if len(cs) == 0 && d == nil {
 		panic(fmt.Errorf("A number of cases in switch expressions must be more than 0"))
 	}
 
-	return Switch{v, cs}
+	return Switch{v, cs, d}
 }
 
 func (s Switch) compileToDict() *core.Thunk {

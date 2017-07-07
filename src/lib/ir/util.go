@@ -33,8 +33,10 @@ func interpretExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 		v := core.PApp(x.compileToDict(), interpretExpression(args, x.value)).Eval()
 		n, ok := v.(core.NumberType)
 
-		if !ok {
+		if !ok && x.defaultCase == nil {
 			return core.NotNumberError(v)
+		} else if !ok {
+			return interpretExpression(args, x.defaultCase)
 		}
 
 		return interpretExpression(args, x.cases[int(n)].value)

@@ -17,40 +17,40 @@ func newDesugarer() *desugarer {
 	return &desugarer{nil}
 }
 
-func (d *desugarer) desugarMatchExpression(x interface{}) interface{} {
+func (d *desugarer) desugar(x interface{}) interface{} {
 	switch x := x.(type) {
 	case ast.App:
 		return ast.NewApp(
-			d.desugarMatchExpression(x.Function()),
-			d.desugarMatchExpression(x.Arguments()).(ast.Arguments),
+			d.desugar(x.Function()),
+			d.desugar(x.Arguments()).(ast.Arguments),
 			x.DebugInfo())
 	case ast.Arguments:
 		ps := make([]ast.PositionalArgument, 0, len(x.Positionals()))
 
 		for _, p := range x.Positionals() {
-			ps = append(ps, d.desugarMatchExpression(p).(ast.PositionalArgument))
+			ps = append(ps, d.desugar(p).(ast.PositionalArgument))
 		}
 
 		ks := make([]ast.KeywordArgument, 0, len(x.Keywords()))
 
 		for _, k := range x.Keywords() {
-			ks = append(ks, d.desugarMatchExpression(k).(ast.KeywordArgument))
+			ks = append(ks, d.desugar(k).(ast.KeywordArgument))
 		}
 
 		dicts := make([]interface{}, 0, len(x.ExpandedDicts()))
 
 		for _, dict := range x.ExpandedDicts() {
-			dicts = append(dicts, d.desugarMatchExpression(dict))
+			dicts = append(dicts, d.desugar(dict))
 		}
 
 		return ast.NewArguments(ps, ks, dicts)
 	case ast.KeywordArgument:
-		return ast.NewKeywordArgument(x.Name(), d.desugarMatchExpression(x.Value()))
+		return ast.NewKeywordArgument(x.Name(), d.desugar(x.Value()))
 	case ast.LetFunction:
 		ls := make([]interface{}, 0, len(x.Lets()))
 
 		for _, l := range x.Lets() {
-			l := d.desugarMatchExpression(l)
+			l := d.desugar(l)
 			ls = append(ls, append(d.lets, l)...)
 			d.lets = nil
 		}
@@ -59,23 +59,23 @@ func (d *desugarer) desugarMatchExpression(x interface{}) interface{} {
 			x.Name(),
 			x.Signature(),
 			ls,
-			d.desugarMatchExpression(x.Body()),
+			d.desugar(x.Body()),
 			x.DebugInfo())
 	case ast.LetVar:
-		return ast.NewLetVar(x.Name(), d.desugarMatchExpression(x.Expr()))
+		return ast.NewLetVar(x.Name(), d.desugar(x.Expr()))
 	case ast.Match:
 		cs := x.Cases()
 		new := make([]ast.MatchCase, 0, len(cs))
 
 		for _, c := range cs {
-			new = append(new, ast.NewMatchCase(c.Pattern(), d.desugarMatchExpression(c.Value())))
+			new = append(new, ast.NewMatchCase(c.Pattern(), d.desugar(c.Value())))
 		}
 
-		return app(d.createMatchFunction(new), d.desugarMatchExpression(x.Value()))
+		return app(d.createMatchFunction(new), d.desugar(x.Value()))
 	case ast.Output:
-		return ast.NewOutput(d.desugarMatchExpression(x.Expr()), x.Expanded())
+		return ast.NewOutput(d.desugar(x.Expr()), x.Expanded())
 	case ast.PositionalArgument:
-		return ast.NewPositionalArgument(d.desugarMatchExpression(x.Value()), x.Expanded())
+		return ast.NewPositionalArgument(d.desugar(x.Value()), x.Expanded())
 	default:
 		return x
 	}

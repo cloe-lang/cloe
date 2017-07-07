@@ -66,14 +66,13 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 	case ast.LetVar:
 		return ast.NewLetVar(x.Name(), d.desugar(x.Expr()))
 	case ast.Match:
-		cs := x.Cases()
-		new := make([]ast.MatchCase, 0, len(cs))
+		cs := make([]ast.MatchCase, 0, len(x.Cases()))
 
-		for _, c := range cs {
-			new = append(new, ast.NewMatchCase(c.Pattern(), d.desugar(c.Value())))
+		for _, c := range x.Cases() {
+			cs = append(cs, ast.NewMatchCase(c.Pattern(), d.desugar(c.Value())))
 		}
 
-		return app(d.createMatchFunction(new), d.desugar(x.Value()))
+		return d.desugarMatchExpression(ast.NewMatch(d.desugar(x.Value()), cs))
 	case ast.Output:
 		return ast.NewOutput(d.desugar(x.Expr()), x.Expanded())
 	case ast.PositionalArgument:
@@ -93,20 +92,8 @@ func (d *desugarer) letVar(s string, v interface{}) {
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
 }
 
-func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
-	arg := gensym.GenSym("match", "argument")
-	body := d.casesToBody(arg, cs)
-
-	f := ast.NewLetFunction(
-		gensym.GenSym("match", "function"),
-		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
-		d.takeLets(),
-		body,
-		debug.NewGoInfo(0))
-
-	d.lets = []interface{}{f}
-
-	return f.Name()
+func (d *desugarer) desugarMatchExpression(m ast.Match) interface{} {
+	panic("Not implemented")
 }
 
 func (d *desugarer) casesToBody(arg string, cs []ast.MatchCase) interface{} {

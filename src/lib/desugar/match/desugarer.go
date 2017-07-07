@@ -51,15 +51,17 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 
 		for _, l := range x.Lets() {
 			l := d.desugar(l)
-			ls = append(ls, append(d.lets, l)...)
-			d.lets = nil
+			ls = append(ls, append(d.takeLets(), l)...)
 		}
+
+		b := d.desugar(x.Body())
+		ls = append(ls, d.takeLets()...)
 
 		return ast.NewLetFunction(
 			x.Name(),
 			x.Signature(),
 			ls,
-			d.desugar(x.Body()),
+			b,
 			x.DebugInfo())
 	case ast.LetVar:
 		return ast.NewLetVar(x.Name(), d.desugar(x.Expr()))
@@ -81,6 +83,12 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 	}
 }
 
+func (d *desugarer) takeLets() []interface{} {
+	ls := d.lets
+	d.lets = nil
+	return ls
+}
+
 func (d *desugarer) letVar(s string, v interface{}) {
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
 }
@@ -92,7 +100,7 @@ func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 	f := ast.NewLetFunction(
 		gensym.GenSym("match", "function"),
 		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
-		d.lets,
+		d.takeLets(),
 		body,
 		debug.NewGoInfo(0))
 

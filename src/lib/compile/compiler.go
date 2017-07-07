@@ -111,6 +111,19 @@ func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interfa
 			c.exprToIR(varToIndex, x.Function()),
 			ir.NewArguments(ps, ks, ds),
 			x.DebugInfo())
+	case ast.Switch:
+		cs := make([]ir.Case, 0, len(x.Cases()))
+
+		for _, k := range x.Cases() {
+			cs = append(cs, ir.NewCase(
+				c.env.get(k.Pattern()),
+				c.exprToIR(varToIndex, k.Value())))
+		}
+
+		return ir.NewSwitch(
+			c.exprToIR(varToIndex, x.Value()),
+			cs,
+			c.exprToIR(varToIndex, x.DefaultCase()))
 	}
 
 	panic(fmt.Errorf("Invalid type: %#v", expr))

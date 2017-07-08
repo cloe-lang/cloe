@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/scalar"
 )
 
 type desugarer struct {
@@ -92,30 +93,25 @@ func (d *desugarer) letVar(s string, v interface{}) {
 func (d *desugarer) desugarMatchExpression(m ast.Match) interface{} {
 	css := map[patternType][]ast.MatchCase{}
 
-	for i, c := range m.Cases() {
+	for _, c := range m.Cases() {
 		t := getPatternType(c.Pattern())
-
-		if t == namePattern && i < len(m.Cases())-1 {
-			panic(fmt.Errorf("A wildcard pattern is found, but some cases are left"))
-		}
-
 		css[t] = append(css[t], c)
 	}
 
 	ks := []ast.SwitchCase{}
 
 	if cs, ok := css[listPattern]; ok {
-		ks = append(ks, ast.NewSwitchCase("list", d.desugarListCases(cs)))
+		ks = append(ks, ast.NewSwitchCase("list", d.desugarListCases(m.Value(), cs)))
 	}
 
 	if cs, ok := css[dictPattern]; ok {
-		ks = append(ks, ast.NewSwitchCase("dict", d.desugarDictCases(cs)))
+		ks = append(ks, ast.NewSwitchCase("dict", d.desugarDictCases(m.Value(), cs)))
 	}
 
 	dc := interface{}(nil)
 
 	if cs, ok := css[namePattern]; ok {
-		dc = d.desugarNameCases(cs)
+		dc = d.desugarNameCases(m.Value(), cs)
 	}
 
 	return ast.NewSwitch(app("typeOf", m.Value()), ks, dc)
@@ -137,16 +133,34 @@ func getPatternType(p interface{}) patternType {
 	panic(fmt.Errorf("Invalid pattern: %#v", p))
 }
 
-func (d *desugarer) desugarListCases(cs []ast.MatchCase) interface{} {
+func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase) interface{} {
 	panic("Not implemented")
 }
 
-func (d *desugarer) desugarDictCases(cs []ast.MatchCase) interface{} {
+func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase) interface{} {
 	panic("Not implemented")
 }
 
-func (d *desugarer) desugarNameCases(cs []ast.MatchCase) interface{} {
-	panic("Not implemented")
+func (d *desugarer) desugarNameCases(v interface{}, cs []ast.MatchCase) interface{} {
+	dc := interface{}(nil)
+	ks := []ast.SwitchCase{}
+
+	for i, c := range cs {
+		p := c.Pattern().(string)
+		isScalar := scalar.Defined(p)
+
+		if !isScalar && i < len(cs)-1 {
+			panic(fmt.Errorf("A wildcard pattern is found, but some cases are left"))
+		} else if !isScalar {
+			d.letVar(p, v)
+			dc = c.Value()
+			break
+		}
+
+		ks = append(ks, ast.NewSwitchCase(p, c.Value()))
+	}
+
+	return ast.NewSwitch(v, ks, dc)
 }
 
 func renameBoundNamesInCase(c ast.MatchCase) ast.MatchCase {

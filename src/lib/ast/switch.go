@@ -9,7 +9,7 @@ type Switch struct {
 
 // NewSwitch creates a match expression.
 func NewSwitch(v interface{}, cs []SwitchCase, d interface{}) Switch {
-	if len(cs) == 0 {
+	if len(cs) == 0 && d == nil {
 		panic("Cases in a match expression must be more than 0.")
 	}
 

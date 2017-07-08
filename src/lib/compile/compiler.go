@@ -120,10 +120,13 @@ func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interfa
 				c.exprToIR(varToIndex, k.Value())))
 		}
 
-		return ir.NewSwitch(
-			c.exprToIR(varToIndex, x.Value()),
-			cs,
-			c.exprToIR(varToIndex, x.DefaultCase()))
+		d := interface{}(nil)
+
+		if x.DefaultCase() != nil {
+			d = c.exprToIR(varToIndex, x.DefaultCase())
+		}
+
+		return ir.NewSwitch(c.exprToIR(varToIndex, x.Value()), cs, d)
 	}
 
 	panic(fmt.Errorf("Invalid type: %#v", expr))

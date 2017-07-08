@@ -66,7 +66,7 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 		cs := make([]ast.MatchCase, 0, len(x.Cases()))
 
 		for _, c := range x.Cases() {
-			cs = append(cs, ast.NewMatchCase(c.Pattern(), d.desugar(c.Value())))
+			cs = append(cs, renameBoundNamesInCase(ast.NewMatchCase(c.Pattern(), d.desugar(c.Value()))))
 		}
 
 		return d.desugarMatchExpression(ast.NewMatch(d.desugar(x.Value()), cs))
@@ -149,6 +149,11 @@ func (d *desugarer) desugarNameCases(cs []ast.MatchCase) interface{} {
 	panic("Not implemented")
 }
 
+func renameBoundNamesInCase(c ast.MatchCase) ast.MatchCase {
+	p, ns := newPatternRenamer().rename(c.Pattern())
+	return ast.NewMatchCase(p, newValueRenamer(ns).rename(c.Value()))
+}
+
 // func (d *desugarer) casesToBody(arg string, cs []ast.MatchCase) interface{} {
 //	cs = renameBoundNamesInCases(cs)
 //	body := app("error", "\"MatchError\"", "\"Failed to match a value with patterns.\"")
@@ -159,21 +164,6 @@ func (d *desugarer) desugarNameCases(cs []ast.MatchCase) interface{} {
 //	}
 
 //	return body
-// }
-
-// func renameBoundNamesInCases(cs []ast.MatchCase) []ast.MatchCase {
-//	new := make([]ast.MatchCase, 0, len(cs))
-
-//	for _, c := range cs {
-//		new = append(new, renameBoundNamesInCase(c))
-//	}
-
-//	return new
-// }
-
-// func renameBoundNamesInCase(c ast.MatchCase) ast.MatchCase {
-//	p, ns := newPatternRenamer().rename(c.Pattern())
-//	return ast.NewMatchCase(p, newValueRenamer(ns).rename(c.Value()))
 // }
 
 // func (d *desugarer) matchCasesOfSamePatterns(v interface{}, cs []ast.MatchCase) (interface{}, interface{}) {

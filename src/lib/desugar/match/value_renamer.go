@@ -48,7 +48,21 @@ func (r valueRenamer) rename(v interface{}) interface{} {
 			r.rename(x.Function()),
 			ast.NewArguments(newPs, newKs, newDs),
 			x.DebugInfo())
+	case ast.Switch:
+		cs := make([]ast.SwitchCase, 0, len(x.Cases()))
+
+		for _, c := range x.Cases() {
+			cs = append(cs, ast.NewSwitchCase(c.Pattern(), r.rename(c.Value())))
+		}
+
+		d := interface{}(nil)
+
+		if x.DefaultCase() != nil {
+			d = r.rename(x.DefaultCase())
+		}
+
+		return ast.NewSwitch(r.rename(x.Value()), cs, d)
 	}
 
-	panic(fmt.Errorf("Invalid pattern: %#v", v))
+	panic(fmt.Errorf("Invalid value: %#v", v))
 }

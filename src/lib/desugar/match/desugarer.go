@@ -4,9 +4,6 @@ import (
 	"fmt"
 
 	"github.com/tisp-lang/tisp/src/lib/ast"
-	"github.com/tisp-lang/tisp/src/lib/debug"
-	"github.com/tisp-lang/tisp/src/lib/gensym"
-	"github.com/tisp-lang/tisp/src/lib/scalar"
 )
 
 type desugarer struct {
@@ -93,98 +90,42 @@ func (d *desugarer) letVar(s string, v interface{}) {
 }
 
 func (d *desugarer) desugarMatchExpression(m ast.Match) interface{} {
-	panic("Not implemented")
-}
+	css := map[patternType][]ast.MatchCase{}
 
-func (d *desugarer) casesToBody(arg string, cs []ast.MatchCase) interface{} {
-	cs = renameBoundNamesInCases(cs)
-	body := app("error", "\"MatchError\"", "\"Failed to match a value with patterns.\"")
+	for i, c := range m.Cases() {
+		t := getPatternType(c.Pattern())
 
-	for _, cs := range groupCases(cs) {
-		result, ok := d.matchCasesOfSamePatterns(arg, cs)
-		body = app("if", ok, result, body)
-	}
-
-	return body
-}
-
-func renameBoundNamesInCases(cs []ast.MatchCase) []ast.MatchCase {
-	new := make([]ast.MatchCase, 0, len(cs))
-
-	for _, c := range cs {
-		new = append(new, renameBoundNamesInCase(c))
-	}
-
-	return new
-}
-
-func renameBoundNamesInCase(c ast.MatchCase) ast.MatchCase {
-	p, ns := newPatternRenamer().rename(c.Pattern())
-	return ast.NewMatchCase(p, newValueRenamer(ns).rename(c.Value()))
-}
-
-func app(f interface{}, args ...interface{}) interface{} {
-	return ast.NewPApp(f, args, debug.NewGoInfo(0))
-}
-
-func (d *desugarer) matchCasesOfSamePatterns(v interface{}, cs []ast.MatchCase) (interface{}, interface{}) {
-	switch getPatternType(cs[0].Pattern()) {
-	case listPattern:
-		panic("Not implemented")
-	case dictPattern:
-		panic("Not implemented")
-	case scalarPattern:
-		ss := make([]interface{}, 0, 2*len(cs))
-
-		for _, c := range cs {
-			ss = append(ss, c.Pattern(), c.Value())
+		if t == namePattern && i < len(m.Cases())-1 {
+			panic(fmt.Errorf("A wildcard pattern is found, but some cases are left"))
 		}
 
-		dict := gensym.GenSym("match", "scalar", "dict")
-		d.letVar(dict, app("dict", ss...))
-
-		return app(dict, v), app("include", dict, v)
-	case namePattern:
-		if len(cs) != 1 {
-			panic(fmt.Errorf("Duplicate name patterns: %v", len(cs)))
-		}
-
-		c := cs[0]
-		d.letVar(c.Pattern().(string), v)
-		return c.Value(), "true"
+		css[t] = append(css[t], c)
 	}
 
-	panic(fmt.Errorf("Invalid cases: %#v", cs))
-}
+	ks := []ast.SwitchCase{}
 
-// func matchType(v string, typ string) interface{} {
-//	return app("=", app("typeOf", v), typ)
-// }
-
-func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {
-	m := map[patternType][]ast.MatchCase{}
-
-	for _, c := range cs {
-		p := getPatternType(c.Pattern())
-		m[p] = append(m[p], c)
+	if cs, ok := css[listPattern]; ok {
+		ks = append(ks, ast.NewSwitchCase("list", d.desugarListCases(cs)))
 	}
 
-	return m
+	if cs, ok := css[dictPattern]; ok {
+		ks = append(ks, ast.NewSwitchCase("dict", d.desugarDictCases(cs)))
+	}
+
+	dc := interface{}(nil)
+
+	if cs, ok := css[namePattern]; ok {
+		dc = d.desugarNameCases(cs)
+	}
+
+	return ast.NewSwitch(app("typeOf", m.Value()), ks, dc)
 }
 
 func getPatternType(p interface{}) patternType {
 	switch x := p.(type) {
 	case string:
-		if scalar.Defined(x) {
-			return scalarPattern
-		}
-
 		return namePattern
 	case ast.App:
-		if len(x.Arguments().Positionals()) == 0 {
-			return scalarPattern
-		}
-
 		switch x.Function().(string) {
 		case "$list":
 			return listPattern
@@ -195,3 +136,76 @@ func getPatternType(p interface{}) patternType {
 
 	panic(fmt.Errorf("Invalid pattern: %#v", p))
 }
+
+func (d *desugarer) desugarListCases(cs []ast.MatchCase) interface{} {
+	panic("Not implemented")
+}
+
+func (d *desugarer) desugarDictCases(cs []ast.MatchCase) interface{} {
+	panic("Not implemented")
+}
+
+func (d *desugarer) desugarNameCases(cs []ast.MatchCase) interface{} {
+	panic("Not implemented")
+}
+
+// func (d *desugarer) casesToBody(arg string, cs []ast.MatchCase) interface{} {
+//	cs = renameBoundNamesInCases(cs)
+//	body := app("error", "\"MatchError\"", "\"Failed to match a value with patterns.\"")
+
+//	for _, cs := range groupCases(cs) {
+//		result, ok := d.matchCasesOfSamePatterns(arg, cs)
+//		body = app("if", ok, result, body)
+//	}
+
+//	return body
+// }
+
+// func renameBoundNamesInCases(cs []ast.MatchCase) []ast.MatchCase {
+//	new := make([]ast.MatchCase, 0, len(cs))
+
+//	for _, c := range cs {
+//		new = append(new, renameBoundNamesInCase(c))
+//	}
+
+//	return new
+// }
+
+// func renameBoundNamesInCase(c ast.MatchCase) ast.MatchCase {
+//	p, ns := newPatternRenamer().rename(c.Pattern())
+//	return ast.NewMatchCase(p, newValueRenamer(ns).rename(c.Value()))
+// }
+
+// func (d *desugarer) matchCasesOfSamePatterns(v interface{}, cs []ast.MatchCase) (interface{}, interface{}) {
+//	switch getPatternType(cs[0].Pattern()) {
+//	case listPattern:
+//		panic("Not implemented")
+//	case dictPattern:
+//		panic("Not implemented")
+//	case scalarPattern:
+//		ss := make([]interface{}, 0, 2*len(cs))
+
+//		for _, c := range cs {
+//			ss = append(ss, c.Pattern(), c.Value())
+//		}
+
+//		dict := gensym.GenSym("match", "scalar", "dict")
+//		d.letVar(dict, app("dict", ss...))
+
+//		return app(dict, v), app("include", dict, v)
+//	case namePattern:
+//		if len(cs) != 1 {
+//			panic(fmt.Errorf("Duplicate name patterns: %v", len(cs)))
+//		}
+
+//		c := cs[0]
+//		d.letVar(c.Pattern().(string), v)
+//		return c.Value(), "true"
+//	}
+
+//	panic(fmt.Errorf("Invalid cases: %#v", cs))
+// }
+
+// func matchType(v string, typ string) interface{} {
+//	return app("=", app("typeOf", v), typ)
+// }

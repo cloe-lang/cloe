@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/debug"
+	"github.com/tisp-lang/tisp/src/lib/gensym"
 	"github.com/tisp-lang/tisp/src/lib/scalar"
 )
 
@@ -70,7 +72,7 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 			cs = append(cs, renameBoundNamesInCase(ast.NewMatchCase(c.Pattern(), d.desugar(c.Value()))))
 		}
 
-		return d.desugarMatchExpression(ast.NewMatch(d.desugar(x.Value()), cs))
+		return app(d.createMatchFunction(cs), d.desugar(x.Value()))
 	case ast.Output:
 		return ast.NewOutput(d.desugar(x.Expr()), x.Expanded())
 	case ast.PositionalArgument:
@@ -88,6 +90,22 @@ func (d *desugarer) takeLets() []interface{} {
 
 func (d *desugarer) letVar(s string, v interface{}) {
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
+}
+
+func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
+	arg := gensym.GenSym("match", "argument")
+	body := d.desugarMatchExpression(ast.NewMatch(arg, cs))
+
+	f := ast.NewLetFunction(
+		gensym.GenSym("match", "function"),
+		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
+		d.takeLets(),
+		body,
+		debug.NewGoInfo(0))
+
+	d.lets = []interface{}{f}
+
+	return f.Name()
 }
 
 func (d *desugarer) desugarMatchExpression(m ast.Match) interface{} {

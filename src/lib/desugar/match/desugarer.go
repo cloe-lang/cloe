@@ -161,7 +161,46 @@ func getPatternType(p interface{}) patternType {
 }
 
 func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase) interface{} {
-	panic("Not implemented")
+	type group struct {
+		first interface{}
+		cases []ast.MatchCase
+	}
+
+	gs := []group{}
+
+	for _, c := range cs {
+		ps := c.Pattern().(ast.App).Arguments().Positionals()
+		first := ps[0].Value()
+
+		if ps[0].Expanded() {
+			panic("Not implemented")
+		}
+
+		c = ast.NewMatchCase(
+			ast.NewApp("$list", ast.NewArguments(ps[1:], nil, nil), debug.NewGoInfo(0)),
+			c.Value())
+
+		groupExist := false
+
+		for i, g := range gs {
+			if equalPatterns(first, g.first) {
+				groupExist = true
+				gs[i].cases = append(gs[i].cases, c)
+			}
+		}
+
+		if !groupExist {
+			gs = append(gs, group{first, []ast.MatchCase{c}})
+		}
+	}
+
+	ks := make([]ast.MatchCase, 0, len(gs))
+
+	for _, g := range gs {
+		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(app("rest", v), g.cases)))
+	}
+
+	return d.desugarCases(app("first", v), ks)
 }
 
 func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase) interface{} {

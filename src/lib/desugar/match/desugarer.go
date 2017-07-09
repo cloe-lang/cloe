@@ -113,11 +113,11 @@ func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase) interface{} 
 	ks := []ast.SwitchCase{}
 
 	if cs, ok := css[listPattern]; ok {
-		ks = append(ks, ast.NewSwitchCase("list", d.desugarListCases(v, cs)))
+		ks = append(ks, ast.NewSwitchCase("\"list\"", d.desugarListCases(v, cs)))
 	}
 
 	if cs, ok := css[dictPattern]; ok {
-		ks = append(ks, ast.NewSwitchCase("dict", d.desugarDictCases(v, cs)))
+		ks = append(ks, ast.NewSwitchCase("\"dict\"", d.desugarDictCases(v, cs)))
 	}
 
 	dc := interface{}(nil)

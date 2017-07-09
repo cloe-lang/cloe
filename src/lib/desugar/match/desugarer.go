@@ -109,13 +109,7 @@ func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 }
 
 func (d *desugarer) desugarMatchExpression(m ast.Match) interface{} {
-	css := map[patternType][]ast.MatchCase{}
-
-	for _, c := range m.Cases() {
-		t := getPatternType(c.Pattern())
-		css[t] = append(css[t], c)
-	}
-
+	css := groupCases(m.Cases())
 	ks := []ast.SwitchCase{}
 
 	if cs, ok := css[listPattern]; ok {
@@ -133,6 +127,17 @@ func (d *desugarer) desugarMatchExpression(m ast.Match) interface{} {
 	}
 
 	return ast.NewSwitch(app("typeOf", m.Value()), ks, dc)
+}
+
+func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {
+	css := map[patternType][]ast.MatchCase{}
+
+	for _, c := range cs {
+		t := getPatternType(c.Pattern())
+		css[t] = append(css[t], c)
+	}
+
+	return css
 }
 
 func getPatternType(p interface{}) patternType {

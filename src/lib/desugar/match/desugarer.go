@@ -145,6 +145,10 @@ func getPatternType(p interface{}) patternType {
 	case string:
 		return namePattern
 	case ast.App:
+		if len(x.Arguments().Positionals()) == 0 {
+			return namePattern
+		}
+
 		switch x.Function().(string) {
 		case "$list":
 			return listPattern
@@ -169,18 +173,28 @@ func (d *desugarer) desugarNameCases(v interface{}, cs []ast.MatchCase) interfac
 	ks := []ast.SwitchCase{}
 
 	for i, c := range cs {
-		p := c.Pattern().(string)
-		isScalar := scalar.Defined(p)
+		switch x := c.Pattern().(type) {
+		case string:
+			isScalar := scalar.Defined(x)
 
-		if !isScalar && i < len(cs)-1 {
-			panic(fmt.Errorf("A wildcard pattern is found, but some cases are left"))
-		} else if !isScalar {
-			d.letVar(p, v)
-			dc = c.Value()
-			break
+			if !isScalar && i < len(cs)-1 {
+				panic(fmt.Errorf("A wildcard pattern is found, but some cases are left"))
+			} else if !isScalar {
+				d.letVar(x, v)
+				dc = c.Value()
+				break
+			}
+
+			ks = append(ks, ast.NewSwitchCase(x, c.Value()))
+		case ast.App:
+			s := "$emptyList"
+
+			if x.Function().(string) == "$dict" {
+				s = "$emptyDict"
+			}
+
+			ks = append(ks, ast.NewSwitchCase(s, c.Value()))
 		}
-
-		ks = append(ks, ast.NewSwitchCase(p, c.Value()))
 	}
 
 	return ast.NewSwitch(v, ks, dc)

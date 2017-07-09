@@ -8,9 +8,11 @@ import (
 )
 
 var predefined = map[string]*core.Thunk{
-	"true":  core.True,
-	"false": core.False,
-	"nil":   core.Nil,
+	"true":       core.True,
+	"false":      core.False,
+	"nil":        core.Nil,
+	"$emptyList": core.EmptyList,
+	"$emptyDict": core.EmptyDictionary,
 }
 
 // Convert converts a string into a scalar value of a number, string, bool, or

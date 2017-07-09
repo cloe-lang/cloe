@@ -204,3 +204,37 @@ func renameBoundNamesInCase(c ast.MatchCase) ast.MatchCase {
 	p, ns := newPatternRenamer().rename(c.Pattern())
 	return ast.NewMatchCase(p, newValueRenamer(ns).rename(c.Value()))
 }
+
+func equalPatterns(p, q interface{}) bool {
+	switch x := p.(type) {
+	case string:
+		y, ok := q.(string)
+
+		if !ok {
+			return false
+		}
+
+		return x == y
+	case ast.App:
+		y, ok := q.(ast.App)
+
+		if !ok ||
+			x.Function().(string) != y.Function().(string) ||
+			len(x.Arguments().Positionals()) != len(y.Arguments().Positionals()) {
+			return false
+		}
+
+		for i := range x.Arguments().Positionals() {
+			p := x.Arguments().Positionals()[i]
+			q := y.Arguments().Positionals()[i]
+
+			if p.Expanded() != q.Expanded() || !equalPatterns(p.Value(), q.Value()) {
+				return false
+			}
+		}
+
+		return true
+	}
+
+	panic(fmt.Errorf("Invalid pattern: %#v, %#v", p, q))
+}

@@ -94,7 +94,7 @@ func (d *desugarer) letVar(s string, v interface{}) {
 
 func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 	arg := gensym.GenSym("match", "argument")
-	body := d.desugarMatchExpression(ast.NewMatch(arg, cs))
+	body := d.desugarCases(arg, cs)
 
 	f := ast.NewLetFunction(
 		gensym.GenSym("match", "function"),
@@ -108,25 +108,25 @@ func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 	return f.Name()
 }
 
-func (d *desugarer) desugarMatchExpression(m ast.Match) interface{} {
-	css := groupCases(m.Cases())
+func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase) interface{} {
+	css := groupCases(cs)
 	ks := []ast.SwitchCase{}
 
 	if cs, ok := css[listPattern]; ok {
-		ks = append(ks, ast.NewSwitchCase("list", d.desugarListCases(m.Value(), cs)))
+		ks = append(ks, ast.NewSwitchCase("list", d.desugarListCases(v, cs)))
 	}
 
 	if cs, ok := css[dictPattern]; ok {
-		ks = append(ks, ast.NewSwitchCase("dict", d.desugarDictCases(m.Value(), cs)))
+		ks = append(ks, ast.NewSwitchCase("dict", d.desugarDictCases(v, cs)))
 	}
 
 	dc := interface{}(nil)
 
 	if cs, ok := css[namePattern]; ok {
-		dc = d.desugarNameCases(m.Value(), cs)
+		dc = d.desugarNameCases(v, cs)
 	}
 
-	return ast.NewSwitch(app("typeOf", m.Value()), ks, dc)
+	return ast.NewSwitch(app("typeOf", v), ks, dc)
 }
 
 func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {

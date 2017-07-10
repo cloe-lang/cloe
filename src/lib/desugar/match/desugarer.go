@@ -9,6 +9,8 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/scalar"
 )
 
+var matchError = app("error", "\"MatchError\"", "\"Failed to match a value with patterns\"")
+
 type desugarer struct {
 	lets []interface{}
 }
@@ -94,7 +96,7 @@ func (d *desugarer) letVar(s string, v interface{}) {
 
 func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 	arg := gensym.GenSym("match", "argument")
-	body := d.desugarCases(arg, cs)
+	body := d.desugarCases(arg, cs, matchError)
 
 	f := ast.NewLetFunction(
 		gensym.GenSym("match", "function"),
@@ -108,22 +110,27 @@ func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 	return f.Name()
 }
 
-func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase) interface{} {
+func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	css := groupCases(cs)
+
+	if cs, ok := css[namePattern]; ok {
+		c := cs[0]
+		d.letVar(c.Pattern().(string), v)
+		dc = c.Value()
+	}
+
 	ks := []ast.SwitchCase{}
 
 	if cs, ok := css[listPattern]; ok {
-		ks = append(ks, ast.NewSwitchCase("\"list\"", d.desugarListCases(v, cs)))
+		ks = append(ks, ast.NewSwitchCase("\"list\"", d.desugarListCases(v, cs, dc)))
 	}
 
 	if cs, ok := css[dictPattern]; ok {
-		ks = append(ks, ast.NewSwitchCase("\"dict\"", d.desugarDictCases(v, cs)))
+		ks = append(ks, ast.NewSwitchCase("\"dict\"", d.desugarDictCases(v, cs, dc)))
 	}
 
-	dc := interface{}(nil)
-
-	if cs, ok := css[namePattern]; ok {
-		dc = d.desugarNameCases(v, cs)
+	if cs, ok := css[scalarPattern]; ok {
+		dc = d.desugarScalarCases(v, cs, dc)
 	}
 
 	return ast.NewSwitch(app("typeOf", v), ks, dc)
@@ -132,8 +139,13 @@ func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase) interface{} 
 func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {
 	css := map[patternType][]ast.MatchCase{}
 
-	for _, c := range cs {
+	for i, c := range cs {
 		t := getPatternType(c.Pattern())
+
+		if t == namePattern && i < len(cs)-1 {
+			panic("A wildcard pattern is found while some patterns are left")
+		}
+
 		css[t] = append(css[t], c)
 	}
 
@@ -143,10 +155,14 @@ func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {
 func getPatternType(p interface{}) patternType {
 	switch x := p.(type) {
 	case string:
+		if scalar.Defined(x) {
+			return scalarPattern
+		}
+
 		return namePattern
 	case ast.App:
 		if len(x.Arguments().Positionals()) == 0 {
-			return namePattern
+			return scalarPattern
 		}
 
 		switch x.Function().(string) {
@@ -160,7 +176,7 @@ func getPatternType(p interface{}) patternType {
 	panic(fmt.Errorf("Invalid pattern: %#v", p))
 }
 
-func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase) interface{} {
+func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	type group struct {
 		first interface{}
 		cases []ast.MatchCase
@@ -197,33 +213,22 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase) interfac
 	ks := make([]ast.MatchCase, 0, len(gs))
 
 	for _, g := range gs {
-		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(app("rest", v), g.cases)))
+		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(app("rest", v), g.cases, dc)))
 	}
 
-	return d.desugarCases(app("first", v), ks)
+	return d.desugarCases(app("first", v), ks, dc)
 }
 
-func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase) interface{} {
+func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	panic("Not implemented")
 }
 
-func (d *desugarer) desugarNameCases(v interface{}, cs []ast.MatchCase) interface{} {
-	dc := interface{}(nil)
+func (d *desugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	ks := []ast.SwitchCase{}
 
-	for i, c := range cs {
+	for _, c := range cs {
 		switch x := c.Pattern().(type) {
 		case string:
-			isScalar := scalar.Defined(x)
-
-			if !isScalar && i < len(cs)-1 {
-				panic(fmt.Errorf("A wildcard pattern is found, but some cases are left"))
-			} else if !isScalar {
-				d.letVar(x, v)
-				dc = c.Value()
-				break
-			}
-
 			ks = append(ks, ast.NewSwitchCase(x, c.Value()))
 		case ast.App:
 			s := "$emptyList"

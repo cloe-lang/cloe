@@ -5,5 +5,6 @@ type patternType int
 const (
 	listPattern patternType = iota
 	dictPattern
+	scalarPattern
 	namePattern
 )

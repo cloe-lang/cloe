@@ -220,7 +220,89 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 }
 
 func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
-	panic("Not implemented")
+	type group struct {
+		key   interface{}
+		cases []ast.MatchCase
+	}
+
+	gs := []group{}
+
+	for _, c := range cs {
+		ps := c.Pattern().(ast.App).Arguments().Positionals()
+
+		if ps[0].Expanded() {
+			panic("Not implemented")
+		}
+
+		k := ps[0].Value()
+		groupExist := false
+
+		for i, g := range gs {
+			if equalPatterns(k, g.key) {
+				groupExist = true
+				gs[i].cases = append(gs[i].cases, c)
+			}
+		}
+
+		if !groupExist {
+			gs = append(gs, group{k, []ast.MatchCase{c}})
+		}
+	}
+
+	cs = make([]ast.MatchCase, 0, len(gs))
+
+	x := dc
+
+	for _, g := range gs {
+		x = app("$if",
+			app("$include", v, g.key),
+			d.desugarDictCasesOfSameKey(v, g.cases, x),
+			x)
+	}
+
+	return x
+}
+
+func (d *desugarer) desugarDictCasesOfSameKey(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+	type group struct {
+		value interface{}
+		cases []ast.MatchCase
+	}
+
+	gs := []group{}
+
+	for _, c := range cs {
+		ps := c.Pattern().(ast.App).Arguments().Positionals()
+		value := ps[1].Value()
+
+		c = ast.NewMatchCase(
+			ast.NewApp("$dict", ast.NewArguments(ps[2:], nil, nil), debug.NewGoInfo(0)),
+			c.Value())
+
+		groupExist := false
+
+		for i, g := range gs {
+			if equalPatterns(value, g.value) {
+				groupExist = true
+				gs[i].cases = append(gs[i].cases, c)
+			}
+		}
+
+		if !groupExist {
+			gs = append(gs, group{value, []ast.MatchCase{c}})
+		}
+	}
+
+	key := cs[0].Pattern().(ast.App).Arguments().Positionals()[0].Value()
+	cs = make([]ast.MatchCase, 0, len(gs))
+
+	for _, g := range gs {
+		cs = append(
+			cs,
+			ast.NewMatchCase(g.value, d.desugarCases(app("$delete", v, key), g.cases, dc)))
+	}
+
+	return d.desugarCases(app(v, key), cs, dc)
 }
 
 func (d *desugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {

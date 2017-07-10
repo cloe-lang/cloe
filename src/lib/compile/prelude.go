@@ -14,6 +14,7 @@ func prelude() environment {
 		value *core.Thunk
 	}{
 		{"if", core.If},
+		{"$if", core.If},
 
 		{"partial", core.Partial},
 
@@ -42,7 +43,9 @@ func prelude() environment {
 		{"dump", core.Dump},
 
 		{"delete", core.Delete},
+		{"$delete", core.Delete},
 		{"include", core.Include},
+		{"$include", core.Include},
 		{"insert", core.Insert},
 		{"merge", core.Merge},
 		{"size", core.Size},

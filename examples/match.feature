@@ -47,6 +47,7 @@ Feature: Match expression
     (write (match {"foo" 42}
       {} "Not matched..."
       {"foo" 2049} "Not matched..."
+      {"foo" 42 "bar" 2049} "Not matched..."
       {"bar" 42} "Not matched..."
       {"foo" 42} "Matched!"))
     """
@@ -55,6 +56,26 @@ Feature: Match expression
     """
     Matched!
     Matched!
+    Matched!
+    Matched!
+    """
+
+  Scenario: Use wildcards
+    Given a file named "main.tisp" with:
+    """
+    (write (match "Matched!"
+      42 "Not matched..."
+      x x))
+
+    (write (match [42]
+      [] "Not matched..."
+      [2049] "Not matched..."
+      [42 42] "Not matched..."
+      [foo] "Matched!"))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
     Matched!
     Matched!
     """

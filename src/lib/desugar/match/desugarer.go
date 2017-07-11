@@ -180,7 +180,7 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 
 	gs := []group{}
 
-	for _, c := range cs {
+	for i, c := range cs {
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
 
 		if len(ps) == 0 {
@@ -188,10 +188,15 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 			continue
 		}
 
-		first := ps[0].Value()
-
 		if ps[0].Expanded() {
 			panic("Not implemented")
+		}
+
+		first := ps[0].Value()
+
+		if getPatternType(first) == namePattern {
+			dc = d.desugarListCases(v, cs[i+1:], c.Value())
+			break
 		}
 
 		c = ast.NewMatchCase(

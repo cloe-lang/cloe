@@ -67,11 +67,13 @@ Feature: Match expression
       42 "Not matched..."
       x x))
 
-    (write (match [42]
+    (write (match [42 2049]
       [] "Not matched..."
       [2049] "Not matched..."
       [42 42] "Not matched..."
-      [foo] "Matched!"))
+      [foo 42] "Not matched..."
+      [42 bar 2049] "Not matched..."
+      [foo 2049] "Matched!"))
     """
     When I successfully run `tisp main.tisp`
     Then the stdout should contain exactly:

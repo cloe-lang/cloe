@@ -194,15 +194,18 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 
 		first := ps[0].Value()
 
-		if getPatternType(first) == namePattern {
-			d.letVar(first.(string), app("first", v))
-			dc = d.desugarListCases(v, cs[i+1:], c.Value())
-			break
-		}
-
 		c = ast.NewMatchCase(
 			ast.NewApp("$list", ast.NewArguments(ps[1:], nil, nil), debug.NewGoInfo(0)),
 			c.Value())
+
+		if getPatternType(first) == namePattern {
+			d.letVar(first.(string), app("first", v))
+			dc = d.desugarCases(
+				app("rest", v),
+				[]ast.MatchCase{c},
+				d.desugarListCases(v, cs[i+1:], dc))
+			break
+		}
 
 		groupExist := false
 

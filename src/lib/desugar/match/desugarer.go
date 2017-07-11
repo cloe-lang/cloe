@@ -195,6 +195,7 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 		first := ps[0].Value()
 
 		if getPatternType(first) == namePattern {
+			d.letVar(first.(string), app("first", v))
 			dc = d.desugarListCases(v, cs[i+1:], c.Value())
 			break
 		}

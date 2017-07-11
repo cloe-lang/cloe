@@ -34,6 +34,7 @@ func prelude() environment {
 		{"**", core.Pow},
 
 		{"=", std.Equal},
+		{"$=", std.Equal},
 		{"<", std.Less},
 		{"<=", std.LessEq},
 		{">", std.Greater},

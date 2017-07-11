@@ -161,10 +161,6 @@ func getPatternType(p interface{}) patternType {
 
 		return namePattern
 	case ast.App:
-		if len(x.Arguments().Positionals()) == 0 {
-			return scalarPattern
-		}
-
 		switch x.Function().(string) {
 		case "$list":
 			return listPattern
@@ -186,6 +182,12 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 
 	for _, c := range cs {
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
+
+		if len(ps) == 0 {
+			dc = app("$if", app("$=", v, "$emptyList"), c.Value(), dc)
+			continue
+		}
+
 		first := ps[0].Value()
 
 		if ps[0].Expanded() {
@@ -229,6 +231,11 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 
 	for _, c := range cs {
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
+
+		if len(ps) == 0 {
+			dc = app("$if", app("$=", v, "$emptyDict"), c.Value(), dc)
+			continue
+		}
 
 		if ps[0].Expanded() {
 			panic("Not implemented")
@@ -309,18 +316,7 @@ func (d *desugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, dc int
 	ks := []ast.SwitchCase{}
 
 	for _, c := range cs {
-		switch x := c.Pattern().(type) {
-		case string:
-			ks = append(ks, ast.NewSwitchCase(x, c.Value()))
-		case ast.App:
-			s := "$emptyList"
-
-			if x.Function().(string) == "$dict" {
-				s = "$emptyDict"
-			}
-
-			ks = append(ks, ast.NewSwitchCase(s, c.Value()))
-		}
+		ks = append(ks, ast.NewSwitchCase(c.Pattern().(string), c.Value()))
 	}
 
 	return ast.NewSwitch(v, ks, dc)

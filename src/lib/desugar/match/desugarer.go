@@ -265,8 +265,6 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 		}
 	}
 
-	cs = make([]ast.MatchCase, 0, len(gs))
-
 	x := dc
 
 	for _, g := range gs {

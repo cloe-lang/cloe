@@ -285,15 +285,28 @@ func (d *desugarer) desugarDictCasesOfSameKey(v interface{}, cs []ast.MatchCase,
 		cases []ast.MatchCase
 	}
 
+	key := cs[0].Pattern().(ast.App).Arguments().Positionals()[0].Value()
 	gs := []group{}
 
-	for _, c := range cs {
+	for i, c := range cs {
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
 		value := ps[1].Value()
 
 		c = ast.NewMatchCase(
 			ast.NewApp("$dict", ast.NewArguments(ps[2:], nil, nil), debug.NewGoInfo(0)),
 			c.Value())
+
+		if getPatternType(value) == namePattern {
+			d.letVar(value.(string), app(v, key))
+
+			if rest := cs[i+1:]; len(rest) != 0 {
+				dc = d.desugarDictCasesOfSameKey(v, rest, dc)
+			}
+
+			dc = d.desugarCases(app("$delete", v, key), []ast.MatchCase{c}, dc)
+
+			break
+		}
 
 		groupExist := false
 
@@ -309,7 +322,6 @@ func (d *desugarer) desugarDictCasesOfSameKey(v interface{}, cs []ast.MatchCase,
 		}
 	}
 
-	key := cs[0].Pattern().(ast.App).Arguments().Positionals()[0].Value()
 	cs = make([]ast.MatchCase, 0, len(gs))
 
 	for _, g := range gs {

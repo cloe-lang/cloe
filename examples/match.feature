@@ -74,10 +74,19 @@ Feature: Match expression
       [foo 42] "Not matched..."
       [42 bar 2049] "Not matched..."
       [foo 2049] "Matched!"))
+
+    (write (match {"foo" 42 "bar" "Matched!"}
+      {} "Not matched..."
+      {"foo" 42} "Not matched..."
+      {"bar" 42} "Not matched..."
+      {"foo" foo "bar" 42} "Not matched..."
+      {"bar" bar "foo" 2049} "Not matched..."
+      {"foo" foo "bar" bar} bar))
     """
     When I successfully run `tisp main.tisp`
     Then the stdout should contain exactly:
     """
+    Matched!
     Matched!
     Matched!
     """

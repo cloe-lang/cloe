@@ -58,7 +58,10 @@ func (s *state) subModule() comb.Parser {
 }
 
 func (s *state) module(ps ...comb.Parser) comb.Parser {
-	return s.Exhaust(s.Prefix(s.blank(), s.Many(s.Or(ps...))))
+	return s.Exhaust(s.Prefix(s.blank(), s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		return append(xs[0].([]interface{}), xs[1].([]interface{})...)
+	}, s.And(s.Many(s.importModule()), s.Many(s.Or(ps...))))))
 }
 
 func (s *state) importModule() comb.Parser {

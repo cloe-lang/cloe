@@ -148,28 +148,6 @@ func TestExpression(t *testing.T) {
 	}
 }
 
-func TestQuotedExpression(t *testing.T) {
-	for _, str := range []string{"`ident", "``ident", "```ident"} {
-		s := newStateWithoutFile(str)
-		result, err := s.Exhaust(s.expression())()
-
-		t.Logf("%#v", result)
-
-		assert.NotEqual(t, result, nil)
-		assert.Equal(t, err, nil)
-	}
-}
-
-// func TestClosureLiteral(t *testing.T) {
-//	s := newStateWithoutFile("'(+ #1 #2 3)")
-//	result, err := s.Exhaust(s.expression())()
-
-//	t.Logf("%#v", result)
-
-//	assert.NotEqual(t, result, nil)
-//	assert.Equal(t, err, nil)
-// }
-
 func TestMatchExpression(t *testing.T) {
 	for _, str := range []string{
 		"(match 123 123 true)",
@@ -236,18 +214,16 @@ func TestBlank(t *testing.T) {
 	}
 }
 
-func TestQuote(t *testing.T) {
-	for _, str := range []string{"`foo", "`( foo ; lajdfs\n   bar )"} {
-		s := newStateWithoutFile(str)
-		result, err := s.Exhaust(s.expression())()
-
-		t.Logf("%#v", result)
-
-		assert.NotEqual(t, result, nil)
-		assert.Equal(t, err, nil)
-	}
-}
-
 func newStateWithoutFile(source string) *state {
 	return newState("", source)
 }
+
+// func TestClosureLiteral(t *testing.T) {
+//	s := newStateWithoutFile("'(+ #1 #2 3)")
+//	result, err := s.Exhaust(s.expression())()
+
+//	t.Logf("%#v", result)
+
+//	assert.NotEqual(t, result, nil)
+//	assert.Equal(t, err, nil)
+// }

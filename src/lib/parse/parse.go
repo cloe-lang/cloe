@@ -15,7 +15,6 @@ const (
 	invalidChars    = "\x00"
 	letString       = "let"
 	mutualRecString = "mr"
-	quoteString     = "quote"
 	matchString     = "match"
 	spaceChars      = " \t\n\r"
 	specialChars    = "()[]{}\"'`$"
@@ -27,7 +26,6 @@ var reserveds = map[string]bool{
 	letString:       true,
 	matchString:     true,
 	mutualRecString: true,
-	quoteString:     true,
 }
 
 // MainModule parses a main module file into an AST.
@@ -186,12 +184,6 @@ func (s *state) expression() comb.Parser {
 
 func (s *state) strictExpression() comb.Parser {
 	return s.strip(s.Or(
-		s.firstOrderExpression(),
-		s.Lazy(func() comb.Parser { return s.quote(s.expression()) })))
-}
-
-func (s *state) firstOrderExpression() comb.Parser {
-	return s.Or(
 		s.identifier(),
 		s.stringLiteral(),
 		s.match(),
@@ -199,7 +191,7 @@ func (s *state) firstOrderExpression() comb.Parser {
 		s.listLiteral(),
 		s.dictLiteral(),
 		// s.appFunc("lambda", s.sequence("'(", ")")),
-	)
+	))
 }
 
 func (s *state) listLiteral() comb.Parser {
@@ -237,10 +229,6 @@ func (s *state) pattern() comb.Parser {
 		s.dictLiteral())
 }
 
-func (s *state) quote(p comb.Parser) comb.Parser {
-	return s.appQuote(s.Prefix(s.Char('`'), p))
-}
-
 func (s *state) mutuallyRecursiveLetFunctions() comb.Parser {
 	return s.withInfo(
 		s.list(s.strippedString(mutualRecString), s.Many(s.letFunction())),
@@ -253,17 +241,6 @@ func (s *state) mutuallyRecursiveLetFunctions() comb.Parser {
 			}
 
 			return ast.NewMutualRecursion(fs, i), nil
-		})
-}
-
-func (s *state) appQuote(p comb.Parser) comb.Parser {
-	return s.appWithInfo(
-		p,
-		func(x interface{}) (interface{}, ast.Arguments) {
-			return quoteString, ast.NewArguments(
-				[]ast.PositionalArgument{ast.NewPositionalArgument(x, false)},
-				nil,
-				nil)
 		})
 }
 

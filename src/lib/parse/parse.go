@@ -17,11 +17,10 @@ const (
 	mutualRecString = "mr"
 	matchString     = "match"
 	spaceChars      = " \t\n\r"
-	specialChars    = "()[]{}\"'`$"
+	specialChars    = "()[]{}\"$"
 )
 
 var reserveds = map[string]bool{
-	"macro":         true,
 	importString:    true,
 	letString:       true,
 	matchString:     true,

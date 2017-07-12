@@ -1,0 +1,27 @@
+package comb
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestBlockWithNoIndent(t *testing.T) {
+	for _, test := range []struct {
+		indent int
+		source string
+	}{
+		{0, "foo\nfoo\nfoo"},
+		{1, " foo\n foo\n foo"},
+		{2, "  foo\n  foo\n  foo"},
+	} {
+		s := NewState(test.source)
+		blank := s.Many(s.InString(" \n"))
+		result, err := s.Exhaust(s.Block(test.indent, blank, s.And(s.String("foo"), blank)))()
+
+		t.Logf("%#v", result)
+
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
+	}
+}

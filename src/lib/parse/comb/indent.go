@@ -6,9 +6,7 @@ import (
 
 // Block creates a parser parsing things which have the same indent.
 func (s *State) Block(n int, p, q Parser) Parser {
-	return func() (interface{}, error) {
-		s.savePosition()
-
+	return s.WithPosition(func() (interface{}, error) {
 		x, err := p()
 		if err != nil {
 			return nil, err
@@ -20,7 +18,7 @@ func (s *State) Block(n int, p, q Parser) Parser {
 		}
 
 		return append([]interface{}{x}, xs.([]interface{})...), nil
-	}
+	})
 }
 
 // WithPosition saves a current position and runs a given parser.

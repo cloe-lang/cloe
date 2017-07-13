@@ -107,7 +107,7 @@ func TestStringLiteral(t *testing.T) {
 }
 
 func TestStrip(t *testing.T) {
-	s := newStateWithoutFile("ident  \t ")
+	s := newStateWithoutFile("ident   ")
 	result, err := s.Exhaust(s.strip(s.identifier()))()
 
 	t.Logf("%#v", result)
@@ -132,7 +132,7 @@ func TestExpression(t *testing.T) {
 	strs := []string{
 		"ident",
 		"ident  ",
-		"(foo ; (this is) comment \n bar)  \t ; lsdfj\n ",
+		"(foo ; (this is) comment \n bar)   ; lsdfj\n ",
 	}
 
 	for _, str := range strs {
@@ -203,7 +203,7 @@ func TestXFailIdentifier(t *testing.T) {
 }
 
 func TestBlank(t *testing.T) {
-	for _, str := range []string{"", "   ", "\t", "\n\n", " ; laskdjf \n \t "} {
+	for _, str := range []string{"", "   ", "\n\n", " ; laskdjf \n  "} {
 		s := newStateWithoutFile(str)
 		result, err := s.Exhaust(s.blank())()
 

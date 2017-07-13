@@ -12,11 +12,11 @@ import (
 const (
 	commentChar     = ';'
 	importString    = "import"
-	invalidChars    = "\x00"
+	invalidChars    = "\x00\t"
 	letString       = "let"
 	mutualRecString = "mr"
 	matchString     = "match"
-	spaceChars      = " \t\n\r"
+	spaceChars      = " \n\r"
 	specialChars    = "()[]{}\"$"
 )
 

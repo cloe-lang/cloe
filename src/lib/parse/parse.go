@@ -50,11 +50,11 @@ func SubModule(file, source string) ([]interface{}, error) {
 }
 
 func (s *state) mainModule() comb.Parser {
-	return s.module(s.importModule(), s.let(), s.output())
+	return s.module(s.let(), s.output())
 }
 
 func (s *state) subModule() comb.Parser {
-	return s.module(s.importModule(), s.let())
+	return s.module(s.let())
 }
 
 func (s *state) module(ps ...comb.Parser) comb.Parser {

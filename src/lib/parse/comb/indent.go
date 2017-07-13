@@ -47,7 +47,7 @@ func (s *State) SameLine(p, q Parser) Parser {
 	})
 }
 
-// SameLineOrIndented creates a parser whiich parses something in the same line
+// SameLineOrIndented creates a parser which parses something in the same line
 // or indented. It retrieves a reference position saved by WithPosition
 // combinator implicitly differently from other indent-aware combinators.
 func (s *State) SameLineOrIndented(n int, p Parser) Parser {

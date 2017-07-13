@@ -2,10 +2,14 @@ package comb
 
 import "strings"
 
+type position struct {
+	lineNumber, linePosition, sourcePosition int
+}
+
 // State represents a parser state.
 type State struct {
-	source                                   []rune
-	lineNumber, linePosition, sourcePosition int
+	source             []rune
+	current, reference position
 }
 
 // NewState creates a parser state.
@@ -14,7 +18,7 @@ func NewState(source string) *State {
 }
 
 func (s State) exhausted() bool {
-	return s.sourcePosition >= len(s.source)
+	return s.current.sourcePosition >= len(s.source)
 }
 
 func (s State) currentRune() rune {
@@ -22,31 +26,35 @@ func (s State) currentRune() rune {
 		return '\x00'
 	}
 
-	return s.source[s.sourcePosition]
+	return s.source[s.current.sourcePosition]
 }
 
 func (s *State) increment() {
 	if s.currentRune() == '\n' {
-		s.lineNumber++
-		s.linePosition = 0
+		s.current.lineNumber++
+		s.current.linePosition = 0
 	} else {
-		s.linePosition++
+		s.current.linePosition++
 	}
 
-	s.sourcePosition++
+	s.current.sourcePosition++
 }
 
 // LineNumber returns a current line number.
 func (s *State) LineNumber() int {
-	return s.lineNumber
+	return s.current.lineNumber
 }
 
 // LinePosition returns a current line number.
 func (s *State) LinePosition() int {
-	return s.linePosition
+	return s.current.linePosition
+}
+
+func (s *State) savePosition() {
+	s.reference = s.current
 }
 
 // Line returns a current line.
 func (s *State) Line() string {
-	return strings.Split(string(s.source), "\n")[s.lineNumber]
+	return strings.Split(string(s.source), "\n")[s.current.lineNumber]
 }

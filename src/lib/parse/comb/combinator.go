@@ -205,7 +205,7 @@ func (s *State) Exhaust(p Parser) Parser {
 		} else if !s.exhausted() {
 			return nil, fmt.Errorf(
 				"Some characters are left in source. %#v",
-				string(s.source[s.sourcePosition:]))
+				string(s.source[s.current.sourcePosition:]))
 		}
 
 		return result, err

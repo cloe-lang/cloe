@@ -50,10 +50,6 @@ func (s *State) LinePosition() int {
 	return s.current.linePosition
 }
 
-func (s *State) savePosition() {
-	s.reference = s.current
-}
-
 // Line returns a current line.
 func (s *State) Line() string {
 	return strings.Split(string(s.source), "\n")[s.current.lineNumber]

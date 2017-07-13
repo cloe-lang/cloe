@@ -24,8 +24,11 @@ func (s *State) Block(n int, p, q Parser) Parser {
 // WithPosition saves a current position and runs a given parser.
 func (s *State) WithPosition(p Parser) Parser {
 	return func() (interface{}, error) {
-		s.savePosition()
-		return p()
+		old := s.reference
+		s.reference = s.current
+		x, err := p()
+		s.reference = old
+		return x, err
 	}
 }
 

@@ -72,6 +72,11 @@ func (s *State) WithPosition(p Parser) Parser {
 	}
 }
 
+// NoIndent creates a parser which parses something not indented at all.
+func (s *State) NoIndent(p Parser) Parser {
+	return s.atLinePosition(0, p)
+}
+
 func (s *State) atLinePosition(pos int, p Parser) Parser {
 	return func() (interface{}, error) {
 		if s.current.linePosition != pos {

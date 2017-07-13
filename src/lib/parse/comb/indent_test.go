@@ -123,3 +123,30 @@ func TestSameLineOrIndentedFail(t *testing.T) {
 		assert.NotEqual(t, err, nil)
 	}
 }
+
+func TestNoIndent(t *testing.T) {
+	s := NewState("foo")
+	blank := s.Many(s.InString(" \n"))
+	result, err := s.Exhaust(s.And(blank, s.NoIndent(s.And(s.String("foo"), blank))))()
+
+	t.Logf("%#v", result)
+
+	assert.NotEqual(t, result, nil)
+	assert.Equal(t, err, nil)
+}
+
+func TestNoIndentFail(t *testing.T) {
+	for _, str := range []string{
+		" foo",
+		"  foo",
+	} {
+		s := NewState(str)
+		blank := s.Many(s.InString(" \n"))
+		result, err := s.Exhaust(s.And(blank, s.NoIndent(s.And(s.String("foo"), blank))))()
+
+		t.Logf("%#v", err)
+
+		assert.Equal(t, result, nil)
+		assert.NotEqual(t, err, nil)
+	}
+}

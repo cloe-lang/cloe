@@ -26,6 +26,27 @@ func (s *State) Block(n int, p, q, r Parser) Parser {
 	})
 }
 
+// SameLine creates a parser parsing 2 things in the same line.
+func (s *State) SameLine(p, q Parser) Parser {
+	return s.WithPosition(func() (interface{}, error) {
+		x, err := p()
+		if err != nil {
+			return nil, err
+		}
+
+		if s.current.lineNumber != s.reference.lineNumber {
+			return nil, fmt.Errorf("Invalid new line is detected")
+		}
+
+		y, err := q()
+		if err != nil {
+			return nil, err
+		}
+
+		return []interface{}{x, y}, nil
+	})
+}
+
 // WithPosition saves a current position and runs a given parser.
 func (s *State) WithPosition(p Parser) Parser {
 	return func() (interface{}, error) {

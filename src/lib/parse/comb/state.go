@@ -41,6 +41,11 @@ func (s *State) LineNumber() int {
 	return s.lineNumber
 }
 
+// LinePosition returns a current line number.
+func (s *State) LinePosition() int {
+	return s.linePosition
+}
+
 // Line returns a current line.
 func (s *State) Line() string {
 	return strings.Split(string(s.source), "\n")[s.lineNumber]

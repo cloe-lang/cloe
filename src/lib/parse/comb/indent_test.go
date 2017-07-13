@@ -17,7 +17,7 @@ func TestBlock(t *testing.T) {
 	} {
 		s := NewState(test.source)
 		blank := s.Many(s.InString(" \n"))
-		result, err := s.Exhaust(s.Block(test.indent, blank, s.And(s.String("foo"), blank)))()
+		result, err := s.Exhaust(s.Block(test.indent, blank, s.And(s.String("foo"), blank), s.None()))()
 
 		t.Logf("%#v", result)
 
@@ -37,7 +37,7 @@ func TestBlockFail(t *testing.T) {
 	} {
 		s := NewState(test.source)
 		blank := s.Many(s.InString(" \n"))
-		result, err := s.Exhaust(s.Block(test.indent, blank, s.And(s.String("foo"), blank)))()
+		result, err := s.Exhaust(s.Block(test.indent, blank, s.And(s.String("foo"), blank), s.None()))()
 
 		t.Logf("%#v", err)
 

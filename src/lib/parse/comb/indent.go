@@ -5,19 +5,24 @@ import (
 )
 
 // Block creates a parser parsing things which have the same indent.
-func (s *State) Block(n int, p, q Parser) Parser {
+func (s *State) Block(n int, p, q, r Parser) Parser {
 	return s.WithPosition(func() (interface{}, error) {
 		x, err := p()
 		if err != nil {
 			return nil, err
 		}
 
-		xs, err := s.Many(s.atLinePosition(s.reference.linePosition+n, q))()
+		ys, err := s.Many(s.atLinePosition(s.reference.linePosition+n, q))()
 		if err != nil {
 			return nil, err
 		}
 
-		return append([]interface{}{x}, xs.([]interface{})...), nil
+		z, err := r()
+		if err != nil {
+			return nil, err
+		}
+
+		return append([]interface{}{x}, append(ys.([]interface{}), z)...), nil
 	})
 }
 

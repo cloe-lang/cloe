@@ -11,7 +11,9 @@ import (
 
 const (
 	commentChar     = ';'
+	equalString     = "="
 	importString    = "import"
+	indent          = 2
 	invalidChars    = "\x00\t"
 	letString       = "let"
 	mutualRecString = "mr"
@@ -21,6 +23,7 @@ const (
 )
 
 var reserveds = map[string]bool{
+	equalString:     true,
 	importString:    true,
 	letString:       true,
 	matchString:     true,
@@ -61,22 +64,22 @@ func (s *state) module(ps ...comb.Parser) comb.Parser {
 	return s.Exhaust(s.Prefix(s.blank(), s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 		return append(xs[0].([]interface{}), xs[1].([]interface{})...)
-	}, s.And(s.Many(s.importModule()), s.Many(s.Or(ps...))))))
+	}, s.And(s.Many(s.importModule()), s.Many(s.NoIndent(s.Or(ps...)))))))
 }
 
 func (s *state) importModule() comb.Parser {
-	return s.withInfo(
-		s.list(s.strippedString(importString), s.stringLiteral()),
+	return s.NoIndent(s.WithPosition(s.withInfo(
+		s.And(s.strippedString(importString), s.stringLiteral()),
 		func(x interface{}, i debug.Info) (interface{}, error) {
 			xs := x.([]interface{})
 
 			path, err := strconv.Unquote(xs[1].(string))
 			if err != nil {
-				panic(err)
+				return nil, err
 			}
 
 			return ast.NewImport(path, i), nil
-		})
+		})))
 }
 
 func (s *state) let() comb.Parser {
@@ -84,35 +87,46 @@ func (s *state) let() comb.Parser {
 }
 
 func (s *state) strictLet() comb.Parser {
-	return s.Or(s.letVar(), s.letFunction(), s.mutuallyRecursiveLetFunctions())
-}
-
-func (s *state) letVar() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
-		return ast.NewLetVar(xs[1].(string), xs[2])
-	}, s.list(s.strippedString(letString), s.identifier(), s.expression()))
+	return s.WithPosition(s.Or(s.letFunction(), s.mutuallyRecursiveLetFunctions()))
 }
 
 func (s *state) letFunction() comb.Parser {
+	return s.Or(s.letFunctionOneLine(), s.letFunctionBlock())
+}
+
+func (s *state) letFunctionOneLine() comb.Parser {
 	return s.withInfo(
-		s.list(
-			s.strippedString(letString),
-			s.list(s.identifier(), s.signature()),
-			s.Many(s.let()),
-			s.expression()),
+		s.And(s.identifier(), s.signature(), s.equalExpression()),
 		func(x interface{}, i debug.Info) (interface{}, error) {
 			xs := x.([]interface{})
-			ys := xs[1].([]interface{})
-			return ast.NewLetFunction(ys[0].(string), ys[1].(ast.Signature), xs[2].([]interface{}), xs[3], i), nil
+			return ast.NewLetFunction(xs[0].(string), xs[1].(ast.Signature), nil, xs[2], i), nil
 		})
+}
+
+func (s *state) letFunctionBlock() comb.Parser {
+	return s.withInfo(
+		s.Block(indent, s.And(s.identifier(), s.signature()), s.let(), s.equalExpression()),
+		func(x interface{}, i debug.Info) (interface{}, error) {
+			xs := x.([]interface{})
+			ys := xs[0].([]interface{})
+			return ast.NewLetFunction(
+				ys[0].(string),
+				ys[1].(ast.Signature),
+				xs[1].([]interface{}),
+				xs[2],
+				i), nil
+		})
+}
+
+func (s *state) equalExpression() comb.Parser {
+	return s.Prefix(s.strippedString(equalString), s.expression())
 }
 
 func (s *state) optionalArgument() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 		return ast.NewOptionalArgument(xs[0].(string), xs[1])
-	}, s.strip(s.list(s.identifier(), s.expression())))
+	}, s.strip(s.And(s.identifier(), s.expression())))
 }
 
 func (s *state) expandedArgument() comb.Parser {
@@ -145,7 +159,6 @@ func (s *state) halfSignature() comb.Parser {
 }
 
 func (s *state) signature() comb.Parser {
-
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 
@@ -173,11 +186,11 @@ func (s *state) output() comb.Parser {
 		}
 
 		return ast.NewOutput(xs[1], expanded)
-	}, s.And(s.Maybe(s.String("..")), s.expression()))
+	}, s.NoIndent(s.And(s.Maybe(s.String("..")), s.expression())))
 }
 
 func (s *state) expanded(p comb.Parser) comb.Parser {
-	return s.Prefix(s.String(".."), p)
+	return s.Prefix(s.SameLineOrIndented(indent, s.String("..")), p)
 }
 
 func (s *state) expression() comb.Parser {
@@ -186,13 +199,19 @@ func (s *state) expression() comb.Parser {
 
 func (s *state) strictExpression() comb.Parser {
 	return s.strip(s.Or(
-		s.identifier(),
-		s.stringLiteral(),
-		s.match(),
+		s.functionExpression(),
 		s.app(),
+	))
+}
+
+func (s *state) functionExpression() comb.Parser {
+	return s.strip(s.Or(
+		s.stringWrap("(", s.expression(), ")"),
 		s.listLiteral(),
 		s.dictLiteral(),
-		// s.appFunc("lambda", s.sequence("'(", ")")),
+		s.stringLiteral(),
+		s.match(),
+		s.identifier(),
 	))
 }
 
@@ -217,7 +236,7 @@ func (s *state) match() comb.Parser {
 		}
 
 		return ast.NewMatch(xs[1], cs)
-	}, s.list(
+	}, s.And(
 		s.strippedString(matchString),
 		s.expression(),
 		s.Many1(s.And(s.pattern(), s.expression()))))
@@ -233,13 +252,13 @@ func (s *state) pattern() comb.Parser {
 
 func (s *state) mutuallyRecursiveLetFunctions() comb.Parser {
 	return s.withInfo(
-		s.list(s.strippedString(mutualRecString), s.Many(s.letFunction())),
+		s.Block(indent, s.strippedString(mutualRecString), s.Many(s.letFunction()), nil),
 		func(x interface{}, i debug.Info) (interface{}, error) {
 			xs := x.([]interface{})[1].([]interface{})
-			fs := make([]ast.LetFunction, len(xs))
+			fs := make([]ast.LetFunction, 0, len(xs))
 
-			for i, l := range xs {
-				fs[i] = l.(ast.LetFunction)
+			for _, l := range xs {
+				fs = append(fs, l.(ast.LetFunction))
 			}
 
 			return ast.NewMutualRecursion(fs, i), nil
@@ -248,7 +267,7 @@ func (s *state) mutuallyRecursiveLetFunctions() comb.Parser {
 
 func (s *state) app() comb.Parser {
 	return s.appWithInfo(
-		s.list(s.expression(), s.arguments()),
+		s.And(s.functionExpression(), s.arguments()),
 		func(x interface{}) (interface{}, ast.Arguments) {
 			xs := x.([]interface{})
 			return xs[0], xs[1].(ast.Arguments)
@@ -343,7 +362,7 @@ func (s *state) keywordArgument() comb.Parser {
 
 func (s *state) identifier() comb.Parser {
 	cs := string(commentChar) + invalidChars + spaceChars + specialChars
-	p := s.strip(s.Stringify(s.And(s.NotInString(cs+"."), s.Stringify(s.Many(s.NotInString(cs))))))
+	p := s.SameLineOrIndented(indent, s.strip(s.Stringify(s.And(s.NotInString(cs+"."), s.Stringify(s.Many(s.NotInString(cs)))))))
 
 	return func() (interface{}, error) {
 		x, err := p()
@@ -361,16 +380,12 @@ func (s *state) identifier() comb.Parser {
 }
 
 func (s *state) stringLiteral() comb.Parser {
-	c := s.Char('"')
+	c := s.SameLineOrIndented(indent, s.Char('"'))
 
 	return s.Stringify(s.And(
 		c,
 		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
 		s.strip(c)))
-}
-
-func (s *state) list(ps ...comb.Parser) comb.Parser {
-	return s.stringWrap("(", s.And(ps...), ")")
 }
 
 func (s *state) sequence(l, r string) comb.Parser {
@@ -392,8 +407,7 @@ func (s *state) appFunc(ident string, p comb.Parser) comb.Parser {
 }
 
 func (s *state) strip(p comb.Parser) comb.Parser {
-	b := s.blank()
-	return s.Wrap(s.None(), p, b)
+	return s.Wrap(s.None(), p, s.blank())
 }
 
 func (s *state) blank() comb.Parser {
@@ -407,5 +421,5 @@ func (s *state) comment() comb.Parser {
 }
 
 func (s *state) strippedString(str string) comb.Parser {
-	return s.strip(s.String(str))
+	return s.strip(s.SameLineOrIndented(indent, s.String(str)))
 }

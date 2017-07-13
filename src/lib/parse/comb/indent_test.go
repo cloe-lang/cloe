@@ -11,13 +11,14 @@ func TestBlock(t *testing.T) {
 		indent int
 		source string
 	}{
-		{0, "foo\nfoo\nfoo"},
-		{1, " foo\n foo\n foo"},
-		{2, "  foo\n  foo\n  foo"},
+		{0, "foo\nfoo\nfoo\nbar"},
+		{1, "foo\n foo\n foo \n bar"},
+		{2, "foo\n  foo\n  foo\n  bar"},
 	} {
 		s := NewState(test.source)
 		blank := s.Many(s.InString(" \n"))
-		result, err := s.Exhaust(s.Block(test.indent, blank, s.And(s.String("foo"), blank), s.None()))()
+		foo := s.And(s.String("foo"), blank)
+		result, err := s.Exhaust(s.And(blank, s.Block(test.indent, foo, foo, s.String("bar"))))()
 
 		t.Logf("%#v", result)
 
@@ -31,13 +32,15 @@ func TestBlockFail(t *testing.T) {
 		indent int
 		source string
 	}{
-		{0, "foo\n foo\nfoo"},
-		{1, " foo\nfoo\n foo"},
-		{2, "  foo\n  foo\n foo"},
+		{0, "foo\n foo\nfoo\nbar"},
+		{1, "foo\nfoo\n foo\n bar"},
+		{2, "foo\n  foo\n foo\n  bar"},
+		{1, "foo\n foo\n foo\n  bar"},
 	} {
 		s := NewState(test.source)
 		blank := s.Many(s.InString(" \n"))
-		result, err := s.Exhaust(s.Block(test.indent, blank, s.And(s.String("foo"), blank), s.None()))()
+		foo := s.And(s.String("foo"), blank)
+		result, err := s.Exhaust(s.And(blank, s.Block(test.indent, foo, foo, s.String("bar"))))()
 
 		t.Logf("%#v", err)
 

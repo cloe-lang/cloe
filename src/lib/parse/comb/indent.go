@@ -12,17 +12,26 @@ func (s *State) Block(n int, p, q, r Parser) Parser {
 			return nil, err
 		}
 
+		fmt.Println(s.current, s.reference)
+		if s.current.lineNumber == s.reference.lineNumber {
+			return nil, fmt.Errorf("New line expected")
+		}
+
 		ys, err := s.Many(s.atLinePosition(s.reference.linePosition+n, q))()
 		if err != nil {
 			return nil, err
 		}
 
-		z, err := r()
+		if r == nil {
+			return []interface{}{x, ys}, nil
+		}
+
+		z, err := s.atLinePosition(s.reference.linePosition+n, r)()
 		if err != nil {
 			return nil, err
 		}
 
-		return append([]interface{}{x}, append(ys.([]interface{}), z)...), nil
+		return []interface{}{x, ys, z}, nil
 	})
 }
 

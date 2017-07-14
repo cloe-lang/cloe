@@ -90,3 +90,16 @@ Feature: Match expression
     Matched!
     Matched!
     """
+
+  Scenario: Nest collections
+    Given a file named "main.tisp" with:
+    """
+    (write (match {"foo" 42 "bar" ["The pattern" "is" "Matched!"]}
+      {"bar" [foo "is" baz] "foo" 42} baz
+      {"foo" foo "bar" bar} "Not matched..."))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    Matched!
+    """

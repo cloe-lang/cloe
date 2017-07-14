@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime/pprof"
 	"strings"
 
 	"github.com/docopt/docopt-go"
@@ -32,6 +33,16 @@ func main() {
 		}()
 	}
 
+	if args["--profile"] != nil {
+		f, err := os.Create(args["--profile"].(string))
+		if err != nil {
+			panic(err)
+		}
+
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
+
 	run.Run(compile.MainModule(args["<filename>"].(string)))
 }
 
@@ -39,10 +50,11 @@ func getArgs() map[string]interface{} {
 	usage := `Tisp interpreter
 
 Usage:
-  tisp [-d] [<filename>]
+  tisp [-d] [-p <filename>] [<filename>]
 
 Options:
   -d, --debug  Turn on debug mode.
+  -p, --profile <filename>  Turn on profiling.
   -h, --help  Show this help.`
 
 	args, err := docopt.Parse(usage, nil, true, "Tisp 0.0.0", false)

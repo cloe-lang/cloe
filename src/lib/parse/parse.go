@@ -126,7 +126,7 @@ func (s *state) optionalArgument() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 		return ast.NewOptionalArgument(xs[0].(string), xs[1])
-	}, s.strip(s.And(s.identifier(), s.expression())))
+	}, s.strip(s.parens(s.And(s.identifier(), s.expression()))))
 }
 
 func (s *state) expandedArgument() comb.Parser {
@@ -199,14 +199,14 @@ func (s *state) expression() comb.Parser {
 
 func (s *state) strictExpression() comb.Parser {
 	return s.strip(s.Or(
-		s.functionExpression(),
 		s.app(),
+		s.functionExpression(),
 	))
 }
 
 func (s *state) functionExpression() comb.Parser {
 	return s.strip(s.Or(
-		s.stringWrap("(", s.expression(), ")"),
+		s.parens(s.expression()),
 		s.listLiteral(),
 		s.dictLiteral(),
 		s.stringLiteral(),
@@ -422,4 +422,8 @@ func (s *state) comment() comb.Parser {
 
 func (s *state) strippedString(str string) comb.Parser {
 	return s.strip(s.SameLineOrIndented(indent, s.String(str)))
+}
+
+func (s *state) parens(p comb.Parser) comb.Parser {
+	return s.stringWrap("(", p, ")")
 }

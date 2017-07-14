@@ -121,14 +121,12 @@ func TestList(t *testing.T) {
 }
 
 func TestExpression(t *testing.T) {
-	strs := []string{
+	for _, str := range []string{
 		"ident",
 		"ident  ",
 		"foo bar",
 		"foo ; (this is) comment \n     bar   ; lsdfj\n ",
-	}
-
-	for _, str := range strs {
+	} {
 		t.Logf("source: %#v", str)
 
 		s := newStateWithoutFile(str)

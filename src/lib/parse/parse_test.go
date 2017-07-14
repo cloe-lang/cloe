@@ -84,11 +84,44 @@ func TestLetFunctionBlock(t *testing.T) {
 	}
 }
 
+func TestEqualExpression(t *testing.T) {
+	for _, str := range []string{
+		"= 123",
+		"= x",
+		"= f x y",
+		"= match 123 123 123",
+	} {
+		s := newStateWithoutFile(str)
+		_, err := s.Exhaust(s.equalExpression())()
+		assert.Equal(t, nil, err)
+	}
+}
+
 func TestSignature(t *testing.T) {
 	for _, str := range []string{"", "x", "x y", "(x 123)", "..args", ". x", ". (x 123)", ". ..kwargs", "..args . ..kwargs"} {
 		s := newStateWithoutFile(str)
 		_, err := s.Exhaust(s.signature())()
 		assert.Equal(t, nil, err)
+	}
+}
+
+func TestSignatureFail(t *testing.T) {
+	for _, str := range []string{
+		"=",
+	} {
+		s := newStateWithoutFile(str)
+		_, err := s.Exhaust(s.signature())()
+		assert.NotEqual(t, nil, err)
+	}
+}
+
+func TestHalfSignatureFail(t *testing.T) {
+	for _, str := range []string{
+		"=",
+	} {
+		s := newStateWithoutFile(str)
+		_, err := s.Exhaust(s.halfSignature())()
+		assert.NotEqual(t, nil, err)
 	}
 }
 
@@ -213,8 +246,8 @@ func TestIdentifier(t *testing.T) {
 	}
 }
 
-func TestXFailIdentifier(t *testing.T) {
-	for _, str := range []string{"", ".", "..", ".foo"} {
+func TestIdentifierFail(t *testing.T) {
+	for _, str := range []string{"", ".", "..", ".foo", "="} {
 		s := newStateWithoutFile(str)
 		result, err := s.identifier()()
 		assert.Equal(t, result, nil)

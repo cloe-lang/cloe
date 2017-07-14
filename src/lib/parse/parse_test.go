@@ -124,7 +124,8 @@ func TestExpression(t *testing.T) {
 	strs := []string{
 		"ident",
 		"ident  ",
-		"foo ; (this is) comment \n  bar   ; lsdfj\n ",
+		"foo bar",
+		"foo ; (this is) comment \n     bar   ; lsdfj\n ",
 	}
 
 	for _, str := range strs {

@@ -200,17 +200,17 @@ func (s *state) expression() comb.Parser {
 func (s *state) strictExpression() comb.Parser {
 	return s.strip(s.Or(
 		s.app(),
-		s.functionExpression(),
+		s.match(),
+		s.singleExpression(),
 	))
 }
 
-func (s *state) functionExpression() comb.Parser {
+func (s *state) singleExpression() comb.Parser {
 	return s.strip(s.Or(
 		s.parens(s.expression()),
 		s.listLiteral(),
 		s.dictLiteral(),
 		s.stringLiteral(),
-		s.match(),
 		s.identifier(),
 	))
 }
@@ -238,8 +238,8 @@ func (s *state) match() comb.Parser {
 		return ast.NewMatch(xs[1], cs)
 	}, s.And(
 		s.strippedString(matchString),
-		s.expression(),
-		s.Many1(s.And(s.pattern(), s.expression()))))
+		s.singleExpression(),
+		s.Many1(s.And(s.pattern(), s.singleExpression()))))
 }
 
 func (s *state) pattern() comb.Parser {
@@ -267,7 +267,7 @@ func (s *state) mutuallyRecursiveLetFunctions() comb.Parser {
 
 func (s *state) app() comb.Parser {
 	return s.appWithInfo(
-		s.And(s.functionExpression(), s.arguments()),
+		s.And(s.singleExpression(), s.arguments()),
 		func(x interface{}) (interface{}, ast.Arguments) {
 			xs := x.([]interface{})
 			return xs[0], xs[1].(ast.Arguments)

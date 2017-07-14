@@ -92,19 +92,19 @@ func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interfa
 	case ast.App:
 		args := x.Arguments()
 
-		ps := make([]ir.PositionalArgument, len(args.Positionals()))
-		for i, p := range args.Positionals() {
-			ps[i] = ir.NewPositionalArgument(c.exprToIR(varToIndex, p.Value()), p.Expanded())
+		ps := make([]ir.PositionalArgument, 0, len(args.Positionals()))
+		for _, p := range args.Positionals() {
+			ps = append(ps, ir.NewPositionalArgument(c.exprToIR(varToIndex, p.Value()), p.Expanded()))
 		}
 
-		ks := make([]ir.KeywordArgument, len(args.Keywords()))
-		for i, k := range args.Keywords() {
-			ks[i] = ir.NewKeywordArgument(k.Name(), c.exprToIR(varToIndex, k.Value()))
+		ks := make([]ir.KeywordArgument, 0, len(args.Keywords()))
+		for _, k := range args.Keywords() {
+			ks = append(ks, ir.NewKeywordArgument(k.Name(), c.exprToIR(varToIndex, k.Value())))
 		}
 
-		ds := make([]interface{}, len(args.ExpandedDicts()))
-		for i, d := range args.ExpandedDicts() {
-			ds[i] = c.exprToIR(varToIndex, d)
+		ds := make([]interface{}, 0, len(args.ExpandedDicts()))
+		for _, d := range args.ExpandedDicts() {
+			ds = append(ds, c.exprToIR(varToIndex, d))
 		}
 
 		return ir.NewApp(

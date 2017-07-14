@@ -251,23 +251,21 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 		}
 
 		k := ps[0].Value()
-		groupExist := false
+		new := group{k, []ast.MatchCase{c}}
 
-		for i, g := range gs {
-			if equalPatterns(k, g.key) {
-				groupExist = true
-				gs[i].cases = append(gs[i].cases, c)
-			}
-		}
-
-		if !groupExist {
-			gs = append(gs, group{k, []ast.MatchCase{c}})
+		if len(gs) == 0 {
+			gs = append(gs, new)
+		} else if last := gs[len(gs)-1]; equalPatterns(k, last.key) {
+			last.cases = append(last.cases, c)
+		} else {
+			gs = append(gs, new)
 		}
 	}
 
 	x := dc
 
-	for _, g := range gs {
+	for i := len(gs) - 1; i >= 0; i-- {
+		g := gs[i]
 		x = app("$if",
 			app("$include", v, g.key),
 			d.desugarDictCasesOfSameKey(v, g.cases, x),

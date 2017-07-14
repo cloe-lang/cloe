@@ -250,12 +250,11 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 			panic("Not implemented")
 		}
 
-		k := ps[0].Value()
-		new := group{k, []ast.MatchCase{c}}
+		new := group{ps[0].Value(), []ast.MatchCase{c}}
 
 		if len(gs) == 0 {
 			gs = append(gs, new)
-		} else if last := gs[len(gs)-1]; equalPatterns(k, last.key) {
+		} else if last := gs[len(gs)-1]; equalPatterns(new.key, last.key) {
 			last.cases = append(last.cases, c)
 		} else {
 			gs = append(gs, new)

@@ -1,6 +1,7 @@
 package comb
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,6 +16,30 @@ func TestMany(t *testing.T) {
 
 		assert.NotEqual(t, result, nil)
 		assert.Equal(t, err, nil)
+	}
+}
+
+func TestManyFail(t *testing.T) {
+	for _, str := range []string{"="} {
+		s := NewState(str)
+		result, err := s.Exhaust(s.Many(func() (interface{}, error) {
+			x, err := s.String("=")()
+
+			if err != nil {
+				return nil, err
+			}
+
+			if x.(string) == "=" {
+				return nil, fmt.Errorf("Invalid word")
+			}
+
+			return x, nil
+		}))()
+
+		t.Logf("%#v", result)
+
+		assert.Equal(t, result, nil)
+		assert.NotEqual(t, err, nil)
 	}
 }
 

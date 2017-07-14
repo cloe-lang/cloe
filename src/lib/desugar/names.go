@@ -5,7 +5,7 @@ import "github.com/tisp-lang/tisp/src/lib/ast"
 type names map[string]bool
 
 func newNames(ss ...string) names {
-	ns := make(names)
+	ns := make(names, len(ss))
 
 	for _, s := range ss {
 		ns.add(s)

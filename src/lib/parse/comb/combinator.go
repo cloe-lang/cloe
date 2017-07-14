@@ -114,11 +114,16 @@ func (s *State) Many1(p Parser) Parser {
 		var results []interface{}
 
 		for i := 0; ; i++ {
+			old := *s
 			result, err := p()
 
-			if err != nil && i == 0 {
-				return nil, err
-			} else if err != nil {
+			if err != nil {
+				*s = old
+
+				if i == 0 {
+					return nil, err
+				}
+
 				break
 			}
 

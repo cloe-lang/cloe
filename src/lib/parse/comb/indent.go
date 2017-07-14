@@ -12,7 +12,6 @@ func (s *State) Block(n int, p, q, r Parser) Parser {
 			return nil, err
 		}
 
-		fmt.Println(s.current, s.reference)
 		if s.current.lineNumber == s.reference.lineNumber {
 			return nil, fmt.Errorf("New line expected")
 		}

@@ -58,14 +58,28 @@ func TestImportModule(t *testing.T) {
 	}
 }
 
-func TestLetFunction(t *testing.T) {
+func TestLetFunctionOneLine(t *testing.T) {
 	for _, str := range []string{
 		"foo = 123",
+		"foo x = x",
 		"foo x = f x y",
 		"foo x y (z 123) (v 456) ..args . a b (c 123) (d 456) ..kwargs = 123",
 	} {
 		s := newStateWithoutFile(str)
-		_, err := s.Exhaust(s.letFunction())()
+		_, err := s.Exhaust(s.letFunctionOneLine())()
+		assert.Equal(t, nil, err)
+	}
+}
+
+func TestLetFunctionBlock(t *testing.T) {
+	for _, str := range []string{
+		"foo\n  = 123",
+		"foo x\n  = x",
+		"foo x\n  = f x y",
+		"foo x y (z 123) (v 456) ..args . a b (c 123) (d 456) ..kwargs\n  = 123",
+	} {
+		s := newStateWithoutFile(str)
+		_, err := s.Exhaust(s.letFunctionBlock())()
 		assert.Equal(t, nil, err)
 	}
 }
@@ -184,12 +198,19 @@ func TestArguments(t *testing.T) {
 }
 
 func TestIdentifier(t *testing.T) {
-	result, err := newStateWithoutFile("ident").identifier()()
+	for _, str := range []string{
+		"ident",
+		"123",
+		"nil",
+		"true",
+	} {
+		result, err := newStateWithoutFile(str).identifier()()
 
-	t.Log(err)
+		t.Log(err)
 
-	assert.NotEqual(t, result, nil)
-	assert.Equal(t, err, nil)
+		assert.NotEqual(t, result, nil)
+		assert.Equal(t, err, nil)
+	}
 }
 
 func TestXFailIdentifier(t *testing.T) {

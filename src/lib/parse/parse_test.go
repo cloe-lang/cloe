@@ -17,7 +17,7 @@ func TestMainModule(t *testing.T) {
 	}
 }
 
-func TestXFailMainModule(t *testing.T) {
+func TestMainModuleFail(t *testing.T) {
 	for _, str := range []string{"(", "(()"} {
 		result, err := newStateWithoutFile(str).mainModule()()
 
@@ -125,6 +125,16 @@ func TestHalfSignatureFail(t *testing.T) {
 	}
 }
 
+func TestExpandedArgumentFail(t *testing.T) {
+	for _, str := range []string{
+		"=",
+	} {
+		s := newStateWithoutFile(str)
+		_, err := s.Exhaust(s.Many(s.identifier()))()
+		assert.NotEqual(t, nil, err)
+	}
+}
+
 func TestOutput(t *testing.T) {
 	for _, str := range []string{"output", "..outputs", "foo bar", "..(foo bar)"} {
 		s := newStateWithoutFile(str)
@@ -183,6 +193,22 @@ func TestExpression(t *testing.T) {
 
 		assert.NotEqual(t, result, nil)
 		assert.Equal(t, err, nil)
+	}
+}
+
+func TestExpressionFail(t *testing.T) {
+	for _, str := range []string{
+		"=",
+	} {
+		t.Logf("source: %#v", str)
+
+		s := newStateWithoutFile(str)
+		result, err := s.Exhaust(s.expression())()
+
+		t.Logf("%#v", err)
+
+		assert.Equal(t, result, nil)
+		assert.NotEqual(t, err, nil)
 	}
 }
 

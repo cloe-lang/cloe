@@ -133,7 +133,7 @@ func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc interface
 		dc = d.desugarScalarCases(v, cs, dc)
 	}
 
-	return ast.NewSwitch(app("typeOf", v), ks, dc)
+	return newSwitch(app("typeOf", v), ks, dc)
 }
 
 func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {
@@ -335,7 +335,7 @@ func (d *desugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, dc int
 		ks = append(ks, ast.NewSwitchCase(c.Pattern().(string), c.Value()))
 	}
 
-	return ast.NewSwitch(v, ks, dc)
+	return newSwitch(v, ks, dc)
 }
 
 func renameBoundNamesInCase(c ast.MatchCase) ast.MatchCase {

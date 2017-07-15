@@ -95,6 +95,10 @@ func (d *desugarer) letVar(s string, v interface{}) string {
 	return s
 }
 
+func (d *desugarer) app(f interface{}, args ...interface{}) string {
+	return d.letVar(gensym.GenSym("match", "app"), app(f, args...))
+}
+
 func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 	arg := gensym.GenSym("match", "argument")
 	body := d.desugarCases(arg, cs, matchError)

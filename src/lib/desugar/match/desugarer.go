@@ -90,8 +90,9 @@ func (d *desugarer) takeLets() []interface{} {
 	return ls
 }
 
-func (d *desugarer) letVar(s string, v interface{}) {
+func (d *desugarer) letVar(s string, v interface{}) string {
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
+	return s
 }
 
 func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {

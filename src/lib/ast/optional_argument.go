@@ -1,5 +1,7 @@
 package ast
 
+import "fmt"
+
 // OptionalArgument represents an optional argument defined in a function.
 type OptionalArgument struct {
 	name         string
@@ -19,4 +21,8 @@ func (o OptionalArgument) Name() string {
 // DefaultValue returns a default value of an optional argument.
 func (o OptionalArgument) DefaultValue() interface{} {
 	return o.defaultValue
+}
+
+func (o OptionalArgument) String() string {
+	return fmt.Sprintf("(%v %v)", o.name, o.defaultValue)
 }

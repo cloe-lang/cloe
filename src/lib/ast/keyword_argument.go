@@ -1,5 +1,7 @@
 package ast
 
+import "fmt"
+
 // KeywordArgument represents a keyword argument passed to a function.
 type KeywordArgument struct {
 	name  string
@@ -19,4 +21,8 @@ func (k KeywordArgument) Name() string {
 // Value returns a value of a keyword argument.
 func (k KeywordArgument) Value() interface{} {
 	return k.value
+}
+
+func (k KeywordArgument) String() string {
+	return fmt.Sprintf("%v %v", k.name, k.value)
 }

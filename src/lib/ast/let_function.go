@@ -1,6 +1,11 @@
 package ast
 
-import "github.com/tisp-lang/tisp/src/lib/debug"
+import (
+	"fmt"
+	"strings"
+
+	"github.com/tisp-lang/tisp/src/lib/debug"
+)
 
 // LetFunction represents a let-function statement node in ASTs.
 type LetFunction struct {
@@ -41,4 +46,14 @@ func (f LetFunction) Body() interface{} {
 // DebugInfo returns debug information of a function defined by the let-function statement.
 func (f LetFunction) DebugInfo() debug.Info {
 	return f.info
+}
+
+func (f LetFunction) String() string {
+	ss := make([]string, 0, len(f.lets))
+
+	for _, l := range f.lets {
+		ss = append(ss, fmt.Sprintf("%v", l))
+	}
+
+	return fmt.Sprintf("(let (%v %v) %v %v)", f.name, f.signature, strings.Join(ss, " "), f.body)
 }

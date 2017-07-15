@@ -1,5 +1,7 @@
 package ast
 
+import "fmt"
+
 // LetVar represents a let-variable statement node in ASTs.
 type LetVar struct {
 	name string
@@ -12,11 +14,15 @@ func NewLetVar(name string, expr interface{}) LetVar {
 }
 
 // Name returns a variable name defined by the let-variable statement.
-func (c LetVar) Name() string {
-	return c.name
+func (v LetVar) Name() string {
+	return v.name
 }
 
 // Expr returns an expression of a variable value""
-func (c LetVar) Expr() interface{} {
-	return c.expr
+func (v LetVar) Expr() interface{} {
+	return v.expr
+}
+
+func (v LetVar) String() string {
+	return fmt.Sprintf("(let %v %v)", v.name, v.expr)
 }

@@ -1,5 +1,10 @@
 package ast
 
+import (
+	"fmt"
+	"strings"
+)
+
 // Signature represents a signature of a function.
 type Signature struct {
 	positionals halfSignature
@@ -78,4 +83,26 @@ func (hs halfSignature) names() []string {
 	}
 
 	return ns
+}
+
+func (hs halfSignature) String() string {
+	ss := make([]string, len(hs.requireds)+len(hs.optionals)+1)
+
+	for _, r := range hs.requireds {
+		ss = append(ss, r)
+	}
+
+	for _, o := range hs.optionals {
+		ss = append(ss, o.String())
+	}
+
+	if hs.rest != "" {
+		ss = append(ss, hs.rest)
+	}
+
+	return strings.Join(ss, " ")
+}
+
+func (s Signature) String() string {
+	return fmt.Sprintf("%v %v", s.positionals, s.keywords)
 }

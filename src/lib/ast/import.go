@@ -1,6 +1,10 @@
 package ast
 
-import "github.com/tisp-lang/tisp/src/lib/debug"
+import (
+	"fmt"
+
+	"github.com/tisp-lang/tisp/src/lib/debug"
+)
 
 // Import represents an import of a sub module.
 type Import struct {
@@ -16,4 +20,8 @@ func NewImport(path string, info debug.Info) Import {
 // Path returns a path to an imported sub module.
 func (i Import) Path() string {
 	return i.path
+}
+
+func (i Import) String() string {
+	return fmt.Sprintf("(import %v)", i.path)
 }

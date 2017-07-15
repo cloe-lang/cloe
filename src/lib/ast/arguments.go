@@ -1,5 +1,10 @@
 package ast
 
+import (
+	"fmt"
+	"strings"
+)
+
 // Arguments represents arguments passed to a function.
 type Arguments struct {
 	positionals   []PositionalArgument
@@ -28,4 +33,26 @@ func (a Arguments) Keywords() []KeywordArgument {
 // ExpandedDicts returns expanded dictionary arguments contained in arguments.
 func (a Arguments) ExpandedDicts() []interface{} {
 	return a.expandedDicts
+}
+
+func (a Arguments) String() string {
+	ss := make([]string, 0, len(a.positionals)+len(a.keywords)+len(a.expandedDicts)+1)
+
+	for _, p := range a.positionals {
+		ss = append(ss, p.String())
+	}
+
+	if len(a.keywords)+len(a.expandedDicts) > 0 {
+		ss = append(ss, ".")
+	}
+
+	for _, k := range a.keywords {
+		ss = append(ss, k.String())
+	}
+
+	for _, d := range a.expandedDicts {
+		ss = append(ss, fmt.Sprintf("%v", d))
+	}
+
+	return strings.Join(ss, " ")
 }

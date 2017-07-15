@@ -1,6 +1,8 @@
 package ast
 
 import (
+	"fmt"
+
 	"github.com/tisp-lang/tisp/src/lib/debug"
 )
 
@@ -40,4 +42,8 @@ func (a App) Arguments() Arguments {
 // DebugInfo returns debug information of an application.
 func (a App) DebugInfo() debug.Info {
 	return a.info
+}
+
+func (a App) String() string {
+	return fmt.Sprintf("(%v %v)", a.function, a.args)
 }

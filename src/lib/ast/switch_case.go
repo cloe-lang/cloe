@@ -1,5 +1,7 @@
 package ast
 
+import "fmt"
+
 // SwitchCase represents a case of a pattern and corrensponding value.
 type SwitchCase struct {
 	pattern string
@@ -19,4 +21,8 @@ func (c SwitchCase) Pattern() string {
 // Value returns a value corrensponding to a pattern in a switch expression.
 func (c SwitchCase) Value() interface{} {
 	return c.value
+}
+
+func (c SwitchCase) String() string {
+	return fmt.Sprintf("%v %v", c.pattern, c.value)
 }

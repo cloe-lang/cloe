@@ -1,5 +1,10 @@
 package ast
 
+import (
+	"fmt"
+	"strings"
+)
+
 // Match represents a match expression.
 type Match struct {
 	value interface{}
@@ -23,4 +28,14 @@ func (m Match) Value() interface{} {
 // Cases returns pairs of a pattern and corrensponding value in a match expression.
 func (m Match) Cases() []MatchCase {
 	return m.cases
+}
+
+func (m Match) String() string {
+	ss := make([]string, 0, len(m.cases))
+
+	for _, c := range m.cases {
+		ss = append(ss, c.String())
+	}
+
+	return fmt.Sprintf("(match %v %v)", m.value, strings.Join(ss, " "))
 }

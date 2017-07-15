@@ -1,5 +1,7 @@
 package ast
 
+import "fmt"
+
 // Output represents outputs of programs.
 type Output struct {
 	expr     interface{}
@@ -19,4 +21,12 @@ func (o Output) Expr() interface{} {
 // Expanded returns true when the output is expanded.
 func (o Output) Expanded() bool {
 	return o.expanded
+}
+
+func (o Output) String() string {
+	if o.expanded {
+		return fmt.Sprintf("..%v", o.expr)
+	}
+
+	return fmt.Sprintf("%v", o.expr)
 }

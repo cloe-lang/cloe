@@ -108,7 +108,7 @@ func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 		body,
 		debug.NewGoInfo(0))
 
-	d.lets = []interface{}{f}
+	d.lets = append(d.lets, f)
 
 	return f.Name()
 }

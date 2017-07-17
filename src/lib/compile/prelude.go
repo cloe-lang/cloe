@@ -19,10 +19,13 @@ func prelude() environment {
 		{"partial", core.Partial},
 
 		{"first", core.First},
+		{"$first", core.First},
 		{"rest", core.Rest},
+		{"$rest", core.Rest},
 		{"prepend", core.Prepend},
 
 		{"typeOf", core.TypeOf},
+		{"$typeOf", core.TypeOf},
 		{"isOrdered", core.IsOrdered},
 
 		{"+", core.Add},

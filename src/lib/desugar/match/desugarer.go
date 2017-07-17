@@ -138,7 +138,7 @@ func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc interface
 		dc = d.desugarScalarCases(v, cs, dc)
 	}
 
-	return newSwitch(app("typeOf", v), ks, dc)
+	return newSwitch(app("$typeOf", v), ks, dc)
 }
 
 func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {
@@ -204,9 +204,9 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 			c.Value())
 
 		if getPatternType(first) == namePattern {
-			d.letVar(first.(string), app("first", v))
+			d.letVar(first.(string), app("$first", v))
 			dc = d.desugarCases(
-				app("rest", v),
+				app("$rest", v),
 				[]ast.MatchCase{c},
 				d.desugarListCases(v, cs[i+1:], dc))
 			break
@@ -229,10 +229,10 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 	ks := make([]ast.MatchCase, 0, len(gs))
 
 	for _, g := range gs {
-		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(app("rest", v), g.cases, dc)))
+		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(app("$rest", v), g.cases, dc)))
 	}
 
-	return d.desugarCases(app("first", v), ks, dc)
+	return d.desugarCases(app("$first", v), ks, dc)
 }
 
 func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {

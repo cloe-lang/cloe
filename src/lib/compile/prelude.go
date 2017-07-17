@@ -72,6 +72,8 @@ func prelude() environment {
 
 		{"read", std.Read},
 		{"write", std.Write},
+
+		{"$matchError", core.NewError("MatchError", "A value didn't match with any pattern.")},
 	} {
 		e.set(nv.name, nv.value)
 	}

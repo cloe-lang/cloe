@@ -9,8 +9,6 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/scalar"
 )
 
-var matchError = app("error", "\"MatchError\"", "\"Failed to match a value with patterns\"")
-
 type desugarer struct {
 	lets []interface{}
 }
@@ -101,7 +99,7 @@ func (d *desugarer) app(f interface{}, args ...interface{}) string {
 
 func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 	arg := gensym.GenSym("match", "argument")
-	body := d.desugarCases(arg, cs, matchError)
+	body := d.desugarCases(arg, cs, "$matchError")
 
 	f := ast.NewLetFunction(
 		gensym.GenSym("match", "function"),

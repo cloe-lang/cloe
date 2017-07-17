@@ -10,11 +10,11 @@ import (
 )
 
 type desugarer struct {
-	lets []interface{}
+	letBoundNames, lets []interface{}
 }
 
 func newDesugarer() *desugarer {
-	return &desugarer{nil}
+	return &desugarer{nil, nil}
 }
 
 func (d *desugarer) desugar(x interface{}) interface{} {
@@ -83,7 +83,8 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 }
 
 func (d *desugarer) takeLets() []interface{} {
-	ls := d.lets
+	ls := append(d.letBoundNames, d.lets...)
+	d.letBoundNames = nil
 	d.lets = nil
 	return ls
 }
@@ -91,6 +92,10 @@ func (d *desugarer) takeLets() []interface{} {
 func (d *desugarer) letVar(s string, v interface{}) string {
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
 	return s
+}
+
+func (d *desugarer) bindName(s string, v interface{}) {
+	d.letBoundNames = append(d.letBoundNames, ast.NewLetVar(s, v))
 }
 
 func (d *desugarer) app(f interface{}, args ...interface{}) string {
@@ -118,7 +123,7 @@ func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc interface
 
 	if cs, ok := css[namePattern]; ok {
 		c := cs[0]
-		d.letVar(c.Pattern().(string), v)
+		d.bindName(c.Pattern().(string), v)
 		dc = c.Value()
 	}
 
@@ -202,7 +207,7 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 			c.Value())
 
 		if getPatternType(first) == namePattern {
-			d.letVar(first.(string), app("$first", v))
+			d.bindName(first.(string), app("$first", v))
 			dc = d.desugarCases(
 				app("$rest", v),
 				[]ast.MatchCase{c},
@@ -295,7 +300,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(v interface{}, cs []ast.MatchCase,
 			c.Value())
 
 		if getPatternType(value) == namePattern {
-			d.letVar(value.(string), app(v, key))
+			d.bindName(value.(string), app(v, key))
 
 			if rest := cs[i+1:]; len(rest) != 0 {
 				dc = d.desugarDictCasesOfSameKey(v, rest, dc)

@@ -196,6 +196,8 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 	}
 
 	gs := []group{}
+	first := d.matchedApp("$first", list)
+	rest := d.matchedApp("$rest", list)
 
 	for i, c := range cs {
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
@@ -216,9 +218,9 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 			c.Value())
 
 		if getPatternType(v) == namePattern {
-			d.bindName(v.(string), app("$first", list))
+			d.bindName(v.(string), first)
 			dc = d.desugarCases(
-				app("$rest", list),
+				rest,
 				[]ast.MatchCase{c},
 				d.desugarListCases(list, cs[i+1:], dc))
 			break
@@ -241,10 +243,10 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 	ks := make([]ast.MatchCase, 0, len(gs))
 
 	for _, g := range gs {
-		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(app("$rest", list), g.cases, dc)))
+		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(rest, g.cases, dc)))
 	}
 
-	return d.desugarCases(app("$first", list), ks, dc)
+	return d.desugarCases(first, ks, dc)
 }
 
 func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {

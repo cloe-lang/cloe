@@ -293,29 +293,29 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 	return x
 }
 
-func (d *desugarer) desugarDictCasesOfSameKey(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	type group struct {
 		value interface{}
 		cases []ast.MatchCase
 	}
 
 	key := cs[0].Pattern().(ast.App).Arguments().Positionals()[0].Value()
-	newDict := d.matchedApp("delete", v, key)
+	newDict := d.matchedApp("delete", dict, key)
 	gs := []group{}
 
 	for i, c := range cs {
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
-		value := ps[1].Value()
+		v := ps[1].Value()
 
 		c = ast.NewMatchCase(
 			ast.NewApp("$dict", ast.NewArguments(ps[2:], nil, nil), debug.NewGoInfo(0)),
 			c.Value())
 
-		if getPatternType(value) == namePattern {
-			d.bindName(value.(string), app(v, key))
+		if getPatternType(v) == namePattern {
+			d.bindName(v.(string), app(dict, key))
 
 			if rest := cs[i+1:]; len(rest) != 0 {
-				dc = d.desugarDictCasesOfSameKey(v, rest, dc)
+				dc = d.desugarDictCasesOfSameKey(dict, rest, dc)
 			}
 
 			dc = d.desugarCases(newDict, []ast.MatchCase{c}, dc)
@@ -326,14 +326,14 @@ func (d *desugarer) desugarDictCasesOfSameKey(v interface{}, cs []ast.MatchCase,
 		groupExist := false
 
 		for i, g := range gs {
-			if equalPatterns(value, g.value) {
+			if equalPatterns(v, g.value) {
 				groupExist = true
 				gs[i].cases = append(gs[i].cases, c)
 			}
 		}
 
 		if !groupExist {
-			gs = append(gs, group{value, []ast.MatchCase{c}})
+			gs = append(gs, group{v, []ast.MatchCase{c}})
 		}
 	}
 
@@ -345,7 +345,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(v interface{}, cs []ast.MatchCase,
 			ast.NewMatchCase(g.value, d.desugarCases(newDict, g.cases, dc)))
 	}
 
-	return d.desugarCases(app(v, key), cs, dc)
+	return d.desugarCases(app(dict, key), cs, dc)
 }
 
 func (d *desugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {

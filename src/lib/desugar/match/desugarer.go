@@ -141,7 +141,7 @@ func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc interface
 		dc = d.desugarScalarCases(v, cs, dc)
 	}
 
-	return newSwitch(app("$typeOf", v), ks, dc)
+	return newSwitch(d.app("$typeOf", v), ks, dc)
 }
 
 func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {

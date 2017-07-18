@@ -89,7 +89,8 @@ func (d *desugarer) takeLets() []interface{} {
 	return ls
 }
 
-func (d *desugarer) letVar(s string, v interface{}) string {
+func (d *desugarer) letTempVar(v interface{}) string {
+	s := gensym.GenSym("match", "tmp")
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
 	return s
 }
@@ -108,7 +109,7 @@ func (d *desugarer) matchedApp(f interface{}, args ...interface{}) string {
 // resultApp applies a function to arguments and creates a result value of match
 // expression.
 func (d *desugarer) resultApp(f interface{}, args ...interface{}) string {
-	return d.letVar(gensym.GenSym("match", "app"), app(f, args...))
+	return d.letTempVar(app(f, args...))
 }
 
 func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
@@ -241,6 +242,7 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 	}
 
 	ks := make([]ast.MatchCase, 0, len(gs))
+	dc = d.letTempVar(dc)
 
 	for _, g := range gs {
 		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(rest, g.cases, dc)))
@@ -337,6 +339,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 	}
 
 	cs = make([]ast.MatchCase, 0, len(gs))
+	dc = d.letTempVar(dc)
 
 	for _, g := range gs {
 		cs = append(

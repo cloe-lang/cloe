@@ -300,6 +300,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(v interface{}, cs []ast.MatchCase,
 	}
 
 	key := cs[0].Pattern().(ast.App).Arguments().Positionals()[0].Value()
+	newDict := d.matchedApp("delete", v, key)
 	gs := []group{}
 
 	for i, c := range cs {
@@ -317,7 +318,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(v interface{}, cs []ast.MatchCase,
 				dc = d.desugarDictCasesOfSameKey(v, rest, dc)
 			}
 
-			dc = d.desugarCases(app("$delete", v, key), []ast.MatchCase{c}, dc)
+			dc = d.desugarCases(newDict, []ast.MatchCase{c}, dc)
 
 			break
 		}
@@ -341,7 +342,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(v interface{}, cs []ast.MatchCase,
 	for _, g := range gs {
 		cs = append(
 			cs,
-			ast.NewMatchCase(g.value, d.desugarCases(app("$delete", v, key), g.cases, dc)))
+			ast.NewMatchCase(g.value, d.desugarCases(newDict, g.cases, dc)))
 	}
 
 	return d.desugarCases(app(v, key), cs, dc)

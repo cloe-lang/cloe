@@ -180,7 +180,7 @@ func getPatternType(p interface{}) patternType {
 	panic(fmt.Errorf("Invalid pattern: %#v", p))
 }
 
-func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	type group struct {
 		first interface{}
 		cases []ast.MatchCase
@@ -192,7 +192,7 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
 
 		if len(ps) == 0 {
-			dc = d.app("$if", app("$=", v, "$emptyList"), c.Value(), dc)
+			dc = d.app("$if", app("$=", list, "$emptyList"), c.Value(), dc)
 			continue
 		}
 
@@ -207,11 +207,11 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 			c.Value())
 
 		if getPatternType(first) == namePattern {
-			d.bindName(first.(string), app("$first", v))
+			d.bindName(first.(string), app("$first", list))
 			dc = d.desugarCases(
-				app("$rest", v),
+				app("$rest", list),
 				[]ast.MatchCase{c},
-				d.desugarListCases(v, cs[i+1:], dc))
+				d.desugarListCases(list, cs[i+1:], dc))
 			break
 		}
 
@@ -232,10 +232,10 @@ func (d *desugarer) desugarListCases(v interface{}, cs []ast.MatchCase, dc inter
 	ks := make([]ast.MatchCase, 0, len(gs))
 
 	for _, g := range gs {
-		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(app("$rest", v), g.cases, dc)))
+		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(app("$rest", list), g.cases, dc)))
 	}
 
-	return d.desugarCases(app("$first", v), ks, dc)
+	return d.desugarCases(app("$first", list), ks, dc)
 }
 
 func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {

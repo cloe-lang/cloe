@@ -269,28 +269,26 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 			panic("Not implemented")
 		}
 
-		new := group{ps[0].Value(), []ast.MatchCase{c}}
+		g := group{ps[0].Value(), []ast.MatchCase{c}}
 
 		if len(gs) == 0 {
-			gs = append(gs, new)
-		} else if last := gs[len(gs)-1]; equalPatterns(new.key, last.key) {
+			gs = append(gs, g)
+		} else if last := gs[len(gs)-1]; equalPatterns(g.key, last.key) {
 			last.cases = append(last.cases, c)
 		} else {
-			gs = append(gs, new)
+			gs = append(gs, g)
 		}
 	}
 
-	x := dc
-
 	for i := len(gs) - 1; i >= 0; i-- {
 		g := gs[i]
-		x = d.resultApp("$if",
+		dc = d.resultApp("$if",
 			app("$include", v, g.key),
-			d.desugarDictCasesOfSameKey(v, g.cases, x),
-			x)
+			d.desugarDictCasesOfSameKey(v, g.cases, dc),
+			dc)
 	}
 
-	return x
+	return dc
 }
 
 func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {

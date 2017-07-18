@@ -88,9 +88,7 @@ func (hs halfSignature) names() []string {
 func (hs halfSignature) String() string {
 	ss := make([]string, len(hs.requireds)+len(hs.optionals)+1)
 
-	for _, r := range hs.requireds {
-		ss = append(ss, r)
-	}
+	ss = append(ss, hs.requireds...)
 
 	for _, o := range hs.optionals {
 		ss = append(ss, o.String())

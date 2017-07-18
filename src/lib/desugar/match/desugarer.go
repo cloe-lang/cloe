@@ -72,7 +72,7 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 			cs = append(cs, renameBoundNamesInCase(ast.NewMatchCase(c.Pattern(), d.desugar(c.Value()))))
 		}
 
-		return d.valueApp(d.createMatchFunction(cs), d.desugar(x.Value()))
+		return d.resultApp(d.createMatchFunction(cs), d.desugar(x.Value()))
 	case ast.Output:
 		return ast.NewOutput(d.desugar(x.Expr()), x.Expanded())
 	case ast.PositionalArgument:
@@ -94,13 +94,20 @@ func (d *desugarer) letVar(s string, v interface{}) string {
 	return s
 }
 
-func (d *desugarer) bindName(s string, v interface{}) {
+func (d *desugarer) bindName(s string, v interface{}) string {
 	d.letBoundNames = append(d.letBoundNames, ast.NewLetVar(s, v))
+	return s
 }
 
-// valueApp applies a function to arguments and creates a result value of match
+// matchedApp applies a function to arguments and creates a matched value of
+// match expression.
+func (d *desugarer) matchedApp(f interface{}, args ...interface{}) string {
+	return d.bindName(gensym.GenSym("match", "app"), app(f, args...))
+}
+
+// resultApp applies a function to arguments and creates a result value of match
 // expression.
-func (d *desugarer) valueApp(f interface{}, args ...interface{}) string {
+func (d *desugarer) resultApp(f interface{}, args ...interface{}) string {
 	return d.letVar(gensym.GenSym("match", "app"), app(f, args...))
 }
 
@@ -143,7 +150,7 @@ func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc interface
 		dc = d.desugarScalarCases(v, cs, dc)
 	}
 
-	return newSwitch(d.valueApp("$typeOf", v), ks, dc)
+	return newSwitch(d.resultApp("$typeOf", v), ks, dc)
 }
 
 func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {
@@ -194,7 +201,7 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
 
 		if len(ps) == 0 {
-			dc = d.valueApp("$if", app("$=", list, "$emptyList"), c.Value(), dc)
+			dc = d.resultApp("$if", app("$=", list, "$emptyList"), c.Value(), dc)
 			continue
 		}
 
@@ -252,7 +259,7 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
 
 		if len(ps) == 0 {
-			dc = d.valueApp("$if", app("$=", v, "$emptyDict"), c.Value(), dc)
+			dc = d.resultApp("$if", app("$=", v, "$emptyDict"), c.Value(), dc)
 			continue
 		}
 
@@ -275,7 +282,7 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 
 	for i := len(gs) - 1; i >= 0; i-- {
 		g := gs[i]
-		x = d.valueApp("$if",
+		x = d.resultApp("$if",
 			app("$include", v, g.key),
 			d.desugarDictCasesOfSameKey(v, g.cases, x),
 			x)

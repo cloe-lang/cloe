@@ -300,6 +300,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 	}
 
 	key := cs[0].Pattern().(ast.App).Arguments().Positionals()[0].Value()
+	value := d.matchedApp(dict, key)
 	newDict := d.matchedApp("delete", dict, key)
 	gs := []group{}
 
@@ -312,7 +313,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 			c.Value())
 
 		if getPatternType(v) == namePattern {
-			d.bindName(v.(string), app(dict, key))
+			d.bindName(v.(string), value)
 
 			if rest := cs[i+1:]; len(rest) != 0 {
 				dc = d.desugarDictCasesOfSameKey(dict, rest, dc)
@@ -345,7 +346,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 			ast.NewMatchCase(g.value, d.desugarCases(newDict, g.cases, dc)))
 	}
 
-	return d.desugarCases(app(dict, key), cs, dc)
+	return d.desugarCases(value, cs, dc)
 }
 
 func (d *desugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {

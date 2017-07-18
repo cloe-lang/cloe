@@ -200,14 +200,14 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 			panic("Not implemented")
 		}
 
-		first := ps[0].Value()
+		v := ps[0].Value()
 
 		c = ast.NewMatchCase(
 			ast.NewApp("$list", ast.NewArguments(ps[1:], nil, nil), debug.NewGoInfo(0)),
 			c.Value())
 
-		if getPatternType(first) == namePattern {
-			d.bindName(first.(string), app("$first", list))
+		if getPatternType(v) == namePattern {
+			d.bindName(v.(string), app("$first", list))
 			dc = d.desugarCases(
 				app("$rest", list),
 				[]ast.MatchCase{c},
@@ -218,14 +218,14 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 		groupExist := false
 
 		for i, g := range gs {
-			if equalPatterns(first, g.first) {
+			if equalPatterns(v, g.first) {
 				groupExist = true
 				gs[i].cases = append(gs[i].cases, c)
 			}
 		}
 
 		if !groupExist {
-			gs = append(gs, group{first, []ast.MatchCase{c}})
+			gs = append(gs, group{v, []ast.MatchCase{c}})
 		}
 	}
 

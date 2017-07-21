@@ -55,8 +55,6 @@ var prelude = func() environment {
 		{"size", core.Size},
 		{"toList", core.ToList},
 
-		{"list", std.List},
-		{"$list", std.List},
 		{"dict", std.Dictionary},
 		{"$dict", std.Dictionary},
 		{"error", core.Error},

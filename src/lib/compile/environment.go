@@ -39,3 +39,13 @@ func (e environment) get(s string) *core.Thunk {
 func (e environment) toMap() map[string]*core.Thunk {
 	return e.me
 }
+
+func (e environment) copy() environment {
+	m := make(map[string]*core.Thunk, len(e.me))
+
+	for k, v := range e.me {
+		m[k] = v
+	}
+
+	return environment{m, e.fallback}
+}

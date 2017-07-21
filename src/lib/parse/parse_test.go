@@ -17,7 +17,7 @@ func TestMainModule(t *testing.T) {
 	}
 }
 
-func TestXFailMainModule(t *testing.T) {
+func TestMainModuleFail(t *testing.T) {
 	for _, str := range []string{"(", "(()"} {
 		result, err := newStateWithoutFile(str).mainModule()()
 
@@ -39,7 +39,7 @@ func TestSubModule(t *testing.T) {
 	}
 }
 
-func TestXFailSubModule(t *testing.T) {
+func TestSubModuleFail(t *testing.T) {
 	for _, str := range []string{"(", "(()", "(write 123)"} {
 		result, err := newStateWithoutFile(str).subModule()()
 

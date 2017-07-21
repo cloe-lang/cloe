@@ -3,6 +3,7 @@ package compile
 import (
 	"io/ioutil"
 	"os"
+	"unicode"
 
 	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/desugar"
@@ -36,7 +37,17 @@ func subModule(e environment, filename, source string) map[string]*core.Thunk {
 
 	c := newCompiler(e)
 	c.compile(desugar.Desugar(module))
-	return c.env.toMap()
+
+	m := c.env.toMap()
+	n := make(map[string]*core.Thunk, len(m))
+
+	for k, v := range m {
+		if unicode.IsUpper(([]rune)(k)[0]) {
+			n[k] = v
+		}
+	}
+
+	return n
 }
 
 func readFileOrStdin(filename string) (string, string) {

@@ -3,12 +3,12 @@ Feature: Import statement
     Given a file named "main.tisp" with:
     """
     (import "mod")
-    (seq ..(mod.map write [1 2 3 4 5]))
+    (seq ..(mod.Map write [1 2 3 4 5]))
     """
     And a file named "mod.tisp" with:
     """
-    (let (map func list)
-         (if (= list []) [] (prepend (func (first list)) (map func (rest list)))))
+    (let (Map func list)
+         (if (= list []) [] (prepend (func (first list)) (Map func (rest list)))))
     """
     When I successfully run `tisp main.tisp`
     Then the stdout should contain exactly:
@@ -24,11 +24,11 @@ Feature: Import statement
     Given a file named "main.tisp" with:
     """
     (import "modules/mod")
-    (mod.hello "world")
+    (mod.Hello "world")
     """
     And a file named "modules/mod.tisp" with:
     """
-    (let (hello name) (write (merge "Hello, " name "!")))
+    (let (Hello name) (write (merge "Hello, " name "!")))
     """
     When I successfully run `tisp main.tisp`
     Then the stdout should contain exactly:

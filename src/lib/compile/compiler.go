@@ -14,7 +14,7 @@ type compiler struct {
 }
 
 func newCompiler() compiler {
-	return compiler{env: prelude()}
+	return compiler{env: prelude}
 }
 
 func (c *compiler) compile(module []interface{}) []Output {

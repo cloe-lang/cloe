@@ -6,7 +6,7 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/std"
 )
 
-func prelude() environment {
+var prelude = func() environment {
 	e := newEnvironment(scalar.Convert)
 
 	for _, nv := range []struct {
@@ -79,4 +79,4 @@ func prelude() environment {
 	}
 
 	return e
-}
+}()

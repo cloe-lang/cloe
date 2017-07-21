@@ -20,8 +20,8 @@ func newCompiler(e environment) compiler {
 func (c *compiler) compile(module []interface{}) []Output {
 	outputs := make([]Output, 0)
 
-	for _, node := range module {
-		switch x := node.(type) {
+	for _, s := range module {
+		switch x := s.(type) {
 		case ast.LetVar:
 			c.env.set(x.Name(), c.exprToThunk(x.Expr()))
 		case ast.LetFunction:

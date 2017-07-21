@@ -21,7 +21,11 @@ func MainModule(path string) []Output {
 
 // SubModule compiles a sub module of a path into a map of names to thunks.
 func SubModule(path string) map[string]*core.Thunk {
-	module, err := parse.SubModule(util.ReadFileOrStdin(path))
+	return subModule(util.ReadFileOrStdin(path))
+}
+
+func subModule(filename, source string) map[string]*core.Thunk {
+	module, err := parse.SubModule(filename, source)
 
 	if err != nil {
 		util.PanicError(err)

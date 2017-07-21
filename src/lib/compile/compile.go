@@ -17,7 +17,7 @@ func MainModule(path string) []Output {
 		panic(err)
 	}
 
-	c := newCompiler()
+	c := newCompiler(prelude)
 	return c.compile(desugar.Desugar(module))
 }
 
@@ -33,7 +33,7 @@ func subModule(filename, source string) map[string]*core.Thunk {
 		panic(err)
 	}
 
-	c := newCompiler()
+	c := newCompiler(prelude)
 	c.compile(desugar.Desugar(module))
 	return c.env.toMap()
 }

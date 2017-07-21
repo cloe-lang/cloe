@@ -13,8 +13,8 @@ type compiler struct {
 	env environment
 }
 
-func newCompiler() compiler {
-	return compiler{env: prelude}
+func newCompiler(e environment) compiler {
+	return compiler{e}
 }
 
 func (c *compiler) compile(module []interface{}) []Output {

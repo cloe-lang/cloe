@@ -2,7 +2,7 @@ package compile
 
 import "strings"
 
-var builtins = func() environment {
+func builtins() environment {
 	e := prelude.copy()
 
 	for k, v := range subModule(prelude, "<builtins>", `
@@ -14,4 +14,4 @@ var builtins = func() environment {
 	}
 
 	return e
-}()
+}

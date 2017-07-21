@@ -17,14 +17,14 @@ func MainModule(path string) []Output {
 		panic(err)
 	}
 
-	c := newCompiler(prelude)
+	c := newCompiler(builtins())
 	return c.compile(desugar.Desugar(module))
 }
 
 // SubModule compiles a sub module of a path into a map of names to thunks.
 func SubModule(path string) map[string]*core.Thunk {
 	f, s := readFileOrStdin(path)
-	return subModule(prelude, f, s)
+	return subModule(builtins(), f, s)
 }
 
 func subModule(e environment, filename, source string) map[string]*core.Thunk {

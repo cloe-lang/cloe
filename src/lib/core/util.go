@@ -2,8 +2,6 @@ package core
 
 import (
 	"fmt"
-
-	"github.com/tisp-lang/tisp/src/lib/util"
 )
 
 func sprint(x interface{}) StringType {
@@ -42,7 +40,7 @@ func internalDumpOrFail(v Value) string {
 
 	switch x := v.(type) {
 	case ErrorType:
-		util.PanicError(x)
+		panic(x)
 	case dumpable:
 		v = x.dump()
 	case stringable:
@@ -55,7 +53,7 @@ func internalDumpOrFail(v Value) string {
 	case StringType:
 		return string(x)
 	case ErrorType:
-		util.PanicError(x)
+		panic(x)
 	}
 
 	panic(fmt.Sprintf("Invalid value detected: %#v", v))
@@ -68,7 +66,7 @@ func DumpOrFail(v Value) string {
 	s, ok := v.(StringType)
 
 	if !ok {
-		util.PanicError(NotStringError(v).Eval().(ErrorType))
+		panic(NotStringError(v).Eval().(ErrorType))
 	}
 
 	return string(s)

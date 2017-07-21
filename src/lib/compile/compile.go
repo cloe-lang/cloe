@@ -7,7 +7,6 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/desugar"
 	"github.com/tisp-lang/tisp/src/lib/parse"
-	"github.com/tisp-lang/tisp/src/lib/util"
 )
 
 // MainModule compiles a main module of a path into outputs of thunks.
@@ -15,7 +14,7 @@ func MainModule(path string) []Output {
 	module, err := parse.MainModule(readFileOrStdin(path))
 
 	if err != nil {
-		util.PanicError(err)
+		panic(err)
 	}
 
 	c := newCompiler()
@@ -31,7 +30,7 @@ func subModule(filename, source string) map[string]*core.Thunk {
 	module, err := parse.SubModule(filename, source)
 
 	if err != nil {
-		util.PanicError(err)
+		panic(err)
 	}
 
 	c := newCompiler()

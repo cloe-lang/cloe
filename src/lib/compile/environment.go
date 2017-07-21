@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/tisp-lang/tisp/src/lib/core"
-	"github.com/tisp-lang/tisp/src/lib/util"
 )
 
 type environment struct {
@@ -34,7 +33,7 @@ func (e environment) get(s string) *core.Thunk {
 		return t
 	}
 
-	util.PanicError(fmt.Errorf("The name, %s is not found", s))
+	panic(fmt.Errorf("The name, %s is not found", s))
 	panic("Unreachable")
 }
 

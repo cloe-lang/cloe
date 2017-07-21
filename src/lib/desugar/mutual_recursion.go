@@ -6,7 +6,6 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/tisp-lang/tisp/src/lib/debug"
 	"github.com/tisp-lang/tisp/src/lib/gensym"
-	"github.com/tisp-lang/tisp/src/lib/util"
 )
 
 func desugarMutualRecursionStatement(s interface{}) []interface{} {
@@ -52,7 +51,7 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 		append(
 			[]interface{}{ast.NewLetVar(
 				mrFunctionList,
-				ast.NewPApp("$ys", util.StringsToAnys(letStatementsToNames(nonRecursives)), mr.DebugInfo()))},
+				ast.NewPApp("$ys", stringsToAnys(letStatementsToNames(nonRecursives)), mr.DebugInfo()))},
 			news...)...)
 }
 
@@ -174,4 +173,14 @@ func letStatementsToNames(ls []interface{}) []string {
 	}
 
 	return names
+}
+
+func stringsToAnys(ss []string) []interface{} {
+	xs := make([]interface{}, 0, len(ss))
+
+	for _, s := range ss {
+		xs = append(xs, s)
+	}
+
+	return xs
 }

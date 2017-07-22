@@ -332,7 +332,7 @@ func (d *desugarer) desugarDictCases(dict interface{}, cs []ast.MatchCase, dc in
 		if len(gs) == 0 {
 			gs = append(gs, g)
 		} else if last := gs[len(gs)-1]; equalPatterns(g.key, last.key) {
-			last.cases = append(last.cases, c)
+			gs[len(gs)-1].cases = append(last.cases, c)
 		} else {
 			gs = append(gs, g)
 		}

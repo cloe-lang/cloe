@@ -73,6 +73,14 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 		}
 
 		return d.resultApp(d.createMatchFunction(cs), d.desugar(x.Value()))
+	case ast.MutualRecursion:
+		fs := make([]ast.LetFunction, 0, len(x.LetFunctions()))
+
+		for _, f := range x.LetFunctions() {
+			fs = append(fs, d.desugar(f).(ast.LetFunction))
+		}
+
+		return ast.NewMutualRecursion(fs, x.DebugInfo())
 	case ast.Output:
 		return ast.NewOutput(d.desugar(x.Expr()), x.Expanded())
 	case ast.PositionalArgument:

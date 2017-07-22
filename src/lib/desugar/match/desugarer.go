@@ -103,7 +103,8 @@ func (d *desugarer) letTempVar(v interface{}) string {
 	return s
 }
 
-func (d *desugarer) bindName(s string, v interface{}) string {
+func (d *desugarer) bindName(p interface{}, v interface{}) string {
+	s := generalNamePatternToName(p)
 	d.letBoundNames = append(d.letBoundNames, ast.NewLetVar(s, v))
 	return s
 }
@@ -198,6 +199,29 @@ func getPatternType(p interface{}) patternType {
 	panic(fmt.Errorf("Invalid pattern: %#v", p))
 }
 
+func isGeneralNamePattern(p interface{}) bool {
+	switch x := p.(type) {
+	case string:
+		if scalar.Defined(x) {
+			return false
+		}
+
+		return true
+	case ast.App:
+		ps := x.Arguments().Positionals()
+		expanded := len(ps) == 1 && ps[0].Expanded()
+
+		switch x.Function().(string) {
+		case "$list":
+			return expanded
+		case "$dict":
+			return expanded
+		}
+	}
+
+	panic(fmt.Errorf("Invalid pattern: %#v", p))
+}
+
 func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	type group struct {
 		first interface{}
@@ -228,12 +252,26 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 			ast.NewApp("$list", ast.NewArguments(ps[1:], nil, nil), debug.NewGoInfo(0)),
 			c.Value())
 
-		if getPatternType(v) == namePattern {
-			d.bindName(v.(string), first)
-			dc = d.desugarCases(
-				rest,
-				[]ast.MatchCase{c},
-				d.desugarListCases(list, cs[i+1:], dc))
+		if isGeneralNamePattern(v) {
+			d.bindName(v, first)
+
+			if ks := cs[i+1:]; len(ks) > 0 {
+				dc = d.desugarListCases(list, ks, dc)
+			}
+
+			next := d.desugarCases(rest, []ast.MatchCase{c}, dc)
+
+			switch getPatternType(v) {
+			case namePattern:
+				dc = next
+			case listPattern:
+				dc = d.ifType(first, "list", next, dc)
+			case dictPattern:
+				dc = d.ifType(first, "dict", next, dc)
+			default:
+				panic("Unreachable")
+			}
+
 			break
 		}
 
@@ -259,6 +297,10 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 	}
 
 	return d.desugarCases(first, ks, dc)
+}
+
+func (d *desugarer) ifType(v interface{}, t string, then, els interface{}) interface{} {
+	return d.resultApp("$if", app("$=", app("$typeOf", v), "\""+t+"\""), then, els)
 }
 
 func (d *desugarer) desugarDictCases(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
@@ -326,14 +368,25 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 			ast.NewApp("$dict", ast.NewArguments(ps[2:], nil, nil), debug.NewGoInfo(0)),
 			c.Value())
 
-		if getPatternType(v) == namePattern {
-			d.bindName(v.(string), value)
+		if isGeneralNamePattern(v) {
+			d.bindName(v, value)
 
-			if rest := cs[i+1:]; len(rest) != 0 {
-				dc = d.desugarDictCasesOfSameKey(dict, rest, dc)
+			if ks := cs[i+1:]; len(ks) != 0 {
+				dc = d.desugarDictCasesOfSameKey(dict, ks, dc)
 			}
 
-			dc = d.desugarCases(newDict, []ast.MatchCase{c}, dc)
+			next := d.desugarCases(newDict, []ast.MatchCase{c}, dc)
+
+			switch getPatternType(v) {
+			case namePattern:
+				dc = next
+			case listPattern:
+				dc = d.ifType(value, "list", next, dc)
+			case dictPattern:
+				dc = d.ifType(value, "dict", next, dc)
+			default:
+				panic("Unreachable")
+			}
 
 			break
 		}
@@ -411,4 +464,17 @@ func equalPatterns(p, q interface{}) bool {
 	}
 
 	panic(fmt.Errorf("Invalid pattern: %#v, %#v", p, q))
+}
+
+func generalNamePatternToName(p interface{}) string {
+	switch x := p.(type) {
+	case string:
+		return x
+	case ast.App:
+		if ps := x.Arguments().Positionals(); len(ps) == 1 && ps[0].Expanded() {
+			return ps[0].Value().(string)
+		}
+	}
+
+	panic(fmt.Errorf("Invalid pattern: %#v", p))
 }

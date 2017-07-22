@@ -261,7 +261,7 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 	return d.desugarCases(first, ks, dc)
 }
 
-func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *desugarer) desugarDictCases(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	type group struct {
 		key   interface{}
 		cases []ast.MatchCase
@@ -273,12 +273,12 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
 
 		if len(ps) == 0 {
-			dc = d.resultApp("$if", app("$=", v, "$emptyDict"), c.Value(), dc)
+			dc = d.resultApp("$if", app("$=", dict, "$emptyDict"), c.Value(), dc)
 			continue
 		}
 
 		if ps[0].Expanded() {
-			d.bindName(ps[0].Value().(string), v)
+			d.bindName(ps[0].Value().(string), dict)
 			dc = c.Value()
 			break
 		}
@@ -297,8 +297,8 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 	for i := len(gs) - 1; i >= 0; i-- {
 		g := gs[i]
 		dc = d.resultApp("$if",
-			app("$include", v, g.key),
-			d.desugarDictCasesOfSameKey(v, g.cases, dc),
+			app("$include", dict, g.key),
+			d.desugarDictCasesOfSameKey(dict, g.cases, dc),
 			dc)
 	}
 

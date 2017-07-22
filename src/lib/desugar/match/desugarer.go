@@ -277,13 +277,15 @@ func (d *desugarer) desugarDictCases(dict interface{}, cs []ast.MatchCase, dc in
 			continue
 		}
 
+		k := ps[0].Value()
+
 		if ps[0].Expanded() {
-			d.bindName(ps[0].Value().(string), dict)
+			d.bindName(k.(string), dict)
 			dc = c.Value()
 			break
 		}
 
-		g := group{ps[0].Value(), []ast.MatchCase{c}}
+		g := group{k, []ast.MatchCase{c}}
 
 		if len(gs) == 0 {
 			gs = append(gs, g)

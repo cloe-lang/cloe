@@ -216,11 +216,13 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 			continue
 		}
 
-		if ps[0].Expanded() {
-			panic("Not implemented")
-		}
-
 		v := ps[0].Value()
+
+		if ps[0].Expanded() {
+			d.bindName(v.(string), list)
+			dc = c.Value()
+			break
+		}
 
 		c = ast.NewMatchCase(
 			ast.NewApp("$list", ast.NewArguments(ps[1:], nil, nil), debug.NewGoInfo(0)),
@@ -276,7 +278,9 @@ func (d *desugarer) desugarDictCases(v interface{}, cs []ast.MatchCase, dc inter
 		}
 
 		if ps[0].Expanded() {
-			panic("Not implemented")
+			d.bindName(ps[0].Value().(string), v)
+			dc = c.Value()
+			break
 		}
 
 		g := group{ps[0].Value(), []ast.MatchCase{c}}

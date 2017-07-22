@@ -103,3 +103,31 @@ Feature: Match expression
     """
     Matched!
     """
+
+  Scenario: Use rest pattern of list
+    Given a file named "main.tisp" with:
+    """
+    (write (match [[42 2049] ["This" "is" "Matched!"]]
+      [[..foo] ["This" "is" "not" "Matched!"]] "Not matched..."
+      [[..foo] ["This" ..bar]] (bar 1)))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    Matched!
+    """
+
+  Scenario: Use rest pattern of dictionary
+    Given a file named "main.tisp" with:
+    """
+    (write (match {"foo" {42 2049} "bar" {"This" "Matched!"}}
+      [[..foo] ["This" "is" "not" "Matched!"]] "Not matched..."
+      {"foo" {42 2050} "bar" {"This" "Matched!"}} "Not matched..."
+      {"foo" {..foo} "bar" {"this" bar}} "Not matched..."
+      {"foo" {..foo} "bar" {"This" bar}} bar))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    Matched!
+    """

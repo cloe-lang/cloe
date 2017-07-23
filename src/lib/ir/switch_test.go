@@ -21,10 +21,6 @@ func TestNewSwitchNoPattern(t *testing.T) {
 	NewSwitch(0, []Case{}, nil)
 }
 
-func TestSwitchCompileToDict(t *testing.T) {
-	NewSwitch(0, []Case{NewCase(core.Nil, 1)}, nil).compileToDict()
-}
-
 func TestSwitchInFunction(t *testing.T) {
 	f := CompileFunction(
 		core.NewSignature([]string{"x"}, nil, "", nil, nil, ""),

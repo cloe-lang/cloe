@@ -28,9 +28,7 @@ func interpretExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 	case App:
 		return x.interpret(args)
 	case Switch:
-		// TODO: Compile dictionary ahead.
-
-		v := core.PApp(x.compileToDict(), interpretExpression(args, x.value)).Eval()
+		v := core.PApp(x.dict, interpretExpression(args, x.value)).Eval()
 		n, ok := v.(core.NumberType)
 
 		if !ok && x.defaultCase == nil {

@@ -11,6 +11,7 @@ type Switch struct {
 	value       interface{}
 	cases       []Case
 	defaultCase interface{}
+	dict        *core.Thunk
 }
 
 // NewSwitch creates a switch expression.
@@ -19,14 +20,14 @@ func NewSwitch(v interface{}, cs []Case, d interface{}) Switch {
 		panic(fmt.Errorf("A number of cases in switch expressions must be more than 0"))
 	}
 
-	return Switch{v, cs, d}
+	return Switch{v, cs, d, compileCasesToDict(cs)}
 }
 
-func (s Switch) compileToDict() *core.Thunk {
-	ks := make([]core.Value, 0, len(s.cases))
-	vs := make([]*core.Thunk, 0, len(s.cases))
+func compileCasesToDict(cs []Case) *core.Thunk {
+	ks := make([]core.Value, 0, len(cs))
+	vs := make([]*core.Thunk, 0, len(cs))
 
-	for i, c := range s.cases {
+	for i, c := range cs {
 		ks = append(ks, c.pattern.Eval())
 		vs = append(vs, core.NewNumber(float64(i)))
 	}

@@ -86,6 +86,13 @@ func builtins() environment {
 
 	for k, v := range subModule(goBuiltins, "<builtins>", `
 	(let (List ..xs) xs)
+
+	(let (indexOf list elem index)
+		(match list
+			[] (error "ElementNotFoundError" "Could not find an element in a list")
+			[first ..rest] (if (= first elem) index (indexOf rest elem (+ index 1)))))
+
+	(let (IndexOf list elem) (indexOf list elem 0))
 	`) {
 		k = strings.ToLower(k[:1]) + k[1:]
 		e.set(k, v)

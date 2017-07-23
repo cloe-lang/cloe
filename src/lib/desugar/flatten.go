@@ -48,11 +48,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 				l.Name(),
 				ast.NewApp(
 					"$partial",
-					ast.NewArguments(
-						append(
-							[]ast.PositionalArgument{ast.NewPositionalArgument(flattened, false)},
-							namesToPosArgs(args)...,
-						), nil, nil),
+					ast.NewArguments(namesToPosArgs(append([]string{flattened}, args...)), nil, nil),
 					f.DebugInfo())))
 
 			names.add(l.Name())

@@ -105,9 +105,7 @@ func (ns names) find(x interface{}) names {
 			ms.merge(ns.find(c.Value()))
 		}
 
-		if x.DefaultCase() != nil {
-			ms.merge(ns.find(x.DefaultCase()))
-		}
+		ms.merge(ns.find(x.DefaultCase()))
 
 		return ms
 	case string:

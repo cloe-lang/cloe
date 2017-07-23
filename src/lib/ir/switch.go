@@ -32,5 +32,5 @@ func compileCasesToDict(cs []Case) *core.Thunk {
 		vs = append(vs, core.NewNumber(float64(i)))
 	}
 
-	return core.NewDictionary(ks, vs)
+	return core.Normal(core.NewDictionary(ks, vs).Eval())
 }

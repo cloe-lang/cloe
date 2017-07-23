@@ -44,12 +44,13 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 				usedNames.merge(names.find(l.(ast.LetVar)))
 			}
 			usedNames.subtract(signatureToNames(l.Signature()))
+			usedNamesSlice := usedNames.slice()
 
 			flattened := gensym.GenSym(f.Name(), l.Name())
 
 			ss = append(ss, ast.NewLetFunction(
 				flattened,
-				prependPosReqsToSig(l.Signature(), usedNames.slice()),
+				prependPosReqsToSig(l.Signature(), usedNamesSlice),
 				l.Lets(),
 				l.Body(),
 				l.DebugInfo()))
@@ -61,7 +62,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 					ast.NewArguments(
 						append(
 							[]ast.PositionalArgument{ast.NewPositionalArgument(flattened, false)},
-							namesToPosArgs(usedNames.slice())...,
+							namesToPosArgs(usedNamesSlice)...,
 						), nil, nil),
 					f.DebugInfo())))
 

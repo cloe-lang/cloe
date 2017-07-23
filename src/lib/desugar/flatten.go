@@ -53,7 +53,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 			ls = append(ls, ast.NewLetVar(
 				l.Name(),
 				ast.NewApp(
-					"partial",
+					"$partial",
 					ast.NewArguments(
 						append(
 							[]ast.PositionalArgument{ast.NewPositionalArgument(flattened, false)},

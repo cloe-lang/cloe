@@ -19,6 +19,7 @@ var goBuiltins = func() environment {
 		{"$if", core.If},
 
 		{"partial", core.Partial},
+		{"$partial", core.Partial},
 
 		{"first", core.First},
 		{"$first", core.First},

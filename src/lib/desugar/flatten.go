@@ -48,12 +48,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 
 			flattened := gensym.GenSym(f.Name(), l.Name())
 
-			ss = append(ss, ast.NewLetFunction(
-				flattened,
-				prependPosReqsToSig(l.Signature(), usedNamesSlice),
-				l.Lets(),
-				l.Body(),
-				l.DebugInfo()))
+			ss = append(ss, letFlattenedFunction(l, flattened, usedNamesSlice))
 
 			ls = append(ls, ast.NewLetVar(
 				l.Name(),
@@ -73,6 +68,15 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 	}
 
 	return append(ss, ast.NewLetFunction(f.Name(), f.Signature(), ls, f.Body(), f.DebugInfo()))
+}
+
+func letFlattenedFunction(f ast.LetFunction, n string, args []string) ast.LetFunction {
+	return ast.NewLetFunction(
+		n,
+		prependPosReqsToSig(f.Signature(), args),
+		f.Lets(),
+		f.Body(),
+		f.DebugInfo())
 }
 
 func flattenInnerStatements(f ast.LetFunction) ast.LetFunction {

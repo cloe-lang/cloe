@@ -39,16 +39,10 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 			ls = append(ls, l)
 			names.add(l.Name())
 		case ast.LetFunction:
-			usedNames := names.find(l.Body())
-			for _, l := range l.Lets() {
-				usedNames.merge(names.find(l.(ast.LetVar)))
-			}
-			usedNames.subtract(signatureToNames(l.Signature()))
-			usedNamesSlice := usedNames.slice()
-
+			args := getAdditionalArguments(names, l)
 			flattened := gensym.GenSym(f.Name(), l.Name())
 
-			ss = append(ss, letFlattenedFunction(l, flattened, usedNamesSlice))
+			ss = append(ss, letFlattenedFunction(l, flattened, args))
 
 			ls = append(ls, ast.NewLetVar(
 				l.Name(),
@@ -57,7 +51,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 					ast.NewArguments(
 						append(
 							[]ast.PositionalArgument{ast.NewPositionalArgument(flattened, false)},
-							namesToPosArgs(usedNamesSlice)...,
+							namesToPosArgs(args)...,
 						), nil, nil),
 					f.DebugInfo())))
 
@@ -68,6 +62,18 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 	}
 
 	return append(ss, ast.NewLetFunction(f.Name(), f.Signature(), ls, f.Body(), f.DebugInfo()))
+}
+
+func getAdditionalArguments(ns names, f ast.LetFunction) []string {
+	ms := ns.find(f.Body())
+
+	for _, l := range f.Lets() {
+		ms.merge(ns.find(l.(ast.LetVar)))
+	}
+
+	ms.subtract(signatureToNames(f.Signature()))
+
+	return ms.slice()
 }
 
 func letFlattenedFunction(f ast.LetFunction, n string, args []string) ast.LetFunction {

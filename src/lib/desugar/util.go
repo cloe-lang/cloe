@@ -24,16 +24,6 @@ func signatureToNames(s ast.Signature) names {
 	return ns
 }
 
-func namesToPosArgs(ns []string) []ast.PositionalArgument {
-	ps := make([]ast.PositionalArgument, len(ns))
-
-	for i, n := range ns {
-		ps[i] = ast.NewPositionalArgument(n, false)
-	}
-
-	return ps
-}
-
 func prependPosReqsToSig(s ast.Signature, ns []string) ast.Signature {
 	return ast.NewSignature(
 		append(ns, s.PosReqs()...), s.PosOpts(), s.PosRest(),

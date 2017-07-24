@@ -72,6 +72,16 @@ func letClosure(f ast.LetFunction, n string, args []string) ast.LetVar {
 			f.DebugInfo()))
 }
 
+func namesToPosArgs(ns []string) []ast.PositionalArgument {
+	ps := make([]ast.PositionalArgument, len(ns))
+
+	for i, n := range ns {
+		ps[i] = ast.NewPositionalArgument(n, false)
+	}
+
+	return ps
+}
+
 func flattenInnerStatements(f ast.LetFunction) ast.LetFunction {
 	return ast.NewLetFunction(
 		f.Name(),

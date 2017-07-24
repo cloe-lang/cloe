@@ -49,7 +49,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 				ast.NewApp(
 					"$partial",
 					ast.NewArguments(namesToPosArgs(append([]string{n}, args...)), nil, nil),
-					f.DebugInfo())))
+					l.DebugInfo())))
 
 			ns.add(l.Name())
 		default:

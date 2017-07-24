@@ -22,16 +22,16 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 	unrecs := make([]interface{}, 0, len(fs))
 
 	for _, f := range fs {
-		fsArg := gensym.GenSym("mr", "functions", "argument")
+		arg := gensym.GenSym("mr", "functions", "argument")
 		nameToIndex := indexLetFunctions(fs...)
 
 		unrecs = append(
 			unrecs,
 			ast.NewLetFunction(
-				gensym.GenSym("nonRecursive", f.Name()),
-				prependPosReqsToSig(f.Signature(), []string{fsArg}),
-				replaceNames(fsArg, nameToIndex, f.Lets(), mr.DebugInfo()).([]interface{}),
-				replaceNames(fsArg, deleteNamesDefinedByLets(nameToIndex, f.Lets()), f.Body(), mr.DebugInfo()),
+				gensym.GenSym("mr", "unrec", f.Name()),
+				prependPosReqsToSig(f.Signature(), []string{arg}),
+				replaceNames(arg, nameToIndex, f.Lets(), mr.DebugInfo()).([]interface{}),
+				replaceNames(arg, deleteNamesDefinedByLets(nameToIndex, f.Lets()), f.Body(), mr.DebugInfo()),
 				f.DebugInfo()))
 	}
 

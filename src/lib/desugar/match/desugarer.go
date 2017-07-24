@@ -254,8 +254,8 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 		if isGeneralNamePattern(v) {
 			d.bindName(v, first)
 
-			if ks := cs[i+1:]; len(ks) > 0 {
-				dc = d.desugarListCases(list, ks, dc)
+			if cs := cs[i+1:]; len(cs) > 0 {
+				dc = d.desugarListCases(list, cs, dc)
 			}
 
 			next := d.desugarCases(rest, []ast.MatchCase{c}, dc)
@@ -288,14 +288,14 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 		}
 	}
 
-	ks := make([]ast.MatchCase, 0, len(gs))
+	cs = make([]ast.MatchCase, 0, len(gs))
 	dc = d.letTempVar(dc)
 
 	for _, g := range gs {
-		ks = append(ks, ast.NewMatchCase(g.first, d.desugarCases(rest, g.cases, dc)))
+		cs = append(cs, ast.NewMatchCase(g.first, d.desugarCases(rest, g.cases, dc)))
 	}
 
-	return d.desugarCases(first, ks, dc)
+	return d.desugarCases(first, cs, dc)
 }
 
 func (d *desugarer) ifType(v interface{}, t string, then, els interface{}) interface{} {
@@ -370,8 +370,8 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 		if isGeneralNamePattern(v) {
 			d.bindName(v, value)
 
-			if ks := cs[i+1:]; len(ks) != 0 {
-				dc = d.desugarDictCasesOfSameKey(dict, ks, dc)
+			if cs := cs[i+1:]; len(cs) != 0 {
+				dc = d.desugarDictCasesOfSameKey(dict, cs, dc)
 			}
 
 			next := d.desugarCases(newDict, []ast.MatchCase{c}, dc)

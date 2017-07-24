@@ -18,41 +18,41 @@ func desugarMutualRecursionStatement(s interface{}) []interface{} {
 }
 
 func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
-	olds := mr.LetFunctions()
-	unrecursives := make([]interface{}, 0, len(olds))
+	fs := mr.LetFunctions()
+	unrecs := make([]interface{}, 0, len(fs))
 
-	for _, old := range olds {
+	for _, f := range fs {
 		fsArg := gensym.GenSym("mr", "functions", "argument")
-		nameToIndex := indexLetFunctions(olds...)
+		nameToIndex := indexLetFunctions(fs...)
 
-		unrecursives = append(
-			unrecursives,
+		unrecs = append(
+			unrecs,
 			ast.NewLetFunction(
-				gensym.GenSym("nonRecursive", old.Name()),
-				prependPosReqsToSig(old.Signature(), []string{fsArg}),
-				replaceNames(fsArg, nameToIndex, old.Lets(), mr.DebugInfo()).([]interface{}),
-				replaceNames(fsArg, deleteNamesDefinedByLets(nameToIndex, old.Lets()), old.Body(), mr.DebugInfo()),
-				old.DebugInfo()))
+				gensym.GenSym("nonRecursive", f.Name()),
+				prependPosReqsToSig(f.Signature(), []string{fsArg}),
+				replaceNames(fsArg, nameToIndex, f.Lets(), mr.DebugInfo()).([]interface{}),
+				replaceNames(fsArg, deleteNamesDefinedByLets(nameToIndex, f.Lets()), f.Body(), mr.DebugInfo()),
+				f.DebugInfo()))
 	}
 
-	mrFunctionList := gensym.GenSym("ys", "mr", "functions")
-	news := make([]interface{}, 0, len(olds))
+	recsList := gensym.GenSym("ys", "mr", "functions")
+	recs := make([]interface{}, 0, len(fs))
 
-	for i, old := range olds {
-		news = append(
-			news,
+	for i, f := range fs {
+		recs = append(
+			recs,
 			ast.NewLetVar(
-				old.Name(),
-				ast.NewPApp(mrFunctionList, []interface{}{fmt.Sprint(i)}, old.DebugInfo())))
+				f.Name(),
+				ast.NewPApp(recsList, []interface{}{fmt.Sprint(i)}, f.DebugInfo())))
 	}
 
 	return append(
-		unrecursives,
+		unrecs,
 		append(
 			[]interface{}{ast.NewLetVar(
-				mrFunctionList,
-				ast.NewPApp("$ys", stringsToAnys(letStatementsToNames(unrecursives)), mr.DebugInfo()))},
-			news...)...)
+				recsList,
+				ast.NewPApp("$ys", stringsToAnys(letStatementsToNames(unrecs)), mr.DebugInfo()))},
+			recs...)...)
 }
 
 func indexLetFunctions(fs ...ast.LetFunction) map[string]int {
@@ -91,7 +91,7 @@ func replaceNames(functionList string, nameToIndex map[string]int, x interface{}
 		nameToIndex := copyNameToIndex(nameToIndex)
 
 		delete(nameToIndex, x.Name())
-		for _, n := range signatureToNames(x.Signature()).slice() {
+		for n := range signatureToNames(x.Signature()) {
 			delete(nameToIndex, n)
 		}
 

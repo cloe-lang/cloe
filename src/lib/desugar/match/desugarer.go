@@ -37,13 +37,13 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 			ks = append(ks, d.desugar(k).(ast.KeywordArgument))
 		}
 
-		dicts := make([]interface{}, 0, len(x.ExpandedDicts()))
+		ds := make([]interface{}, 0, len(x.ExpandedDicts()))
 
 		for _, dict := range x.ExpandedDicts() {
-			dicts = append(dicts, d.desugar(dict))
+			ds = append(ds, d.desugar(dict))
 		}
 
-		return ast.NewArguments(ps, ks, dicts)
+		return ast.NewArguments(ps, ks, ds)
 	case ast.KeywordArgument:
 		return ast.NewKeywordArgument(x.Name(), d.desugar(x.Value()))
 	case ast.LetFunction:
@@ -55,12 +55,11 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 		}
 
 		b := d.desugar(x.Body())
-		ls = append(ls, d.takeLets()...)
 
 		return ast.NewLetFunction(
 			x.Name(),
 			x.Signature(),
-			ls,
+			append(ls, d.takeLets()...),
 			b,
 			x.DebugInfo())
 	case ast.LetVar:
@@ -209,13 +208,13 @@ func isGeneralNamePattern(p interface{}) bool {
 		return true
 	case ast.App:
 		ps := x.Arguments().Positionals()
-		expanded := len(ps) == 1 && ps[0].Expanded()
+		ok := len(ps) == 1 && ps[0].Expanded()
 
 		switch x.Function().(string) {
 		case "$list":
-			return expanded
+			return ok
 		case "$dict":
-			return expanded
+			return ok
 		}
 	}
 

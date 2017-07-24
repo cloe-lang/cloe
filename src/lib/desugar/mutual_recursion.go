@@ -69,10 +69,10 @@ func indexLetFunctions(fs ...ast.LetFunction) map[string]int {
 	return nameToIndex
 }
 
-func replaceNames(functionList string, nameToIndex map[string]int, x interface{}, di debug.Info) interface{} {
+func replaceNames(funcList string, nameToIndex map[string]int, x interface{}, di debug.Info) interface{} {
 	replaceWithNameToIndex := func(nameToIndex map[string]int) func(x interface{}) interface{} {
 		return func(x interface{}) interface{} {
-			return replaceNames(functionList, nameToIndex, x, di)
+			return replaceNames(funcList, nameToIndex, x, di)
 		}
 	}
 
@@ -129,7 +129,7 @@ func replaceNames(functionList string, nameToIndex map[string]int, x interface{}
 		return ast.NewArguments(ps, ks, ds)
 	case string:
 		if i, ok := nameToIndex[x]; ok {
-			return ast.NewPApp(functionList, []interface{}{fmt.Sprint(i)}, di)
+			return ast.NewPApp(funcList, []interface{}{fmt.Sprint(i)}, di)
 		}
 
 		return x

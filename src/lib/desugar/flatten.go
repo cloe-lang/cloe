@@ -40,15 +40,15 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 			ns.add(l.Name())
 		case ast.LetFunction:
 			args := getAdditionalArguments(ns, l)
-			flattened := gensym.GenSym(f.Name(), l.Name())
+			n := gensym.GenSym(f.Name(), l.Name())
 
-			ss = append(ss, letFlattenedFunction(l, flattened, args))
+			ss = append(ss, letFlattenedFunction(l, n, args))
 
 			ls = append(ls, ast.NewLetVar(
 				l.Name(),
 				ast.NewApp(
 					"$partial",
-					ast.NewArguments(namesToPosArgs(append([]string{flattened}, args...)), nil, nil),
+					ast.NewArguments(namesToPosArgs(append([]string{n}, args...)), nil, nil),
 					f.DebugInfo())))
 
 			ns.add(l.Name())

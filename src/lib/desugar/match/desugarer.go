@@ -408,9 +408,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 	dc = d.letTempVar(dc)
 
 	for _, g := range gs {
-		cs = append(
-			cs,
-			ast.NewMatchCase(g.value, d.desugarCases(newDict, g.cases, dc)))
+		cs = append(cs, ast.NewMatchCase(g.value, d.desugarCases(newDict, g.cases, dc)))
 	}
 
 	return d.desugarCases(value, cs, dc)

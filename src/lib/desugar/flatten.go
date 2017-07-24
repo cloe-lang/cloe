@@ -31,15 +31,15 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 
 	ss := make([]interface{}, 0)
 	ls := make([]interface{}, 0)
-	names := signatureToNames(f.Signature())
+	ns := signatureToNames(f.Signature())
 
 	for _, l := range f.Lets() {
 		switch l := l.(type) {
 		case ast.LetVar:
 			ls = append(ls, l)
-			names.add(l.Name())
+			ns.add(l.Name())
 		case ast.LetFunction:
-			args := getAdditionalArguments(names, l)
+			args := getAdditionalArguments(ns, l)
 			flattened := gensym.GenSym(f.Name(), l.Name())
 
 			ss = append(ss, letFlattenedFunction(l, flattened, args))
@@ -51,7 +51,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 					ast.NewArguments(namesToPosArgs(append([]string{flattened}, args...)), nil, nil),
 					f.DebugInfo())))
 
-			names.add(l.Name())
+			ns.add(l.Name())
 		default:
 			panic(fmt.Errorf("Invalid value: %#v", l))
 		}

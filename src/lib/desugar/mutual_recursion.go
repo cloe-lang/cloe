@@ -19,14 +19,14 @@ func desugarMutualRecursionStatement(s interface{}) []interface{} {
 
 func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 	olds := mr.LetFunctions()
-	nonRecursives := make([]interface{}, 0, len(olds))
+	unrecursives := make([]interface{}, 0, len(olds))
 
 	for _, old := range olds {
 		fsArg := gensym.GenSym("mr", "functions", "argument")
 		nameToIndex := indexLetFunctions(olds...)
 
-		nonRecursives = append(
-			nonRecursives,
+		unrecursives = append(
+			unrecursives,
 			ast.NewLetFunction(
 				gensym.GenSym("nonRecursive", old.Name()),
 				prependPosReqsToSig(old.Signature(), []string{fsArg}),
@@ -47,11 +47,11 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 	}
 
 	return append(
-		nonRecursives,
+		unrecursives,
 		append(
 			[]interface{}{ast.NewLetVar(
 				mrFunctionList,
-				ast.NewPApp("$ys", stringsToAnys(letStatementsToNames(nonRecursives)), mr.DebugInfo()))},
+				ast.NewPApp("$ys", stringsToAnys(letStatementsToNames(unrecursives)), mr.DebugInfo()))},
 			news...)...)
 }
 
@@ -159,20 +159,20 @@ func deleteNamesDefinedByLets(ni map[string]int, ls []interface{}) map[string]in
 }
 
 func letStatementsToNames(ls []interface{}) []string {
-	names := make([]string, 0, len(ls))
+	ns := make([]string, 0, len(ls))
 
 	for _, l := range ls {
 		switch l := l.(type) {
 		case ast.LetFunction:
-			names = append(names, l.Name())
+			ns = append(ns, l.Name())
 		case ast.LetVar:
-			names = append(names, l.Name())
+			ns = append(ns, l.Name())
 		default:
 			panic("Unreachable")
 		}
 	}
 
-	return names
+	return ns
 }
 
 func stringsToAnys(ss []string) []interface{} {

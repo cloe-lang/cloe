@@ -23,31 +23,26 @@ func (r valueRenamer) rename(v interface{}) interface{} {
 
 		return x
 	case ast.App:
-		ps := x.Arguments().Positionals()
-		newPs := make([]ast.PositionalArgument, 0, len(ps))
+		args := x.Arguments()
+		ps := make([]ast.PositionalArgument, 0, len(args.Positionals()))
 
-		for _, p := range ps {
-			newPs = append(newPs, ast.NewPositionalArgument(r.rename(p.Value()), p.Expanded()))
+		for _, p := range args.Positionals() {
+			ps = append(ps, ast.NewPositionalArgument(r.rename(p.Value()), p.Expanded()))
 		}
 
-		ks := x.Arguments().Keywords()
-		newKs := make([]ast.KeywordArgument, 0, len(ks))
+		ks := make([]ast.KeywordArgument, 0, len(args.Keywords()))
 
-		for _, k := range ks {
-			newKs = append(newKs, ast.NewKeywordArgument(k.Name(), r.rename(k.Value())))
+		for _, k := range args.Keywords() {
+			ks = append(ks, ast.NewKeywordArgument(k.Name(), r.rename(k.Value())))
 		}
 
-		ds := x.Arguments().ExpandedDicts()
-		newDs := make([]interface{}, 0, len(ds))
+		ds := make([]interface{}, 0, len(args.ExpandedDicts()))
 
-		for _, d := range ds {
-			newDs = append(newDs, r.rename(d))
+		for _, d := range args.ExpandedDicts() {
+			ds = append(ds, r.rename(d))
 		}
 
-		return ast.NewApp(
-			r.rename(x.Function()),
-			ast.NewArguments(newPs, newKs, newDs),
-			x.DebugInfo())
+		return ast.NewApp(r.rename(x.Function()), ast.NewArguments(ps, ks, ds), x.DebugInfo())
 	case ast.Switch:
 		cs := make([]ast.SwitchCase, 0, len(x.Cases()))
 

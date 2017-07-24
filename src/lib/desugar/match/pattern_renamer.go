@@ -17,8 +17,8 @@ func newPatternRenamer() *patternRenamer {
 }
 
 func (r *patternRenamer) rename(p interface{}) (interface{}, map[string]string) {
-	new := r.renameNames(p)
-	return new, r.nameMap
+	q := r.renameNames(p)
+	return q, r.nameMap
 }
 
 func (r *patternRenamer) renameNames(p interface{}) interface{} {
@@ -35,14 +35,13 @@ func (r *patternRenamer) renameNames(p interface{}) interface{} {
 		case "$list":
 			fallthrough
 		case "$dict":
-			ps := x.Arguments().Positionals()
-			new := make([]ast.PositionalArgument, 0, len(ps))
+			ps := make([]ast.PositionalArgument, 0, len(x.Arguments().Positionals()))
 
-			for _, p := range ps {
-				new = append(new, ast.NewPositionalArgument(r.renameNames(p.Value()), p.Expanded()))
+			for _, p := range x.Arguments().Positionals() {
+				ps = append(ps, ast.NewPositionalArgument(r.renameNames(p.Value()), p.Expanded()))
 			}
 
-			return ast.NewApp(x.Function(), ast.NewArguments(new, nil, nil), x.DebugInfo())
+			return ast.NewApp(x.Function(), ast.NewArguments(ps, nil, nil), x.DebugInfo())
 		}
 	}
 

@@ -17,36 +17,40 @@ func newNames(ss ...string) names {
 func (ns names) slice() []string {
 	ms := make([]string, 0, len(ns))
 
-	for k := range ns {
-		ms = append(ms, k)
+	for n := range ns {
+		ms = append(ms, n)
 	}
 
 	return ms
-}
-
-func (ns names) copy() names {
-	ms := newNames()
-
-	for k, v := range ns {
-		ms[k] = v
-	}
-
-	return ms
-}
-
-func (ns names) merge(ms names) {
-	for k, v := range ms {
-		ns[k] = v
-	}
 }
 
 func (ns names) add(n string) {
 	ns[n] = true
 }
 
+func (ns names) copy() names {
+	ms := newNames()
+
+	for n := range ns {
+		ms.add(n)
+	}
+
+	return ms
+}
+
+func (ns names) merge(ms names) {
+	for m := range ms {
+		ns.add(m)
+	}
+}
+
+func (ns names) delete(n string) {
+	delete(ns, n)
+}
+
 func (ns names) subtract(ms names) {
-	for k := range ms {
-		delete(ns, k)
+	for m := range ms {
+		ns.delete(m)
 	}
 }
 
@@ -67,21 +71,23 @@ func (ns names) find(x interface{}) names {
 		return ms
 	case ast.LetVar:
 		ns := ns.copy()
-		delete(ns, x.Name())
+		ns.delete(x.Name())
 		return ns.find(x.Expr())
 	case ast.LetFunction:
 		ns := ns.copy()
 
-		delete(ns, x.Name())
-		for _, n := range signatureToNames(x.Signature()).slice() {
-			delete(ns, n)
+		ns.delete(x.Name())
+		for n := range signatureToNames(x.Signature()) {
+			ns.delete(n)
 		}
 
 		ms := ns.find(x.Lets())
 		ms.merge(ns.find(x.Body()))
 		return ms
 	case ast.App:
-		return newNames(append(ns.find(x.Function()).slice(), ns.find(x.Arguments()).slice()...)...)
+		ms := ns.find(x.Function())
+		ms.merge(ns.find(x.Arguments()))
+		return ms
 	case ast.Arguments:
 		ms := newNames()
 

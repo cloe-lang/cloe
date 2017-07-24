@@ -70,8 +70,6 @@ func (ns names) find(x interface{}) names {
 
 		return ms
 	case ast.LetVar:
-		ns := ns.copy()
-		ns.delete(x.Name())
 		return ns.find(x.Expr())
 	case ast.LetFunction:
 		ns := ns.copy()

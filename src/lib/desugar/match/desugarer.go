@@ -356,7 +356,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 
 	key := cs[0].Pattern().(ast.App).Arguments().Positionals()[0].Value()
 	value := d.matchedApp(dict, key)
-	newDict := d.matchedApp("delete", dict, key)
+	rest := d.matchedApp("delete", dict, key)
 	gs := []group{}
 
 	for i, c := range cs {
@@ -374,7 +374,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 				dc = d.desugarDictCasesOfSameKey(dict, cs, dc)
 			}
 
-			next := d.desugarCases(newDict, []ast.MatchCase{c}, dc)
+			next := d.desugarCases(rest, []ast.MatchCase{c}, dc)
 
 			switch getPatternType(v) {
 			case namePattern:
@@ -408,7 +408,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 	dc = d.letTempVar(dc)
 
 	for _, g := range gs {
-		cs = append(cs, ast.NewMatchCase(g.value, d.desugarCases(newDict, g.cases, dc)))
+		cs = append(cs, ast.NewMatchCase(g.value, d.desugarCases(rest, g.cases, dc)))
 	}
 
 	return d.desugarCases(value, cs, dc)

@@ -72,10 +72,7 @@ func (ns names) find(x interface{}) names {
 		return ns.find(x.Expr())
 	case ast.LetFunction:
 		ns := ns.copy()
-
-		for n := range signatureToNames(x.Signature()) {
-			ns.delete(n)
-		}
+		ns.subtract(signatureToNames(x.Signature()))
 
 		ms := newNames()
 

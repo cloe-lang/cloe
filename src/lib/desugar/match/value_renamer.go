@@ -50,13 +50,7 @@ func (r valueRenamer) rename(v interface{}) interface{} {
 			cs = append(cs, ast.NewSwitchCase(c.Pattern(), r.rename(c.Value())))
 		}
 
-		d := interface{}(nil)
-
-		if x.DefaultCase() != nil {
-			d = r.rename(x.DefaultCase())
-		}
-
-		return newSwitch(r.rename(x.Value()), cs, d)
+		return newSwitch(r.rename(x.Value()), cs, r.rename(x.DefaultCase()))
 	}
 
 	panic(fmt.Errorf("Invalid value: %#v", v))

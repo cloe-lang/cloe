@@ -17,7 +17,7 @@ func desugarSelfRecursiveStatement(s interface{}) []interface{} {
 func desugarSelfRecursiveFunction(f ast.LetFunction) []interface{} {
 	f = desugarInnerSelfRecursiveStatements(f)
 
-	if ns := newNames(f.Name()); signatureToNames(f.Signature()).include(f.Name()) || len(ns.find(f.Lets()))+len(ns.find(f.Body())) == 0 {
+	if signatureToNames(f.Signature()).include(f.Name()) || len(newNames(f.Name()).findInFunction(f)) == 0 {
 		return []interface{}{f}
 	}
 

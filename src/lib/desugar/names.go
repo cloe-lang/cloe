@@ -59,27 +59,39 @@ func (ns names) include(n string) bool {
 	return ok
 }
 
+// findInFunction finds names in a let-function node. find assumes that a given
+// let-function node does not define its function recursively.
+func (ns names) findInFunction(f ast.LetFunction) names {
+	return ns.find(f)
+}
+
+// find finds names in a AST node. This should not be used directly.
 func (ns names) find(x interface{}) names {
 	switch x := x.(type) {
-	case []interface{}:
-		ms := newNames()
-
-		for _, s := range x {
-			ms.merge(ns.find(s))
-		}
-
-		return ms
 	case ast.LetVar:
 		return ns.find(x.Expr())
 	case ast.LetFunction:
 		ns := ns.copy()
 
-		ns.delete(x.Name())
 		for n := range signatureToNames(x.Signature()) {
 			ns.delete(n)
 		}
 
-		ms := ns.find(x.Lets())
+		ms := newNames()
+
+		for _, l := range x.Lets() {
+			switch l := l.(type) {
+			case ast.LetVar:
+				ms.merge(ns.find(l))
+				ns.delete(l.Name())
+			case ast.LetFunction:
+				ns.delete(l.Name())
+				ms.merge(ns.find(l))
+			default:
+				panic("Unreachable")
+			}
+		}
+
 		ms.merge(ns.find(x.Body()))
 		return ms
 	case ast.App:

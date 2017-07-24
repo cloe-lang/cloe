@@ -39,7 +39,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 			ls = append(ls, l)
 			ns.add(l.Name())
 		case ast.LetFunction:
-			args := getAdditionalArguments(ns, l)
+			args := ns.findInFunction(l).slice()
 			n := gensym.GenSym(f.Name(), l.Name())
 
 			ss = append(ss, letFlattenedFunction(l, n, args))
@@ -52,18 +52,6 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 	}
 
 	return append(ss, ast.NewLetFunction(f.Name(), f.Signature(), ls, f.Body(), f.DebugInfo()))
-}
-
-func getAdditionalArguments(ns names, f ast.LetFunction) []string {
-	ms := ns.find(f.Body())
-
-	for _, l := range f.Lets() {
-		ms.merge(ns.find(l.(ast.LetVar)))
-	}
-
-	ms.subtract(signatureToNames(f.Signature()))
-
-	return ms.slice()
 }
 
 func letFlattenedFunction(f ast.LetFunction, n string, args []string) ast.LetFunction {

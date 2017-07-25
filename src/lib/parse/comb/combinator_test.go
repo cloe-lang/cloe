@@ -28,8 +28,8 @@ func TestMany(t *testing.T) {
 
 		t.Logf("%#v", x)
 
-		assert.NotEqual(t, x, nil)
-		assert.Equal(t, err, nil)
+		assert.NotEqual(t, nil, x)
+		assert.Equal(t, nil, err)
 	}
 }
 
@@ -52,8 +52,8 @@ func TestManyFail(t *testing.T) {
 
 		t.Logf("%#v", x)
 
-		assert.Equal(t, x, nil)
-		assert.NotEqual(t, err, nil)
+		assert.Equal(t, nil, x)
+		assert.NotEqual(t, nil, err)
 	}
 }
 
@@ -67,8 +67,8 @@ func TestMany1(t *testing.T) {
 
 	t.Logf("%#v", x)
 
-	assert.NotEqual(t, x, nil)
-	assert.Equal(t, err, nil)
+	assert.NotEqual(t, nil, x)
+	assert.Equal(t, nil, err)
 }
 
 func TestXFailMany1(t *testing.T) {
@@ -76,8 +76,8 @@ func TestXFailMany1(t *testing.T) {
 
 	t.Log(err)
 
-	assert.Equal(t, x, nil)
-	assert.NotEqual(t, err, nil)
+	assert.Equal(t, nil, x)
+	assert.NotEqual(t, nil, err)
 }
 
 func TestMany1Nest(t *testing.T) {
@@ -86,8 +86,8 @@ func TestMany1Nest(t *testing.T) {
 
 	t.Logf("%#v", x)
 
-	assert.NotEqual(t, x, nil)
-	assert.Equal(t, err, nil)
+	assert.NotEqual(t, nil, x)
+	assert.Equal(t, nil, err)
 }
 
 func testOr(str string) (interface{}, error) {
@@ -101,8 +101,8 @@ func TestOr(t *testing.T) {
 
 		t.Logf("%#v", x)
 
-		assert.NotEqual(t, x, nil)
-		assert.Equal(t, err, nil)
+		assert.NotEqual(t, nil, x)
+		assert.Equal(t, nil, err)
 	}
 }
 
@@ -111,8 +111,8 @@ func TestXFailOr(t *testing.T) {
 
 	t.Log(err)
 
-	assert.Equal(t, x, nil)
-	assert.NotEqual(t, err, nil)
+	assert.Equal(t, nil, x)
+	assert.NotEqual(t, nil, err)
 }
 
 func TestMaybeSuccess(t *testing.T) {
@@ -138,15 +138,15 @@ func TestMaybeFailure(t *testing.T) {
 func TestExhaustWithErroneousParser(t *testing.T) {
 	s := NewState("")
 	_, err := s.Exhaust(s.String("foo"))()
-	assert.NotEqual(t, err, nil)
+	assert.NotEqual(t, nil, err)
 }
 
 func TestStringify(t *testing.T) {
 	str := "foo"
 	s := NewState(str)
 	x, err := s.Exhaust(s.Stringify(s.And(s.String(str))))()
-	assert.Equal(t, str, x.(string))
-	assert.Equal(t, err, nil)
+	assert.Equal(t, str, x)
+	assert.Equal(t, nil, err)
 }
 
 func TestStringifyFail(t *testing.T) {

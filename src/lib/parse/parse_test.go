@@ -58,6 +58,14 @@ func TestImportModule(t *testing.T) {
 	}
 }
 
+func TestImportModuleFail(t *testing.T) {
+	for _, str := range []string{"(import)", "(import foo)"} {
+		s := newStateWithoutFile(str)
+		_, err := s.Exhaust(s.importModule())()
+		assert.NotEqual(t, nil, err)
+	}
+}
+
 func TestLetVar(t *testing.T) {
 	for _, str := range []string{"(let foo 123)", "(let foo (f x y))"} {
 		s := newStateWithoutFile(str)

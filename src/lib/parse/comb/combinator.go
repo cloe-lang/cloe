@@ -20,15 +20,7 @@ func (s *State) Char(r rune) Parser {
 
 // NotChar creates a parser parsing a character which is not one of an argument.
 func (s *State) NotChar(r rune) Parser {
-	return func() (interface{}, error) {
-		if s.currentRune() == r {
-			return nil, fmt.Errorf("should not be '%c'", r)
-		}
-
-		defer s.increment()
-
-		return s.currentRune(), nil
-	}
+	return s.NotInString(string(r))
 }
 
 // String creates a parser parsing a string.

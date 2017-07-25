@@ -6,48 +6,52 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestInternalMainModule(t *testing.T) {
-	for _, str := range []string{"", "(let x 42) (let (f x) (+ x 123)) (write 123)"} {
-		result, err := newStateWithoutFile(str).mainModule()()
-
-		t.Log(result)
-
-		assert.NotEqual(t, result, nil)
-		assert.Equal(t, err, nil)
+func TestMainModule(t *testing.T) {
+	for _, s := range []string{"", "(let x 42) (let (f x) (+ x 123)) (write 123)"} {
+		ss, err := MainModule("<test>", s)
+		checkSuccessfulResult(t, ss, err)
+		x, err := newStateWithoutFile(s).mainModule()()
+		checkSuccessfulResult(t, x, err)
 	}
 }
 
-func TestInternalMainModuleFail(t *testing.T) {
-	for _, str := range []string{"(", "(()"} {
-		result, err := newStateWithoutFile(str).mainModule()()
-
-		t.Log(err.Error())
-
-		assert.Equal(t, result, nil)
-		assert.NotEqual(t, err, nil)
+func TestMainModuleFail(t *testing.T) {
+	for _, s := range []string{"(", "(()"} {
+		ss, err := MainModule("<test>", s)
+		checkFailedResult(t, ss, err)
+		x, err := newStateWithoutFile(s).mainModule()()
+		checkFailedResult(t, x, err)
 	}
 }
 
-func TestInternalSubModule(t *testing.T) {
-	for _, str := range []string{"", "(let x 123) (let (f x) (+ x 123))"} {
-		result, err := newStateWithoutFile(str).subModule()()
-
-		t.Log(result)
-
-		assert.NotEqual(t, result, nil)
-		assert.Equal(t, err, nil)
+func TestSubModule(t *testing.T) {
+	for _, s := range []string{"", "(let x 123) (let (f x) (+ x 123))"} {
+		ss, err := SubModule("<test>", s)
+		checkSuccessfulResult(t, ss, err)
+		x, err := newStateWithoutFile(s).subModule()()
+		checkSuccessfulResult(t, x, err)
 	}
 }
 
-func TestInternalSubModuleFail(t *testing.T) {
-	for _, str := range []string{"(", "(()", "(write 123)"} {
-		result, err := newStateWithoutFile(str).subModule()()
-
-		t.Log(err.Error())
-
-		assert.Equal(t, result, nil)
-		assert.NotEqual(t, err, nil)
+func TestSubModuleFail(t *testing.T) {
+	for _, s := range []string{"(", "(()", "(write 123)"} {
+		ss, err := SubModule("<test>", s)
+		checkFailedResult(t, ss, err)
+		x, err := newStateWithoutFile(s).subModule()()
+		checkFailedResult(t, x, err)
 	}
+}
+
+func checkSuccessfulResult(t *testing.T, x interface{}, err error) {
+	t.Log("Result:", x)
+	t.Log("Error:", err)
+	assert.Equal(t, nil, err)
+}
+
+func checkFailedResult(t *testing.T, x interface{}, err error) {
+	t.Log("Result:", x)
+	t.Log("Error:", err)
+	assert.NotEqual(t, nil, err)
 }
 
 func TestImportModule(t *testing.T) {

@@ -127,11 +127,18 @@ func TestExhaustWithErroneousParser(t *testing.T) {
 	assert.NotEqual(t, err, nil)
 }
 
+func TestReplace(t *testing.T) {
+	s := NewState("foo")
+	x, err := s.Exhaust(s.Replace("bar", s.String("foo")))()
+	assert.Equal(t, "bar", x)
+	assert.Equal(t, err, nil)
+}
+
 func TestStringify(t *testing.T) {
 	str := "foo"
 	s := NewState(str)
-	result, err := s.Exhaust(s.Stringify(s.And(s.String(str))))()
-	assert.Equal(t, str, result.(string))
+	x, err := s.Exhaust(s.Stringify(s.And(s.String(str))))()
+	assert.Equal(t, str, x.(string))
 	assert.Equal(t, err, nil)
 }
 

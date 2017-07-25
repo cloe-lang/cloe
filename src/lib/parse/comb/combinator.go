@@ -230,11 +230,6 @@ func (s *State) App(f func(interface{}) interface{}, p Parser) Parser {
 	}
 }
 
-// Replace replaces a result of a given parser and creates a new parser.
-func (s *State) Replace(x interface{}, p Parser) Parser {
-	return s.App(func(_ interface{}) interface{} { return x }, p)
-}
-
 func stringToRuneSet(s string) map[rune]bool {
 	rs := make(map[rune]bool)
 

@@ -398,7 +398,7 @@ func (s *state) strip(p comb.Parser) comb.Parser {
 }
 
 func (s *state) blank() comb.Parser {
-	return s.Void(s.Many(s.Or(s.InString(spaceChars), s.comment())))
+	return s.Void(s.Many(s.Or(s.Chars(spaceChars), s.comment())))
 }
 
 func (s *state) comment() comb.Parser {

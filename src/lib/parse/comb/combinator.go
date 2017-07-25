@@ -35,8 +35,8 @@ func (s *State) String(str string) Parser {
 	return s.Stringify(s.And(ps...))
 }
 
-// InString creates a parser parsing a character in a given string.
-func (s *State) InString(str string) Parser {
+// Chars creates a parser parsing a character in a given string.
+func (s *State) Chars(str string) Parser {
 	rs := stringToRuneSet(str)
 
 	return func() (interface{}, error) {

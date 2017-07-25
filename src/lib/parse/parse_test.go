@@ -78,6 +78,18 @@ func TestLetFunction(t *testing.T) {
 	}
 }
 
+func TestMutuallyRecursiveLetFunctions(t *testing.T) {
+	for _, str := range []string{
+		`(mr
+			(let (even? n) (if (= n 0) true (odd? (- n 1))))
+			(let (odd? n) (if (= n 0) false (even? (- n 1)))))`,
+	} {
+		s := newStateWithoutFile(str)
+		_, err := s.Exhaust(s.mutuallyRecursiveLetFunctions())()
+		assert.Equal(t, nil, err)
+	}
+}
+
 func TestSignature(t *testing.T) {
 	for _, str := range []string{"", "x", "x y", "(x 123)", "..args", ". x", ". (x 123)", ". ..kwargs", "..args . ..kwargs"} {
 		s := newStateWithoutFile(str)

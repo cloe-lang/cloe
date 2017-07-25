@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMainModule(t *testing.T) {
+func TestInternalMainModule(t *testing.T) {
 	for _, str := range []string{"", "(let x 42) (let (f x) (+ x 123)) (write 123)"} {
 		result, err := newStateWithoutFile(str).mainModule()()
 
@@ -17,7 +17,7 @@ func TestMainModule(t *testing.T) {
 	}
 }
 
-func TestMainModuleFail(t *testing.T) {
+func TestInternalMainModuleFail(t *testing.T) {
 	for _, str := range []string{"(", "(()"} {
 		result, err := newStateWithoutFile(str).mainModule()()
 
@@ -28,7 +28,7 @@ func TestMainModuleFail(t *testing.T) {
 	}
 }
 
-func TestSubModule(t *testing.T) {
+func TestInternalSubModule(t *testing.T) {
 	for _, str := range []string{"", "(let x 123) (let (f x) (+ x 123))"} {
 		result, err := newStateWithoutFile(str).subModule()()
 
@@ -39,7 +39,7 @@ func TestSubModule(t *testing.T) {
 	}
 }
 
-func TestSubModuleFail(t *testing.T) {
+func TestInternalSubModuleFail(t *testing.T) {
 	for _, str := range []string{"(", "(()", "(write 123)"} {
 		result, err := newStateWithoutFile(str).subModule()()
 

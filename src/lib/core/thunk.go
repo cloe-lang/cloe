@@ -198,7 +198,7 @@ func (t *Thunk) EvalOutput() Value {
 	o, ok := v.(OutputType)
 
 	if !ok {
-		return NotOutputError(v)
+		return NotOutputError(v).Eval()
 	}
 
 	return o.value.Eval()

@@ -17,3 +17,10 @@ func TestXFailThunkEval2(t *testing.T) {
 	t.Log(e)
 	assert.Equal(t, 2, len(e.callTrace))
 }
+
+func TestThunkEvalOutputFail(t *testing.T) {
+	v := Nil.EvalOutput()
+	_, ok := v.(ErrorType)
+	t.Logf("%#v\n", v)
+	assert.True(t, ok)
+}

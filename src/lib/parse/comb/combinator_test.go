@@ -159,6 +159,13 @@ func TestStringifyFail(t *testing.T) {
 	stringify(42)
 }
 
+func TestLazy(t *testing.T) {
+	s := NewState("foo")
+	x, err := s.Lazy(func() Parser { return s.String("foo") })()
+	assert.Equal(t, "foo", x)
+	assert.Equal(t, nil, err)
+}
+
 func TestVoid(t *testing.T) {
 	s := NewState("foo")
 	x, err := s.Void(s.String("foo"))()

@@ -20,7 +20,7 @@ func (s *State) Char(r rune) Parser {
 
 // NotChar creates a parser parsing a character which is not one of an argument.
 func (s *State) NotChar(r rune) Parser {
-	return s.NotInString(string(r))
+	return s.NotChars(string(r))
 }
 
 // String creates a parser parsing a string.
@@ -49,8 +49,8 @@ func (s *State) InString(str string) Parser {
 	}
 }
 
-// NotInString creates a parser parsing a character not in a given string.
-func (s *State) NotInString(str string) Parser {
+// NotChars creates a parser parsing a character not in a given string.
+func (s *State) NotChars(str string) Parser {
 	rs := stringToRuneSet(str)
 
 	return func() (interface{}, error) {

@@ -343,7 +343,7 @@ func (s *state) keywordArgument() comb.Parser {
 
 func (s *state) identifier() comb.Parser {
 	cs := string(commentChar) + invalidChars + spaceChars + specialChars
-	p := s.strip(s.Stringify(s.And(s.NotInString(cs+"."), s.Stringify(s.Many(s.NotInString(cs))))))
+	p := s.strip(s.Stringify(s.And(s.NotChars(cs+"."), s.Stringify(s.Many(s.NotChars(cs))))))
 
 	return func() (interface{}, error) {
 		x, err := p()
@@ -365,7 +365,7 @@ func (s *state) stringLiteral() comb.Parser {
 
 	return s.Stringify(s.And(
 		c,
-		s.Many(s.Or(s.NotInString("\"\\"), s.String("\\\""), s.String("\\\\"))),
+		s.Many(s.Or(s.NotChars("\"\\"), s.String("\\\""), s.String("\\\\"))),
 		s.strip(c)))
 }
 

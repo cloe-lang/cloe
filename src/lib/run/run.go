@@ -22,10 +22,7 @@ func Run(os []compile.Output) {
 		wg.Add(1)
 
 		if v.Expanded() {
-			go func() {
-				evalOutputList(v.Value())
-				wg.Done()
-			}()
+			go evalOutputList(v.Value(), &wg)
 		} else {
 			sem <- true
 			go runOutput(v.Value(), &wg)
@@ -35,8 +32,12 @@ func Run(os []compile.Output) {
 	wg.Wait()
 }
 
-func evalOutputList(t *core.Thunk) {
+func evalOutputList(t *core.Thunk, parent *sync.WaitGroup) {
 	wg := sync.WaitGroup{}
+	defer func() {
+		wg.Wait()
+		parent.Done()
+	}()
 
 	for {
 		v := core.PApp(core.Equal, t, core.EmptyList).Eval()
@@ -53,15 +54,15 @@ func evalOutputList(t *core.Thunk) {
 
 		t = core.PApp(core.Rest, t)
 	}
-
-	wg.Wait()
 }
 
 func runOutput(t *core.Thunk, wg *sync.WaitGroup) {
+	defer func() {
+		<-sem
+		wg.Done()
+	}()
+
 	if err, ok := t.EvalOutput().(core.ErrorType); ok {
 		panic(err)
 	}
-
-	<-sem
-	wg.Done()
 }

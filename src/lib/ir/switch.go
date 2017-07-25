@@ -16,8 +16,8 @@ type Switch struct {
 
 // NewSwitch creates a switch expression.
 func NewSwitch(v interface{}, cs []Case, d interface{}) Switch {
-	if len(cs) == 0 && d == nil {
-		panic(fmt.Errorf("A number of cases in switch expressions must be more than 0"))
+	if d == nil {
+		panic(fmt.Errorf("Default cases must be provided in switch expressions"))
 	}
 
 	return Switch{v, cs, d, compileCasesToDict(cs)}

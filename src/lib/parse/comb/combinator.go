@@ -36,8 +36,8 @@ func (s *State) String(str string) Parser {
 }
 
 // Chars creates a parser parsing a character in a given string.
-func (s *State) Chars(str string) Parser {
-	rs := stringToRuneSet(str)
+func (s *State) Chars(cs string) Parser {
+	rs := stringToRuneSet(cs)
 
 	return func() (interface{}, error) {
 		if _, ok := rs[s.currentRune()]; ok {

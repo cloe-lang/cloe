@@ -193,8 +193,8 @@ func TestIdentifier(t *testing.T) {
 	assert.NotEqual(t, err, nil)
 }
 
-func TestXFailIdentifier(t *testing.T) {
-	for _, str := range []string{"", ".", "..", ".foo"} {
+func TestIdentifierFail(t *testing.T) {
+	for _, str := range []string{"", ".", "..", ".foo", "let"} {
 		s := newStateWithoutFile(str)
 		result, err := s.identifier()()
 		assert.Equal(t, result, nil)

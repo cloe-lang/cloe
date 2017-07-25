@@ -1,8 +1,6 @@
 package run
 
 import (
-	"fmt"
-	"os"
 	"sync"
 
 	"github.com/tisp-lang/tisp/src/lib/compile"
@@ -44,7 +42,7 @@ func evalOutputList(t *core.Thunk) {
 		v := core.PApp(core.Equal, t, core.EmptyList).Eval()
 
 		if b, ok := v.(core.BoolType); !ok {
-			failOnError(core.NotBoolError(v).Eval().(core.ErrorType))
+			panic(core.NotBoolError(v).Eval().(core.ErrorType))
 		} else if b {
 			break
 		}
@@ -61,14 +59,9 @@ func evalOutputList(t *core.Thunk) {
 
 func runOutput(t *core.Thunk, wg *sync.WaitGroup) {
 	if err, ok := t.EvalOutput().(core.ErrorType); ok {
-		failOnError(err)
+		panic(err)
 	}
 
 	<-sem
 	wg.Done()
-}
-
-func failOnError(err core.ErrorType) {
-	fmt.Fprint(os.Stderr, err.Lines())
-	os.Exit(1)
 }

@@ -71,8 +71,9 @@ func (s *state) importModule() comb.Parser {
 			xs := x.([]interface{})
 
 			path, err := strconv.Unquote(xs[1].(string))
+
 			if err != nil {
-				panic(err)
+				return nil, err
 			}
 
 			return ast.NewImport(path, i), nil

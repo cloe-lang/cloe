@@ -59,7 +59,7 @@ func TestImportModule(t *testing.T) {
 }
 
 func TestImportModuleFail(t *testing.T) {
-	for _, str := range []string{"(import)", "(import foo)"} {
+	for _, str := range []string{"(import)", "(import foo)", `(import "\a\b\c\d")`} {
 		s := newStateWithoutFile(str)
 		_, err := s.Exhaust(s.importModule())()
 		assert.NotEqual(t, nil, err)

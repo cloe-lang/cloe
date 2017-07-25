@@ -195,5 +195,11 @@ func (t *Thunk) EvalOutput() Value {
 		return err
 	}
 
-	return v.(OutputType).value.Eval()
+	o, ok := v.(OutputType)
+
+	if !ok {
+		return NotOutputError(v)
+	}
+
+	return o.value.Eval()
 }

@@ -24,11 +24,11 @@ func TestNotCharFail(t *testing.T) {
 func TestMany(t *testing.T) {
 	for _, str := range []string{"", "  "} {
 		s := NewState(str)
-		result, err := s.Many(s.Char(' '))()
+		x, err := s.Many(s.Char(' '))()
 
-		t.Logf("%#v", result)
+		t.Logf("%#v", x)
 
-		assert.NotEqual(t, result, nil)
+		assert.NotEqual(t, x, nil)
 		assert.Equal(t, err, nil)
 	}
 }
@@ -36,7 +36,7 @@ func TestMany(t *testing.T) {
 func TestManyFail(t *testing.T) {
 	for _, str := range []string{"="} {
 		s := NewState(str)
-		result, err := s.Exhaust(s.Many(func() (interface{}, error) {
+		x, err := s.Exhaust(s.Many(func() (interface{}, error) {
 			x, err := s.String("=")()
 
 			if err != nil {
@@ -50,9 +50,9 @@ func TestManyFail(t *testing.T) {
 			return x, nil
 		}))()
 
-		t.Logf("%#v", result)
+		t.Logf("%#v", x)
 
-		assert.Equal(t, result, nil)
+		assert.Equal(t, x, nil)
 		assert.NotEqual(t, err, nil)
 	}
 }
@@ -63,30 +63,30 @@ func testMany1Space(str string) (interface{}, error) {
 }
 
 func TestMany1(t *testing.T) {
-	result, err := testMany1Space(" ")
+	x, err := testMany1Space(" ")
 
-	t.Logf("%#v", result)
+	t.Logf("%#v", x)
 
-	assert.NotEqual(t, result, nil)
+	assert.NotEqual(t, x, nil)
 	assert.Equal(t, err, nil)
 }
 
 func TestXFailMany1(t *testing.T) {
-	result, err := testMany1Space("")
+	x, err := testMany1Space("")
 
 	t.Log(err)
 
-	assert.Equal(t, result, nil)
+	assert.Equal(t, x, nil)
 	assert.NotEqual(t, err, nil)
 }
 
 func TestMany1Nest(t *testing.T) {
 	s := NewState("    ")
-	result, err := s.Many1(s.Many1(s.Char(' ')))()
+	x, err := s.Many1(s.Many1(s.Char(' ')))()
 
-	t.Logf("%#v", result)
+	t.Logf("%#v", x)
 
-	assert.NotEqual(t, result, nil)
+	assert.NotEqual(t, x, nil)
 	assert.Equal(t, err, nil)
 }
 
@@ -97,41 +97,41 @@ func testOr(str string) (interface{}, error) {
 
 func TestOr(t *testing.T) {
 	for _, str := range []string{"a", "b"} {
-		result, err := testOr(str)
+		x, err := testOr(str)
 
-		t.Logf("%#v", result)
+		t.Logf("%#v", x)
 
-		assert.NotEqual(t, result, nil)
+		assert.NotEqual(t, x, nil)
 		assert.Equal(t, err, nil)
 	}
 }
 
 func TestXFailOr(t *testing.T) {
-	result, err := testOr("c")
+	x, err := testOr("c")
 
 	t.Log(err)
 
-	assert.Equal(t, result, nil)
+	assert.Equal(t, x, nil)
 	assert.NotEqual(t, err, nil)
 }
 
 func TestMaybeSuccess(t *testing.T) {
 	s := NewState("foo")
-	result, err := s.Maybe(s.String("foo"))()
+	x, err := s.Maybe(s.String("foo"))()
 
-	t.Log(result)
+	t.Log(x)
 
-	assert.Equal(t, "foo", result)
+	assert.Equal(t, "foo", x)
 	assert.Equal(t, nil, err)
 }
 
 func TestMaybeFailure(t *testing.T) {
 	s := NewState("bar")
-	result, err := s.Maybe(s.String("foo"))()
+	x, err := s.Maybe(s.String("foo"))()
 
-	t.Log(result)
+	t.Log(x)
 
-	assert.Equal(t, nil, result)
+	assert.Equal(t, nil, x)
 	assert.Equal(t, nil, err)
 }
 

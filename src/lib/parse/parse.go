@@ -68,16 +68,18 @@ func (s *state) importModule() comb.Parser {
 	return s.withInfo(
 		s.list(s.strippedString(importString), s.stringLiteral()),
 		func(x interface{}, i debug.Info) (interface{}, error) {
-			xs := x.([]interface{})
-
-			path, err := strconv.Unquote(xs[1].(string))
-
-			if err != nil {
-				return nil, err
-			}
-
-			return ast.NewImport(path, i), nil
+			return ast.NewImport(unquoteString(x.([]interface{})[1].(string)), i), nil
 		})
+}
+
+func unquoteString(s string) string {
+	s, err := strconv.Unquote(s)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return s
 }
 
 func (s *state) let() comb.Parser {

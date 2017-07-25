@@ -242,6 +242,16 @@ func newStateWithoutFile(source string) *state {
 	return newState("", source)
 }
 
+func TestUnquoteStringFail(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fail()
+		}
+	}()
+
+	unquoteString("foo")
+}
+
 // func TestClosureLiteral(t *testing.T) {
 //	s := newStateWithoutFile("'(+ #1 #2 3)")
 //	result, err := s.Exhaust(s.expression())()

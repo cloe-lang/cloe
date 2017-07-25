@@ -158,3 +158,10 @@ func TestStringifyFail(t *testing.T) {
 
 	stringify(42)
 }
+
+func TestVoid(t *testing.T) {
+	s := NewState("foo")
+	x, err := s.Void(s.String("foo"))()
+	assert.Equal(t, nil, x)
+	assert.Equal(t, nil, err)
+}

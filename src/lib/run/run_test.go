@@ -1,6 +1,7 @@
 package run
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/tisp-lang/tisp/src/lib/compile"
@@ -25,4 +26,26 @@ func TestRunWithExpandedList(t *testing.T) {
 	Run([]compile.Output{compile.NewOutput(
 		core.NewList(core.PApp(std.Write, core.True), core.PApp(std.Write, core.False)),
 		true)})
+}
+
+func TestEvalOutputListFail(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fail()
+		}
+	}()
+
+	evalOutputList(core.ValueError("Not list output"))
+}
+
+func TestRunOutputFail(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fail()
+		}
+	}()
+
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+	runOutput(core.Nil, wg)
 }

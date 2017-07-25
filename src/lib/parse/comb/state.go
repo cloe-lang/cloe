@@ -35,7 +35,7 @@ func (s *State) increment() {
 
 // LineNumber returns a current line number.
 func (s *State) LineNumber() int {
-	return s.lineNumber
+	return s.lineNumber + 1
 }
 
 // Line returns a current line.

@@ -56,5 +56,5 @@ func newPositionalArguments(xs ...interface{}) Arguments {
 }
 
 func newAppWithDummyInfo(f interface{}, args Arguments) App {
-	return NewApp(f, args, debug.NewInfo("go source", -1, ""))
+	return NewApp(f, args, debug.NewGoInfo(0))
 }

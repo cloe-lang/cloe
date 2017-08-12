@@ -15,5 +15,5 @@ func newState(file, source string) *state {
 }
 
 func (s state) debugInfo() debug.Info {
-	return debug.NewInfo(s.file, s.LineNumber(), s.Line())
+	return debug.NewInfo(s.file, s.LineNumber(), s.LinePosition(), s.Line())
 }

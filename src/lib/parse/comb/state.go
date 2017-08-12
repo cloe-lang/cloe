@@ -4,8 +4,8 @@ import "strings"
 
 // State represents a parser state.
 type State struct {
-	source               []rune
-	lineNumber, position int
+	source                                   []rune
+	lineNumber, linePosition, sourcePosition int
 }
 
 // NewState creates a parser state.
@@ -14,7 +14,7 @@ func NewState(source string) *State {
 }
 
 func (s State) exhausted() bool {
-	return s.position >= len(s.source)
+	return s.sourcePosition >= len(s.source)
 }
 
 func (s State) currentRune() rune {
@@ -22,7 +22,7 @@ func (s State) currentRune() rune {
 		return '\x00'
 	}
 
-	return s.source[s.position]
+	return s.source[s.sourcePosition]
 }
 
 func (s *State) increment() {
@@ -30,12 +30,17 @@ func (s *State) increment() {
 		s.lineNumber++
 	}
 
-	s.position++
+	s.sourcePosition++
 }
 
 // LineNumber returns a current line number.
 func (s *State) LineNumber() int {
 	return s.lineNumber + 1
+}
+
+// LinePosition returns a position in a current line.
+func (s State) LinePosition() int {
+	return s.linePosition + 1
 }
 
 // Line returns a current line.

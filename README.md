@@ -62,27 +62,6 @@ Please send pull requests, issues, questions or anything else.
 See also [the documentation](https://tisp-lang.gitbooks.io/tisp-programming-language/contribution_guide.html)
 on how to develop Tisp.
 
-## FAQ
-
-### What languages is Tisp inspired by?
-
-The following is their list with ideas and technologies which come from them.
-
-- Haskell
-  - The concept of "Time is Space"
-  - Lazy evaluation and data structures to realize it
-- Clojure
-  - Everything is a value; no object system
-  - The syntax and macro system
-- OCaml
-  - The syntax close to pure lambda calculus and of mutual recursion
-- Python
-  - The Zen (See `python -c 'import this'`.)
-  - The syntax of function calls with positional and keyword arguments
-- Go
-  - Simplicity
-  - Tisp utilizes Go's coroutine runtime.
-
 ## License
 
 [MIT](LICENSE)

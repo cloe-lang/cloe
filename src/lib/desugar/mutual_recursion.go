@@ -29,7 +29,7 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 			unrecs,
 			ast.NewLetFunction(
 				gensym.GenSym("mr", "unrec", f.Name()),
-				prependPosReqsToSig(f.Signature(), []string{arg}),
+				prependPosReqsToSig([]string{arg}, f.Signature()),
 				replaceNames(arg, nameToIndex, f.Lets(), mr.DebugInfo()).([]interface{}),
 				replaceNames(arg, deleteNamesDefinedByLets(nameToIndex, f.Lets()), f.Body(), mr.DebugInfo()),
 				f.DebugInfo()))

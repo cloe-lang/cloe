@@ -26,7 +26,7 @@ func desugarSelfRecursiveFunction(f ast.LetFunction) []interface{} {
 	return []interface{}{
 		ast.NewLetFunction(
 			unrecursive,
-			prependPosReqsToSig(f.Signature(), []string{f.Name()}),
+			prependPosReqsToSig([]string{f.Name()}, f.Signature()),
 			f.Lets(),
 			f.Body(),
 			f.DebugInfo()),

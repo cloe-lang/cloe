@@ -57,7 +57,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 func letFlattenedFunction(f ast.LetFunction, n string, args []string) ast.LetFunction {
 	return ast.NewLetFunction(
 		n,
-		prependPosReqsToSig(f.Signature(), args),
+		prependPosReqsToSig(args, f.Signature()),
 		f.Lets(),
 		f.Body(),
 		f.DebugInfo())

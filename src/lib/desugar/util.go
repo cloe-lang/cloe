@@ -24,7 +24,7 @@ func signatureToNames(s ast.Signature) names {
 	return ns
 }
 
-func prependPosReqsToSig(s ast.Signature, ns []string) ast.Signature {
+func prependPosReqsToSig(ns []string, s ast.Signature) ast.Signature {
 	return ast.NewSignature(
 		append(ns, s.PosReqs()...), s.PosOpts(), s.PosRest(),
 		s.KeyReqs(), s.KeyOpts(), s.KeyRest())

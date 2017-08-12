@@ -37,7 +37,7 @@ func TestEvalOutputListFail(t *testing.T) {
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
-	evalOutputList(core.ValueError("Not list output"), &wg)
+	evalOutputList(core.ValueError("Not list output"), &wg, func(err error) { panic(err) })
 }
 
 func TestRunOutputFail(t *testing.T) {
@@ -50,5 +50,5 @@ func TestRunOutputFail(t *testing.T) {
 	wg := sync.WaitGroup{}
 	sem <- true
 	wg.Add(1)
-	runOutput(core.Nil, &wg)
+	runOutput(core.Nil, &wg, func(err error) { panic(err) })
 }

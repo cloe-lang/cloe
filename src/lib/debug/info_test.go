@@ -24,3 +24,7 @@ func TestNewGoInfoWithInvalidSkip(t *testing.T) {
 func TestLines(t *testing.T) {
 	t.Log(NewGoInfo(0).Lines())
 }
+
+func TestLinesWithLinePosition(t *testing.T) {
+	t.Log(NewInfo("<none>", 1, 1, "(write (+ 123 456))").Lines())
+}

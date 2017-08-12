@@ -135,7 +135,7 @@ func replaceNames(funcList string, nameToIndex map[string]int, x interface{}, di
 		return x
 	}
 
-	panic(x)
+	panic(fmt.Errorf("Invalid value: %#v", x))
 }
 
 func copyNameToIndex(ni map[string]int) map[string]int {

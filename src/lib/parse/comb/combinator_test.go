@@ -49,6 +49,13 @@ func TestPrefix(t *testing.T) {
 	assert.Equal(t, nil, err)
 }
 
+func TestPrefixFail(t *testing.T) {
+	s := NewState("abc")
+	x, err := s.Prefix(s.String("ad"), s.String("c"))()
+	assert.Equal(t, nil, x)
+	assert.NotEqual(t, nil, err)
+}
+
 func TestMany(t *testing.T) {
 	for _, str := range []string{"", "  "} {
 		s := NewState(str)

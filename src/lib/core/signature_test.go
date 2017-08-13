@@ -6,21 +6,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestXFailSignatureBindNoArgument(t *testing.T) {
+func TestSignatureBindNoArgumentFail(t *testing.T) {
 	s := NewSignature(nil, nil, "", nil, nil, "")
 	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil)
 	_, err := s.Bind(args)
 	assert.NotEqual(t, (*Thunk)(nil), err)
 }
 
-func TestXFailSignatureBindRequiredKeywordArgument(t *testing.T) {
+func TestSignatureBindRequiredKeywordArgumentFail(t *testing.T) {
 	s := NewSignature(nil, nil, "", []string{"arg"}, nil, "")
 	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil)
 	_, err := s.Bind(args)
 	assert.NotEqual(t, (*Thunk)(nil), err)
 }
 
-func TestXFailSignatureBindOptionalKeywordArgument(t *testing.T) {
+func TestSignatureBindOptionalKeywordArgumentFail(t *testing.T) {
 	s := NewSignature(nil, nil, "", nil, []OptionalArgument{NewOptionalArgument("arg", Nil)}, "")
 	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil)
 	_, err := s.Bind(args)

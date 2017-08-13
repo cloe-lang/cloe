@@ -33,7 +33,7 @@ func TestDictionaryInsert(t *testing.T) {
 	}
 }
 
-func TestXFailDictionaryInsert(t *testing.T) {
+func TestDictionaryInsertFail(t *testing.T) {
 	l := NewList(NewError("you", "failed."))
 	v := PApp(Insert, PApp(Insert, EmptyDictionary, l, Nil), l, Nil).Eval()
 	_, ok := v.(ErrorType)
@@ -68,7 +68,7 @@ func TestDictionaryIndex(t *testing.T) {
 	}
 }
 
-func TestXFailDictionaryIndex(t *testing.T) {
+func TestDictionaryIndexFail(t *testing.T) {
 	l := NewList(NewError("you", "failed."))
 	v := PApp(PApp(Insert, EmptyDictionary, l, Nil), l, Nil).Eval()
 	_, ok := v.(ErrorType)
@@ -89,7 +89,7 @@ func TestDictionaryDelete(t *testing.T) {
 	assert.Equal(t, 0, d.Size())
 }
 
-func TestXFailDictionaryDelete(t *testing.T) {
+func TestDictionaryDeleteFail(t *testing.T) {
 	l1 := NewList(NewError("you", "failed."))
 	l2 := NewList(NewNumber(42))
 	v := PApp(Delete, PApp(Insert, EmptyDictionary, l1, Nil), l2).Eval()

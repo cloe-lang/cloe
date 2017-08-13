@@ -130,7 +130,7 @@ func TestListIndex(t *testing.T) {
 	}
 }
 
-func TestXFailListIndex(t *testing.T) {
+func TestListIndexFail(t *testing.T) {
 	for _, li := range []struct {
 		list  *Thunk
 		index float64

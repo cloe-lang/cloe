@@ -14,7 +14,7 @@ func testLess(t1, t2 *Thunk) bool {
 	return t1.Eval().(comparable).compare(t2.Eval().(comparable)) < 0
 }
 
-func TestXFailLess(t *testing.T) {
+func TestLessFail(t *testing.T) {
 	defer func() {
 		if r := recover(); r == nil {
 			t.Fail()

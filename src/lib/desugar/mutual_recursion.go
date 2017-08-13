@@ -49,6 +49,10 @@ func createUnrecursiveFunction(n2i map[string]int, f ast.LetFunction) ast.LetFun
 	arg := gensym.GenSym("mr", "functions", "argument")
 	n2i = copyNameToIndex(n2i)
 
+	for n := range signatureToNames(f.Signature()) {
+		delete(n2i, n)
+	}
+
 	ls := make([]interface{}, 0, len(f.Lets()))
 
 	for _, l := range f.Lets() {

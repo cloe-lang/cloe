@@ -22,32 +22,7 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 	unrecs := make([]interface{}, 0, len(fs))
 
 	for _, f := range fs {
-		arg := gensym.GenSym("mr", "functions", "argument")
-		n2i := indexLetFunctions(fs...)
-
-		ls := make([]interface{}, 0, len(f.Lets()))
-
-		for _, l := range f.Lets() {
-			switch l := l.(type) {
-			case ast.LetFunction:
-				delete(n2i, l.Name())
-			case ast.LetVar:
-				delete(n2i, l.Name())
-			default:
-				panic("Unreachable")
-			}
-
-			ls = append(ls, replaceNames(arg, n2i, l, mr.DebugInfo()))
-		}
-
-		unrecs = append(
-			unrecs,
-			ast.NewLetFunction(
-				gensym.GenSym("mr", "unrec", f.Name()),
-				prependPosReqsToSig([]string{arg}, f.Signature()),
-				ls,
-				replaceNames(arg, deleteNamesDefinedByLets(n2i, f.Lets()), f.Body(), mr.DebugInfo()),
-				f.DebugInfo()))
+		unrecs = append(unrecs, createUnrecursiveFunction(indexLetFunctions(fs...), f))
 	}
 
 	recsList := gensym.GenSym("ys", "mr", "functions")
@@ -68,6 +43,33 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 				recsList,
 				ast.NewPApp("$ys", stringsToAnys(letStatementsToNames(unrecs)), mr.DebugInfo()))},
 			recs...)...)
+}
+
+func createUnrecursiveFunction(n2i map[string]int, f ast.LetFunction) ast.LetFunction {
+	arg := gensym.GenSym("mr", "functions", "argument")
+	n2i = copyNameToIndex(n2i)
+
+	ls := make([]interface{}, 0, len(f.Lets()))
+
+	for _, l := range f.Lets() {
+		switch l := l.(type) {
+		case ast.LetFunction:
+			delete(n2i, l.Name())
+		case ast.LetVar:
+			delete(n2i, l.Name())
+		default:
+			panic("Unreachable")
+		}
+
+		ls = append(ls, replaceNames(arg, n2i, l, f.DebugInfo()))
+	}
+
+	return ast.NewLetFunction(
+		gensym.GenSym("mr", "unrec", f.Name()),
+		prependPosReqsToSig([]string{arg}, f.Signature()),
+		ls,
+		replaceNames(arg, n2i, f.Body(), f.DebugInfo()),
+		f.DebugInfo())
 }
 
 func indexLetFunctions(fs ...ast.LetFunction) map[string]int {

@@ -25,12 +25,27 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 		arg := gensym.GenSym("mr", "functions", "argument")
 		n2i := indexLetFunctions(fs...)
 
+		ls := make([]interface{}, 0, len(f.Lets()))
+
+		for _, l := range f.Lets() {
+			switch l := l.(type) {
+			case ast.LetFunction:
+				delete(n2i, l.Name())
+			case ast.LetVar:
+				delete(n2i, l.Name())
+			default:
+				panic("Unreachable")
+			}
+
+			ls = append(ls, replaceNames(arg, n2i, l, mr.DebugInfo()))
+		}
+
 		unrecs = append(
 			unrecs,
 			ast.NewLetFunction(
 				gensym.GenSym("mr", "unrec", f.Name()),
 				prependPosReqsToSig([]string{arg}, f.Signature()),
-				replaceNames(arg, n2i, f.Lets(), mr.DebugInfo()).([]interface{}),
+				ls,
 				replaceNames(arg, deleteNamesDefinedByLets(n2i, f.Lets()), f.Body(), mr.DebugInfo()),
 				f.DebugInfo()))
 	}
@@ -79,14 +94,6 @@ func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.I
 	replace := replaceWithNameToIndex(n2i)
 
 	switch x := x.(type) {
-	case []interface{}:
-		ys := make([]interface{}, 0, len(x))
-
-		for _, x := range x {
-			ys = append(ys, replace(x))
-		}
-
-		return ys
 	case ast.LetFunction:
 		n2i := copyNameToIndex(n2i)
 

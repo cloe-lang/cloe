@@ -10,11 +10,8 @@ type PositionalArgument struct {
 }
 
 // NewPositionalArgument creates a positional argument.
-func NewPositionalArgument(ir interface{}, expanded bool) PositionalArgument {
-	return PositionalArgument{
-		value:    ir,
-		expanded: expanded,
-	}
+func NewPositionalArgument(v interface{}, expanded bool) PositionalArgument {
+	return PositionalArgument{v, expanded}
 }
 
 func (p PositionalArgument) interpret(args []*core.Thunk) core.PositionalArgument {

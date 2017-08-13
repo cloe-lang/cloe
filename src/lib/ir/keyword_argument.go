@@ -9,11 +9,8 @@ type KeywordArgument struct {
 }
 
 // NewKeywordArgument creates a keyword argument from a bound name and its value.
-func NewKeywordArgument(n string, ir interface{}) KeywordArgument {
-	return KeywordArgument{
-		name:  n,
-		value: ir,
-	}
+func NewKeywordArgument(n string, v interface{}) KeywordArgument {
+	return KeywordArgument{n, v}
 }
 
 func (k KeywordArgument) interpret(args []*core.Thunk) core.KeywordArgument {

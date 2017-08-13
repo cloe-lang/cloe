@@ -9,10 +9,6 @@ type Arguments struct {
 
 // NewArguments creates arguments from positional and keyword arguments and
 // expanded dictionaries.
-func NewArguments(ps []PositionalArgument, ks []KeywordArgument, dicts []interface{}) Arguments {
-	return Arguments{
-		positionals:   ps,
-		keywords:      ks,
-		expandedDicts: dicts,
-	}
+func NewArguments(ps []PositionalArgument, ks []KeywordArgument, ds []interface{}) Arguments {
+	return Arguments{ps, ks, ds}
 }

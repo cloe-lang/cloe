@@ -138,24 +138,24 @@ func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.I
 	panic(fmt.Errorf("Invalid value: %#v", x))
 }
 
-func copyNameToIndex(ni map[string]int) map[string]int {
+func copyNameToIndex(n2i map[string]int) map[string]int {
 	new := make(map[string]int)
 
-	for k, v := range ni {
+	for k, v := range n2i {
 		new[k] = v
 	}
 
 	return new
 }
 
-func deleteNamesDefinedByLets(ni map[string]int, ls []interface{}) map[string]int {
-	ni = copyNameToIndex(ni)
+func deleteNamesDefinedByLets(n2i map[string]int, ls []interface{}) map[string]int {
+	n2i = copyNameToIndex(n2i)
 
 	for _, n := range letStatementsToNames(ls) {
-		delete(ni, n)
+		delete(n2i, n)
 	}
 
-	return ni
+	return n2i
 }
 
 func letStatementsToNames(ls []interface{}) []string {

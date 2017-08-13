@@ -87,33 +87,41 @@ func indexLetFunctions(fs ...ast.LetFunction) map[string]int {
 }
 
 func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.Info) interface{} {
-	replaceWithNameToIndex := func(n2i map[string]int) func(x interface{}) interface{} {
-		return func(x interface{}) interface{} {
-			return replaceNames(funcList, n2i, x, di)
-		}
+	replace := func(x interface{}) interface{} {
+		return replaceNames(funcList, n2i, x, di)
 	}
-
-	replace := replaceWithNameToIndex(n2i)
 
 	switch x := x.(type) {
 	case ast.LetFunction:
 		n2i := copyNameToIndex(n2i)
 
-		delete(n2i, x.Name())
 		for n := range signatureToNames(x.Signature()) {
 			delete(n2i, n)
+		}
+
+		ls := make([]interface{}, 0, len(x.Lets()))
+
+		for _, l := range x.Lets() {
+			switch l := l.(type) {
+			case ast.LetFunction:
+				delete(n2i, l.Name())
+			case ast.LetVar:
+				delete(n2i, l.Name())
+			default:
+				panic("Unreachable")
+			}
+
+			ls = append(ls, replaceNames(funcList, n2i, l, di))
 		}
 
 		return ast.NewLetFunction(
 			x.Name(),
 			x.Signature(),
-			replaceWithNameToIndex(n2i)(x.Lets()).([]interface{}),
-			replaceWithNameToIndex(deleteNamesDefinedByLets(n2i, x.Lets()))(x.Body()),
+			ls,
+			replaceNames(funcList, n2i, x.Body(), di),
 			x.DebugInfo())
 	case ast.LetVar:
-		n2i := copyNameToIndex(n2i)
-		delete(n2i, x.Name())
-		return ast.NewLetVar(x.Name(), replaceWithNameToIndex(n2i)(x.Expr()))
+		return ast.NewLetVar(x.Name(), replace(x.Expr()))
 	case ast.App:
 		return ast.NewApp(replace(x.Function()), replace(x.Arguments()).(ast.Arguments), x.DebugInfo())
 	case ast.Arguments:

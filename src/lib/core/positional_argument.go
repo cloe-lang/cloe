@@ -18,10 +18,10 @@ func NewPositionalArgument(value *Thunk, expanded bool) PositionalArgument {
 // NewPositionalArguments creates an Arguments which consists of unexpanded
 // positional arguments.
 func NewPositionalArguments(ts ...*Thunk) Arguments {
-	ps := make([]PositionalArgument, len(ts))
+	ps := make([]PositionalArgument, 0, len(ts))
 
-	for i, t := range ts {
-		ps[i] = NewPositionalArgument(t, false)
+	for _, t := range ts {
+		ps = append(ps, NewPositionalArgument(t, false))
 	}
 
 	return NewArguments(ps, nil, nil)

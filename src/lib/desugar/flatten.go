@@ -73,10 +73,10 @@ func letClosure(f ast.LetFunction, n string, args []string) ast.LetVar {
 }
 
 func namesToPosArgs(ns []string) []ast.PositionalArgument {
-	ps := make([]ast.PositionalArgument, len(ns))
+	ps := make([]ast.PositionalArgument, 0, len(ns))
 
-	for i, n := range ns {
-		ps[i] = ast.NewPositionalArgument(n, false)
+	for _, n := range ns {
+		ps = append(ps, ast.NewPositionalArgument(n, false))
 	}
 
 	return ps

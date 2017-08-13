@@ -64,9 +64,9 @@ func (s StringType) merge(ts ...*Thunk) Value {
 		go t.Eval()
 	}
 
-	ss := make([]string, len(ts))
+	ss := make([]string, 0, len(ts))
 
-	for i, t := range ts {
+	for _, t := range ts {
 		v := t.Eval()
 		s, ok := v.(StringType)
 
@@ -74,7 +74,7 @@ func (s StringType) merge(ts ...*Thunk) Value {
 			return TypeError(v, "String")
 		}
 
-		ss[i] = string(s)
+		ss = append(ss, string(s))
 	}
 
 	return StringType(strings.Join(ss, ""))

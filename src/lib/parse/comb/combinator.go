@@ -26,10 +26,10 @@ func (s *State) NotChar(r rune) Parser {
 // String creates a parser parsing a string.
 func (s *State) String(str string) Parser {
 	rs := ([]rune)(str)
-	ps := make([]Parser, len(rs))
+	ps := make([]Parser, 0, len(rs))
 
-	for i, r := range rs {
-		ps[i] = s.Char(r)
+	for _, r := range rs {
+		ps = append(ps, s.Char(r))
 	}
 
 	return s.Stringify(s.And(ps...))
@@ -151,10 +151,10 @@ func (s *State) Or(ps ...Parser) Parser {
 // And creates a parser combining given parsers sequentially.
 func (s *State) And(ps ...Parser) Parser {
 	return func() (interface{}, error) {
-		results := make([]interface{}, len(ps))
+		results := make([]interface{}, 0, len(ps))
 		old := *s
 
-		for i, p := range ps {
+		for _, p := range ps {
 			result, err := p()
 
 			if err != nil {
@@ -162,7 +162,7 @@ func (s *State) And(ps ...Parser) Parser {
 				return nil, err
 			}
 
-			results[i] = result
+			results = append(results, result)
 		}
 
 		return results, nil
@@ -259,10 +259,10 @@ func stringify(x interface{}) string {
 	case rune:
 		return string(x)
 	case []interface{}:
-		ss := make([]string, len(x))
+		ss := make([]string, 0, len(x))
 
-		for i, s := range x {
-			ss[i] = stringify(s)
+		for _, s := range x {
+			ss = append(ss, stringify(s))
 		}
 
 		return strings.Join(ss, "")

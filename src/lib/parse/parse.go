@@ -127,15 +127,15 @@ func (s *state) halfSignature() comb.Parser {
 		xs := x.([]interface{})
 
 		xs0 := xs[0].([]interface{})
-		requireds := make([]string, len(xs0))
-		for i, r := range xs0 {
-			requireds[i] = r.(string)
+		requireds := make([]string, 0, len(xs0))
+		for _, r := range xs0 {
+			requireds = append(requireds, r.(string))
 		}
 
 		xs1 := xs[1].([]interface{})
-		optionals := make([]ast.OptionalArgument, len(xs1))
-		for i, o := range xs1 {
-			optionals[i] = o.(ast.OptionalArgument)
+		optionals := make([]ast.OptionalArgument, 0, len(xs1))
+		for _, o := range xs1 {
+			optionals = append(optionals, o.(ast.OptionalArgument))
 		}
 
 		expanded := ""
@@ -239,10 +239,10 @@ func (s *state) mutuallyRecursiveLetFunctions() comb.Parser {
 		s.list(s.strippedString(mutualRecString), s.Many(s.letFunction())),
 		func(x interface{}, i debug.Info) (interface{}, error) {
 			xs := x.([]interface{})[1].([]interface{})
-			fs := make([]ast.LetFunction, len(xs))
+			fs := make([]ast.LetFunction, 0, len(xs))
 
-			for i, l := range xs {
-				fs[i] = l.(ast.LetFunction)
+			for _, l := range xs {
+				fs = append(fs, l.(ast.LetFunction))
 			}
 
 			return ast.NewMutualRecursion(fs, i), nil
@@ -301,10 +301,10 @@ func (s *state) arguments() comb.Parser {
 func (s *state) positionalArguments() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
-		ps := make([]ast.PositionalArgument, len(xs))
+		ps := make([]ast.PositionalArgument, 0, len(xs))
 
-		for i, x := range xs {
-			ps[i] = x.(ast.PositionalArgument)
+		for _, x := range xs {
+			ps = append(ps, x.(ast.PositionalArgument))
 		}
 
 		return ps
@@ -328,9 +328,9 @@ func (s *state) keywordArguments() comb.Parser {
 		xs := x.([]interface{})
 
 		ys := xs[0].([]interface{})
-		ks := make([]ast.KeywordArgument, len(ys))
-		for i, y := range ys {
-			ks[i] = y.(ast.KeywordArgument)
+		ks := make([]ast.KeywordArgument, 0, len(ys))
+		for _, y := range ys {
+			ks = append(ks, y.(ast.KeywordArgument))
 		}
 
 		return [2]interface{}{ks, xs[1].([]interface{})}

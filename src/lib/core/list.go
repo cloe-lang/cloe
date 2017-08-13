@@ -284,9 +284,9 @@ func (l ListType) string() Value {
 		return err.Eval()
 	}
 
-	ss := make([]string, len(ts))
+	ss := make([]string, 0, len(ts))
 
-	for i, t := range ts {
+	for _, t := range ts {
 		v := PApp(Dump, t).Eval()
 		s, ok := v.(StringType)
 
@@ -294,7 +294,7 @@ func (l ListType) string() Value {
 			return NotStringError(v)
 		}
 
-		ss[i] = string(s)
+		ss = append(ss, string(s))
 	}
 
 	return StringType("[" + strings.Join(ss, " ") + "]")

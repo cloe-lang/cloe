@@ -64,9 +64,9 @@ var Write = core.NewStrictFunction(
 			return err
 		}
 
-		ss := make([]string, len(elems))
+		ss := make([]string, 0, len(elems))
 
-		for i, t := range elems {
+		for _, t := range elems {
 			v := core.PApp(core.ToString, t).Eval()
 			s, ok := v.(core.StringType)
 
@@ -74,7 +74,7 @@ var Write = core.NewStrictFunction(
 				return core.NotStringError(v)
 			}
 
-			ss[i] = string(s)
+			ss = append(ss, string(s))
 		}
 
 		var options [2]string

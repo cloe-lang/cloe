@@ -50,10 +50,10 @@ var Ys = core.NewLazyFunction(
 							[]*core.Thunk{qs[2]}))
 					})
 
-				newFs := make([]*core.Thunk, len(fs))
+				newFs := make([]*core.Thunk, 0, len(fs))
 
-				for i, f := range fs {
-					newFs[i] = core.PApp(core.Partial, applyF, f)
+				for _, f := range fs {
+					newFs = append(newFs, core.PApp(core.Partial, applyF, f))
 				}
 
 				return core.NewList(newFs...)

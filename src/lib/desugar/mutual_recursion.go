@@ -41,7 +41,7 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 		append(
 			[]interface{}{ast.NewLetVar(
 				recsList,
-				ast.NewPApp("$ys", stringsToAnys(letStatementsToNames(unrecs)), mr.DebugInfo()))},
+				ast.NewPApp("$ys", letStatementsToNames(unrecs), mr.DebugInfo()))},
 			recs...)...)
 }
 
@@ -165,18 +165,8 @@ func copyNameToIndex(n2i map[string]int) map[string]int {
 	return new
 }
 
-func deleteNamesDefinedByLets(n2i map[string]int, ls []interface{}) map[string]int {
-	n2i = copyNameToIndex(n2i)
-
-	for _, n := range letStatementsToNames(ls) {
-		delete(n2i, n)
-	}
-
-	return n2i
-}
-
-func letStatementsToNames(ls []interface{}) []string {
-	ns := make([]string, 0, len(ls))
+func letStatementsToNames(ls []interface{}) []interface{} {
+	ns := make([]interface{}, 0, len(ls))
 
 	for _, l := range ls {
 		switch l := l.(type) {
@@ -190,14 +180,4 @@ func letStatementsToNames(ls []interface{}) []string {
 	}
 
 	return ns
-}
-
-func stringsToAnys(ss []string) []interface{} {
-	xs := make([]interface{}, 0, len(ss))
-
-	for _, s := range ss {
-		xs = append(xs, s)
-	}
-
-	return xs
 }

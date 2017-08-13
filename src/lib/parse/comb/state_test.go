@@ -25,3 +25,7 @@ func TestStateLineAfterNewLine(t *testing.T) {
 func TestStateLineNumber(t *testing.T) {
 	assert.Equal(t, 1, NewState("").LineNumber())
 }
+
+func TestStateLinePosition(t *testing.T) {
+	assert.Equal(t, 1, NewState("").LinePosition())
+}

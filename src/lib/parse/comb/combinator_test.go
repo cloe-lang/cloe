@@ -42,6 +42,13 @@ func TestWrap(t *testing.T) {
 	assert.Equal(t, nil, err)
 }
 
+func TestPrefix(t *testing.T) {
+	s := NewState("abc")
+	x, err := s.Prefix(s.String("ab"), s.String("c"))()
+	assert.Equal(t, "c", x)
+	assert.Equal(t, nil, err)
+}
+
 func TestMany(t *testing.T) {
 	for _, str := range []string{"", "  "} {
 		s := NewState(str)

@@ -141,8 +141,8 @@ func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.I
 func copyNameToIndex(n2i map[string]int) map[string]int {
 	new := make(map[string]int)
 
-	for k, v := range n2i {
-		new[k] = v
+	for n, i := range n2i {
+		new[n] = i
 	}
 
 	return new

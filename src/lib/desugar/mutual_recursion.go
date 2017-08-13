@@ -115,14 +115,14 @@ func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.I
 				panic("Unreachable")
 			}
 
-			ls = append(ls, replaceNames(funcList, n2i, l, di))
+			ls = append(ls, replaceNames(funcList, n2i, l, x.DebugInfo()))
 		}
 
 		return ast.NewLetFunction(
 			x.Name(),
 			x.Signature(),
 			ls,
-			replaceNames(funcList, n2i, x.Body(), di),
+			replaceNames(funcList, n2i, x.Body(), x.DebugInfo()),
 			x.DebugInfo())
 	case ast.LetVar:
 		return ast.NewLetVar(x.Name(), replace(x.Expr()))

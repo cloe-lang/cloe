@@ -28,7 +28,7 @@ func interpretExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 	case App:
 		return x.interpret(args)
 	case Switch:
-		v := core.PApp(x.dict, interpretExpression(args, x.value)).Eval()
+		v := core.PApp(x.dict, interpretExpression(args, x.matchedValue)).Eval()
 		n, ok := v.(core.NumberType)
 
 		if !ok && x.defaultCase == nil {
@@ -37,7 +37,7 @@ func interpretExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 			return interpretExpression(args, x.defaultCase)
 		}
 
-		return interpretExpression(args, x.cases[int(n)].value)
+		return interpretExpression(args, x.caseValues[int(n)])
 	}
 
 	panic("Unreachable")

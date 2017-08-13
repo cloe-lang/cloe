@@ -8,19 +8,25 @@ import (
 
 // Switch represents a switch expression.
 type Switch struct {
-	value       interface{}
-	cases       []Case
-	defaultCase interface{}
-	dict        *core.Thunk
+	matchedValue interface{}
+	caseValues   []interface{}
+	defaultCase  interface{}
+	dict         *core.Thunk
 }
 
 // NewSwitch creates a switch expression.
-func NewSwitch(v interface{}, cs []Case, d interface{}) Switch {
+func NewSwitch(m interface{}, cs []Case, d interface{}) Switch {
 	if d == nil {
 		panic(fmt.Errorf("Default cases must be provided in switch expressions"))
 	}
 
-	return Switch{v, cs, d, compileCasesToDict(cs)}
+	vs := make([]interface{}, 0, len(cs))
+
+	for _, c := range cs {
+		vs = append(vs, c.value)
+	}
+
+	return Switch{m, vs, d, compileCasesToDict(cs)}
 }
 
 func compileCasesToDict(cs []Case) *core.Thunk {

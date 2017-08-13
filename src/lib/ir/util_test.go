@@ -58,3 +58,13 @@ func newPositionalArguments(xs ...interface{}) Arguments {
 func newAppWithDummyInfo(f interface{}, args Arguments) App {
 	return NewApp(f, args, debug.NewGoInfo(0))
 }
+
+func TestInterpretExpressionFail(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fail()
+		}
+	}()
+
+	interpretExpression(nil, "foo")
+}

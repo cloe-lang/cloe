@@ -46,10 +46,10 @@ func TestCompileFunctionWithVars(t *testing.T) {
 }
 
 func newPositionalArguments(xs ...interface{}) Arguments {
-	ps := make([]PositionalArgument, len(xs))
+	ps := make([]PositionalArgument, 0, len(xs))
 
-	for i, x := range xs {
-		ps[i] = NewPositionalArgument(x, false)
+	for _, x := range xs {
+		ps = append(ps, NewPositionalArgument(x, false))
 	}
 
 	return NewArguments(ps, nil, nil)

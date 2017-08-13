@@ -18,22 +18,22 @@ func NewApp(f interface{}, args Arguments, info debug.Info) App {
 }
 
 func (app App) interpret(args []*core.Thunk) *core.Thunk {
-	ps := make([]core.PositionalArgument, len(app.args.positionals))
+	ps := make([]core.PositionalArgument, 0, len(app.args.positionals))
 
-	for i, p := range app.args.positionals {
-		ps[i] = p.interpret(args)
+	for _, p := range app.args.positionals {
+		ps = append(ps, p.interpret(args))
 	}
 
-	ks := make([]core.KeywordArgument, len(app.args.keywords))
+	ks := make([]core.KeywordArgument, 0, len(app.args.keywords))
 
-	for i, k := range app.args.keywords {
-		ks[i] = k.interpret(args)
+	for _, k := range app.args.keywords {
+		ks = append(ks, k.interpret(args))
 	}
 
-	ds := make([]*core.Thunk, len(app.args.expandedDicts))
+	ds := make([]*core.Thunk, 0, len(app.args.expandedDicts))
 
-	for i, d := range app.args.expandedDicts {
-		ds[i] = interpretExpression(args, d)
+	for _, d := range app.args.expandedDicts {
+		ds = append(ds, interpretExpression(args, d))
 	}
 
 	return core.AppWithInfo(interpretExpression(args, app.function), core.NewArguments(ps, ks, ds), app.info)

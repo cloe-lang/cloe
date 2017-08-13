@@ -71,14 +71,14 @@ func (c *compiler) compileSignature(sig ast.Signature) core.Signature {
 	)
 }
 
-func (c *compiler) compileOptionalArguments(opts []ast.OptionalArgument) []core.OptionalArgument {
-	coreOpts := make([]core.OptionalArgument, len(opts))
+func (c *compiler) compileOptionalArguments(os []ast.OptionalArgument) []core.OptionalArgument {
+	ps := make([]core.OptionalArgument, 0, len(os))
 
-	for i, opt := range opts {
-		coreOpts[i] = core.NewOptionalArgument(opt.Name(), c.exprToThunk(opt.DefaultValue()))
+	for _, o := range os {
+		ps = append(ps, core.NewOptionalArgument(o.Name(), c.exprToThunk(o.DefaultValue())))
 	}
 
-	return coreOpts
+	return ps
 }
 
 func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interface{} {

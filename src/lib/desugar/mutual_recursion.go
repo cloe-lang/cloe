@@ -23,15 +23,15 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 
 	for _, f := range fs {
 		arg := gensym.GenSym("mr", "functions", "argument")
-		nameToIndex := indexLetFunctions(fs...)
+		n2i := indexLetFunctions(fs...)
 
 		unrecs = append(
 			unrecs,
 			ast.NewLetFunction(
 				gensym.GenSym("mr", "unrec", f.Name()),
 				prependPosReqsToSig([]string{arg}, f.Signature()),
-				replaceNames(arg, nameToIndex, f.Lets(), mr.DebugInfo()).([]interface{}),
-				replaceNames(arg, deleteNamesDefinedByLets(nameToIndex, f.Lets()), f.Body(), mr.DebugInfo()),
+				replaceNames(arg, n2i, f.Lets(), mr.DebugInfo()).([]interface{}),
+				replaceNames(arg, deleteNamesDefinedByLets(n2i, f.Lets()), f.Body(), mr.DebugInfo()),
 				f.DebugInfo()))
 	}
 
@@ -56,27 +56,27 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 }
 
 func indexLetFunctions(fs ...ast.LetFunction) map[string]int {
-	nameToIndex := make(map[string]int)
+	n2i := make(map[string]int)
 
 	for i, f := range fs {
-		nameToIndex[f.Name()] = i
+		n2i[f.Name()] = i
 	}
 
-	if len(nameToIndex) != len(fs) {
+	if len(n2i) != len(fs) {
 		panic(fmt.Errorf("Duplicate names were found among mutually-recursive functions"))
 	}
 
-	return nameToIndex
+	return n2i
 }
 
-func replaceNames(funcList string, nameToIndex map[string]int, x interface{}, di debug.Info) interface{} {
-	replaceWithNameToIndex := func(nameToIndex map[string]int) func(x interface{}) interface{} {
+func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.Info) interface{} {
+	replaceWithNameToIndex := func(n2i map[string]int) func(x interface{}) interface{} {
 		return func(x interface{}) interface{} {
-			return replaceNames(funcList, nameToIndex, x, di)
+			return replaceNames(funcList, n2i, x, di)
 		}
 	}
 
-	replace := replaceWithNameToIndex(nameToIndex)
+	replace := replaceWithNameToIndex(n2i)
 
 	switch x := x.(type) {
 	case []interface{}:
@@ -88,23 +88,23 @@ func replaceNames(funcList string, nameToIndex map[string]int, x interface{}, di
 
 		return ys
 	case ast.LetFunction:
-		nameToIndex := copyNameToIndex(nameToIndex)
+		n2i := copyNameToIndex(n2i)
 
-		delete(nameToIndex, x.Name())
+		delete(n2i, x.Name())
 		for n := range signatureToNames(x.Signature()) {
-			delete(nameToIndex, n)
+			delete(n2i, n)
 		}
 
 		return ast.NewLetFunction(
 			x.Name(),
 			x.Signature(),
-			replaceWithNameToIndex(nameToIndex)(x.Lets()).([]interface{}),
-			replaceWithNameToIndex(deleteNamesDefinedByLets(nameToIndex, x.Lets()))(x.Body()),
+			replaceWithNameToIndex(n2i)(x.Lets()).([]interface{}),
+			replaceWithNameToIndex(deleteNamesDefinedByLets(n2i, x.Lets()))(x.Body()),
 			x.DebugInfo())
 	case ast.LetVar:
-		nameToIndex := copyNameToIndex(nameToIndex)
-		delete(nameToIndex, x.Name())
-		return ast.NewLetVar(x.Name(), replaceWithNameToIndex(nameToIndex)(x.Expr()))
+		n2i := copyNameToIndex(n2i)
+		delete(n2i, x.Name())
+		return ast.NewLetVar(x.Name(), replaceWithNameToIndex(n2i)(x.Expr()))
 	case ast.App:
 		return ast.NewApp(replace(x.Function()), replace(x.Arguments()).(ast.Arguments), x.DebugInfo())
 	case ast.Arguments:
@@ -128,7 +128,7 @@ func replaceNames(funcList string, nameToIndex map[string]int, x interface{}, di
 
 		return ast.NewArguments(ps, ks, ds)
 	case string:
-		if i, ok := nameToIndex[x]; ok {
+		if i, ok := n2i[x]; ok {
 			return ast.NewPApp(funcList, []interface{}{fmt.Sprint(i)}, di)
 		}
 

@@ -7,6 +7,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestChars(t *testing.T) {
+	s := NewState("b")
+	x, err := s.Chars("abc")()
+	assert.Equal(t, 'b', x)
+	assert.Equal(t, nil, err)
+}
+
+func TestCharsFail(t *testing.T) {
+	s := NewState("d")
+	x, err := s.Chars("abc")()
+	assert.Equal(t, nil, x)
+	assert.NotEqual(t, nil, err)
+}
+
 func TestNotChar(t *testing.T) {
 	s := NewState("a")
 	x, err := s.NotChar(' ')()

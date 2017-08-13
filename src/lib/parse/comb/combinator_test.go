@@ -35,6 +35,13 @@ func TestNotCharFail(t *testing.T) {
 	assert.NotEqual(t, nil, err)
 }
 
+func TestWrap(t *testing.T) {
+	s := NewState("abc")
+	x, err := s.Wrap(s.String("a"), s.String("b"), s.String("c"))()
+	assert.Equal(t, "b", x)
+	assert.Equal(t, nil, err)
+}
+
 func TestMany(t *testing.T) {
 	for _, str := range []string{"", "  "} {
 		s := NewState(str)

@@ -31,9 +31,7 @@ func interpretExpression(args []*core.Thunk, expr interface{}) *core.Thunk {
 		v := core.PApp(x.dict, interpretExpression(args, x.matchedValue)).Eval()
 		n, ok := v.(core.NumberType)
 
-		if !ok && x.defaultCase == nil {
-			return core.NotNumberError(v)
-		} else if !ok {
+		if !ok {
 			return interpretExpression(args, x.defaultCase)
 		}
 

@@ -7,10 +7,12 @@ func Desugar(module []interface{}) []interface{} {
 	new := make([]interface{}, 0)
 
 	for _, s := range module {
-		for _, s := range match.Desugar(s) {
-			for _, s := range desugarMutualRecursionStatement(s) {
-				for _, s := range desugarSelfRecursiveStatement(s) {
-					new = append(new, flattenStatement(s)...)
+		for _, s := range desugarRecursiveLetVar(s) {
+			for _, s := range match.Desugar(s) {
+				for _, s := range desugarMutualRecursionStatement(s) {
+					for _, s := range desugarSelfRecursiveStatement(s) {
+						new = append(new, flattenStatement(s)...)
+					}
 				}
 			}
 		}

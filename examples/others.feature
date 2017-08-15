@@ -57,8 +57,8 @@ Feature: Others
     This test succeeds only with Go 1.8 onward because of argument liveness.
     Given a file named "main.tisp" with:
     """
-    (let (many42) (prepend (write 42) (many42)))
-    ..(many42)
+    (let many42 (prepend (write 42) many42))
+    ..many42
     """
     When I run `sh leak_memory.sh main.tisp`
     Then the exit status should be 0

@@ -1,0 +1,26 @@
+package desugar
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/debug"
+)
+
+func TestDesugarRecursiveLetVar(t *testing.T) {
+	l := ast.NewLetVar("foo", ast.NewPApp("prepend", []interface{}{"42", "foo"}, debug.NewGoInfo(0)))
+
+	assert.True(t, len(desugarRecursiveLetVar(l)) > 1)
+}
+
+func TestDesugarRecursiveLetVarWithLetFunction(t *testing.T) {
+	l := ast.NewLetFunction(
+		"foo",
+		ast.NewSignature(nil, nil, "", nil, nil, ""),
+		nil,
+		"123",
+		debug.NewGoInfo(0))
+
+	assert.Equal(t, 1, len(desugarRecursiveLetVar(l)))
+}

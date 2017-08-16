@@ -75,72 +75,46 @@ func indexLetFunctions(fs ...ast.LetFunction) map[string]int {
 }
 
 func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.Info) interface{} {
-	replace := func(x interface{}) interface{} {
-		return replaceNames(funcList, n2i, x, di)
-	}
-
-	switch x := x.(type) {
-	case ast.LetFunction:
-		n2i := copyNameToIndex(n2i)
-
-		for n := range signatureToNames(x.Signature()) {
-			delete(n2i, n)
-		}
-
-		ls := make([]interface{}, 0, len(x.Lets()))
-
-		for _, l := range x.Lets() {
-			switch l := l.(type) {
-			case ast.LetFunction:
-				delete(n2i, l.Name())
-			case ast.LetVar:
-				delete(n2i, l.Name())
-			default:
-				panic("Unreachable")
+	return ast.Convert(func(x interface{}) interface{} {
+		switch x := x.(type) {
+		case string:
+			if i, ok := n2i[x]; ok {
+				return ast.NewPApp(funcList, []interface{}{fmt.Sprint(i)}, di)
 			}
 
-			ls = append(ls, replaceNames(funcList, n2i, l, x.DebugInfo()))
+			return x
+		case ast.LetFunction:
+			n2i := copyNameToIndex(n2i)
+
+			for n := range signatureToNames(x.Signature()) {
+				delete(n2i, n)
+			}
+
+			ls := make([]interface{}, 0, len(x.Lets()))
+
+			for _, l := range x.Lets() {
+				switch l := l.(type) {
+				case ast.LetFunction:
+					delete(n2i, l.Name())
+				case ast.LetVar:
+					delete(n2i, l.Name())
+				default:
+					panic("Unreachable")
+				}
+
+				ls = append(ls, replaceNames(funcList, n2i, l, x.DebugInfo()))
+			}
+
+			return ast.NewLetFunction(
+				x.Name(),
+				x.Signature(),
+				ls,
+				replaceNames(funcList, n2i, x.Body(), x.DebugInfo()),
+				x.DebugInfo())
 		}
 
-		return ast.NewLetFunction(
-			x.Name(),
-			x.Signature(),
-			ls,
-			replaceNames(funcList, n2i, x.Body(), x.DebugInfo()),
-			x.DebugInfo())
-	case ast.LetVar:
-		return ast.NewLetVar(x.Name(), replace(x.Expr()))
-	case ast.App:
-		return ast.NewApp(replace(x.Function()), replace(x.Arguments()).(ast.Arguments), x.DebugInfo())
-	case ast.Arguments:
-		ps := make([]ast.PositionalArgument, 0, len(x.Positionals()))
-
-		for _, p := range x.Positionals() {
-			ps = append(ps, ast.NewPositionalArgument(replace(p.Value()), p.Expanded()))
-		}
-
-		ks := make([]ast.KeywordArgument, 0, len(x.Keywords()))
-
-		for _, k := range x.Keywords() {
-			ks = append(ks, ast.NewKeywordArgument(k.Name(), replace(k.Value())))
-		}
-
-		ds := make([]interface{}, 0, len(x.ExpandedDicts()))
-
-		for _, d := range x.ExpandedDicts() {
-			ds = append(ds, replace(d))
-		}
-
-		return ast.NewArguments(ps, ks, ds)
-	case string:
-		if i, ok := n2i[x]; ok {
-			return ast.NewPApp(funcList, []interface{}{fmt.Sprint(i)}, di)
-		}
-
-		return x
-	}
-
-	panic(fmt.Errorf("Invalid value: %#v", x))
+		return nil
+	}, x)
 }
 
 func copyNameToIndex(n2i map[string]int) map[string]int {

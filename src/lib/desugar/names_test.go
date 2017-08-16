@@ -33,15 +33,6 @@ func TestNamesFindWithLetFunction(t *testing.T) {
 			ast.NewLetFunction(
 				n,
 				ast.NewSignature(nil, nil, "", nil, nil, ""),
-				[]interface{}{ast.NewLetVar(n, n)},
-				n,
-				debug.NewGoInfo(0)),
-			true,
-		},
-		{
-			ast.NewLetFunction(
-				n,
-				ast.NewSignature(nil, nil, "", nil, nil, ""),
 				[]interface{}{ast.NewLetVar(n, "y")},
 				n,
 				debug.NewGoInfo(0)),

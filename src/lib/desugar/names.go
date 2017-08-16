@@ -79,14 +79,14 @@ func (ns names) find(x interface{}) names {
 		for _, l := range x.Lets() {
 			switch l := l.(type) {
 			case ast.LetVar:
-				ms.merge(ns.find(l))
 				ns.delete(l.Name())
 			case ast.LetFunction:
 				ns.delete(l.Name())
-				ms.merge(ns.find(l))
 			default:
 				panic("Unreachable")
 			}
+
+			ms.merge(ns.find(l))
 		}
 
 		ms.merge(ns.find(x.Body()))

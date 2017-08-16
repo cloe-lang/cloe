@@ -18,75 +18,36 @@ func newDesugarer() *desugarer {
 }
 
 func (d *desugarer) desugar(x interface{}) interface{} {
-	switch x := x.(type) {
-	case ast.App:
-		return ast.NewApp(
-			d.desugar(x.Function()),
-			d.desugar(x.Arguments()).(ast.Arguments),
-			x.DebugInfo())
-	case ast.Arguments:
-		ps := make([]ast.PositionalArgument, 0, len(x.Positionals()))
+	return ast.Convert(func(x interface{}) interface{} {
+		switch x := x.(type) {
+		case ast.LetFunction:
+			ls := make([]interface{}, 0, len(x.Lets()))
 
-		for _, p := range x.Positionals() {
-			ps = append(ps, d.desugar(p).(ast.PositionalArgument))
+			for _, l := range x.Lets() {
+				l := d.desugar(l)
+				ls = append(ls, append(d.takeLets(), l)...)
+			}
+
+			b := d.desugar(x.Body())
+
+			return ast.NewLetFunction(
+				x.Name(),
+				x.Signature(),
+				append(ls, d.takeLets()...),
+				b,
+				x.DebugInfo())
+		case ast.Match:
+			cs := make([]ast.MatchCase, 0, len(x.Cases()))
+
+			for _, c := range x.Cases() {
+				cs = append(cs, renameBoundNamesInCase(ast.NewMatchCase(c.Pattern(), d.desugar(c.Value()))))
+			}
+
+			return d.resultApp(d.createMatchFunction(cs), d.desugar(x.Value()))
 		}
 
-		ks := make([]ast.KeywordArgument, 0, len(x.Keywords()))
-
-		for _, k := range x.Keywords() {
-			ks = append(ks, d.desugar(k).(ast.KeywordArgument))
-		}
-
-		ds := make([]interface{}, 0, len(x.ExpandedDicts()))
-
-		for _, dict := range x.ExpandedDicts() {
-			ds = append(ds, d.desugar(dict))
-		}
-
-		return ast.NewArguments(ps, ks, ds)
-	case ast.KeywordArgument:
-		return ast.NewKeywordArgument(x.Name(), d.desugar(x.Value()))
-	case ast.LetFunction:
-		ls := make([]interface{}, 0, len(x.Lets()))
-
-		for _, l := range x.Lets() {
-			l := d.desugar(l)
-			ls = append(ls, append(d.takeLets(), l)...)
-		}
-
-		b := d.desugar(x.Body())
-
-		return ast.NewLetFunction(
-			x.Name(),
-			x.Signature(),
-			append(ls, d.takeLets()...),
-			b,
-			x.DebugInfo())
-	case ast.LetVar:
-		return ast.NewLetVar(x.Name(), d.desugar(x.Expr()))
-	case ast.Match:
-		cs := make([]ast.MatchCase, 0, len(x.Cases()))
-
-		for _, c := range x.Cases() {
-			cs = append(cs, renameBoundNamesInCase(ast.NewMatchCase(c.Pattern(), d.desugar(c.Value()))))
-		}
-
-		return d.resultApp(d.createMatchFunction(cs), d.desugar(x.Value()))
-	case ast.MutualRecursion:
-		fs := make([]ast.LetFunction, 0, len(x.LetFunctions()))
-
-		for _, f := range x.LetFunctions() {
-			fs = append(fs, d.desugar(f).(ast.LetFunction))
-		}
-
-		return ast.NewMutualRecursion(fs, x.DebugInfo())
-	case ast.Output:
-		return ast.NewOutput(d.desugar(x.Expr()), x.Expanded())
-	case ast.PositionalArgument:
-		return ast.NewPositionalArgument(d.desugar(x.Value()), x.Expanded())
-	default:
-		return x
-	}
+		return nil
+	}, x)
 }
 
 func (d *desugarer) takeLets() []interface{} {

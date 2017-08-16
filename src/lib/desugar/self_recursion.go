@@ -5,41 +5,40 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/gensym"
 )
 
-func desugarSelfRecursiveStatement(s interface{}) []interface{} {
-	switch s := s.(type) {
-	case ast.LetFunction:
-		return desugarSelfRecursiveFunction(s)
-	default:
-		return []interface{}{s}
+func desugarSelfRecursiveStatement(x interface{}) []interface{} {
+	y := ast.Convert(func(x interface{}) interface{} {
+		switch x := x.(type) {
+		case ast.LetFunction:
+			x = desugarInnerSelfRecursions(x)
+
+			if len(newNames(x.Name()).findInFunction(x)) == 0 {
+				return x
+			}
+
+			unrec := gensym.GenSym(x.Name(), "unrec")
+
+			return []interface{}{
+				ast.NewLetFunction(
+					unrec,
+					prependPosReqsToSig([]string{x.Name()}, x.Signature()),
+					x.Lets(),
+					x.Body(),
+					x.DebugInfo()),
+				ast.NewLetVar(x.Name(), ast.NewPApp("$y", []interface{}{unrec}, x.DebugInfo())),
+			}
+		}
+
+		return nil
+	}, x)
+
+	if ys, ok := y.([]interface{}); ok {
+		return ys
 	}
+
+	return []interface{}{y}
 }
 
-func desugarSelfRecursiveFunction(f ast.LetFunction) []interface{} {
-	f = desugarInnerSelfRecursiveStatements(f)
-
-	if !newNames(f.Name()).findInFunction(f).include(f.Name()) {
-		return []interface{}{f}
-	}
-
-	unrecursive := gensym.GenSym(f.Name(), "unrecursive")
-
-	return []interface{}{
-		ast.NewLetFunction(
-			unrecursive,
-			prependPosReqsToSig([]string{f.Name()}, f.Signature()),
-			f.Lets(),
-			f.Body(),
-			f.DebugInfo()),
-		ast.NewLetVar(
-			f.Name(),
-			ast.NewApp(
-				"$y",
-				ast.NewArguments([]ast.PositionalArgument{ast.NewPositionalArgument(unrecursive, false)}, nil, nil),
-				f.DebugInfo())),
-	}
-}
-
-func desugarInnerSelfRecursiveStatements(f ast.LetFunction) ast.LetFunction {
+func desugarInnerSelfRecursions(f ast.LetFunction) ast.LetFunction {
 	ls := make([]interface{}, 0, 2*len(f.Lets()))
 
 	for _, l := range f.Lets() {

@@ -2,7 +2,7 @@ Feature: Arguments
   Scenario: Define a recursive function
     Given a file named "main.tisp" with:
     """
-    (let (func x1 x2 (x3 0) (x4 0) ..args . y1 y2 (y3 0) (y4 1) ..kwargs)
+    (def (func x1 x2 (x3 0) (x4 0) ..args . y1 y2 (y3 0) (y4 1) ..kwargs)
          (+ x1 x2 x3 x4 ..args y1 y2 y3 y4))
     (let foo 1)
 

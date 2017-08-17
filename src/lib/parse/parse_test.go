@@ -7,7 +7,7 @@ import (
 )
 
 func TestMainModule(t *testing.T) {
-	for _, s := range []string{"", "(let x 42) (let (f x) (+ x 123)) (write 123)"} {
+	for _, s := range []string{"", "(let x 42) (def (f x) (+ x 123)) (write 123)"} {
 		ss, err := MainModule("<test>", s)
 		checkSuccessfulResult(t, ss, err)
 		x, err := newStateWithoutFile(s).mainModule()()
@@ -25,7 +25,7 @@ func TestMainModuleFail(t *testing.T) {
 }
 
 func TestSubModule(t *testing.T) {
-	for _, s := range []string{"", "(let x 123) (let (f x) (+ x 123))"} {
+	for _, s := range []string{"", "(let x 123) (def (f x) (+ x 123))"} {
 		ss, err := SubModule("<test>", s)
 		checkSuccessfulResult(t, ss, err)
 		x, err := newStateWithoutFile(s).subModule()()
@@ -80,9 +80,9 @@ func TestLetVar(t *testing.T) {
 
 func TestLetFunction(t *testing.T) {
 	for _, str := range []string{
-		"(let (foo) 123)",
-		"(let (foo x) (f x y))",
-		"(let (foo x y (z 123) (v 456) ..args . a b (c 123) (d 456) ..kwargs) 123)",
+		"(def (foo) 123)",
+		"(def (foo x) (f x y))",
+		"(def (foo x y (z 123) (v 456) ..args . a b (c 123) (d 456) ..kwargs) 123)",
 	} {
 		s := newStateWithoutFile(str)
 		_, err := s.Exhaust(s.letFunction())()
@@ -93,8 +93,8 @@ func TestLetFunction(t *testing.T) {
 func TestMutuallyRecursiveLetFunctions(t *testing.T) {
 	for _, str := range []string{
 		`(mr
-			(let (even? n) (if (= n 0) true (odd? (- n 1))))
-			(let (odd? n) (if (= n 0) false (even? (- n 1)))))`,
+			(def (even? n) (if (= n 0) true (odd? (- n 1))))
+			(def (odd? n) (if (= n 0) false (even? (- n 1)))))`,
 	} {
 		s := newStateWithoutFile(str)
 		_, err := s.Exhaust(s.mutuallyRecursiveLetFunctions())()

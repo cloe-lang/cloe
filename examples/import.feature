@@ -7,7 +7,7 @@ Feature: Import statement
     """
     And a file named "mod.tisp" with:
     """
-    (let (Map func list)
+    (def (Map func list)
          (if (= list []) [] (prepend (func (first list)) (Map func (rest list)))))
     """
     When I successfully run `tisp main.tisp`
@@ -28,7 +28,7 @@ Feature: Import statement
     """
     And a file named "modules/mod.tisp" with:
     """
-    (let (Hello name) (write (merge "Hello, " name "!")))
+    (def (Hello name) (write (merge "Hello, " name "!")))
     """
     When I successfully run `tisp main.tisp`
     Then the stdout should contain exactly:

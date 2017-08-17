@@ -2,7 +2,7 @@ Feature: Self recursion
   Scenario: Define a recursive function
     Given a file named "main.tisp" with:
     """
-    (let (factorial n)
+    (def (factorial n)
          (if (= n 0) 1 (* n (factorial (- n 1)))))
 
     (write (factorial 5))
@@ -16,8 +16,8 @@ Feature: Self recursion
   Scenario: Define a recursive function in a function definition
     Given a file named "main.tisp" with:
     """
-    (let (createFactorial)
-         (let (factorial n)
+    (def (createFactorial)
+         (def (factorial n)
               (if (= n 0) 1 (* n (factorial (- n 1)))))
          factorial)
 

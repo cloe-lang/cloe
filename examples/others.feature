@@ -66,7 +66,7 @@ Feature: Others
   Scenario: Ensure no memory leak with deep recursion
     Given a file named "main.tisp" with:
     """
-    (let (f n)
+    (def (f n)
       (if (= n 0)
           "OK!"
           (f (- n 1))))

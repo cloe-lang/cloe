@@ -14,9 +14,9 @@ Feature: Error
   Scenario: Bind 2 values to an argument
     Given a file named "main.tisp" with:
     """
-    (let (f x)
-         (let (g y)
-              (let (h z) (+ x y z))
+    (def (f x)
+         (def (g y)
+              (def (h z) (+ x y z))
               h)
          g)
 

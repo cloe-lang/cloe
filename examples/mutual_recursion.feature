@@ -3,9 +3,9 @@ Feature: Mutual recursion
     Given a file named "main.tisp" with:
     """
     (mr
-      (let (even? n)
+      (def (even? n)
         (if (= n 0) true (odd? (- n 1))))
-      (let (odd? n)
+      (def (odd? n)
         (if (= n 0) false (even? (- n 1)))))
 
     (seq
@@ -43,10 +43,10 @@ Feature: Mutual recursion
     Given a file named "main.tisp" with:
     """
     (mr
-      (let (even? n)
+      (def (even? n)
         (let o? odd?)
         (if (= n 0) true (o? (- n 1))))
-      (let (odd? n)
+      (def (odd? n)
         (if (= n 0) false (even? (- n 1)))))
 
     (seq
@@ -84,10 +84,10 @@ Feature: Mutual recursion
     Given a file named "main.tisp" with:
     """
     (mr
-      (let (even? n)
+      (def (even? n)
         (let even? odd?)
         (if (= n 0) true (even? (- n 1))))
-      (let (odd? n)
+      (def (odd? n)
         (if (= n 0) false (even? (- n 1)))))
 
     (seq
@@ -124,10 +124,10 @@ Feature: Mutual recursion
   Scenario: Define mutually recursive functions in a function
     Given a file named "main.tisp" with:
     """
-    (let (foo)
+    (def (foo)
       (mr
-        (let (even? n) (if (= n 0) true  (odd?  (- n 1))))
-        (let (odd? n)  (if (= n 0) false (even? (- n 1)))))
+        (def (even? n) (if (= n 0) true  (odd?  (- n 1))))
+        (def (odd? n)  (if (= n 0) false (even? (- n 1)))))
       [even? odd?])
 
     (let even? ((foo) 0))

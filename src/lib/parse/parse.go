@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	defString       = "def"
 	commentChar     = ';'
 	importString    = "import"
 	invalidChars    = "\x00"
@@ -21,6 +22,7 @@ const (
 )
 
 var reserveds = map[string]bool{
+	defString:       true,
 	importString:    true,
 	letString:       true,
 	matchString:     true,
@@ -100,7 +102,7 @@ func (s *state) letVar() comb.Parser {
 func (s *state) letFunction() comb.Parser {
 	return s.withInfo(
 		s.list(
-			s.strippedString(letString),
+			s.strippedString(defString),
 			s.list(s.identifier(), s.signature()),
 			s.Many(s.let()),
 			s.expression()),

@@ -14,7 +14,7 @@ Feature: Let statement
   Scenario: Define a function
     Given a file named "main.tisp" with:
     """
-    (let (f x) x)
+    (def (f x) x)
     (write (f 42))
     """
     When I successfully run `tisp main.tisp`
@@ -26,7 +26,7 @@ Feature: Let statement
   Scenario: Define a variable in a function
     Given a file named "main.tisp" with:
     """
-    (let (foo x)
+    (def (foo x)
       (let bar (+ x x))
       bar)
 
@@ -41,8 +41,8 @@ Feature: Let statement
   Scenario: Define nested functions
     Given a file named "main.tisp" with:
     """
-    (let (f x)
-      (let (g y) (+ x y))
+    (def (f x)
+      (def (g y) (+ x y))
       (g 42))
 
     (write (f 2007))
@@ -56,7 +56,7 @@ Feature: Let statement
   Scenario: Define complex nested functions
     Given a file named "main.tisp" with:
     """
-    (let (foo x y)
+    (def (foo x y)
       (let bar (+ x x))
       (let baz (- x y))
       (* bar baz (+ x y)))
@@ -72,9 +72,9 @@ Feature: Let statement
   Scenario: Define a function with a nested function definition
     Given a file named "main.tisp" with:
     """
-    (let (f x)
-      (let (g y)
-        (let (h z)
+    (def (f x)
+      (def (g y)
+        (def (h z)
           (+ x y z))
         h)
       ((g 456) 789))
@@ -90,8 +90,8 @@ Feature: Let statement
   Scenario: Define a variable shadowing another
     Given a file named "main.tisp" with:
     """
-    (let (f x)
-      (let (g x) x)
+    (def (f x)
+      (def (g x) x)
       (g 42))
 
     (write (f 123456))

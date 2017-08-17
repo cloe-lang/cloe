@@ -172,6 +172,20 @@ func TestExpression(t *testing.T) {
 	}
 }
 
+func TestAnonymousFunction(t *testing.T) {
+	for _, str := range []string{
+		`(\ (x) x)`,
+	} {
+		s := newStateWithoutFile(str)
+		result, err := s.Exhaust(s.anonymousFunction())()
+
+		t.Logf("%#v", result)
+
+		assert.NotEqual(t, nil, result)
+		assert.Equal(t, nil, err)
+	}
+}
+
 func TestMatchExpression(t *testing.T) {
 	for _, str := range []string{
 		"(match 123 123 true)",

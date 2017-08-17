@@ -18,7 +18,7 @@ const (
 	mutualRecString = "mr"
 	matchString     = "match"
 	spaceChars      = " \t\n\r"
-	specialChars    = "()[]{}\"$"
+	specialChars    = "()[]{}\"\\$"
 )
 
 var reserveds = map[string]bool{
@@ -197,7 +197,7 @@ func (s *state) strictExpression() comb.Parser {
 		s.app(),
 		s.listLiteral(),
 		s.dictLiteral(),
-		// s.appFunc("lambda", s.sequence("'(", ")")),
+		s.anonymousFunction(),
 	))
 }
 
@@ -207,6 +207,13 @@ func (s *state) listLiteral() comb.Parser {
 
 func (s *state) dictLiteral() comb.Parser {
 	return s.appFunc("$dict", s.sequence("{", "}"))
+}
+
+func (s *state) anonymousFunction() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		return ast.NewAnonymousFunction(xs[1].([]interface{})[0].(ast.Signature), xs[2])
+	}, s.list(s.strippedString("\\"), s.list(s.signature()), s.expression()))
 }
 
 func (s *state) match() comb.Parser {

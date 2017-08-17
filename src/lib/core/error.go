@@ -22,6 +22,22 @@ func NewError(n, m string, xs ...interface{}) *Thunk {
 	})
 }
 
+// Catch returns a dictionary of .
+var Catch = NewLazyFunction(
+	NewSignature([]string{"error"}, nil, "", nil, nil, ""),
+	func(ts ...*Thunk) Value {
+		v := ts[0].Eval()
+		err, ok := v.(ErrorType)
+
+		if !ok {
+			return TypeError(v, "error")
+		}
+
+		return NewDictionary(
+			[]Value{NewString("name").Eval(), NewString("message").Eval()},
+			[]*Thunk{NewString(err.name), NewString(err.message)})
+	})
+
 // Lines returns multi-line string representation of an error which can be
 // printed as is to stdout or stderr.
 func (e ErrorType) Lines() string {

@@ -75,6 +75,7 @@ var goBuiltins = func() environment {
 		{"write", std.Write},
 
 		{"$matchError", core.NewError("MatchError", "A value didn't match with any pattern.")},
+		{"catch", core.Catch},
 	} {
 		e.set(nv.name, nv.value)
 	}

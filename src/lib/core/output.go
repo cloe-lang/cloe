@@ -13,3 +13,10 @@ type OutputType struct {
 func NewOutput(value *Thunk) *Thunk {
 	return Normal(OutputType{value})
 }
+
+// Pure extracts a result value in an output value.
+var Pure = NewLazyFunction(
+	NewSignature([]string{"output"}, nil, "", nil, nil, ""),
+	func(ts ...*Thunk) Value {
+		return ts[0].EvalOutput()
+	})

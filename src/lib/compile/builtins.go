@@ -76,6 +76,8 @@ var goBuiltins = func() environment {
 
 		{"$matchError", core.NewError("MatchError", "A value didn't match with any pattern.")},
 		{"catch", core.Catch},
+
+		{"pure", core.Pure},
 	} {
 		e.set(nv.name, nv.value)
 	}

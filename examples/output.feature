@@ -38,3 +38,15 @@ Feature: Output
     """
     789
     """
+
+  Scenario: Purify an output value
+    Given a file named "main.tisp" with:
+    """
+    (write (pure (write "Hello, world!")))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    Hello, world!
+    nil
+    """

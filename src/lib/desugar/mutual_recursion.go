@@ -8,13 +8,29 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/gensym"
 )
 
-func desugarMutualRecursionStatement(s interface{}) []interface{} {
-	switch s := s.(type) {
-	case ast.MutualRecursion:
-		return desugarMutualRecursion(s)
-	default:
-		return []interface{}{s}
+func desugarMutualRecursionStatement(x interface{}) []interface{} {
+	y := ast.Convert(func(x interface{}) interface{} {
+		switch x := x.(type) {
+		case ast.LetFunction:
+			ls := make([]interface{}, 0, len(x.Lets()))
+
+			for _, l := range x.Lets() {
+				ls = append(ls, desugarMutualRecursionStatement(l)...)
+			}
+
+			return ast.NewLetFunction(x.Name(), x.Signature(), ls, x.Body(), x.DebugInfo())
+		case ast.MutualRecursion:
+			return desugarMutualRecursion(x)
+		}
+
+		return nil
+	}, x)
+
+	if ys, ok := y.([]interface{}); ok {
+		return ys
 	}
+
+	return []interface{}{y}
 }
 
 func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {

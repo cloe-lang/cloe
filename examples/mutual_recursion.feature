@@ -120,3 +120,46 @@ Feature: Mutual recursion
     false
     true
     """
+
+  Scenario: Define mutually recursive functions in a function
+    Given a file named "main.tisp" with:
+    """
+    (let (foo)
+      (mr
+        (let (even? n) (if (= n 0) true  (odd?  (- n 1))))
+        (let (odd? n)  (if (= n 0) false (even? (- n 1)))))
+      [even? odd?])
+
+    (let even? ((foo) 0))
+    (let odd? ((foo) 1))
+
+    (seq
+      (write (even? 0))
+      (write (odd? 0))
+      (write (even? 1))
+      (write (odd? 1))
+      (write (even? 2))
+      (write (odd? 2))
+      (write (even? 3))
+      (write (odd? 3))
+      (write (even? 42))
+      (write (odd? 42))
+      (write (even? 2049))
+      (write (odd? 2049)))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    true
+    false
+    false
+    true
+    true
+    false
+    false
+    true
+    true
+    false
+    false
+    true
+    """

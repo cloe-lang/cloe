@@ -28,3 +28,12 @@ Feature: Error
     And the stderr should contain "Error"
     And the stderr should contain "main.tisp"
     And the stderr should contain "(write (((f 123) 456) . x 0))"
+
+  Scenario: Catch an error
+    Given a file named "main.tisp" with:
+    """
+    (write (catch (+ 1 true)))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain "name"
+    And the stdout should contain "message"

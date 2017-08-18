@@ -24,6 +24,34 @@ func TestDesugar(t *testing.T) {
 							debug.NewGoInfo(0))},
 						debug.NewGoInfo(0))),
 			}), debug.NewGoInfo(0)),
+		ast.NewMutualRecursion([]ast.LetFunction{
+			ast.NewLetFunction(
+				"even?",
+				ast.NewSignature([]string{"n"}, nil, "", nil, nil, ""),
+				nil,
+				ast.NewMatch("n", []ast.MatchCase{
+					ast.NewMatchCase("0", "true"),
+					ast.NewMatchCase(
+						"_",
+						ast.NewPApp(
+							"odd?",
+							[]interface{}{ast.NewPApp("-", []interface{}{"n", "1"}, debug.NewGoInfo(0))},
+							debug.NewGoInfo(0))),
+				}), debug.NewGoInfo(0)),
+			ast.NewLetFunction(
+				"odd?",
+				ast.NewSignature([]string{"n"}, nil, "", nil, nil, ""),
+				nil,
+				ast.NewMatch("n", []ast.MatchCase{
+					ast.NewMatchCase("0", "true"),
+					ast.NewMatchCase(
+						"_",
+						ast.NewPApp(
+							"even?",
+							[]interface{}{ast.NewPApp("-", []interface{}{"n", "1"}, debug.NewGoInfo(0))},
+							debug.NewGoInfo(0))),
+				}), debug.NewGoInfo(0)),
+		}, debug.NewGoInfo(0)),
 	} {
 		for _, s := range Desugar(s) {
 			t.Logf("%#v", s)

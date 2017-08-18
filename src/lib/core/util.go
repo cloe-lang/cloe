@@ -34,7 +34,7 @@ var Dump = NewLazyFunction(
 		return v
 	})
 
-// internalDumpOrFail is the same as DumpOrFail
+// internalDumpOrFail is the same as DumpOrFail.
 func internalDumpOrFail(v Value) string {
 	v = ensureWHNF(v)
 

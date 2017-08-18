@@ -20,3 +20,7 @@ var Pure = NewLazyFunction(
 	func(ts ...*Thunk) Value {
 		return ts[0].EvalOutput()
 	})
+
+func (o OutputType) string() Value {
+	return StringType("<output>")
+}

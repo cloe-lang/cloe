@@ -6,6 +6,7 @@ import "github.com/tisp-lang/tisp/src/lib/desugar/match"
 func Desugar(ss []interface{}) []interface{} {
 	for _, f := range []func(interface{}) []interface{}{
 		desugarRecursiveLetVar,
+		desugarAnonymousFunctions,
 		match.Desugar,
 		desugarMutualRecursionStatement,
 		desugarSelfRecursiveStatement,

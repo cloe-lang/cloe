@@ -68,6 +68,16 @@ func (ns names) findInFunction(f ast.LetFunction) names {
 // find finds names in a AST node. This should not be used directly.
 func (ns names) find(x interface{}) names {
 	switch x := x.(type) {
+	case string:
+		if ns.include(x) {
+			return newNames(x)
+		}
+
+		return newNames()
+	case ast.AnonymousFunction:
+		ns := ns.copy()
+		ns.subtract(signatureToNames(x.Signature()))
+		return ns.find(x.Body())
 	case ast.LetVar:
 		return ns.find(x.Expr())
 	case ast.LetFunction:
@@ -121,12 +131,6 @@ func (ns names) find(x interface{}) names {
 		ms.merge(ns.find(x.DefaultCase()))
 
 		return ms
-	case string:
-		if ns.include(x) {
-			return newNames(x)
-		}
-
-		return newNames()
 	}
 
 	panic("Unreachable")

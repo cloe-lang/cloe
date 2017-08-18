@@ -3,22 +3,10 @@ package desugar
 import "github.com/tisp-lang/tisp/src/lib/ast"
 
 func signatureToNames(s ast.Signature) names {
-	ns := newNames(append(s.PosReqs(), s.KeyReqs()...)...)
+	ns := newNames()
 
-	for _, o := range s.PosOpts() {
-		ns.add(o.Name())
-	}
-
-	if r := s.PosRest(); r != "" {
-		ns.add(r)
-	}
-
-	for _, o := range s.KeyOpts() {
-		ns.add(o.Name())
-	}
-
-	if r := s.KeyRest(); r != "" {
-		ns.add(r)
+	for n := range s.NameToIndex() {
+		ns.add(n)
 	}
 
 	return ns

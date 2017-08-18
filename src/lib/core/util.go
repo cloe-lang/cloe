@@ -39,8 +39,6 @@ func internalDumpOrFail(v Value) string {
 	v = ensureWHNF(v)
 
 	switch x := v.(type) {
-	case ErrorType:
-		panic(x)
 	case dumpable:
 		v = x.dump()
 	case stringable:

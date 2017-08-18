@@ -55,6 +55,7 @@ var goBuiltins = func() environment {
 		{"$include", core.Include},
 		{"insert", core.Insert},
 		{"merge", core.Merge},
+		{"$merge", core.Merge},
 		{"size", core.Size},
 		{"toList", core.ToList},
 

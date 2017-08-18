@@ -16,55 +16,40 @@ type dumpable interface {
 var Dump = NewLazyFunction(
 	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
+		s, err := strictDump(ts[0].Eval())
 
-		switch x := v.(type) {
-		case ErrorType:
-			return x
-		case dumpable:
-			v = x.dump()
-		default:
-			v = PApp(ToString, Normal(v)).Eval()
+		if err != nil {
+			return err
 		}
 
-		if _, ok := v.(StringType); !ok {
-			return NotStringError(v)
-		}
-
-		return v
+		return s
 	})
 
-// internalDumpOrFail is the same as DumpOrFail.
-func internalDumpOrFail(v Value) string {
-	v = ensureWHNF(v)
-
+func strictDump(v Value) (StringType, *Thunk) {
 	switch x := v.(type) {
+	case ErrorType:
+		return "", Normal(x)
 	case dumpable:
 		v = x.dump()
 	case stringable:
 		v = x.string()
 	default:
-		panic(fmt.Sprintf("Invalid value detected: %#v", v))
+		panic(fmt.Errorf("Invalid value: %#v", x))
 	}
 
-	if s, ok := v.(StringType); ok {
-		return string(s)
-	}
-
-	panic(fmt.Sprintf("Invalid value detected: %#v", v))
-}
-
-// DumpOrFail dumps a value into a string value or fail exiting a process.
-// This function should be used only to create strings of error information.
-func DumpOrFail(v Value) string {
-	v = PApp(Dump, Normal(v)).Eval()
 	s, ok := v.(StringType)
 
 	if !ok {
-		panic(NotStringError(v).Eval().(ErrorType))
+		return "", NotStringError(v)
 	}
 
-	return string(s)
+	return s, nil
+}
+
+// StrictDump is the same as DumpOrFail.
+func StrictDump(v Value) (string, *Thunk) {
+	s, err := strictDump(ensureWHNF(v))
+	return string(s), err
 }
 
 // Equal checks if 2 values are equal or not.

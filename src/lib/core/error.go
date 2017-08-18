@@ -68,11 +68,13 @@ func ValueError(m string, xs ...interface{}) *Thunk {
 
 // TypeError creates an error value for an invalid type.
 func TypeError(v Value, typ string) *Thunk {
-	if e, ok := v.(ErrorType); ok {
-		return Normal(e)
+	s, err := StrictDump(v)
+
+	if err != nil {
+		return err
 	}
 
-	return NewError("TypeError", "%s is not a %s.", internalDumpOrFail(v), typ)
+	return NewError("TypeError", "%s is not a %s.", s, typ)
 }
 
 // NotBoolError creates an error value for an invalid value which is not a
@@ -162,7 +164,13 @@ func emptyListError() *Thunk {
 }
 
 func keyNotFoundError(v Value) *Thunk {
-	return NewError("KeyNotFoundError", "The key %s is not found in a dictionary.", internalDumpOrFail(v))
+	s, err := StrictDump(v)
+
+	if err != nil {
+		return err
+	}
+
+	return NewError("KeyNotFoundError", "The key %s is not found in a dictionary.", s)
 }
 
 // Error creates an error value with an error name and message.

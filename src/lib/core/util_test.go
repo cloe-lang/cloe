@@ -39,7 +39,7 @@ func TestTypeOfFail(t *testing.T) {
 }
 
 func TestInternalDumpOrFail(t *testing.T) {
-	for _, t := range []*Thunk{
+	for _, th := range []*Thunk{
 		Nil,
 		True,
 		False,
@@ -49,6 +49,8 @@ func TestInternalDumpOrFail(t *testing.T) {
 		NewString("foo"),
 		NewOutput(Nil),
 	} {
-		internalDumpOrFail(t.Eval())
+		s, err := StrictDump(th.Eval())
+		assert.NotEqual(t, "", s)
+		assert.Equal(t, (*Thunk)(nil), err)
 	}
 }

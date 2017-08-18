@@ -49,11 +49,8 @@ func internalDumpOrFail(v Value) string {
 		panic(fmt.Sprintf("Invalid value detected: %#v", v))
 	}
 
-	switch x := v.(type) {
-	case StringType:
-		return string(x)
-	case ErrorType:
-		panic(x)
+	if s, ok := v.(StringType); ok {
+		return string(s)
 	}
 
 	panic(fmt.Sprintf("Invalid value detected: %#v", v))

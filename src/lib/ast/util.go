@@ -18,6 +18,8 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 	switch x := x.(type) {
 	case string:
 		return x
+	case AnonymousFunction:
+		return NewAnonymousFunction(convert(x.Signature()).(Signature), convert(x.Body()))
 	case App:
 		return NewApp(convert(x.Function()), convert(x.Arguments()).(Arguments), x.DebugInfo())
 	case Arguments:

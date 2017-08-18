@@ -28,7 +28,7 @@ func (r *patternRenamer) renameNames(p interface{}) interface{} {
 			return x
 		}
 
-		r.nameMap[x] = gensym.GenSym(x, "renamed")
+		r.nameMap[x] = gensym.GenSym()
 		return r.nameMap[x]
 	case ast.App:
 		switch x.Function().(string) {

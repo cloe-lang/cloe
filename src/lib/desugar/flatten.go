@@ -40,7 +40,7 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 			ns.add(l.Name())
 		case ast.LetFunction:
 			args := ns.findInFunction(l).slice()
-			n := gensym.GenSym(f.Name(), l.Name())
+			n := gensym.GenSym()
 
 			ss = append(ss, letFlattenedFunction(l, n, args))
 			ls = append(ls, letClosure(l, n, args))

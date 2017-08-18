@@ -15,7 +15,7 @@ func desugarSelfRecursiveStatement(x interface{}) []interface{} {
 				return x
 			}
 
-			unrec := gensym.GenSym(x.Name(), "unrec")
+			unrec := gensym.GenSym()
 
 			return []interface{}{
 				ast.NewLetFunction(

@@ -58,7 +58,7 @@ func (d *desugarer) takeLets() []interface{} {
 }
 
 func (d *desugarer) letTempVar(v interface{}) string {
-	s := gensym.GenSym("match", "tmp")
+	s := gensym.GenSym()
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
 	return s
 }
@@ -72,7 +72,7 @@ func (d *desugarer) bindName(p interface{}, v interface{}) string {
 // matchedApp applies a function to arguments and creates a matched value of
 // match expression.
 func (d *desugarer) matchedApp(f interface{}, args ...interface{}) string {
-	return d.bindName(gensym.GenSym("match", "app"), app(f, args...))
+	return d.bindName(gensym.GenSym(), app(f, args...))
 }
 
 // resultApp applies a function to arguments and creates a result value of match
@@ -82,11 +82,11 @@ func (d *desugarer) resultApp(f interface{}, args ...interface{}) string {
 }
 
 func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
-	arg := gensym.GenSym("match", "argument")
+	arg := gensym.GenSym()
 	body := d.desugarCases(arg, cs, "$matchError")
 
 	f := ast.NewLetFunction(
-		gensym.GenSym("match", "function"),
+		gensym.GenSym(),
 		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
 		d.takeLets(),
 		body,

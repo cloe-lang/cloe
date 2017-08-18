@@ -8,9 +8,9 @@ import (
 )
 
 func TestGenSym(t *testing.T) {
-	assert.Equal(t, "gensym$0$foo", GenSym("foo"))
-	assert.Equal(t, "gensym$1$bar", GenSym("bar"))
-	assert.Equal(t, "gensym$2$baz", GenSym("baz"))
+	assert.Equal(t, "$gensym$0", GenSym())
+	assert.Equal(t, "$gensym$1", GenSym())
+	assert.Equal(t, "$gensym$2", GenSym())
 }
 
 func TestGenSymAtomicity(t *testing.T) {

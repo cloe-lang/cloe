@@ -16,19 +16,14 @@ var goBuiltins = func() environment {
 		value *core.Thunk
 	}{
 		{"if", core.If},
-		{"$if", core.If},
 
 		{"partial", core.Partial},
-		{"$partial", core.Partial},
 
 		{"first", core.First},
-		{"$first", core.First},
 		{"rest", core.Rest},
-		{"$rest", core.Rest},
 		{"prepend", core.Prepend},
 
 		{"typeOf", core.TypeOf},
-		{"$typeOf", core.TypeOf},
 		{"isOrdered", core.IsOrdered},
 
 		{"+", core.Add},
@@ -40,7 +35,6 @@ var goBuiltins = func() environment {
 		{"**", core.Pow},
 
 		{"=", std.Equal},
-		{"$=", std.Equal},
 		{"<", std.Less},
 		{"<=", std.LessEq},
 		{">", std.Greater},
@@ -50,23 +44,17 @@ var goBuiltins = func() environment {
 		{"dump", core.Dump},
 
 		{"delete", core.Delete},
-		{"$delete", core.Delete},
 		{"include", core.Include},
-		{"$include", core.Include},
 		{"insert", core.Insert},
 		{"merge", core.Merge},
-		{"$merge", core.Merge},
 		{"size", core.Size},
 		{"toList", core.ToList},
 
 		{"dict", std.Dictionary},
-		{"$dict", std.Dictionary},
 		{"error", core.Error},
 
 		{"y", std.Y},
-		{"$y", std.Y},
 		{"ys", std.Ys},
-		{"$ys", std.Ys},
 
 		{"par", std.Par},
 		{"seq", std.Seq},
@@ -75,12 +63,13 @@ var goBuiltins = func() environment {
 		{"read", std.Read},
 		{"write", std.Write},
 
-		{"$matchError", core.NewError("MatchError", "A value didn't match with any pattern.")},
+		{"matchError", core.NewError("MatchError", "A value didn't match with any pattern.")},
 		{"catch", core.Catch},
 
 		{"pure", core.Pure},
 	} {
 		e.set(nv.name, nv.value)
+		e.set("$"+nv.name, nv.value)
 	}
 
 	return e
@@ -89,19 +78,19 @@ var goBuiltins = func() environment {
 func builtins() environment {
 	e := goBuiltins.copy()
 
-	for k, v := range subModule(goBuiltins, "<builtins>", `
-	(def (List ..xs) xs)
+	for n, t := range subModule(goBuiltins, "<builtins>", `
+		(def (List ..xs) xs)
 
-	(def (indexOf list elem index)
-		(match list
-			[] (error "ElementNotFoundError" "Could not find an element in a list")
-			[first ..rest] (if (= first elem) index (indexOf rest elem (+ index 1)))))
+		(def (indexOf list elem index)
+			(match list
+				[] (error "ElementNotFoundError" "Could not find an element in a list")
+				[first ..rest] (if (= first elem) index (indexOf rest elem (+ index 1)))))
 
-	(def (IndexOf list elem) (indexOf list elem 0))
+		(def (IndexOf list elem) (indexOf list elem 0))
 	`) {
-		k = strings.ToLower(k[:1]) + k[1:]
-		e.set(k, v)
-		e.set("$"+k, v)
+		n := strings.ToLower(n[:1]) + n[1:]
+		e.set(n, t)
+		e.set("$"+n, t)
 	}
 
 	return e

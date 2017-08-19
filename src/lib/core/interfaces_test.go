@@ -54,8 +54,9 @@ func TestOrdered(t *testing.T) {
 		NewString("foo"),
 		EmptyList,
 	} {
-		_, ok := th.Eval().(ordered)
+		o, ok := th.Eval().(ordered)
 		assert.True(t, ok)
+		o.ordered()
 	}
 }
 

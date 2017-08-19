@@ -56,6 +56,12 @@ func TestStrictDump(t *testing.T) {
 	}
 }
 
+func TestIdentity(t *testing.T) {
+	for _, th := range []*Thunk{Nil, NewNumber(42), True, False, NewString("foo")} {
+		assert.True(t, testEqual(PApp(identity, th), th))
+	}
+}
+
 func TestTypeOf(t *testing.T) {
 	for _, test := range []struct {
 		typ   string

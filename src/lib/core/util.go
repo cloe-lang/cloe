@@ -46,7 +46,7 @@ func strictDump(v Value) (StringType, *Thunk) {
 	return s, nil
 }
 
-// StrictDump is the same as DumpOrFail.
+// StrictDump is a variant of Dump which evaluates input strictly.
 func StrictDump(v Value) (string, *Thunk) {
 	s, err := strictDump(ensureWHNF(v))
 	return string(s), err

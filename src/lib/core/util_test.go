@@ -38,7 +38,7 @@ func TestTypeOfFail(t *testing.T) {
 	PApp(TypeOf, Normal("foo")).Eval()
 }
 
-func TestInternalDumpOrFail(t *testing.T) {
+func TestStrictDump(t *testing.T) {
 	for _, th := range []*Thunk{
 		Nil,
 		True,

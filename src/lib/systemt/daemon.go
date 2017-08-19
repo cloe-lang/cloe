@@ -6,7 +6,7 @@ const daemonChannelCapacity = 1024
 var sem = make(chan bool, maxConcurrency)
 var ds = make(chan func(), daemonChannelCapacity)
 
-// Daemonize daemonize a function running it in a goroutine.
+// Daemonize daemonizes a function running it in a goroutine.
 func Daemonize(f func()) {
 	ds <- f
 }

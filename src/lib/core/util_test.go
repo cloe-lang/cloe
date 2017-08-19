@@ -19,6 +19,8 @@ func TestTypeOf(t *testing.T) {
 		{"string", NewString("foo")},
 		{"dict", NewDictionary(nil, nil)},
 		{"error", NewError("MyError", "This is error.")},
+		{"function", identity},
+		{"function", PApp(Partial, identity)},
 	} {
 		v := PApp(TypeOf, test.thunk).Eval()
 		t.Log(v)

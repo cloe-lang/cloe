@@ -54,3 +54,13 @@ func TestThunkEvalOutputWithError(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, err.name, "OutOfRangeError")
 }
+
+func TestAssertValueIsNormal(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fail()
+		}
+	}()
+
+	assertValueIsNormal("This", Nil)
+}

@@ -56,6 +56,16 @@ func TestStrictDump(t *testing.T) {
 	}
 }
 
+func TestEqualFail(t *testing.T) {
+	for _, ts := range [][]*Thunk{
+		{OutOfRangeError(), Nil},
+		{True, True, OutOfRangeError()},
+	} {
+		_, ok := PApp(Equal, ts...).Eval().(ErrorType)
+		assert.True(t, ok)
+	}
+}
+
 func TestIdentity(t *testing.T) {
 	for _, th := range []*Thunk{Nil, NewNumber(42), True, False, NewString("foo")} {
 		assert.True(t, testEqual(PApp(identity, th), th))

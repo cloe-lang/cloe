@@ -6,13 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestThunkEval1Fail(t *testing.T) {
+func TestThunkEvalFailByCallingError(t *testing.T) {
 	e := PApp(NewError("Apple", "pen.")).Eval().(ErrorType)
 	t.Log(e)
 	assert.Equal(t, 1, len(e.callTrace))
 }
 
-func TestThunkEval2Fail(t *testing.T) {
+func TestThunkEvalFailByCallingErrorTwice(t *testing.T) {
 	e := PApp(PApp(NewError("Apple", "pen."))).Eval().(ErrorType)
 	t.Log(e)
 	assert.Equal(t, 2, len(e.callTrace))

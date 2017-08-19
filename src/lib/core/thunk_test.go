@@ -6,6 +6,20 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+var impureFunction = NewLazyFunction(
+	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	func(ts ...*Thunk) Value {
+		return NewOutput(ts[0])
+	})
+
+func TestThunkEvalWithNotCallable(t *testing.T) {
+	assert.Equal(t, "TypeError", PApp(Nil).Eval().(ErrorType).name)
+}
+
+func TestThunkEvalWithImpureFunctionCall(t *testing.T) {
+	assert.Equal(t, "TypeError", PApp(impureFunction, Nil).Eval().(ErrorType).name)
+}
+
 func TestThunkEvalByCallingError(t *testing.T) {
 	e := PApp(NewError("Apple", "pen.")).Eval().(ErrorType)
 	t.Log(e)
@@ -20,13 +34,7 @@ func TestThunkEvalByCallingErrorTwice(t *testing.T) {
 
 func TestThunkEvalOutput(t *testing.T) {
 	s := NewString("foo")
-	assert.Equal(t,
-		s.Eval(),
-		PApp(NewLazyFunction(
-			NewSignature([]string{"x"}, nil, "", nil, nil, ""),
-			func(ts ...*Thunk) Value {
-				return NewOutput(ts[0])
-			}), s).EvalOutput())
+	assert.Equal(t, s.Eval(), PApp(impureFunction, s).EvalOutput())
 }
 
 func TestThunkEvalOutputWithNonOutput(t *testing.T) {

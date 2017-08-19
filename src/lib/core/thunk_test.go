@@ -38,11 +38,13 @@ func TestThunkEvalOutput(t *testing.T) {
 }
 
 func TestThunkEvalOutputWithNonOutput(t *testing.T) {
-	v := Nil.EvalOutput()
-	err, ok := v.(ErrorType)
-	t.Logf("%#v\n", v)
-	assert.True(t, ok)
-	assert.Equal(t, err.name, "TypeError")
+	for _, th := range []*Thunk{Nil, PApp(identity, Nil)} {
+		v := th.EvalOutput()
+		err, ok := v.(ErrorType)
+		t.Logf("%#v\n", v)
+		assert.True(t, ok)
+		assert.Equal(t, err.name, "TypeError")
+	}
 }
 
 func TestThunkEvalOutputWithError(t *testing.T) {

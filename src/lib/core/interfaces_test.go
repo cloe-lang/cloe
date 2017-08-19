@@ -47,3 +47,28 @@ func TestCompareWithInvalidValues(t *testing.T) {
 		assert.True(t, ok)
 	}
 }
+
+func TestOrdered(t *testing.T) {
+	for _, th := range []*Thunk{
+		NewNumber(42),
+		NewString("foo"),
+		EmptyList,
+	} {
+		_, ok := th.Eval().(ordered)
+		assert.True(t, ok)
+	}
+}
+
+func TestNotOrdered(t *testing.T) {
+	for _, th := range []*Thunk{
+		Nil,
+		True,
+		False,
+		EmptyDictionary,
+		ValueError("This is not ordered."),
+		Merge,
+	} {
+		_, ok := th.Eval().(ordered)
+		assert.False(t, ok)
+	}
+}

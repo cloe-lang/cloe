@@ -25,9 +25,9 @@ type Thunk struct {
 	info      debug.Info
 }
 
-// Normal creates a thunk of a WHNF value as its result.
+// Normal creates a thunk of a normal value as its result.
 func Normal(v Value) *Thunk {
-	assertValueIsWHNF("Normal's argument", v)
+	assertValueIsNormal("Normal's argument", v)
 	return &Thunk{result: v, state: normal}
 }
 
@@ -92,7 +92,7 @@ func (t *Thunk) EvalAny(pure bool) Value {
 			}
 		}
 
-		assertValueIsWHNF("Thunk.result", t.result)
+		assertValueIsNormal("Thunk.result", t.result)
 
 		if _, impure := t.result.(OutputType); pure && impure {
 			t.result = ImpureFunctionError(t.result).Eval()
@@ -105,7 +105,7 @@ func (t *Thunk) EvalAny(pure bool) Value {
 		t.blackHole.Wait()
 	}
 
-	assertValueIsWHNF("Thunk.result", t.result)
+	assertValueIsNormal("Thunk.result", t.result)
 
 	return t.result
 }
@@ -176,7 +176,7 @@ func (t *Thunk) chainError(v Value) bool {
 	return false
 }
 
-func assertValueIsWHNF(s string, v Value) {
+func assertValueIsNormal(s string, v Value) {
 	if _, ok := v.(*Thunk); ok {
 		panic(s + " is *Thunk")
 	}

@@ -65,20 +65,16 @@ func (args *Arguments) nextPositional() *Thunk {
 }
 
 func (args *Arguments) restPositionals() *Thunk {
-	defer func() {
-		args.positionals = nil
-		args.expandedList = nil
-	}()
+	ps := args.positionals
+	l := args.expandedList
+	args.positionals = nil
+	args.expandedList = nil
 
-	if args.expandedList == nil {
-		return NewList(args.positionals...)
+	if l == nil {
+		return NewList(ps...)
 	}
 
-	if len(args.positionals) == 0 {
-		return args.expandedList
-	}
-
-	return PApp(Merge, NewList(args.positionals...), args.expandedList)
+	return PApp(Merge, NewList(ps...), l)
 }
 
 func (args *Arguments) searchKeyword(s string) *Thunk {

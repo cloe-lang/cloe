@@ -79,9 +79,7 @@ func TestDictionaryIndex(t *testing.T) {
 func TestDictionaryIndexFail(t *testing.T) {
 	for _, th := range []*Thunk{
 		PApp(EmptyDictionary, Nil),
-		PApp(
-			PApp(Insert, EmptyDictionary, NewList(OutOfRangeError()), Nil),
-			NewList(Nil)),
+		PApp(PApp(Insert, EmptyDictionary, NewList(OutOfRangeError()), Nil), NewList(Nil)),
 	} {
 		v := th.Eval()
 		t.Logf("%#v", v)

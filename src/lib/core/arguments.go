@@ -113,11 +113,7 @@ func (args *Arguments) restKeywords() *Thunk {
 		t = PApp(Insert, t, NewString(k.name), k.value)
 	}
 
-	for _, d := range ds {
-		t = PApp(Merge, t, d)
-	}
-
-	return t
+	return PApp(Merge, append([]*Thunk{t}, ds...)...)
 }
 
 // Merge merges 2 sets of arguments into one.

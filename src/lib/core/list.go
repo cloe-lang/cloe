@@ -248,7 +248,7 @@ func compareListsAsOrdered(l, ll ListType) Value {
 		return NewNumber(1)
 	}
 
-	v := ensureWHNF(rawCompare(l.first, ll.first))
+	v := ensureNormal(rawCompare(l.first, ll.first))
 	n, ok := v.(NumberType)
 
 	if !ok {

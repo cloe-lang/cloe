@@ -48,7 +48,7 @@ func strictDump(v Value) (StringType, *Thunk) {
 
 // StrictDump is a variant of Dump which evaluates input strictly.
 func StrictDump(v Value) (string, *Thunk) {
-	s, err := strictDump(ensureWHNF(v))
+	s, err := strictDump(ensureNormal(v))
 	return string(s), err
 }
 
@@ -68,10 +68,10 @@ var Equal = NewStrictFunction(
 		return BoolType(compare(ts[0].Eval(), ts[1].Eval()) == 0)
 	})
 
-// ensureWHNF evaluates nested thunks into WHNF values.
+// ensureNormal evaluates nested thunks into WHNF values.
 // This function must be used with care because it prevents tail call
 // elimination.
-func ensureWHNF(v Value) Value {
+func ensureNormal(v Value) Value {
 	if t, ok := v.(*Thunk); ok {
 		return t.Eval()
 	}

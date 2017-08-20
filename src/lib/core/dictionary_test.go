@@ -216,6 +216,18 @@ func TestDictionaryToString(t *testing.T) {
 	}
 }
 
+func TestDictionaryStringFail(t *testing.T) {
+	for _, th := range []*Thunk{
+		NewDictionary([]Value{Nil.Eval()}, []*Thunk{OutOfRangeError()}),
+	} {
+		v := th.Eval().(DictionaryType).string()
+		t.Log(v)
+		if _, ok := v.(ErrorType); !ok {
+			t.Fail()
+		}
+	}
+}
+
 func TestDictionarySize(t *testing.T) {
 	for _, test := range []struct {
 		dictionary *Thunk

@@ -42,13 +42,13 @@ var Index = NewStrictFunction(
 	),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
-		i, ok := v.(collection)
+		c, ok := v.(collection)
 
 		if !ok {
 			return TypeError(v, "collection")
 		}
 
-		return i.index(ts[1].Eval())
+		return c.index(ts[1].Eval())
 	})
 
 // Insert inserts an element into a collection.

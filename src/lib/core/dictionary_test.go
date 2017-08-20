@@ -33,6 +33,16 @@ func TestDictionaryInsert(t *testing.T) {
 	}
 }
 
+func TestNewDictionaryPanic(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Fail()
+		}
+	}()
+
+	NewDictionary([]Value{Nil.Eval()}, []*Thunk{Nil, Nil}).Eval()
+}
+
 func TestDictionaryInsertFail(t *testing.T) {
 	l := NewList(NewError("you", "failed."))
 	v := PApp(Insert, PApp(Insert, EmptyDictionary, l, Nil), l, Nil).Eval()

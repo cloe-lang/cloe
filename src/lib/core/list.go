@@ -99,31 +99,14 @@ var Rest = NewLazyFunction(
 		return l.rest
 	})
 
-var appendFuncSignature = NewSignature(
-	[]string{"list", "elem"}, nil, "",
-	nil, nil, "",
-)
+var appendFuncSignature = NewSignature([]string{"list"}, nil, "elems", nil, nil, "")
+
+func appendFunc(ts ...*Thunk) Value {
+	return PApp(Merge, ts...)
+}
 
 // Append appends an element at the end of a given list.
 var Append = NewLazyFunction(appendFuncSignature, appendFunc)
-
-func appendFunc(ts ...*Thunk) Value {
-	v := ts[0].Eval()
-	l, ok := v.(ListType)
-
-	if !ok {
-		return NotListError(v)
-	}
-
-	if l == emptyList {
-		return NewList(ts[1])
-	}
-
-	return cons(
-		l.first,
-		PApp(NewLazyFunction(appendFuncSignature, appendFunc), l.rest, ts[1]),
-	)
-}
 
 func (l ListType) call(args Arguments) Value {
 	return Index.Eval().(callable).call(NewPositionalArguments(Normal(l)).Merge(args))

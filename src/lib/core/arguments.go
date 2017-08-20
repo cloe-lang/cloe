@@ -44,8 +44,9 @@ func mergeRestPositionalArgs(t *Thunk, ps ...PositionalArgument) *Thunk {
 
 func (args *Arguments) nextPositional() *Thunk {
 	if len(args.positionals) != 0 {
-		defer func() { args.positionals = args.positionals[1:] }()
-		return args.positionals[0]
+		t := args.positionals[0]
+		args.positionals = args.positionals[1:]
+		return t
 	}
 
 	if args.expandedList == nil {
@@ -58,16 +59,16 @@ func (args *Arguments) nextPositional() *Thunk {
 }
 
 func (args *Arguments) restPositionals() *Thunk {
-	ps := args.positionals
+	ts := args.positionals
 	l := args.expandedList
 	args.positionals = nil
 	args.expandedList = nil
 
 	if l == nil {
-		return NewList(ps...)
+		return NewList(ts...)
 	}
 
-	return PApp(Merge, NewList(ps...), l)
+	return PApp(Merge, NewList(ts...), l)
 }
 
 func (args *Arguments) searchKeyword(s string) *Thunk {
@@ -89,10 +90,10 @@ func (args *Arguments) searchKeyword(s string) *Thunk {
 		k := StringType(s)
 
 		if v, ok := d.Search(k); ok {
-			new := make([]*Thunk, len(args.expandedDicts))
-			copy(new, args.expandedDicts)
-			new[i] = Normal(d.Remove(k))
-			args.expandedDicts = new
+			ds := make([]*Thunk, len(args.expandedDicts))
+			copy(ds, args.expandedDicts)
+			ds[i] = Normal(d.Remove(k))
+			args.expandedDicts = ds
 			return v
 		}
 	}
@@ -101,50 +102,50 @@ func (args *Arguments) searchKeyword(s string) *Thunk {
 }
 
 func (args *Arguments) restKeywords() *Thunk {
-	defer func() {
-		args.keywords = nil
-		args.expandedDicts = nil
-	}()
+	ks := args.keywords
+	ds := args.expandedDicts
+	args.keywords = nil
+	args.expandedDicts = nil
 
 	t := EmptyDictionary
 
-	for _, k := range args.keywords {
+	for _, k := range ks {
 		t = PApp(Insert, t, NewString(k.name), k.value)
 	}
 
-	for _, tt := range args.expandedDicts {
-		t = PApp(Merge, t, tt)
+	for _, d := range ds {
+		t = PApp(Merge, t, d)
 	}
 
 	return t
 }
 
 // Merge merges 2 sets of arguments into one.
-func (args Arguments) Merge(merged Arguments) Arguments {
+func (args Arguments) Merge(old Arguments) Arguments {
 	var new Arguments
 
 	if new.expandedList == nil {
-		new.positionals = append(args.positionals, merged.positionals...)
-		new.expandedList = merged.expandedList
+		new.positionals = append(args.positionals, old.positionals...)
+		new.expandedList = old.expandedList
 	} else {
 		new.positionals = args.positionals
 		new.expandedList = PApp(
 			Append,
-			append([]*Thunk{args.expandedList}, merged.positionals...)...)
+			append([]*Thunk{args.expandedList}, old.positionals...)...)
 
-		if merged.expandedList != nil {
-			new.expandedList = PApp(Merge, new.expandedList, merged.expandedList)
+		if old.expandedList != nil {
+			new.expandedList = PApp(Merge, new.expandedList, old.expandedList)
 		}
 	}
 
-	new.keywords = append(args.keywords, merged.keywords...)
-	new.expandedDicts = append(args.expandedDicts, merged.expandedDicts...)
+	new.keywords = append(args.keywords, old.keywords...)
+	new.expandedDicts = append(args.expandedDicts, old.expandedDicts...)
 
 	return new
 }
 
 func (args Arguments) empty() *Thunk {
-	if args.positionals != nil && len(args.positionals) > 0 {
+	if len(args.positionals) > 0 {
 		return argumentError("%d positional arguments are left", len(args.positionals))
 	}
 
@@ -153,17 +154,15 @@ func (args Arguments) empty() *Thunk {
 
 	n := 0
 
-	if args.expandedDicts != nil {
-		for _, t := range args.expandedDicts {
-			v := t.Eval()
-			d, ok := v.(DictionaryType)
+	for _, t := range args.expandedDicts {
+		v := t.Eval()
+		d, ok := v.(DictionaryType)
 
-			if !ok {
-				return NotDictionaryError(v)
-			}
-
-			n += d.Size()
+		if !ok {
+			return NotDictionaryError(v)
 		}
+
+		n += d.Size()
 	}
 
 	if n != 0 || args.keywords != nil && len(args.keywords) > 0 {

@@ -12,7 +12,7 @@ type Arguments struct {
 func NewArguments(
 	ps []PositionalArgument,
 	ks []KeywordArgument,
-	expandedDicts []*Thunk) Arguments {
+	ds []*Thunk) Arguments {
 	ts := make([]*Thunk, 0, len(ps))
 	l := (*Thunk)(nil)
 
@@ -25,12 +25,7 @@ func NewArguments(
 		ts = append(ts, p.value)
 	}
 
-	return Arguments{
-		positionals:   ts,
-		expandedList:  l,
-		keywords:      ks,
-		expandedDicts: expandedDicts,
-	}
+	return Arguments{ts, l, ks, ds}
 }
 
 func mergeRestPositionalArgs(t *Thunk, ps ...PositionalArgument) *Thunk {

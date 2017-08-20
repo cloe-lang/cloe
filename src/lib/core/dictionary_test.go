@@ -264,9 +264,16 @@ func TestDictionaryError(t *testing.T) {
 			NewDictionary([]Value{OutOfRangeError().Eval()}, []*Thunk{Nil}),
 			Nil),
 		PApp(
+			NewDictionary([]Value{Nil.Eval()}, []*Thunk{Nil}),
+			OutOfRangeError()),
+		PApp(
 			Insert,
 			NewDictionary([]Value{OutOfRangeError().Eval()}, []*Thunk{Nil}),
 			Nil),
+		PApp(
+			Insert,
+			NewDictionary([]Value{Nil.Eval()}, []*Thunk{Nil}),
+			OutOfRangeError()),
 		PApp(
 			Merge,
 			EmptyDictionary,
@@ -278,6 +285,9 @@ func TestDictionaryError(t *testing.T) {
 		PApp(
 			ToString,
 			NewDictionary([]Value{OutOfRangeError().Eval()}, []*Thunk{Nil})),
+		PApp(
+			ToString,
+			NewDictionary([]Value{Nil.Eval()}, []*Thunk{OutOfRangeError()})),
 		PApp(
 			Delete,
 			NewDictionary([]Value{OutOfRangeError().Eval()}, []*Thunk{Nil}),

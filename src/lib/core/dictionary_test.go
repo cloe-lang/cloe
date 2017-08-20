@@ -235,11 +235,11 @@ func TestDictionaryInclude(t *testing.T) {
 }
 
 func TestDictionaryMerge(t *testing.T) {
-	d1 := NewDictionary(nil, nil)
+	d1 := EmptyDictionary
 	d2kvs := make([][2]*Thunk, 0)
 
 	for _, kvs := range kvss {
-		d := NewDictionary(nil, nil)
+		d := EmptyDictionary
 
 		for _, kv := range kvs {
 			d = PApp(Insert, d, kv[0], kv[1])
@@ -249,7 +249,7 @@ func TestDictionaryMerge(t *testing.T) {
 		d2kvs = append(d2kvs, kvs...)
 	}
 
-	d2 := NewDictionary(nil, nil)
+	d2 := EmptyDictionary
 
 	for _, kv := range d2kvs {
 		d2 = PApp(Insert, d2, kv[0], kv[1])

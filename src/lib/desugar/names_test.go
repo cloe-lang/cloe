@@ -10,7 +10,7 @@ import (
 
 func TestNamesFindWithLetVar(t *testing.T) {
 	n := "x"
-	assert.True(t, newNames(n).find(ast.NewLetVar(n, n)).include(n))
+	assert.True(t, newNames(n).findInLetVar(ast.NewLetVar(n, n)).include(n))
 }
 
 func TestNamesFindWithLetFunction(t *testing.T) {
@@ -39,6 +39,6 @@ func TestNamesFindWithLetFunction(t *testing.T) {
 			false,
 		},
 	} {
-		assert.Equal(t, test.answer, newNames(n).find(test.letFunc).include(n))
+		assert.Equal(t, test.answer, newNames(n).findInLetFunction(test.letFunc).include(n))
 	}
 }

@@ -19,7 +19,7 @@ func desugarRecursiveLetVar(x interface{}) []interface{} {
 func convertRecursiveLetVar(x interface{}) interface{} {
 	switch x := x.(type) {
 	case ast.LetVar:
-		if len(newNames(x.Name()).find(x.Expr())) == 0 {
+		if len(newNames(x.Name()).findInExpression(x.Expr())) == 0 {
 			return x
 		}
 

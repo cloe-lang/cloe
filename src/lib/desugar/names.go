@@ -59,14 +59,38 @@ func (ns names) include(n string) bool {
 	return ok
 }
 
-// findInFunction finds names in a let-function node. find assumes that a given
-// let-function node does not define its function recursively.
-func (ns names) findInFunction(f ast.LetFunction) names {
-	return ns.find(f)
+// findInLetFunction finds names in a let-function node. This assumes that a
+// given let-function statement does not define its function recursively.
+func (ns names) findInLetFunction(f ast.LetFunction) names {
+	ns = ns.copy()
+	ns.subtract(signatureToNames(f.Signature()))
+
+	ms := newNames()
+
+	for _, l := range f.Lets() {
+		switch l := l.(type) {
+		case ast.LetVar:
+			ns.delete(l.Name())
+			ms.merge(ns.findInLetVar(l))
+		case ast.LetFunction:
+			ns.delete(l.Name())
+			ms.merge(ns.findInLetFunction(l))
+		default:
+			panic("Unreachable")
+		}
+	}
+
+	ms.merge(ns.findInExpression(f.Body()))
+	return ms
 }
 
-// find finds names in a AST node. This should not be used directly.
-func (ns names) find(x interface{}) names {
+// findInLetVar finds names in a let-variable node. This assumes that a given
+// let-variable statement does not define its variable recursively.
+func (ns names) findInLetVar(l ast.LetVar) names {
+	return ns.findInExpression(l.Expr())
+}
+
+func (ns names) findInExpression(x interface{}) names {
 	switch x := x.(type) {
 	case string:
 		if ns.include(x) {
@@ -77,58 +101,35 @@ func (ns names) find(x interface{}) names {
 	case ast.AnonymousFunction:
 		ns := ns.copy()
 		ns.subtract(signatureToNames(x.Signature()))
-		return ns.find(x.Body())
-	case ast.LetVar:
-		return ns.find(x.Expr())
-	case ast.LetFunction:
-		ns := ns.copy()
-		ns.subtract(signatureToNames(x.Signature()))
-
-		ms := newNames()
-
-		for _, l := range x.Lets() {
-			switch l := l.(type) {
-			case ast.LetVar:
-				ns.delete(l.Name())
-			case ast.LetFunction:
-				ns.delete(l.Name())
-			default:
-				panic("Unreachable")
-			}
-
-			ms.merge(ns.find(l))
-		}
-
-		ms.merge(ns.find(x.Body()))
-		return ms
+		return ns.findInExpression(x.Body())
 	case ast.App:
-		ms := ns.find(x.Function())
-		ms.merge(ns.find(x.Arguments()))
+		ms := ns.findInExpression(x.Function())
+		ms.merge(ns.findInExpression(x.Arguments()))
 		return ms
 	case ast.Arguments:
 		ms := newNames()
 
 		for _, p := range x.Positionals() {
-			ms.merge(ns.find(p.Value()))
+			ms.merge(ns.findInExpression(p.Value()))
 		}
 
 		for _, k := range x.Keywords() {
-			ms.merge(ns.find(k.Value()))
+			ms.merge(ns.findInExpression(k.Value()))
 		}
 
 		for _, d := range x.ExpandedDicts() {
-			ms.merge(ns.find(d))
+			ms.merge(ns.findInExpression(d))
 		}
 
 		return ms
 	case ast.Switch:
-		ms := ns.find(x.Value())
+		ms := ns.findInExpression(x.Value())
 
 		for _, c := range x.Cases() {
-			ms.merge(ns.find(c.Value()))
+			ms.merge(ns.findInExpression(c.Value()))
 		}
 
-		ms.merge(ns.find(x.DefaultCase()))
+		ms.merge(ns.findInExpression(x.DefaultCase()))
 
 		return ms
 	}

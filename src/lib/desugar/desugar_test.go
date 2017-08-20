@@ -81,7 +81,7 @@ func TestDesugar(t *testing.T) {
 				case ast.AnonymousFunction:
 					t.Fail()
 				case ast.LetFunction:
-					if len(newNames(x.Name()).findInFunction(x)) != 0 {
+					if len(newNames(x.Name()).findInLetFunction(x)) != 0 {
 						t.Fail()
 					}
 
@@ -91,7 +91,7 @@ func TestDesugar(t *testing.T) {
 						}
 					}
 				case ast.LetVar:
-					if len(newNames(x.Name()).find(x.Expr())) != 0 {
+					if len(newNames(x.Name()).findInExpression(x.Expr())) != 0 {
 						t.Fail()
 					}
 				case ast.Match:

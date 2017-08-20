@@ -11,7 +11,7 @@ func desugarSelfRecursiveStatement(x interface{}) []interface{} {
 		case ast.LetFunction:
 			x = desugarInnerSelfRecursions(x)
 
-			if len(newNames(x.Name()).findInFunction(x)) == 0 {
+			if len(newNames(x.Name()).findInLetFunction(x)) == 0 {
 				return x
 			}
 

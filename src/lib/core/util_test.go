@@ -92,6 +92,13 @@ func TestTypeOf(t *testing.T) {
 	}
 }
 
+func TestTypeOfError(t *testing.T) {
+	v := PApp(impureFunction, NewNumber(42)).Eval()
+	_, ok := v.(ErrorType)
+	t.Log(v)
+	assert.True(t, ok)
+}
+
 func TestTypeOfFail(t *testing.T) {
 	defer func() {
 		r := recover()

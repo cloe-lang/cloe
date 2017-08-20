@@ -43,7 +43,7 @@ func TestThunkEvalOutputWithNonOutput(t *testing.T) {
 		err, ok := v.(ErrorType)
 		t.Logf("%#v\n", v)
 		assert.True(t, ok)
-		assert.Equal(t, err.name, "TypeError")
+		assert.Equal(t, "TypeError", err.name)
 	}
 }
 
@@ -52,7 +52,7 @@ func TestThunkEvalOutputWithError(t *testing.T) {
 	err, ok := v.(ErrorType)
 	t.Logf("%#v\n", v)
 	assert.True(t, ok)
-	assert.Equal(t, err.name, "OutOfRangeError")
+	assert.Equal(t, "OutOfRangeError", err.name)
 }
 
 func TestAssertValueIsNormal(t *testing.T) {

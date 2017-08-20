@@ -57,11 +57,9 @@ func (args *Arguments) nextPositional() *Thunk {
 		return nil
 	}
 
-	defer func() {
-		args.expandedList = PApp(Rest, args.expandedList)
-	}()
-
-	return PApp(First, args.expandedList)
+	l := args.expandedList
+	args.expandedList = PApp(Rest, l)
+	return PApp(First, l)
 }
 
 func (args *Arguments) restPositionals() *Thunk {

@@ -221,12 +221,12 @@ func TestDictionaryToString(t *testing.T) {
 func TestDictionaryStringFail(t *testing.T) {
 	for _, th := range []*Thunk{
 		NewDictionary([]Value{Nil.Eval()}, []*Thunk{OutOfRangeError()}),
+		NewDictionary([]Value{Nil.Eval()}, []*Thunk{NewList(OutOfRangeError())}),
 	} {
-		v := th.Eval().(DictionaryType).string()
-		t.Log(v)
-		if _, ok := v.(ErrorType); !ok {
-			t.Fail()
-		}
+		v := PApp(ToString, th).Eval()
+		t.Logf("%#v", v)
+		_, ok := v.(ErrorType)
+		assert.True(t, ok)
 	}
 }
 

@@ -18,7 +18,7 @@ func NewArguments(
 
 	for i, p := range ps {
 		if p.expanded {
-			l = mergeRestPositionalArgs(ps[i:]...)
+			l = mergeRestPositionalArgs(ps[i].value, ps[i+1:]...)
 			break
 		}
 
@@ -33,14 +33,8 @@ func NewArguments(
 	}
 }
 
-func mergeRestPositionalArgs(ps ...PositionalArgument) *Thunk {
-	if !ps[0].expanded {
-		panic("First PositionalArgument must be a list.")
-	}
-
-	t := ps[0].value
-
-	for _, p := range ps[1:] {
+func mergeRestPositionalArgs(t *Thunk, ps ...PositionalArgument) *Thunk {
+	for _, p := range ps {
 		if p.expanded {
 			t = PApp(Merge, t, p.value)
 		} else {

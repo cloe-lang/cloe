@@ -122,26 +122,27 @@ func (args *Arguments) restKeywords() *Thunk {
 
 // Merge merges 2 sets of arguments into one.
 func (args Arguments) Merge(old Arguments) Arguments {
-	var new Arguments
+	var ps []*Thunk
+	var l *Thunk
 
-	if new.expandedList == nil {
-		new.positionals = append(args.positionals, old.positionals...)
-		new.expandedList = old.expandedList
+	if args.expandedList == nil {
+		ps = append(args.positionals, old.positionals...)
+		l = old.expandedList
 	} else {
-		new.positionals = args.positionals
-		new.expandedList = PApp(
-			Append,
-			append([]*Thunk{args.expandedList}, old.positionals...)...)
+		ps = args.positionals
+		l = PApp(Append, append([]*Thunk{args.expandedList}, old.positionals...)...)
 
 		if old.expandedList != nil {
-			new.expandedList = PApp(Merge, new.expandedList, old.expandedList)
+			l = PApp(Merge, l, old.expandedList)
 		}
 	}
 
-	new.keywords = append(args.keywords, old.keywords...)
-	new.expandedDicts = append(args.expandedDicts, old.expandedDicts...)
-
-	return new
+	return Arguments{
+		ps,
+		l,
+		append(args.keywords, old.keywords...),
+		append(args.expandedDicts, old.expandedDicts...),
+	}
 }
 
 func (args Arguments) empty() *Thunk {

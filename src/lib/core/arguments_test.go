@@ -28,3 +28,9 @@ func TestArgumentsEmpty(t *testing.T) {
 		assert.True(t, ok)
 	}
 }
+
+func TestArgumentsMerge(t *testing.T) {
+	a := NewArguments([]PositionalArgument{NewPositionalArgument(NewList(Nil), true)}, nil, nil)
+	a = a.Merge(a)
+	assert.Equal(t, NumberType(2), PApp(Size, a.restPositionals()).Eval().(NumberType))
+}

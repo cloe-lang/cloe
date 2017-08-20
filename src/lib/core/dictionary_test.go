@@ -79,11 +79,17 @@ func TestDictionaryIndex(t *testing.T) {
 }
 
 func TestDictionaryIndexFail(t *testing.T) {
-	l := NewList(NewError("you", "failed."))
-	v := PApp(PApp(Insert, EmptyDictionary, l, Nil), l, Nil).Eval()
-	t.Logf("%#v", v)
-	_, ok := v.(ErrorType)
-	assert.True(t, ok)
+	for _, th := range []*Thunk{
+		PApp(EmptyDictionary, Nil),
+		PApp(
+			PApp(Insert, EmptyDictionary, NewList(OutOfRangeError()), Nil),
+			NewList(Nil)),
+	} {
+		v := th.Eval()
+		t.Logf("%#v", v)
+		_, ok := v.(ErrorType)
+		assert.True(t, ok)
+	}
 }
 
 func TestDictionaryDeletable(t *testing.T) {

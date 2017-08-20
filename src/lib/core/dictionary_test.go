@@ -257,3 +257,36 @@ func TestDictionaryMerge(t *testing.T) {
 
 	assert.True(t, testEqual(d1, d2))
 }
+
+func TestDictionaryError(t *testing.T) {
+	for _, th := range []*Thunk{
+		PApp(
+			NewDictionary([]Value{OutOfRangeError().Eval()}, []*Thunk{Nil}),
+			Nil),
+		PApp(
+			Insert,
+			NewDictionary([]Value{OutOfRangeError().Eval()}, []*Thunk{Nil}),
+			Nil),
+		PApp(
+			Merge,
+			EmptyDictionary,
+			NewDictionary([]Value{OutOfRangeError().Eval()}, []*Thunk{Nil})),
+		PApp(
+			Include,
+			NewDictionary([]Value{OutOfRangeError().Eval()}, []*Thunk{Nil}),
+			Nil),
+		PApp(
+			ToString,
+			NewDictionary([]Value{OutOfRangeError().Eval()}, []*Thunk{Nil})),
+		PApp(
+			Delete,
+			NewDictionary([]Value{OutOfRangeError().Eval()}, []*Thunk{Nil}),
+			Nil),
+	} {
+		v := th.Eval()
+		t.Log(v)
+		if _, ok := v.(ErrorType); !ok {
+			t.Fail()
+		}
+	}
+}

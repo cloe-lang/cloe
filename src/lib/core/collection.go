@@ -81,7 +81,7 @@ var Insert = NewLazyFunction(
 		return c.insert(ts...)
 	})
 
-// Merge merges 2 collections.
+// Merge merges more than 2 collections.
 var Merge = NewLazyFunction(
 	NewSignature(
 		[]string{"x"}, nil, "ys",

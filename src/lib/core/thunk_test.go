@@ -57,9 +57,7 @@ func TestThunkEvalOutputWithError(t *testing.T) {
 
 func TestAssertValueIsNormal(t *testing.T) {
 	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
+		assert.NotEqual(t, nil, recover())
 	}()
 
 	assertValueIsNormal("This", Nil)

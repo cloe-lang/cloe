@@ -35,9 +35,7 @@ func TestDictionaryInsert(t *testing.T) {
 
 func TestNewDictionaryPanic(t *testing.T) {
 	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
+		assert.NotEqual(t, nil, recover())
 	}()
 
 	NewDictionary([]Value{Nil.Eval()}, []*Thunk{Nil, Nil}).Eval()

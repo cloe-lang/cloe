@@ -4,6 +4,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/tisp-lang/tisp/src/lib/compile"
 	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/std"
@@ -30,9 +31,7 @@ func TestRunWithExpandedList(t *testing.T) {
 
 func TestEvalOutputListFail(t *testing.T) {
 	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
+		assert.NotEqual(t, nil, recover())
 	}()
 
 	wg := sync.WaitGroup{}
@@ -42,9 +41,7 @@ func TestEvalOutputListFail(t *testing.T) {
 
 func TestRunOutputFail(t *testing.T) {
 	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
+		assert.NotEqual(t, nil, recover())
 	}()
 
 	wg := sync.WaitGroup{}

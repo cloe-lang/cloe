@@ -258,9 +258,7 @@ func newStateWithoutFile(source string) *state {
 
 func TestUnquoteStringFail(t *testing.T) {
 	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
+		assert.NotEqual(t, nil, recover())
 	}()
 
 	unquoteString("foo")

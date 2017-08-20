@@ -16,9 +16,7 @@ func testLess(t1, t2 *Thunk) bool {
 
 func TestLessFail(t *testing.T) {
 	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
+		assert.NotEqual(t, nil, recover())
 	}()
 
 	compare(NewNumber(42).Eval(), NewError("you", "failed.").Eval())

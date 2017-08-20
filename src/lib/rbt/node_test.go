@@ -194,9 +194,7 @@ func TestNodeEqual(t *testing.T) {
 
 func TestNodeRankError(t *testing.T) {
 	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
+		assert.NotEqual(t, nil, recover())
 	}()
 
 	n := (*node)(nil).insert(0, compare).insert(1, compare).insert(2, compare)

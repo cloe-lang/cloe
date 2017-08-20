@@ -3,6 +3,7 @@ package match
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/tisp-lang/tisp/src/lib/debug"
 )
@@ -31,9 +32,7 @@ func TestValueRenamerRename(t *testing.T) {
 
 func TestValueRenamerRenameFail(t *testing.T) {
 	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
+		assert.NotEqual(t, nil, recover())
 	}()
 
 	newValueRenamer(map[string]string{"foo": "bar"}).rename(

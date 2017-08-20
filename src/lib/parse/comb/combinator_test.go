@@ -186,9 +186,7 @@ func TestStringify(t *testing.T) {
 
 func TestStringifyFail(t *testing.T) {
 	defer func() {
-		if r := recover(); r == nil {
-			t.Fail()
-		}
+		assert.NotEqual(t, nil, recover())
 	}()
 
 	stringify(42)

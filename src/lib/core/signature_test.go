@@ -30,6 +30,16 @@ func TestSignatureBindExpandedDictionaryFail(t *testing.T) {
 	assert.NotEqual(t, (*Thunk)(nil), err)
 }
 
+func TestSignatureBindRestKeywordArguments(t *testing.T) {
+	s := NewSignature(nil, nil, "", nil, nil, "foo")
+	args := NewArguments(
+		nil,
+		[]KeywordArgument{NewKeywordArgument("foo", Nil)},
+		[]*Thunk{NewDictionary([]Value{NewString("bar").Eval()}, []*Thunk{Nil})})
+	_, err := s.Bind(args)
+	assert.Equal(t, (*Thunk)(nil), err)
+}
+
 func TestSignatureBindNoArgumentFail(t *testing.T) {
 	s := NewSignature(nil, nil, "", nil, nil, "")
 	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil)

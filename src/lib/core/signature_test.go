@@ -6,6 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestSignatureBindWithEmtpyArguments(t *testing.T) {
+	s := NewSignature([]string{"x"}, nil, "", nil, nil, "")
+	args := NewArguments(nil, nil, nil)
+	_, err := s.Bind(args)
+	assert.NotEqual(t, (*Thunk)(nil), err)
+}
+
 func TestSignatureBindExpandedPositionalArgument(t *testing.T) {
 	s := NewSignature([]string{"x"}, nil, "", nil, nil, "")
 	args := NewArguments([]PositionalArgument{NewPositionalArgument(NewList(Nil), true)}, nil, nil)

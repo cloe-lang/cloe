@@ -16,6 +16,10 @@ type MutualRecursion struct {
 // NewMutualRecursion creates a mutual recursion node from mutually-recursive
 // functions.
 func NewMutualRecursion(fs []LetFunction, i debug.Info) MutualRecursion {
+	if len(fs) < 2 {
+		panic("A number of mutually recursive functions must be more than 2.")
+	}
+
 	return MutualRecursion{fs, i}
 }
 

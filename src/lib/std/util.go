@@ -7,7 +7,7 @@ func checkEmptyList(l *core.Thunk, ifTrue core.Value) core.Value {
 	b, ok := v.(core.BoolType)
 
 	if !ok {
-		return core.NotBoolError(v)
+		return core.NotBoolError(v).Eval()
 	} else if b {
 		return ifTrue
 	}

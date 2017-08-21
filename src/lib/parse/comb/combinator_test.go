@@ -83,7 +83,7 @@ func TestManyFail(t *testing.T) {
 			}
 
 			return x, nil
-		}))()
+		}), exhaustError)()
 
 		t.Logf("%#v", x)
 
@@ -172,14 +172,14 @@ func TestMaybeFailure(t *testing.T) {
 
 func TestExhaustWithErroneousParser(t *testing.T) {
 	s := NewState("")
-	_, err := s.Exhaust(s.String("foo"))()
+	_, err := s.Exhaust(s.String("foo"), exhaustError)()
 	assert.NotEqual(t, nil, err)
 }
 
 func TestStringify(t *testing.T) {
 	str := "foo"
 	s := NewState(str)
-	x, err := s.Exhaust(s.Stringify(s.And(s.String(str))))()
+	x, err := s.Exhaust(s.Stringify(s.And(s.String(str))), exhaustError)()
 	assert.Equal(t, str, x)
 	assert.Equal(t, nil, err)
 }
@@ -204,4 +204,8 @@ func TestVoid(t *testing.T) {
 	x, err := s.Void(s.String("foo"))()
 	assert.Equal(t, nil, x)
 	assert.Equal(t, nil, err)
+}
+
+func exhaustError(State) error {
+	return fmt.Errorf("Parsing error")
 }

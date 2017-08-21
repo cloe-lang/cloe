@@ -60,7 +60,7 @@ func (s *state) subModule() comb.Parser {
 }
 
 func (s *state) module(ps ...comb.Parser) comb.Parser {
-	return s.Exhaust(s.Prefix(s.blank(), s.App(func(x interface{}) interface{} {
+	return s.exhaust(s.Prefix(s.blank(), s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 		return append(xs[0].([]interface{}), xs[1].([]interface{})...)
 	}, s.And(s.Many(s.importModule()), s.Many(s.Or(ps...))))))
@@ -420,4 +420,10 @@ func (s *state) comment() comb.Parser {
 
 func (s *state) strippedString(str string) comb.Parser {
 	return s.strip(s.String(str))
+}
+
+func (s *state) exhaust(p comb.Parser) comb.Parser {
+	return s.Exhaust(p, func(s comb.State) error {
+		return fmt.Errorf("SyntaxError:%d:%d:\t%s", s.LineNumber(), s.LinePosition(), s.Line())
+	})
 }

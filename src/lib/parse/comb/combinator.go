@@ -193,16 +193,14 @@ func (State) Void(p Parser) Parser {
 
 // Exhaust creates a parser which fails when a source string is not exhausted
 // after running a given parser.
-func (s *State) Exhaust(p Parser) Parser {
+func (s *State) Exhaust(p Parser, f func(State) error) Parser {
 	return func() (interface{}, error) {
 		result, err := p()
 
 		if err != nil {
-			return result, err
+			return nil, err
 		} else if !s.exhausted() {
-			return nil, fmt.Errorf(
-				"Some characters are left in source. %#v",
-				string(s.source[s.sourcePosition:]))
+			return nil, f(*s)
 		}
 
 		return result, err

@@ -3,6 +3,7 @@ package desugar
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/tisp-lang/tisp/src/lib/debug"
 )
@@ -33,9 +34,8 @@ func TestDesugarAnonymousFunctions(t *testing.T) {
 
 		for _, s := range desugarAnonymousFunctions(s) {
 			ast.Convert(func(x interface{}) interface{} {
-				if _, ok := x.(ast.AnonymousFunction); ok {
-					t.Fail()
-				}
+				_, ok := x.(ast.AnonymousFunction)
+				assert.False(t, ok)
 
 				return nil
 			}, s)

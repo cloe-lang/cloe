@@ -3,6 +3,7 @@ package match
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/tisp-lang/tisp/src/lib/debug"
 )
@@ -44,9 +45,8 @@ func TestDesugar(t *testing.T) {
 			t.Logf("%#v", s)
 
 			ast.Convert(func(x interface{}) interface{} {
-				if _, ok := x.(ast.Match); ok {
-					t.Fail()
-				}
+				_, ok := x.(ast.Match)
+				assert.False(t, ok)
 
 				return nil
 			}, s)

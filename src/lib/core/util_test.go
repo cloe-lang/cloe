@@ -13,9 +13,8 @@ func TestDumpFail(t *testing.T) {
 		v := PApp(Dump, th).Eval()
 		t.Log(v)
 
-		if _, ok := v.(ErrorType); !ok {
-			t.Fail()
-		}
+		_, ok := v.(ErrorType)
+		assert.True(t, ok)
 	}
 }
 
@@ -31,9 +30,8 @@ func TestInternalStrictDumpFail(t *testing.T) {
 	for _, th := range []*Thunk{
 		NewList(OutOfRangeError()),
 		NewDictionary([]Value{Nil.Eval()}, []*Thunk{OutOfRangeError()})} {
-		if _, err := strictDump(th.Eval()); err == nil {
-			t.Fail()
-		}
+		_, err := strictDump(th.Eval())
+		assert.NotEqual(t, (*Thunk)(nil), err)
 	}
 }
 

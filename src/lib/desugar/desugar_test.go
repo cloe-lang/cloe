@@ -3,6 +3,7 @@ package desugar
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/tisp-lang/tisp/src/lib/debug"
 )
@@ -81,19 +82,14 @@ func TestDesugar(t *testing.T) {
 				case ast.AnonymousFunction:
 					t.Fail()
 				case ast.LetFunction:
-					if len(newNames(x.Name()).findInLetFunction(x)) != 0 {
-						t.Fail()
-					}
+					assert.Equal(t, 0, len(newNames(x.Name()).findInLetFunction(x)))
 
 					for _, l := range x.Lets() {
-						if _, ok := l.(ast.LetFunction); ok {
-							t.Fail()
-						}
+						_, ok := l.(ast.LetFunction)
+						assert.False(t, ok)
 					}
 				case ast.LetVar:
-					if len(newNames(x.Name()).findInExpression(x.Expr())) != 0 {
-						t.Fail()
-					}
+					assert.Equal(t, 0, len(newNames(x.Name()).findInExpression(x.Expr())))
 				case ast.Match:
 					t.Fail()
 				case ast.MutualRecursion:

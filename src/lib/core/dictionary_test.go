@@ -319,8 +319,7 @@ func TestDictionaryError(t *testing.T) {
 	} {
 		v := th.Eval()
 		t.Log(v)
-		if _, ok := v.(ErrorType); !ok {
-			t.Fail()
-		}
+		_, ok := v.(ErrorType)
+		assert.True(t, ok)
 	}
 }

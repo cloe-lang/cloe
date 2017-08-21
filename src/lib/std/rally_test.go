@@ -80,7 +80,7 @@ var indexOf = core.NewLazyFunction(
 	})
 
 func TestRallyWithInvalidExpandedList(t *testing.T) {
-	v := core.App(
+	l := core.App(
 		Rally,
 		core.NewArguments(
 			[]core.PositionalArgument{
@@ -88,7 +88,11 @@ func TestRallyWithInvalidExpandedList(t *testing.T) {
 				core.NewPositionalArgument(core.OutOfRangeError(), true),
 			},
 			nil,
-			nil)).Eval()
-	_, ok := v.(core.ErrorType)
-	assert.True(t, ok)
+			nil))
+
+	if _, ok := l.Eval().(core.ErrorType); !ok {
+		v := core.PApp(core.Rest, l).Eval()
+		_, ok := v.(core.ErrorType)
+		assert.True(t, ok)
+	}
 }

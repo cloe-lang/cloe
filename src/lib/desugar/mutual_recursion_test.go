@@ -8,6 +8,33 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/debug"
 )
 
+var letFooFunction = ast.NewLetFunction(
+	"foo",
+	ast.NewSignature(nil, nil, "", nil, nil, ""),
+	nil,
+	"nil",
+	debug.NewGoInfo(0))
+
+func TestDesugarMutualRecursionWithOneFunction(t *testing.T) {
+	defer func() {
+		assert.NotEqual(t, nil, recover())
+	}()
+
+	desugarMutualRecursion(ast.NewMutualRecursion(
+		[]ast.LetFunction{letFooFunction},
+		debug.NewGoInfo(0)))
+}
+
+func TestDesugarMutualRecursionWithFunctionsOfSameName(t *testing.T) {
+	defer func() {
+		assert.NotEqual(t, nil, recover())
+	}()
+
+	desugarMutualRecursion(ast.NewMutualRecursion(
+		[]ast.LetFunction{letFooFunction, letFooFunction},
+		debug.NewGoInfo(0)))
+}
+
 func TestLetStatementsToNames(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		for _, ls := range [][]interface{}{
@@ -34,31 +61,4 @@ func TestLetStatementsToNames(t *testing.T) {
 			}
 		}
 	}
-}
-
-var letFooFunction = ast.NewLetFunction(
-	"foo",
-	ast.NewSignature(nil, nil, "", nil, nil, ""),
-	nil,
-	"nil",
-	debug.NewGoInfo(0))
-
-func TestDesugarMutualRecursionWithOneFunction(t *testing.T) {
-	defer func() {
-		assert.NotEqual(t, nil, recover())
-	}()
-
-	desugarMutualRecursion(ast.NewMutualRecursion(
-		[]ast.LetFunction{letFooFunction},
-		debug.NewGoInfo(0)))
-}
-
-func TestDesugarMutualRecursionWithFunctionsOfSameName(t *testing.T) {
-	defer func() {
-		assert.NotEqual(t, nil, recover())
-	}()
-
-	desugarMutualRecursion(ast.NewMutualRecursion(
-		[]ast.LetFunction{letFooFunction, letFooFunction},
-		debug.NewGoInfo(0)))
 }

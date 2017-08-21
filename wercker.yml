@@ -40,7 +40,7 @@ build:
 
     - script:
       name: coverage report
-      code: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+      code: bash <(curl -s https://codecov.io/bash)
 
     - script:
       name: build

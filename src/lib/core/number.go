@@ -13,10 +13,7 @@ func NewNumber(n float64) *Thunk {
 
 // Add sums up numbers of arguments.
 var Add = NewLazyFunction(
-	NewSignature(
-		nil, nil, "nums",
-		nil, nil, "",
-	),
+	NewSignature(nil, nil, "nums", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		l, ok := v.(ListType)
@@ -49,10 +46,7 @@ var Add = NewLazyFunction(
 
 // Sub subtracts arguments of the second to the last from the first one as numbers.
 var Sub = NewLazyFunction(
-	NewSignature(
-		[]string{"minuend"}, nil, "subtrahends",
-		nil, nil, "",
-	),
+	NewSignature([]string{"minuend"}, nil, "subtrahends", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		n0, ok := v.(NumberType)
@@ -94,10 +88,7 @@ var Sub = NewLazyFunction(
 
 // Mul multiplies numbers of arguments.
 var Mul = NewLazyFunction(
-	NewSignature(
-		nil, nil, "nums",
-		nil, nil, "",
-	),
+	NewSignature(nil, nil, "nums", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		l, ok := v.(ListType)
@@ -130,10 +121,7 @@ var Mul = NewLazyFunction(
 
 // Div divides the first argument by arguments of the second to the last one by one.
 var Div = NewLazyFunction(
-	NewSignature(
-		[]string{"dividend"}, nil, "divisors",
-		nil, nil, "",
-	),
+	NewSignature([]string{"dividend"}, nil, "divisors", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		n0, ok := v.(NumberType)
@@ -175,10 +163,7 @@ var Div = NewLazyFunction(
 
 // FloorDiv divides the first argument by arguments of the second to the last one by one.
 var FloorDiv = NewLazyFunction(
-	NewSignature(
-		[]string{"dividend"}, nil, "divisors",
-		nil, nil, "",
-	),
+	NewSignature([]string{"dividend"}, nil, "divisors", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		n0, ok := v.(NumberType)
@@ -220,10 +205,7 @@ var FloorDiv = NewLazyFunction(
 
 // Mod calculate a remainder of a division of the first argument by the second one.
 var Mod = NewStrictFunction(
-	NewSignature(
-		[]string{"dividend", "divisor"}, nil, "",
-		nil, nil, "",
-	),
+	NewSignature([]string{"dividend", "divisor"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		n1, ok := v.(NumberType)
@@ -245,10 +227,7 @@ var Mod = NewStrictFunction(
 // Pow calculates an exponentiation from a base of the first argument and an
 // exponent of the second argument.
 var Pow = NewStrictFunction(
-	NewSignature(
-		[]string{"base", "exponent"}, nil, "",
-		nil, nil, "",
-	),
+	NewSignature([]string{"base", "exponent"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		n1, ok := v.(NumberType)
@@ -268,10 +247,7 @@ var Pow = NewStrictFunction(
 	})
 
 var isInt = NewLazyFunction(
-	NewSignature(
-		[]string{"number"}, nil, "",
-		nil, nil, "",
-	),
+	NewSignature([]string{"number"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		n, ok := v.(NumberType)

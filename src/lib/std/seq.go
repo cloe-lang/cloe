@@ -1,6 +1,8 @@
 package std
 
-import "github.com/tisp-lang/tisp/src/lib/core"
+import (
+	"github.com/tisp-lang/tisp/src/lib/core"
+)
 
 // Seq runs arguments of outputs sequentially.
 var Seq = core.NewLazyFunction(

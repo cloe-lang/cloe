@@ -16,3 +16,13 @@ func TestSeq(t *testing.T) {
 			core.PApp(Write, core.NewNumber(42)),
 			core.PApp(Write, core.NewString("OK!"))).EvalOutput())
 }
+
+func TestSeqWithPureValue(t *testing.T) {
+	for _, ts := range [][]*core.Thunk{
+		{core.Nil},
+		{core.Nil, core.Nil},
+	} {
+		_, ok := core.PApp(Seq, ts...).EvalOutput().(core.ErrorType)
+		assert.True(t, ok)
+	}
+}

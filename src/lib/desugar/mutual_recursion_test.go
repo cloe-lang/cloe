@@ -15,6 +15,66 @@ var letFooFunction = ast.NewLetFunction(
 	"nil",
 	debug.NewGoInfo(0))
 
+func TestDesugarMutualRecursion(t *testing.T) {
+	for _, mr := range []ast.MutualRecursion{
+		ast.NewMutualRecursion(
+			[]ast.LetFunction{
+				ast.NewLetFunction(
+					"foo",
+					ast.NewSignature(nil, nil, "", nil, nil, ""),
+					nil,
+					"nil",
+					debug.NewGoInfo(0)),
+				ast.NewLetFunction(
+					"bar",
+					ast.NewSignature(nil, nil, "", nil, nil, ""),
+					nil,
+					"nil",
+					debug.NewGoInfo(0)),
+			}, debug.NewGoInfo(0)),
+		ast.NewMutualRecursion(
+			[]ast.LetFunction{
+				ast.NewLetFunction(
+					"foo",
+					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+					nil,
+					ast.NewPApp("bar", []interface{}{"x"}, debug.NewGoInfo(0)),
+					debug.NewGoInfo(0)),
+				ast.NewLetFunction(
+					"bar",
+					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+					nil,
+					ast.NewPApp("foo", []interface{}{"x"}, debug.NewGoInfo(0)),
+					debug.NewGoInfo(0)),
+			}, debug.NewGoInfo(0)),
+		ast.NewMutualRecursion(
+			[]ast.LetFunction{
+				ast.NewLetFunction(
+					"foo",
+					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+					[]interface{}{
+						ast.NewLetFunction(
+							"f",
+							ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+							nil,
+							ast.NewPApp("bar", []interface{}{"x"}, debug.NewGoInfo(0)),
+							debug.NewGoInfo(0)),
+						ast.NewLetVar("g", "f"),
+					},
+					ast.NewPApp("g", []interface{}{"x"}, debug.NewGoInfo(0)),
+					debug.NewGoInfo(0)),
+				ast.NewLetFunction(
+					"bar",
+					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+					nil,
+					ast.NewPApp("foo", []interface{}{"x"}, debug.NewGoInfo(0)),
+					debug.NewGoInfo(0)),
+			}, debug.NewGoInfo(0)),
+	} {
+		desugarMutualRecursion(mr)
+	}
+}
+
 func TestDesugarMutualRecursionWithOneFunction(t *testing.T) {
 	defer func() {
 		assert.NotEqual(t, nil, recover())

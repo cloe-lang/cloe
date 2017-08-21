@@ -78,3 +78,17 @@ var indexOf = core.NewLazyFunction(
 			l = core.PApp(core.Rest, l)
 		}
 	})
+
+func TestRallyWithInvalidExpandedList(t *testing.T) {
+	v := core.App(
+		Rally,
+		core.NewArguments(
+			[]core.PositionalArgument{
+				core.NewPositionalArgument(core.Nil, false),
+				core.NewPositionalArgument(core.OutOfRangeError(), true),
+			},
+			nil,
+			nil)).Eval()
+	_, ok := v.(core.ErrorType)
+	assert.True(t, ok)
+}

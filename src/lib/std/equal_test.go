@@ -30,3 +30,35 @@ func TestEqualFalse(t *testing.T) {
 		assert.True(t, !bool(core.PApp(Equal, ts...).Eval().(core.BoolType)))
 	}
 }
+
+func TestEqualFail(t *testing.T) {
+	for _, th := range []*core.Thunk{
+		core.App(
+			Equal,
+			core.NewArguments(
+				[]core.PositionalArgument{core.NewPositionalArgument(core.OutOfRangeError(), true)},
+				nil,
+				nil)),
+		core.App(
+			Equal,
+			core.NewArguments(
+				[]core.PositionalArgument{
+					core.NewPositionalArgument(core.Nil, false),
+					core.NewPositionalArgument(core.OutOfRangeError(), true),
+				},
+				nil,
+				nil)),
+		core.App(
+			Equal,
+			core.NewArguments(
+				[]core.PositionalArgument{
+					core.NewPositionalArgument(core.Nil, false),
+					core.NewPositionalArgument(core.NewList(core.OutOfRangeError()), true),
+				},
+				nil,
+				nil)),
+	} {
+		_, ok := th.Eval().(core.ErrorType)
+		assert.True(t, ok)
+	}
+}

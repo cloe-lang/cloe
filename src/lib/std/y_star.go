@@ -14,7 +14,7 @@ var Ys = core.NewLazyFunction(
 		l, ok := v.(core.ListType)
 
 		if !ok {
-			panic("Rest arguments must be a list.")
+			return core.ValueError("Rest arguments must be a list.")
 		}
 
 		fs, err := l.ToThunks()

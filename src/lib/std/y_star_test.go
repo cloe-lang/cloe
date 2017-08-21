@@ -49,3 +49,20 @@ func TestYsMultipleFs(t *testing.T) {
 		assert.Equal(t, b2, rem != 0)
 	}
 }
+
+func TestYsWithErroneousArgument(t *testing.T) {
+	v := core.App(
+		Ys,
+		core.NewArguments(
+			[]core.PositionalArgument{core.NewPositionalArgument(core.OutOfRangeError(), true)},
+			nil,
+			nil)).Eval()
+	_, ok := v.(core.ErrorType)
+	assert.True(t, ok)
+}
+
+func TestYsWithNoRecursiveFunction(t *testing.T) {
+	v := core.PApp(Ys).Eval()
+	_, ok := v.(core.ErrorType)
+	assert.True(t, ok)
+}

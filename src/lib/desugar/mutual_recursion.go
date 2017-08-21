@@ -84,7 +84,7 @@ func indexLetFunctions(fs ...ast.LetFunction) map[string]int {
 	}
 
 	if len(n2i) != len(fs) {
-		panic(fmt.Errorf("Duplicate names were found among mutually-recursive functions"))
+		panic("Duplicate names were found among mutually-recursive functions")
 	}
 
 	return n2i

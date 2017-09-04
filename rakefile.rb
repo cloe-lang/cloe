@@ -70,8 +70,8 @@ task :install_deps do
     github.com/client9/misspell/cmd/misspell
     github.com/golang/lint/golint
     github.com/kr/pretty
-    github.com/mvdan/interfacer/...
     golang.org/x/tools/cmd/goimports
+    mvdan.cc/interfacer
     honnef.co/go/tools/...
   ].join ' '
 

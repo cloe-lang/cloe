@@ -12,14 +12,16 @@ func TestStateLine(t *testing.T) {
 
 func TestStateLineBeforeNewLine(t *testing.T) {
 	s := NewState("a\nb\n")
-	s.String("a")()
+	_, err := s.String("a")()
 	assert.Equal(t, s.Line(), "a")
+	assert.Equal(t, nil, err)
 }
 
 func TestStateLineAfterNewLine(t *testing.T) {
 	s := NewState("a\nb\n")
-	s.String("a\n")()
+	_, err := s.String("a\n")()
 	assert.Equal(t, s.Line(), "b")
+	assert.Equal(t, nil, err)
 }
 
 func TestStateLineNumber(t *testing.T) {

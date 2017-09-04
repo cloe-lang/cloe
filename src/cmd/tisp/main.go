@@ -39,7 +39,11 @@ func main() {
 			panic(err)
 		}
 
-		pprof.StartCPUProfile(f)
+		err = pprof.StartCPUProfile(f)
+		if err != nil {
+			panic(err)
+		}
+
 		defer pprof.StopCPUProfile()
 	}
 

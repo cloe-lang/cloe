@@ -75,6 +75,7 @@ task :install_deps do
     github.com/golang/lint/golint
     github.com/kisielk/errcheck
     github.com/kr/pretty
+    github.com/mattn/goveralls
     github.com/opennota/check/cmd/aligncheck
     github.com/opennota/check/cmd/structcheck
     github.com/opennota/check/cmd/varcheck

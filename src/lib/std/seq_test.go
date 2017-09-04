@@ -14,7 +14,7 @@ func TestSeq(t *testing.T) {
 		core.PApp(
 			Seq,
 			core.PApp(Write, core.NewNumber(42)),
-			core.PApp(Write, core.NewString("OK!"))).EvalOutput())
+			core.PApp(Write, core.NewString("OK!"))).EvalEffect())
 }
 
 func TestSeqWithPureValue(t *testing.T) {
@@ -22,7 +22,7 @@ func TestSeqWithPureValue(t *testing.T) {
 		{core.Nil},
 		{core.Nil, core.Nil},
 	} {
-		_, ok := core.PApp(Seq, ts...).EvalOutput().(core.ErrorType)
+		_, ok := core.PApp(Seq, ts...).EvalEffect().(core.ErrorType)
 		assert.True(t, ok)
 	}
 }

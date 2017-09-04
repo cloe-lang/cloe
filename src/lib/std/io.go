@@ -24,7 +24,7 @@ var Read = core.NewLazyFunction(
 			file, err = os.Open(string(s))
 
 			if err != nil {
-				return core.OutputError(err.Error())
+				return core.EffectError(err.Error())
 			}
 		} else if _, ok := v.(core.NilType); !ok {
 			s, err := core.StrictDump(v)
@@ -41,7 +41,7 @@ var Read = core.NewLazyFunction(
 		s, err := ioutil.ReadAll(file)
 
 		if err != nil {
-			return core.OutputError(err.Error())
+			return core.EffectError(err.Error())
 		}
 
 		return core.NewString(string(s))
@@ -115,7 +115,7 @@ var Write = core.NewStrictFunction(
 				os.FileMode(mode))
 
 			if err != nil {
-				return core.OutputError(err.Error())
+				return core.EffectError(err.Error())
 			}
 		} else if n, ok := fileArg.(core.NumberType); ok && n == 2 {
 			file = os.Stderr
@@ -133,5 +133,5 @@ var Write = core.NewStrictFunction(
 
 		fmt.Fprint(file, strings.Join(ss, options[0])+options[1])
 
-		return core.NewOutput(core.Nil)
+		return core.NewEffect(core.Nil)
 	})

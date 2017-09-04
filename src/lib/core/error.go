@@ -130,14 +130,14 @@ func InputError(m string, xs ...interface{}) *Thunk {
 	return NewError("InputError", m, xs...)
 }
 
-// OutputError creates a thunk which represents an output error.
-func OutputError(m string, xs ...interface{}) *Thunk {
-	return NewError("OutputError", m, xs...)
+// EffectError creates a thunk which represents an effect error.
+func EffectError(m string, xs ...interface{}) *Thunk {
+	return NewError("EffectError", m, xs...)
 }
 
-// NotOutputError creates an error value for a pure value which is expected to be an output value.
-func NotOutputError(v Value) *Thunk {
-	return TypeError(v, "output")
+// NotEffectError creates an error value for a pure value which is expected to be an effect value.
+func NotEffectError(v Value) *Thunk {
+	return TypeError(v, "effect")
 }
 
 // ImpureFunctionError creates an error value for execution of an impure function.

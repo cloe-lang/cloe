@@ -1,5 +1,5 @@
 Feature: Parallelism
-  Scenario: Evaluate outputs in parallel
+  Scenario: Evaluate effects in parallel
     Given a file named "main.tisp" with:
     """
     (write (par [1 2 3] [4 5 6] [7 8 9]))
@@ -10,7 +10,7 @@ Feature: Parallelism
     [7 8 9]
     """
 
-  Scenario: Evaluate outputs sequentially
+  Scenario: Evaluate effects sequentially
     Given a file named "main.tisp" with:
     """
     (seq

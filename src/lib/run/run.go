@@ -10,12 +10,12 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/systemt"
 )
 
-const maxConcurrentOutputs = 256
+const maxConcurrentEffects = 256
 
-var sem = make(chan bool, maxConcurrentOutputs)
+var sem = make(chan bool, maxConcurrentEffects)
 
-// Run runs outputs.
-func Run(os []compile.Output) {
+// Run runs effects.
+func Run(os []compile.Effect) {
 	go systemt.RunDaemons()
 
 	wg := sync.WaitGroup{}
@@ -24,17 +24,17 @@ func Run(os []compile.Output) {
 		wg.Add(1)
 
 		if v.Expanded() {
-			go evalOutputList(v.Value(), &wg, fail)
+			go evalEffectList(v.Value(), &wg, fail)
 		} else {
 			sem <- true
-			go runOutput(v.Value(), &wg, fail)
+			go runEffect(v.Value(), &wg, fail)
 		}
 	}
 
 	wg.Wait()
 }
 
-func evalOutputList(t *core.Thunk, parent *sync.WaitGroup, fail func(error)) {
+func evalEffectList(t *core.Thunk, parent *sync.WaitGroup, fail func(error)) {
 	wg := sync.WaitGroup{}
 	defer func() {
 		wg.Wait()
@@ -52,19 +52,19 @@ func evalOutputList(t *core.Thunk, parent *sync.WaitGroup, fail func(error)) {
 
 		wg.Add(1)
 		sem <- true
-		go runOutput(core.PApp(core.First, t), &wg, fail)
+		go runEffect(core.PApp(core.First, t), &wg, fail)
 
 		t = core.PApp(core.Rest, t)
 	}
 }
 
-func runOutput(t *core.Thunk, wg *sync.WaitGroup, fail func(error)) {
+func runEffect(t *core.Thunk, wg *sync.WaitGroup, fail func(error)) {
 	defer func() {
 		<-sem
 		wg.Done()
 	}()
 
-	if err, ok := t.EvalOutput().(core.ErrorType); ok {
+	if err, ok := t.EvalEffect().(core.ErrorType); ok {
 		fail(err)
 	}
 }

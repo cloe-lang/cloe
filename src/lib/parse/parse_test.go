@@ -110,10 +110,10 @@ func TestSignature(t *testing.T) {
 	}
 }
 
-func TestOutput(t *testing.T) {
-	for _, str := range []string{"output", "..outputs", "(foo bar)", "..(foo bar)"} {
+func TestEffect(t *testing.T) {
+	for _, str := range []string{"effect", "..effects", "(foo bar)", "..(foo bar)"} {
 		s := newStateWithoutFile(str)
-		_, err := s.exhaust(s.output())()
+		_, err := s.exhaust(s.effect())()
 		assert.Equal(t, nil, err)
 	}
 }

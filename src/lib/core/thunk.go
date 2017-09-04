@@ -54,7 +54,7 @@ func PApp(f *Thunk, ps ...*Thunk) *Thunk {
 	return AppWithInfo(f, NewPositionalArguments(ps...), debug.NewGoInfo(1))
 }
 
-// EvalAny evaluates a thunk and returns a pure or impure (output) value.
+// EvalAny evaluates a thunk and returns a pure or impure (effect) value.
 func (t *Thunk) EvalAny(pure bool) Value {
 	if t.lock(normal) {
 		for {
@@ -94,10 +94,10 @@ func (t *Thunk) EvalAny(pure bool) Value {
 
 		assertValueIsNormal("Thunk.result", t.result)
 
-		if _, impure := t.result.(OutputType); pure && impure {
+		if _, impure := t.result.(EffectType); pure && impure {
 			t.result = ImpureFunctionError(t.result).Eval()
 		} else if !pure && !impure {
-			t.result = NotOutputError(t.result).Eval()
+			t.result = NotEffectError(t.result).Eval()
 		}
 
 		t.finalize()
@@ -187,18 +187,18 @@ func (t *Thunk) Eval() Value {
 	return t.EvalAny(true)
 }
 
-// EvalOutput evaluates an output expression.
-func (t *Thunk) EvalOutput() Value {
+// EvalEffect evaluates an effect expression.
+func (t *Thunk) EvalEffect() Value {
 	v := t.EvalAny(false)
 
 	if err, ok := v.(ErrorType); ok {
 		return err
 	}
 
-	o, ok := v.(OutputType)
+	o, ok := v.(EffectType)
 
 	if !ok {
-		return NotOutputError(v).Eval()
+		return NotEffectError(v).Eval()
 	}
 
 	return o.value.Eval()

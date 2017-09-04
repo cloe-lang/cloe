@@ -17,8 +17,8 @@ func newCompiler(e environment) compiler {
 	return compiler{e}
 }
 
-func (c *compiler) compile(module []interface{}) []Output {
-	outputs := make([]Output, 0)
+func (c *compiler) compile(module []interface{}) []Effect {
+	effects := make([]Effect, 0)
 
 	for _, s := range module {
 		switch x := s.(type) {
@@ -43,8 +43,8 @@ func (c *compiler) compile(module []interface{}) []Output {
 					c.compileSignature(sig),
 					vars,
 					c.exprToIR(varToIndex, x.Body())))
-		case ast.Output:
-			outputs = append(outputs, NewOutput(c.exprToThunk(x.Expr()), x.Expanded()))
+		case ast.Effect:
+			effects = append(effects, NewEffect(c.exprToThunk(x.Expr()), x.Expanded()))
 		case ast.Import:
 			for k, v := range SubModule(x.Path() + ".tisp") {
 				c.env.set(path.Base(x.Path())+"."+k, v)
@@ -54,7 +54,7 @@ func (c *compiler) compile(module []interface{}) []Output {
 		}
 	}
 
-	return outputs
+	return effects
 }
 
 func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {

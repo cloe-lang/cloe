@@ -15,31 +15,31 @@ func TestRunWithNoThunk(t *testing.T) {
 }
 
 func TestRunWithOneThunk(t *testing.T) {
-	Run([]compile.Output{compile.NewOutput(core.PApp(std.Write, core.NewNumber(42)), false)})
+	Run([]compile.Effect{compile.NewEffect(core.PApp(std.Write, core.NewNumber(42)), false)})
 }
 
 func TestRunWithThunks(t *testing.T) {
-	o := compile.NewOutput(core.PApp(std.Write, core.NewNumber(42)), false)
-	Run([]compile.Output{o, o, o, o, o, o, o, o})
+	o := compile.NewEffect(core.PApp(std.Write, core.NewNumber(42)), false)
+	Run([]compile.Effect{o, o, o, o, o, o, o, o})
 }
 
 func TestRunWithExpandedList(t *testing.T) {
-	Run([]compile.Output{compile.NewOutput(
+	Run([]compile.Effect{compile.NewEffect(
 		core.NewList(core.PApp(std.Write, core.True), core.PApp(std.Write, core.False)),
 		true)})
 }
 
-func TestEvalOutputListFail(t *testing.T) {
+func TestEvalEffectListFail(t *testing.T) {
 	defer func() {
 		assert.NotEqual(t, nil, recover())
 	}()
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
-	evalOutputList(core.ValueError("Not list output"), &wg, func(err error) { panic(err) })
+	evalEffectList(core.ValueError("Not list effect"), &wg, func(err error) { panic(err) })
 }
 
-func TestRunOutputFail(t *testing.T) {
+func TestRunEffectFail(t *testing.T) {
 	defer func() {
 		assert.NotEqual(t, nil, recover())
 	}()
@@ -47,5 +47,5 @@ func TestRunOutputFail(t *testing.T) {
 	wg := sync.WaitGroup{}
 	sem <- true
 	wg.Add(1)
-	runOutput(core.Nil, &wg, func(err error) { panic(err) })
+	runEffect(core.Nil, &wg, func(err error) { panic(err) })
 }

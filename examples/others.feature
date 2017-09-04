@@ -53,7 +53,7 @@ Feature: Others
     Hello, world!
     """
 
-  Scenario: Ensure no memory leak with infinite outputs
+  Scenario: Ensure no memory leak with infinite effects
     This test succeeds only with Go 1.8 onward because of argument liveness.
     Given a file named "main.tisp" with:
     """

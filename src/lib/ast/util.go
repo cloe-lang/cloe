@@ -81,8 +81,8 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 		return NewMutualRecursion(fs, x.DebugInfo())
 	case OptionalArgument:
 		return NewOptionalArgument(x.Name(), convert(x.DefaultValue()))
-	case Output:
-		return NewOutput(convert(x.Expr()), x.Expanded())
+	case Effect:
+		return NewEffect(convert(x.Expr()), x.Expanded())
 	case PositionalArgument:
 		return NewPositionalArgument(convert(x.Value()), x.Expanded())
 	case Signature:

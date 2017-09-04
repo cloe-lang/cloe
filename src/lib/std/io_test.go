@@ -34,6 +34,6 @@ func TestWrite(t *testing.T) {
 			[]core.KeywordArgument{core.NewKeywordArgument("mode", core.NewNumber(0775))},
 			nil),
 	} {
-		assert.Equal(t, core.Nil.Eval(), core.App(Write, a).EvalOutput())
+		assert.Equal(t, core.Nil.Eval(), core.App(Write, a).EvalEffect())
 	}
 }

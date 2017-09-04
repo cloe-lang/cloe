@@ -52,7 +52,7 @@ func SubModule(file, source string) ([]interface{}, error) {
 }
 
 func (s *state) mainModule() comb.Parser {
-	return s.module(s.importModule(), s.let(), s.output())
+	return s.module(s.importModule(), s.let(), s.effect())
 }
 
 func (s *state) subModule() comb.Parser {
@@ -168,7 +168,7 @@ func (s *state) signature() comb.Parser {
 	}, s.And(s.halfSignature(), s.Maybe(s.Prefix(s.strippedString("."), s.halfSignature()))))
 }
 
-func (s *state) output() comb.Parser {
+func (s *state) effect() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 		expanded := false
@@ -177,7 +177,7 @@ func (s *state) output() comb.Parser {
 			expanded = true
 		}
 
-		return ast.NewOutput(xs[1], expanded)
+		return ast.NewEffect(xs[1], expanded)
 	}, s.And(s.Maybe(s.String("..")), s.expression()))
 }
 

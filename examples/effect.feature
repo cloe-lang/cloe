@@ -1,5 +1,5 @@
-Feature: Output
-  Scenario: Evaluate multiple outputs
+Feature: Effect
+  Scenario: Evaluate multiple effects
     Given a file named "main.tisp" with:
     """
     (write 123)
@@ -20,7 +20,7 @@ Feature: Output
     789
     """
 
-  Scenario: Evaluate an expanded output
+  Scenario: Evaluate an expanded effect
     Given a file named "main.tisp" with:
     """
     ..[(write 123) (write 456) (write 789)]
@@ -39,7 +39,7 @@ Feature: Output
     789
     """
 
-  Scenario: Purify an output value
+  Scenario: Purify an effect value
     Given a file named "main.tisp" with:
     """
     (write (pure (write "Hello, world!")))

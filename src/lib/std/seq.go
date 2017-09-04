@@ -4,10 +4,10 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/core"
 )
 
-// Seq runs arguments of outputs sequentially.
+// Seq runs arguments of effects sequentially.
 var Seq = core.NewLazyFunction(
 	core.NewSignature(
-		nil, nil, "outputs",
+		nil, nil, "effects",
 		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
@@ -15,7 +15,7 @@ var Seq = core.NewLazyFunction(
 
 		for {
 			out := core.PApp(core.First, l)
-			if err, ok := out.EvalOutput().(core.ErrorType); ok {
+			if err, ok := out.EvalEffect().(core.ErrorType); ok {
 				return err
 			}
 

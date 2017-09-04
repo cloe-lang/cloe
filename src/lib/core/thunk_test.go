@@ -9,7 +9,7 @@ import (
 var impureFunction = NewLazyFunction(
 	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		return NewOutput(ts[0])
+		return NewEffect(ts[0])
 	})
 
 func TestThunkEvalWithNotCallable(t *testing.T) {
@@ -32,14 +32,14 @@ func TestThunkEvalByCallingErrorTwice(t *testing.T) {
 	assert.Equal(t, 2, len(e.callTrace))
 }
 
-func TestThunkEvalOutput(t *testing.T) {
+func TestThunkEvalEffect(t *testing.T) {
 	s := NewString("foo")
-	assert.Equal(t, s.Eval(), PApp(impureFunction, s).EvalOutput())
+	assert.Equal(t, s.Eval(), PApp(impureFunction, s).EvalEffect())
 }
 
-func TestThunkEvalOutputWithNonOutput(t *testing.T) {
+func TestThunkEvalEffectWithNonEffect(t *testing.T) {
 	for _, th := range []*Thunk{Nil, PApp(identity, Nil)} {
-		v := th.EvalOutput()
+		v := th.EvalEffect()
 		err, ok := v.(ErrorType)
 		t.Logf("%#v\n", v)
 		assert.True(t, ok)
@@ -47,8 +47,8 @@ func TestThunkEvalOutputWithNonOutput(t *testing.T) {
 	}
 }
 
-func TestThunkEvalOutputWithError(t *testing.T) {
-	v := OutOfRangeError().EvalOutput()
+func TestThunkEvalEffectWithError(t *testing.T) {
+	v := OutOfRangeError().EvalEffect()
 	err, ok := v.(ErrorType)
 	t.Logf("%#v\n", v)
 	assert.True(t, ok)

@@ -46,7 +46,10 @@ task :lint do
     'unused',
     'staticcheck',
     'interfacer',
-    'errcheck'
+    'errcheck',
+    'aligncheck',
+    'structcheck',
+    'varcheck'
   ].each do |command|
     sh "#{command} ./..."
   end
@@ -72,6 +75,9 @@ task :install_deps do
     github.com/golang/lint/golint
     github.com/kisielk/errcheck
     github.com/kr/pretty
+    github.com/opennota/check/cmd/aligncheck
+    github.com/opennota/check/cmd/structcheck
+    github.com/opennota/check/cmd/varcheck
     golang.org/x/tools/cmd/goimports
     mvdan.cc/interfacer
     honnef.co/go/tools/...

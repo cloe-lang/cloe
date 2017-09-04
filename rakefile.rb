@@ -45,7 +45,8 @@ task :lint do
     'gosimple',
     'unused',
     'staticcheck',
-    'interfacer'
+    'interfacer',
+    'errcheck'
   ].each do |command|
     sh "#{command} ./..."
   end
@@ -69,6 +70,7 @@ task :install_deps do
     go get -u
     github.com/client9/misspell/cmd/misspell
     github.com/golang/lint/golint
+    github.com/kisielk/errcheck
     github.com/kr/pretty
     golang.org/x/tools/cmd/goimports
     mvdan.cc/interfacer

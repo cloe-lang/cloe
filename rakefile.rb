@@ -12,6 +12,8 @@ end
 task :unit_test do
   coverage_file = "/tmp/tisp-unit-test-#{Process.pid}.coverage"
 
+  sh "echo mode: atomic > #{TOTAL_COVERAGE_FILE}"
+
   `go list ./src/lib/...`.split.each do |package|
     sh %W[go test
           -covermode atomic
@@ -21,7 +23,7 @@ task :unit_test do
 
     verbose false do
       if File.exist? coverage_file
-        sh "cat #{coverage_file} >> #{TOTAL_COVERAGE_FILE}"
+        sh "cat #{coverage_file} | grep -v mode: >> #{TOTAL_COVERAGE_FILE}"
         rm coverage_file
       end
     end

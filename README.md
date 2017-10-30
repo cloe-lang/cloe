@@ -4,7 +4,7 @@
 [![codeclimate](https://img.shields.io/codeclimate/github/kabisaict/flow.svg?style=flat-square)](https://codeclimate.com/github/tisp-lang/tisp)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tisp-lang/tisp?style=flat-square)](https://goreportcard.com/report/github.com/tisp-lang/tisp)
 [![Coveralls](https://img.shields.io/coveralls/jekyll/jekyll.svg?style=flat-square)](https://coveralls.io/github/tisp-lang/tisp)
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/github/license/tisp-lang/tisp.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Google group](https://img.shields.io/badge/join-us-ff69b4.svg?style=flat-square)](https://groups.google.com/forum/#!forum/tisp-aliens)
 
 <div align="center">

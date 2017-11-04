@@ -1,6 +1,13 @@
 TOTAL_COVERAGE_FILE = 'coverage.txt'.freeze # This path is specified by codecov.
 BIN_PATH = File.absolute_path 'bin'
 
+task :deps do
+  sh 'go get github.com/alecthomas/gometalinter'
+  sh 'gometalinter --install'
+  sh 'go get -d -t ./...'
+  sh 'gem install rake rubocop'
+end
+
 task :build do
   sh 'go build -o bin/tisp src/cmd/tisp/main.go'
 end
@@ -40,25 +47,6 @@ end
 
 task test: %i[unit_test command_test]
 
-task :lint do
-  [
-    'go vet',
-    'golint',
-    'gosimple',
-    'unused',
-    'staticcheck',
-    'interfacer',
-    'errcheck',
-    'aligncheck',
-    'structcheck',
-    'varcheck'
-  ].each do |command|
-    sh "#{command} ./..."
-  end
-
-  sh 'misspell -error .'
-end
-
 task :format do
   sh 'go fix ./...'
   sh 'go fmt ./...'
@@ -70,26 +58,17 @@ task :format do
   sh 'rubocop -a'
 end
 
-task :install_deps do
-  sh %w[
-    go get -u
-    github.com/client9/misspell/cmd/misspell
-    github.com/golang/lint/golint
-    github.com/kisielk/errcheck
-    github.com/kr/pretty
-    github.com/mattn/goveralls
-    github.com/opennota/check/cmd/aligncheck
-    github.com/opennota/check/cmd/structcheck
-    github.com/opennota/check/cmd/varcheck
-    golang.org/x/tools/cmd/goimports
-    mvdan.cc/interfacer
-    honnef.co/go/tools/...
-  ].join ' '
-
-  sh 'go get -d -t ./...'
+task :lint do
+  sh %w[gometalinter
+        --disable gocyclo
+        --disable vetshadow
+        --enable gofmt
+        --enable goimports
+        --enable misspell
+        ./...].join ' '
 end
 
-task install: %i[install_deps test build] do
+task install: %i[deps test build] do
   sh 'go get ./...'
 end
 

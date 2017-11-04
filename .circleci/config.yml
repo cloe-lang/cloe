@@ -14,8 +14,8 @@ jobs:
             apt -y install rake bundler
 
       - run:
-          name: Install dependencies
-          command: rake install_deps
+          name: Dependencies
+          command: rake deps
 
       - run:
           name: Lint

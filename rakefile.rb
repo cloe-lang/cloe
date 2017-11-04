@@ -66,6 +66,7 @@ task :lint do
         --enable goimports
         --enable misspell
         ./...].join ' '
+  sh 'rubocop'
 end
 
 task install: %i[deps test build] do

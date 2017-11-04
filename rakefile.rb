@@ -2,7 +2,7 @@ TOTAL_COVERAGE_FILE = 'coverage.txt'.freeze # This path is specified by codecov.
 BIN_PATH = File.absolute_path 'bin'
 
 task :deps do
-  sh 'go get github.com/alecthomas/gometalinter'
+  sh 'go get github.com/alecthomas/gometalinter github.com/mattn/goveralls'
   sh 'gometalinter --install'
   sh 'go get -d -t ./...'
   sh 'gem install rake rubocop'

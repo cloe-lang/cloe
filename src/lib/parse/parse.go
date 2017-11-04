@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/consts"
 	"github.com/tisp-lang/tisp/src/lib/debug"
 	"github.com/tisp-lang/tisp/src/lib/parse/comb"
 )
@@ -202,11 +203,11 @@ func (s *state) strictExpression() comb.Parser {
 }
 
 func (s *state) listLiteral() comb.Parser {
-	return s.appFunc("$list", s.sequence("[", "]"))
+	return s.appFunc(consts.Names.ListFunction, s.sequence("[", "]"))
 }
 
 func (s *state) dictLiteral() comb.Parser {
-	return s.appFunc("$dict", s.sequence("{", "}"))
+	return s.appFunc(consts.Names.DictionaryFunction, s.sequence("{", "}"))
 }
 
 func (s *state) anonymousFunction() comb.Parser {

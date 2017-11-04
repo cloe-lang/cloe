@@ -1,12 +1,15 @@
 package desugar
 
-import "github.com/tisp-lang/tisp/src/lib/ast"
+import (
+	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/consts"
+)
 
 func desugarDictionaryExpansion(x interface{}) []interface{} {
 	return []interface{}{ast.Convert(func(x interface{}) interface{} {
 		a, ok := x.(ast.App)
 
-		if !ok || a.Function() != "$dict" {
+		if !ok || a.Function() != consts.Names.DictionaryFunction {
 			return nil
 		}
 

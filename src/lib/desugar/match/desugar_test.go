@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/consts"
 	"github.com/tisp-lang/tisp/src/lib/debug"
 )
 
@@ -37,8 +38,8 @@ func TestDesugar(t *testing.T) {
 				}), debug.NewGoInfo(0)),
 		}, debug.NewGoInfo(0)),
 		ast.NewLetVar("x", ast.NewMatch("nil", []ast.MatchCase{
-			ast.NewMatchCase(papp("$list", "1", "x"), "x"),
-			ast.NewMatchCase(papp("$dict", "1", "x", `"foo"`, "true"), "x"),
+			ast.NewMatchCase(papp(consts.Names.ListFunction, "1", "x"), "x"),
+			ast.NewMatchCase(papp(consts.Names.DictionaryFunction, "1", "x", `"foo"`, "true"), "x"),
 		})),
 	} {
 		for _, s := range Desugar(s) {

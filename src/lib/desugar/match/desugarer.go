@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/consts"
 	"github.com/tisp-lang/tisp/src/lib/debug"
 	"github.com/tisp-lang/tisp/src/lib/gensym"
 	"github.com/tisp-lang/tisp/src/lib/scalar"
@@ -149,9 +150,9 @@ func getPatternType(p interface{}) patternType {
 		return namePattern
 	case ast.App:
 		switch x.Function().(string) {
-		case "$list":
+		case consts.Names.ListFunction:
 			return listPattern
-		case "$dict":
+		case consts.Names.DictionaryFunction:
 			return dictPattern
 		}
 	}
@@ -172,9 +173,9 @@ func isGeneralNamePattern(p interface{}) bool {
 		ok := len(ps) == 1 && ps[0].Expanded()
 
 		switch x.Function().(string) {
-		case "$list":
+		case consts.Names.ListFunction:
 			return ok
-		case "$dict":
+		case consts.Names.DictionaryFunction:
 			return ok
 		}
 	}
@@ -196,7 +197,7 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
 
 		if len(ps) == 0 {
-			dc = d.resultApp("$if", app("$=", list, "$emptyList"), c.Value(), dc)
+			dc = d.resultApp("$if", app("$=", list, consts.Names.EmptyList), c.Value(), dc)
 			continue
 		}
 
@@ -209,7 +210,10 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 		}
 
 		c = ast.NewMatchCase(
-			ast.NewApp("$list", ast.NewArguments(ps[1:], nil, nil), debug.NewGoInfo(0)),
+			ast.NewApp(
+				consts.Names.ListFunction,
+				ast.NewArguments(ps[1:], nil, nil),
+				debug.NewGoInfo(0)),
 			c.Value())
 
 		if isGeneralNamePattern(v) {
@@ -267,7 +271,7 @@ func (d *desugarer) desugarDictCases(dict interface{}, cs []ast.MatchCase, dc in
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
 
 		if len(ps) == 0 {
-			dc = d.resultApp("$if", app("$=", dict, "$emptyDict"), c.Value(), dc)
+			dc = d.resultApp("$if", app("$=", dict, consts.Names.EmptyDictionary), c.Value(), dc)
 			continue
 		}
 
@@ -317,7 +321,10 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 		v := ps[1].Value()
 
 		c = ast.NewMatchCase(
-			ast.NewApp("$dict", ast.NewArguments(ps[2:], nil, nil), debug.NewGoInfo(0)),
+			ast.NewApp(
+				consts.Names.DictionaryFunction,
+				ast.NewArguments(ps[2:], nil, nil),
+				debug.NewGoInfo(0)),
 			c.Value())
 
 		if isGeneralNamePattern(v) {

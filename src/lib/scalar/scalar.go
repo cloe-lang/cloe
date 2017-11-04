@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/tisp-lang/tisp/src/lib/consts"
 	"github.com/tisp-lang/tisp/src/lib/core"
 )
 
 var predefined = map[string]*core.Thunk{
-	"true":       core.True,
-	"false":      core.False,
-	"nil":        core.Nil,
-	"$emptyList": core.EmptyList,
-	"$emptyDict": core.EmptyDictionary,
+	"true":  core.True,
+	"false": core.False,
+	"nil":   core.Nil,
+	consts.Names.EmptyList:       core.EmptyList,
+	consts.Names.EmptyDictionary: core.EmptyDictionary,
 }
 
 // Convert converts a string into a scalar value of a number, string, bool, or

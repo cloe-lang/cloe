@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/consts"
 	"github.com/tisp-lang/tisp/src/lib/gensym"
 	"github.com/tisp-lang/tisp/src/lib/scalar"
 )
@@ -32,9 +33,9 @@ func (r *patternRenamer) renameNames(p interface{}) interface{} {
 		return r.nameMap[x]
 	case ast.App:
 		switch x.Function().(string) {
-		case "$list":
+		case consts.Names.ListFunction:
 			fallthrough
-		case "$dict":
+		case consts.Names.DictionaryFunction:
 			ps := make([]ast.PositionalArgument, 0, len(x.Arguments().Positionals()))
 
 			for _, p := range x.Arguments().Positionals() {

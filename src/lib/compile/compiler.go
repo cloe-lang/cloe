@@ -7,6 +7,7 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/ir"
+	"github.com/tisp-lang/tisp/src/lib/modules"
 )
 
 type compiler struct {
@@ -46,7 +47,13 @@ func (c *compiler) compile(module []interface{}) []Effect {
 		case ast.Effect:
 			effects = append(effects, NewEffect(c.exprToThunk(x.Expr()), x.Expanded()))
 		case ast.Import:
-			for k, v := range SubModule(x.Path() + ".tisp") {
+			m, ok := modules.Modules[x.Path()]
+
+			if !ok {
+				m = SubModule(x.Path() + ".tisp")
+			}
+
+			for k, v := range m {
 				c.env.set(path.Base(x.Path())+"."+k, v)
 			}
 		default:

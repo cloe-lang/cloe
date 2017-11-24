@@ -24,3 +24,14 @@ Feature: Built-in functions
     function
     function
     """
+
+  Scenario: Map a function to a list
+    Given a file named "main.tisp" with:
+    """
+    (write (map (\ (x) (* x x)) [1 2 3]))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    [1 4 9]
+    """

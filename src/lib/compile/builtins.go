@@ -67,6 +67,8 @@ var goBuiltins = func() environment {
 		{"catch", core.Catch},
 
 		{"pure", core.Pure},
+
+		{"map", std.Map},
 	} {
 		e.set(nv.name, nv.value)
 		e.set("$"+nv.name, nv.value)

@@ -101,3 +101,20 @@ Feature: Let statement
     """
     42
     """
+
+  Scenario: Define a recursive variable
+    Given a file named "main.tisp" with:
+    """
+    (let l (prepend 42 l))
+
+    (write (l 0))
+    (write (l 1))
+    (write (l 2))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    42
+    42
+    42
+    """

@@ -46,7 +46,3 @@ var get = core.NewLazyFunction(
 				core.NewString(string(b)),
 			})
 	})
-
-func httpError(err error) *core.Thunk {
-	return core.NewError("HTTPError", err.Error())
-}

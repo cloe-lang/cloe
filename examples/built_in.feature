@@ -1,5 +1,5 @@
 Feature: Built-in functions
-  Scenario: Add 2 numbers
+  Scenario: Get types of values
     Given a file named "main.tisp" with:
     """
     (seq

@@ -30,7 +30,7 @@ Stay tuned!
 go get github.com/tisp-lang/tisp/src/cmd/tisp
 ```
 
-You need Go 1.8+.
+Go 1.8+ is required.
 
 ## Features
 

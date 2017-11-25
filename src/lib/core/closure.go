@@ -1,5 +1,7 @@
 package core
 
+// RawFunctionType represents a raw function which takes an arguments struct
+// and returns a value.
 type RawFunctionType func(Arguments) Value
 
 func (f RawFunctionType) call(args Arguments) Value {

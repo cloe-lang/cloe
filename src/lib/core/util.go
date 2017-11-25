@@ -104,7 +104,7 @@ var TypeOf = NewLazyFunction(
 
 		case functionType:
 			return NewString("function")
-		case closureType:
+		case rawFunction:
 			return NewString("function")
 
 		case ErrorType:

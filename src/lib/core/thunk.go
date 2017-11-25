@@ -83,9 +83,7 @@ func (t *Thunk) EvalAny(pure bool) Value {
 				break
 			}
 
-			t.function, t.args, ok = child.delegateEval(t)
-
-			if !ok {
+			if ok := child.delegateEval(t); !ok {
 				t.result = child.EvalAny(pure)
 				t.chainError(t.result)
 				break
@@ -123,16 +121,16 @@ func (t *Thunk) lock(s thunkState) bool {
 	}
 }
 
-func (t *Thunk) delegateEval(parent *Thunk) (*Thunk, Arguments, bool) {
+func (t *Thunk) delegateEval(parent *Thunk) bool {
 	if t.lock(spinLock) {
-		f := t.swapFunction(identity)
-		args := t.swapArguments(Arguments{[]*Thunk{parent}, nil, nil, nil})
-		t.storeState(app)
+		parent.function = t.swapFunction(identity)
+		parent.args = t.swapArguments(Arguments{[]*Thunk{parent}, nil, nil, nil})
 		parent.info = t.info
-		return f, args, true
+		t.storeState(app)
+		return true
 	}
 
-	return nil, Arguments{}, false
+	return false
 }
 
 func (t *Thunk) swapFunction(new *Thunk) *Thunk {

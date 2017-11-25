@@ -16,7 +16,7 @@ Feature: Others
 
     for _ in $(seq 10)
     do
-      mem=$(ps ho vsz $pid)
+      mem=$(ps ho rss $pid)
 
       if [ $last_mem -ge $mem  ]
       then

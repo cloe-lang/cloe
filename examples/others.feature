@@ -75,3 +75,13 @@ Feature: Others
     """
     When I run `sh leak_memory.sh main.tisp`
     Then the exit status should be 0
+
+  Scenario: Ensure no memory leak with map function
+    Given a file named "main.tisp" with:
+    """
+    (let l (prepend 42 l))
+
+    ..(map write l)
+    """
+    When I run `sh leak_memory.sh main.tisp`
+    Then the exit status should be 0

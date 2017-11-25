@@ -4,6 +4,9 @@ import "github.com/tisp-lang/tisp/src/lib/core"
 
 // Y is Y combinator which takes a function whose first argument is itself
 // applied to the combinator.
+// Using Y combinator to define built-in functions in Go source is dangerous
+// because top-level recursive functions generate infinitely nested closures.
+// (i.e. closure{f, x} where x will also be evaluated as closure{f, x}.)
 var Y = core.NewLazyFunction(
 	core.NewSignature(
 		[]string{"function"}, nil, "",

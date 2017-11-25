@@ -13,15 +13,17 @@ var Y = core.NewLazyFunction(
 		nil, nil, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
-		xfxx := core.PApp(core.Partial, fxx, ts[0])
-		return core.PApp(xfxx, xfxx)
+		return y(ts[0])
 	})
 
-var fxx = core.NewLazyFunction(
-	core.NewSignature(
-		[]string{"f", "x"}, nil, "",
-		nil, nil, "",
-	),
-	func(ts ...*core.Thunk) core.Value {
-		return core.PApp(core.Partial, ts[0], core.PApp(ts[1], ts[1]))
+func y(f *core.Thunk) core.Value {
+	return core.RawFunction(func(args core.Arguments) core.Value {
+		return core.App(
+			f,
+			core.NewArguments(
+				[]core.PositionalArgument{core.NewPositionalArgument(core.Normal(y(f)), false)},
+				nil,
+				nil,
+			).Merge(args))
 	})
+}

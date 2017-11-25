@@ -1,20 +1,20 @@
 package core
 
-type rawFunction func(Arguments) Value
+type RawFunction func(Arguments) Value
 
-func (f rawFunction) call(args Arguments) Value {
+func (f RawFunction) call(args Arguments) Value {
 	return f(args)
 }
 
 // Partial creates a partially-applied function with arguments.
-var Partial = Normal(rawFunction(func(vars Arguments) Value {
-	return Normal(rawFunction(func(args Arguments) Value {
+var Partial = Normal(RawFunction(func(vars Arguments) Value {
+	return Normal(RawFunction(func(args Arguments) Value {
 		vars := vars
 		t := vars.nextPositional()
 		return App(t, vars.Merge(args))
 	}))
 }))
 
-func (f rawFunction) string() Value {
+func (f RawFunction) string() Value {
 	return StringType("<function>")
 }

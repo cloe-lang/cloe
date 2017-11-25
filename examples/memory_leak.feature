@@ -64,3 +64,13 @@ Feature: Memory leak
     """
     When I run `sh leak_memory.sh main.tisp`
     Then the exit status should be 0
+
+  Scenario: Apply a map function to an infinite list of map functions
+    Given a file named "main.tisp" with:
+    """
+    (let l (prepend map l))
+
+    ..(map (\ (x) (write (typeOf x))) l)
+    """
+    When I run `sh leak_memory.sh main.tisp`
+    Then the exit status should be 0

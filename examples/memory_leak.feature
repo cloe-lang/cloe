@@ -9,7 +9,7 @@ Feature: Memory leak
     tisp $1 > /dev/null &
     pid=$!
 
-    sleep 1 # Wait for memory usage to be stable.
+    sleep 2 # Wait for memory usage to be stable.
 
     ok=false
     last_mem=0

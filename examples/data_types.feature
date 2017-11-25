@@ -21,7 +21,7 @@ Feature: Data types
     """
     Then I successfully run `tisp main.tisp`
 
-  Scenario: Use string literals
+  Scenario: Expand dictionaries into a dictionary
     Given a file named "main.tisp" with:
     """
     (write ({"foo" 123 ..{"bar" 456} ..{42 2049} ..{nil true true false}} 42))

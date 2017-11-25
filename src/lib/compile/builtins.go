@@ -67,8 +67,6 @@ var goBuiltins = func() environment {
 		{"catch", core.Catch},
 
 		{"pure", core.Pure},
-
-		{"map", std.Map},
 	} {
 		e.set(nv.name, nv.value)
 		e.set("$"+nv.name, nv.value)
@@ -80,7 +78,7 @@ var goBuiltins = func() environment {
 func builtins() environment {
 	e := goBuiltins.copy()
 
-	for n, t := range subModule(goBuiltins, "<builtins>", `
+	for n, t := range subModule(goBuiltins.copy(), "<builtins>", `
 		(def (List ..xs) xs)
 
 		(def (indexOf list elem index)
@@ -89,6 +87,9 @@ func builtins() environment {
 				[first ..rest] (if (= first elem) index (indexOf rest elem (+ index 1)))))
 
 		(def (IndexOf list elem) (indexOf list elem 0))
+
+		(def (Map f l)
+			(if (= l (List)) (List) (prepend (f (first l)) (Map f (rest l)))))
 	`) {
 		n := strings.ToLower(n[:1]) + n[1:]
 		e.set(n, t)

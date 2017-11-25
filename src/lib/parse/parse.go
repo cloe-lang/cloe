@@ -378,7 +378,13 @@ func (s *state) stringLiteral() comb.Parser {
 
 	return s.Stringify(s.And(
 		c,
-		s.Many(s.Or(s.NotChars("\"\\"), s.String("\\\""), s.String("\\\\"))),
+		s.Many(s.Or(
+			s.NotChars("\"\\"),
+			s.String("\\\""),
+			s.String("\\\\"),
+			s.String("\\n"),
+			s.String("\\t"),
+		)),
 		s.strip(c)))
 }
 

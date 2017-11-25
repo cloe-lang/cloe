@@ -119,7 +119,15 @@ func TestEffect(t *testing.T) {
 }
 
 func TestStringLiteral(t *testing.T) {
-	for _, str := range []string{`""`, `"sl"`, "\"   string literal  \n \"", `"\""`, `"\\"`} {
+	for _, str := range []string{
+		`""`,
+		`"sl"`,
+		"\"   string literal  \n \"",
+		`"\""`,
+		`"\\"`,
+		`"\n"`,
+		`"\t"`,
+	} {
 		s := newStateWithoutFile(str)
 		result, err := s.exhaust(s.stringLiteral())()
 

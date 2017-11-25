@@ -31,3 +31,15 @@ Feature: Data types
     """
     2049
     """
+
+  Scenario: Use a newline character in a string
+    Given a file named "main.tisp" with:
+    """
+    (write "Hello,\nworld!")
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    Hello,
+    world!
+    """

@@ -21,7 +21,7 @@ func TestGetRequests(t *testing.T) {
 
 	rc := make(chan string)
 	go func() {
-		r, err := http.Get("http://127.0.0.1:8080")
+		r, err := http.Get("http://127.0.0.1:8080/foo/bar?baz=123")
 
 		assert.Equal(t, nil, err)
 
@@ -36,11 +36,23 @@ func TestGetRequests(t *testing.T) {
 
 	assert.True(t, ok)
 
+	r := core.PApp(th, core.NewNumber(0))
+
+	testRequest(t, r)
+
 	th = core.PApp(
-		core.PApp(core.PApp(th, core.NewNumber(0)), core.NewString("respond")),
+		core.PApp(r, core.NewString("respond")),
 		core.NewString("Hello, world!"))
 
 	assert.Equal(t, core.Nil.Eval(), core.PApp(core.Pure, th).Eval())
 
 	assert.Equal(t, "Hello, world!", <-rc)
+}
+
+func testRequest(t *testing.T, th *core.Thunk) {
+	assert.Equal(t, core.NewString("").Eval(), core.PApp(th, core.NewString("body")).Eval())
+	assert.Equal(t, core.NewString("GET").Eval(), core.PApp(th, core.NewString("method")).Eval())
+	assert.Equal(t,
+		core.NewString("/foo/bar?baz=123").Eval(),
+		core.PApp(th, core.NewString("url")).Eval())
 }

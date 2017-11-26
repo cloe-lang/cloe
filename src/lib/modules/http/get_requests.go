@@ -1,6 +1,7 @@
 package http
 
 import (
+	"io/ioutil"
 	"net/http"
 	"sync"
 
@@ -59,15 +60,28 @@ func newHandler() handler {
 }
 
 func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	b, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		h.Requests <- httpError(err)
+		return
+	}
+
 	wg := sync.WaitGroup{}
 
 	wg.Add(1)
 
 	h.Requests <- core.NewDictionary(
 		[]core.Value{
+			core.NewString("body").Eval(),
+			core.NewString("method").Eval(),
+			core.NewString("url").Eval(),
 			core.NewString("respond").Eval(),
 		},
 		[]*core.Thunk{
+			core.NewString(string(b)),
+			core.NewString(r.Method),
+			core.NewString(r.URL.String()),
 			core.NewLazyFunction(
 				core.NewSignature([]string{"body"}, nil, "", nil, nil, ""),
 				func(ts ...*core.Thunk) core.Value {

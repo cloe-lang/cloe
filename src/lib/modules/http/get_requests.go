@@ -2,6 +2,7 @@ package http
 
 import (
 	"io/ioutil"
+	"math"
 	"net/http"
 	"sync"
 
@@ -83,11 +84,34 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			core.NewString(r.Method),
 			core.NewString(r.URL.String()),
 			core.NewLazyFunction(
-				core.NewSignature([]string{"body"}, nil, "", nil, nil, ""),
+				core.NewSignature(
+					nil,
+					[]core.OptionalArgument{
+						core.NewOptionalArgument("body", core.NewString("")),
+					}, "",
+					nil,
+					[]core.OptionalArgument{
+						core.NewOptionalArgument("status", core.NewNumber(200)),
+					},
+					"",
+				),
 				func(ts ...*core.Thunk) core.Value {
 					defer wg.Done()
 
-					v := ts[0].Eval()
+					v := ts[1].Eval()
+					n, ok := v.(core.NumberType)
+
+					if !ok {
+						return core.NotNumberError(v)
+					}
+
+					if math.Remainder(float64(n), 1) != 0 {
+						return core.NotIntError(n)
+					}
+
+					w.WriteHeader(int(n))
+
+					v = ts[0].Eval()
 					s, ok := v.(core.StringType)
 
 					if !ok {

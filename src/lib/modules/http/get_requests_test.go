@@ -23,11 +23,11 @@ func TestGetRequests(t *testing.T) {
 	go func() {
 		r, err := http.Get("http://127.0.0.1:8080/foo/bar?baz=123")
 
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 
 		bs, err := ioutil.ReadAll(r.Body)
 
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 
 		rc <- string(bs)
 	}()
@@ -55,4 +55,34 @@ func testRequest(t *testing.T, th *core.Thunk) {
 	assert.Equal(t,
 		core.NewString("/foo/bar?baz=123").Eval(),
 		core.PApp(th, core.NewString("url")).Eval())
+}
+
+func TestGetRequestsWithCustomStatus(t *testing.T) {
+	go systemt.RunDaemons()
+
+	th := core.PApp(getRequests, core.NewString(":8888"))
+
+	go th.Eval()
+	time.Sleep(100 * time.Millisecond)
+
+	status := make(chan int)
+	go func() {
+		r, err := http.Get("http://127.0.0.1:8888/foo/bar?baz=123")
+
+		assert.Nil(t, err)
+
+		status <- r.StatusCode
+	}()
+
+	th = core.App(
+		core.PApp(core.PApp(th, core.NewNumber(0)), core.NewString("respond")),
+		core.NewArguments(
+			nil,
+			[]core.KeywordArgument{
+				core.NewKeywordArgument("status", core.NewNumber(404)),
+			},
+			nil))
+
+	assert.Equal(t, core.Nil.Eval(), core.PApp(core.Pure, th).Eval())
+	assert.Equal(t, 404, <-status)
 }

@@ -2,7 +2,6 @@ package http
 
 import (
 	"io/ioutil"
-	"math"
 	"net/http"
 	"sync"
 
@@ -105,7 +104,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						return core.NotNumberError(v)
 					}
 
-					if math.Remainder(float64(n), 1) != 0 {
+					if float64(n) != float64(int(n)) {
 						return core.NotIntError(n)
 					}
 

@@ -17,6 +17,16 @@ Feature: HTTP
     When I successfully run `tisp main.tisp`
     Then the stdout should contain exactly "200"
 
+  Scenario: Send POST request
+    Given a file named "main.tisp" with:
+    """
+    (import "http")
+
+    (write ((http.Post "https://google.com" "Hello, world!") "status"))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly "405"
+
   Scenario: Run a server
     Given a file named "main.tisp" with:
     """

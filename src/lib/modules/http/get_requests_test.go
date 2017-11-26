@@ -37,7 +37,7 @@ func TestGetRequests(t *testing.T) {
 	assert.True(t, ok)
 
 	th = core.PApp(
-		core.PApp(core.PApp(th, core.NewNumber(0)), core.NewString("sendResponse")),
+		core.PApp(core.PApp(th, core.NewNumber(0)), core.NewString("respond")),
 		core.NewString("Hello, world!"))
 
 	assert.Equal(t, core.Nil.Eval(), core.PApp(core.Pure, th).Eval())

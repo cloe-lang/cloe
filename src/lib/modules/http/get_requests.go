@@ -65,7 +65,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	h.Requests <- core.NewDictionary(
 		[]core.Value{
-			core.NewString("sendResponse").Eval(),
+			core.NewString("respond").Eval(),
 		},
 		[]*core.Thunk{
 			core.NewLazyFunction(

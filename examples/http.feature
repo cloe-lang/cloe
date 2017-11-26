@@ -22,7 +22,7 @@ Feature: HTTP
     """
     (import "http")
 
-    ..(map (\ (r) ((r "sendResponse") "Hello, world!")) (http.GetRequests ":8080"))
+    ..(map (\ (r) ((r "respond") "Hello, world!")) (http.GetRequests ":8080"))
     """
     And a file named "main.sh" with:
     """

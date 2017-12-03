@@ -20,3 +20,10 @@ func TestErrorInvalidMessage(t *testing.T) {
 	err := PApp(Error, NewString("MyError"), Nil).Eval().(ErrorType)
 	assert.Equal(t, "TypeError", err.name)
 }
+
+func TestErrorName(t *testing.T) {
+	e, ok := NewError("foo", "bar").Eval().(ErrorType)
+
+	assert.True(t, ok)
+	assert.Equal(t, "foo", e.Name())
+}

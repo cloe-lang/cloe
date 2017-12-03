@@ -38,6 +38,11 @@ var Catch = NewLazyFunction(
 			[]*Thunk{NewString(err.name), NewString(err.message)})
 	})
 
+// Name returns a name of an error.
+func (e ErrorType) Name() string {
+	return e.name
+}
+
 // Lines returns multi-line string representation of an error which can be
 // printed as is to stdout or stderr.
 func (e ErrorType) Lines() string {

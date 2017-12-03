@@ -1,7 +1,6 @@
 package http
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -24,21 +23,21 @@ func TestGetWithInvalidArgument(t *testing.T) {
 	e, ok := core.PApp(get, core.Nil).Eval().(core.ErrorType)
 
 	assert.True(t, ok)
-	assert.True(t, strings.Contains(e.Error(), "TypeError"))
+	assert.Equal(t, "TypeError", e.Name())
 }
 
 func TestGetWithInvalidHost(t *testing.T) {
 	e, ok := core.PApp(get, core.NewString("http://hey-hey-i-am-invalid")).Eval().(core.ErrorType)
 
 	assert.True(t, ok)
-	assert.True(t, strings.Contains(e.Error(), "HTTPError"))
+	assert.Equal(t, "HTTPError", e.Name())
 }
 
 func TestGetWithInvalidPath(t *testing.T) {
 	e, ok := core.PApp(get, core.NewString("https://google.com/hey-google")).Eval().(core.ErrorType)
 
 	assert.True(t, ok)
-	assert.True(t, strings.Contains(e.Error(), "HTTPError"))
+	assert.Equal(t, "HTTPError", e.Name())
 }
 
 func TestGetWithInvalidPathButNoError(t *testing.T) {
@@ -73,5 +72,5 @@ func TestGetWithInvalidErrorArgument(t *testing.T) {
 			nil)).Eval().(core.ErrorType)
 
 	assert.True(t, ok)
-	assert.True(t, strings.Contains(e.Error(), "TypeError"))
+	assert.Equal(t, "TypeError", e.Name())
 }

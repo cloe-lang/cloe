@@ -1,7 +1,6 @@
 package http
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,12 +25,12 @@ func TestPostWithInvalidURL(t *testing.T) {
 	e, ok := core.PApp(post, core.Nil, core.NewString("")).Eval().(core.ErrorType)
 
 	assert.True(t, ok)
-	assert.True(t, strings.Contains(e.Error(), "TypeError"))
+	assert.Equal(t, "TypeError", e.Name())
 }
 
 func TestPostWithInvalidBody(t *testing.T) {
 	e, ok := core.PApp(post, core.NewString("https://google.com"), core.Nil).Eval().(core.ErrorType)
 
 	assert.True(t, ok)
-	assert.True(t, strings.Contains(e.Error(), "TypeError"))
+	assert.Equal(t, "TypeError", e.Name())
 }

@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"io/ioutil"
 	"net/http"
 
@@ -10,7 +11,7 @@ import (
 var get = core.NewLazyFunction(
 	core.NewSignature(
 		[]string{"url"}, nil, "",
-		nil, nil, "",
+		nil, []core.OptionalArgument{core.NewOptionalArgument("error", core.True)}, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
 		v := ts[0].Eval()
@@ -26,10 +27,21 @@ var get = core.NewLazyFunction(
 			return httpError(err)
 		}
 
-		b, err := ioutil.ReadAll(r.Body)
+		bs, err := ioutil.ReadAll(r.Body)
 
 		if err != nil {
 			return httpError(err)
+		}
+
+		v = ts[1].Eval()
+		b, ok := v.(core.BoolType)
+
+		if !ok {
+			return core.NotBoolError(v)
+		}
+
+		if b && r.StatusCode/100 != 2 {
+			return httpError(errors.New("status code is not 2XX"))
 		}
 
 		if err = r.Body.Close(); err != nil {
@@ -43,6 +55,6 @@ var get = core.NewLazyFunction(
 			},
 			[]*core.Thunk{
 				core.NewNumber(float64(r.StatusCode)),
-				core.NewString(string(b)),
+				core.NewString(string(bs)),
 			})
 	})

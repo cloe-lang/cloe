@@ -30,7 +30,7 @@ func TestPostWithInvalidURL(t *testing.T) {
 }
 
 func TestPostWithInvalidBody(t *testing.T) {
-	e, ok := core.PApp(post, core.NewString("https://google.com"), core.Nil).Eval().(core.ErrorType)
+	e, ok := core.PApp(post, core.NewString("http://httpbin.org"), core.Nil).Eval().(core.ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "TypeError", e.Name())

@@ -8,7 +8,7 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	th := core.PApp(get, core.NewString("https://google.com"))
+	th := core.PApp(get, core.NewString("http://httpbin.org"))
 	_, ok := th.Eval().(core.DictionaryType)
 
 	assert.True(t, ok)
@@ -34,7 +34,7 @@ func TestGetWithInvalidHost(t *testing.T) {
 }
 
 func TestGetWithInvalidPath(t *testing.T) {
-	e, ok := core.PApp(get, core.NewString("https://google.com/hey-google")).Eval().(core.ErrorType)
+	e, ok := core.PApp(get, core.NewString("http://httpbin.org/invalid-path")).Eval().(core.ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "HTTPError", e.Name())
@@ -45,7 +45,7 @@ func TestGetWithInvalidPathButNoError(t *testing.T) {
 		get,
 		core.NewArguments(
 			[]core.PositionalArgument{
-				core.NewPositionalArgument(core.NewString("https://google.com/hey-google"), false),
+				core.NewPositionalArgument(core.NewString("http://httpbin.org/invalid-path"), false),
 			},
 			[]core.KeywordArgument{
 				core.NewKeywordArgument("error", core.False)},
@@ -65,7 +65,7 @@ func TestGetWithInvalidErrorArgument(t *testing.T) {
 		get,
 		core.NewArguments(
 			[]core.PositionalArgument{
-				core.NewPositionalArgument(core.NewString("https://google.com/hey-google"), false),
+				core.NewPositionalArgument(core.NewString("http://httpbin.org/invalid-path"), false),
 			},
 			[]core.KeywordArgument{
 				core.NewKeywordArgument("error", core.Nil)},

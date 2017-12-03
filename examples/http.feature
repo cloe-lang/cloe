@@ -12,7 +12,7 @@ Feature: HTTP
     """
     (import "http")
 
-    (write ((http.Get "https://google.com") "status"))
+    (write ((http.Get "http://httpbin.org") "status"))
     """
     When I successfully run `tisp main.tisp`
     Then the stdout should contain exactly "200"

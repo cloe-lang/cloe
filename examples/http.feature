@@ -22,10 +22,10 @@ Feature: HTTP
     """
     (import "http")
 
-    (write ((http.Post "https://google.com" "Hello, world!") "status"))
+    (write ((http.Post "https://httpbin.org/post" "Hello, world!") "status"))
     """
     When I successfully run `tisp main.tisp`
-    Then the stdout should contain exactly "405"
+    Then the stdout should contain exactly "200"
 
   Scenario: Run a server
     Given a file named "main.tisp" with:

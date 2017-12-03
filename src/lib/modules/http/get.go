@@ -23,38 +23,42 @@ var get = core.NewLazyFunction(
 
 		r, err := http.Get(string(s))
 
-		if err != nil {
-			return httpError(err)
-		}
-
-		bs, err := ioutil.ReadAll(r.Body)
-
-		if err != nil {
-			return httpError(err)
-		}
-
-		v = ts[1].Eval()
-		b, ok := v.(core.BoolType)
-
-		if !ok {
-			return core.NotBoolError(v)
-		}
-
-		if b && r.StatusCode/100 != 2 {
-			return httpError(errors.New("status code is not 2XX"))
-		}
-
-		if err = r.Body.Close(); err != nil {
-			return httpError(err)
-		}
-
-		return core.NewDictionary(
-			[]core.Value{
-				core.NewString("status").Eval(),
-				core.NewString("body").Eval(),
-			},
-			[]*core.Thunk{
-				core.NewNumber(float64(r.StatusCode)),
-				core.NewString(string(bs)),
-			})
+		return handleMethodResult(r, err, ts[1])
 	})
+
+func handleMethodResult(r *http.Response, err error, errorOption *core.Thunk) core.Value {
+	if err != nil {
+		return httpError(err)
+	}
+
+	bs, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		return httpError(err)
+	}
+
+	v := errorOption.Eval()
+	b, ok := v.(core.BoolType)
+
+	if !ok {
+		return core.NotBoolError(v)
+	}
+
+	if b && r.StatusCode/100 != 2 {
+		return httpError(errors.New("status code is not 2XX"))
+	}
+
+	if err = r.Body.Close(); err != nil {
+		return httpError(err)
+	}
+
+	return core.NewDictionary(
+		[]core.Value{
+			core.NewString("status").Eval(),
+			core.NewString("body").Eval(),
+		},
+		[]*core.Thunk{
+			core.NewNumber(float64(r.StatusCode)),
+			core.NewString(string(bs)),
+		})
+}

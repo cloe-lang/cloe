@@ -8,12 +8,13 @@ import (
 )
 
 func TestPost(t *testing.T) {
-	th := core.PApp(post, core.NewString("https://google.com"), core.NewString(""))
+	th := core.PApp(post, core.NewString("http://httpbin.org/post"), core.NewString(""))
 	_, ok := th.Eval().(core.DictionaryType)
 
+	t.Log(th.Eval())
 	assert.True(t, ok)
 	assert.Equal(t,
-		405.0,
+		200.0,
 		float64(core.PApp(core.Index, th, core.NewString("status")).Eval().(core.NumberType)))
 
 	_, ok = core.PApp(core.Index, th, core.NewString("body")).Eval().(core.StringType)

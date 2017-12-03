@@ -1,7 +1,6 @@
 package http
 
 import (
-	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -14,6 +13,7 @@ var post = core.NewLazyFunction(
 		nil,
 		[]core.OptionalArgument{
 			core.NewOptionalArgument("contentType", core.NewString("text/plain")),
+			core.NewOptionalArgument("error", core.True),
 		},
 		"",
 	),
@@ -33,27 +33,5 @@ var post = core.NewLazyFunction(
 
 		r, err := http.Post(ss[0], ss[2], strings.NewReader(ss[1]))
 
-		if err != nil {
-			return httpError(err)
-		}
-
-		b, err := ioutil.ReadAll(r.Body)
-
-		if err != nil {
-			return httpError(err)
-		}
-
-		if err = r.Body.Close(); err != nil {
-			return httpError(err)
-		}
-
-		return core.NewDictionary(
-			[]core.Value{
-				core.NewString("status").Eval(),
-				core.NewString("body").Eval(),
-			},
-			[]*core.Thunk{
-				core.NewNumber(float64(r.StatusCode)),
-				core.NewString(string(b)),
-			})
+		return handleMethodResult(r, err, ts[3])
 	})

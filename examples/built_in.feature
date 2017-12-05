@@ -35,3 +35,20 @@ Feature: Built-in functions
     """
     [1 4 9]
     """
+
+  Scenario: Calculate indices of elements in a list
+    Given a file named "main.tisp" with:
+    """
+    (let l [1 2 3 42 -3 "foo"])
+    (seq
+      (write (indexOf l 42))
+      (write (indexOf l 2))
+      (write (indexOf l "foo")))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    3
+    1
+    5
+    """

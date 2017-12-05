@@ -1,8 +1,6 @@
 package compile
 
 import (
-	"strings"
-
 	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/scalar"
 	"github.com/tisp-lang/tisp/src/lib/std"
@@ -79,19 +77,16 @@ func builtins() environment {
 	e := goBuiltins.copy()
 
 	for n, t := range subModule(goBuiltins.copy(), "<builtins>", `
-		(def (List ..xs) xs)
+		(def (list ..xs) xs)
 
-		(def (indexOf list elem index)
+		(def (indexOf list elem . (index 0))
 			(match list
 				[] (error "ElementNotFoundError" "Could not find an element in a list")
-				[first ..rest] (if (= first elem) index (indexOf rest elem (+ index 1)))))
+				[first ..rest] (if (= first elem) index (indexOf rest elem . index (+ index 1)))))
 
-		(def (IndexOf list elem) (indexOf list elem 0))
-
-		(def (Map f l)
-			(if (= l (List)) (List) (prepend (f (first l)) (Map f (rest l)))))
+		(def (map f l)
+			(if (= l (list)) (list) (prepend (f (first l)) (map f (rest l)))))
 	`) {
-		n := strings.ToLower(n[:1]) + n[1:]
 		e.set(n, t)
 		e.set("$"+n, t)
 	}

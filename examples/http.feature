@@ -12,7 +12,7 @@ Feature: HTTP
     """
     (import "http")
 
-    (write ((http.Get "http://httpbin.org") "status"))
+    (write ((http.get "http://httpbin.org") "status"))
     """
     When I successfully run `tisp main.tisp`
     Then the stdout should contain exactly "200"
@@ -22,7 +22,7 @@ Feature: HTTP
     """
     (import "http")
 
-    (write ((http.Post "https://httpbin.org/post" "Hello, world!") "status"))
+    (write ((http.post "https://httpbin.org/post" "Hello, world!") "status"))
     """
     When I successfully run `tisp main.tisp`
     Then the stdout should contain exactly "200"
@@ -32,7 +32,7 @@ Feature: HTTP
     """
     (import "http")
 
-    ..(map (\ (r) ((r "respond") "Hello, world!")) (http.GetRequests ":8080"))
+    ..(map (\ (r) ((r "respond") "Hello, world!")) (http.getRequests ":8080"))
     """
     And a file named "main.sh" with:
     """

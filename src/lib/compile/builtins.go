@@ -76,19 +76,24 @@ var goBuiltins = func() environment {
 func builtins() environment {
 	e := goBuiltins.copy()
 
-	for n, t := range subModule(goBuiltins.copy(), "<builtins>", `
-		(def (list ..xs) xs)
+	for _, s := range []string{
+		`
+			(def (list ..xs) xs)
+		`,
+		`
+			(def (indexOf list elem . (index 0))
+				(match list
+					[] (error "ElementNotFoundError" "Could not find an element in a list")
+					[first ..rest] (if (= first elem) index (indexOf rest elem . index (+ index 1)))))
 
-		(def (indexOf list elem . (index 0))
-			(match list
-				[] (error "ElementNotFoundError" "Could not find an element in a list")
-				[first ..rest] (if (= first elem) index (indexOf rest elem . index (+ index 1)))))
-
-		(def (map f l)
-			(if (= l (list)) (list) (prepend (f (first l)) (map f (rest l)))))
-	`) {
-		e.set(n, t)
-		e.set("$"+n, t)
+			(def (map f l)
+				(if (= l []) [] (prepend (f (first l)) (map f (rest l)))))
+		`,
+	} {
+		for n, t := range subModule(e.copy(), "<builtins>", s) {
+			e.set(n, t)
+			e.set("$"+n, t)
+		}
 	}
 
 	return e

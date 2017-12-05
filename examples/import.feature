@@ -8,7 +8,9 @@ Feature: Import statement
     And a file named "mod.tisp" with:
     """
     (def (map func list)
-         (if (= list []) [] (prepend (func (first list)) (map func (rest list)))))
+        (match list
+            [] []
+            [first ..rest] (prepend (func first) (map func rest))))
     """
     When I successfully run `tisp main.tisp`
     Then the stdout should contain exactly:

@@ -86,8 +86,10 @@ func builtins() environment {
 					[] (error "ElementNotFoundError" "Could not find an element in a list")
 					[first ..rest] (if (= first elem) index (indexOf rest elem . index (+ index 1)))))
 
-			(def (map f l)
-				(if (= l []) [] (prepend (f (first l)) (map f (rest l)))))
+			(def (map func list)
+				(match list
+					[] []
+					[first ..rest] (prepend (func first) (map func rest))))
 		`,
 	} {
 		for n, t := range subModule(e.copy(), "<builtins>", s) {

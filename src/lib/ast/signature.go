@@ -1,7 +1,6 @@
 package ast
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -102,5 +101,11 @@ func (hs halfSignature) String() string {
 }
 
 func (s Signature) String() string {
-	return fmt.Sprintf("%v %v", s.positionals, s.keywords)
+	str := s.positionals.String()
+
+	if ks := s.keywords.String(); ks != "" {
+		str += " " + ks
+	}
+
+	return str
 }

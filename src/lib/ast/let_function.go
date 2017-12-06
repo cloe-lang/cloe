@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/kr/text"
 	"github.com/tisp-lang/tisp/src/lib/debug"
 )
 
@@ -52,8 +53,8 @@ func (f LetFunction) String() string {
 	ss := make([]string, 0, len(f.lets))
 
 	for _, l := range f.lets {
-		ss = append(ss, fmt.Sprintf("%v", l))
+		ss = append(ss, text.Indent(l.(fmt.Stringer).String(), "\t"))
 	}
 
-	return fmt.Sprintf("(let (%v %v) %v %v)", f.name, f.signature, strings.Join(ss, " "), f.body)
+	return fmt.Sprintf("(def (%v %v)\n%v\t%v)\n", f.name, f.signature, strings.Join(ss, " "), f.body)
 }

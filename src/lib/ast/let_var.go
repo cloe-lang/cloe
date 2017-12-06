@@ -24,5 +24,5 @@ func (v LetVar) Expr() interface{} {
 }
 
 func (v LetVar) String() string {
-	return fmt.Sprintf("(let %v %v)", v.name, v.expr)
+	return fmt.Sprintf("(let %v %v)\n", v.name, v.expr)
 }

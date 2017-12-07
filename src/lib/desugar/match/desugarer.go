@@ -143,13 +143,6 @@ func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {
 func getPatternType(p interface{}) patternType {
 	switch x := p.(type) {
 	case string:
-		switch x {
-		case consts.Names.EmptyList:
-			return listPattern
-		case consts.Names.EmptyDictionary:
-			return dictPattern
-		}
-
 		if scalar.Defined(x) {
 			return scalarPattern
 		}

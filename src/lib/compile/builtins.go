@@ -1,9 +1,9 @@
 package compile
 
 import (
+	"github.com/tisp-lang/tisp/src/lib/builtins"
 	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/scalar"
-	"github.com/tisp-lang/tisp/src/lib/std"
 )
 
 var goBuiltins = func() environment {
@@ -32,11 +32,11 @@ var goBuiltins = func() environment {
 		{"mod", core.Mod},
 		{"**", core.Pow},
 
-		{"=", std.Equal},
-		{"<", std.Less},
-		{"<=", std.LessEq},
-		{">", std.Greater},
-		{">=", std.GreaterEq},
+		{"=", builtins.Equal},
+		{"<", builtins.Less},
+		{"<=", builtins.LessEq},
+		{">", builtins.Greater},
+		{">=", builtins.GreaterEq},
 
 		{"toStr", core.ToString},
 		{"dump", core.Dump},
@@ -48,18 +48,18 @@ var goBuiltins = func() environment {
 		{"size", core.Size},
 		{"toList", core.ToList},
 
-		{"dict", std.Dictionary},
+		{"dict", builtins.Dictionary},
 		{"error", core.Error},
 
-		{"y", std.Y},
-		{"ys", std.Ys},
+		{"y", builtins.Y},
+		{"ys", builtins.Ys},
 
-		{"par", std.Par},
-		{"seq", std.Seq},
-		{"rally", std.Rally},
+		{"par", builtins.Par},
+		{"seq", builtins.Seq},
+		{"rally", builtins.Rally},
 
-		{"read", std.Read},
-		{"write", std.Write},
+		{"read", builtins.Read},
+		{"write", builtins.Write},
 
 		{"matchError", core.NewError("MatchError", "A value didn't match with any pattern.")},
 		{"catch", core.Catch},
@@ -73,7 +73,7 @@ var goBuiltins = func() environment {
 	return e
 }()
 
-func builtins() environment {
+func builtinsEnvironment() environment {
 	e := goBuiltins.copy()
 
 	for _, s := range []string{

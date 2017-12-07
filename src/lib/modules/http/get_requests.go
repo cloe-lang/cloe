@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"sync"
 
+	"github.com/tisp-lang/tisp/src/lib/builtins"
 	"github.com/tisp-lang/tisp/src/lib/core"
-	"github.com/tisp-lang/tisp/src/lib/std"
 	"github.com/tisp-lang/tisp/src/lib/systemt"
 )
 
@@ -35,7 +35,7 @@ var getRequests = core.NewLazyFunction(
 			}
 		})
 
-		return core.PApp(core.PApp(std.Y, core.NewLazyFunction(
+		return core.PApp(core.PApp(builtins.Y, core.NewLazyFunction(
 			core.NewSignature([]string{"me"}, nil, "", nil, nil, ""),
 			func(ts ...*core.Thunk) core.Value {
 				select {

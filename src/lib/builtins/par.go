@@ -1,4 +1,4 @@
-package std
+package builtins
 
 import (
 	"github.com/tisp-lang/tisp/src/lib/core"

@@ -131,3 +131,15 @@ Feature: Match expression
     """
     Matched!
     """
+
+  Scenario: Match an invalid list with a valid pattern
+    Given a file named "main.tisp" with:
+    """
+    (write (match (prepend "Matched!" {})
+      [x ..xs] x))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    Matched!
+    """

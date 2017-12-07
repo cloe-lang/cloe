@@ -104,7 +104,7 @@ func (s Signature) String() string {
 	str := s.positionals.String()
 
 	if ks := s.keywords.String(); ks != "" {
-		str += " " + ks
+		str += " . " + ks
 	}
 
 	return str

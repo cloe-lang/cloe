@@ -199,12 +199,13 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 	gs := []group{}
 	first := d.matchedApp("$first", list)
 	rest := d.matchedApp("$rest", list)
+	emptyCase := (interface{})(nil)
 
 	for i, c := range cs {
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
 
 		if len(ps) == 0 {
-			dc = d.resultApp("$if", app("$=", list, consts.Names.EmptyList), c.Value(), dc)
+			emptyCase = c.Value()
 			continue
 		}
 
@@ -233,7 +234,7 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 			dc = d.defaultCaseOfGeneralNamePattern(
 				first,
 				v,
-				d.desugarCases(rest, []ast.MatchCase{c}, dc),
+				d.desugarListCases(rest, []ast.MatchCase{c}, dc),
 				dc)
 			break
 		}
@@ -259,7 +260,13 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 		cs = append(cs, ast.NewMatchCase(g.first, d.desugarCases(rest, g.cases, dc)))
 	}
 
-	return d.desugarCases(first, cs, dc)
+	r := d.desugarCases(first, cs, dc)
+
+	if emptyCase == nil {
+		return r
+	}
+
+	return d.resultApp("$if", app("$=", list, consts.Names.EmptyList), emptyCase, r)
 }
 
 func (d *desugarer) ifType(v interface{}, t string, then, els interface{}) interface{} {

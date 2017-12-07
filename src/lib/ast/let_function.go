@@ -56,5 +56,5 @@ func (f LetFunction) String() string {
 		ss = append(ss, text.Indent(l.(fmt.Stringer).String(), "\t"))
 	}
 
-	return fmt.Sprintf("(def (%v %v)\n%v\t%v)\n", f.name, f.signature, strings.Join(ss, " "), f.body)
+	return fmt.Sprintf("(def (%v %v)\n%v\t%v)\n", f.name, f.signature, strings.Join(ss, ""), f.body)
 }

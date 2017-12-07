@@ -5,6 +5,7 @@ import "github.com/tisp-lang/tisp/src/lib/desugar/match"
 // Desugar desugars a module of statements in AST.
 func Desugar(ss []interface{}) []interface{} {
 	for _, f := range []func(interface{}) []interface{}{
+		desugarEmptyCollection,
 		desugarDictionaryExpansion,
 		desugarRecursiveLetVar,
 		desugarAnonymousFunctions,

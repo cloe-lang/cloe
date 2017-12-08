@@ -96,7 +96,19 @@ var Rest = NewLazyFunction(
 			return emptyListError()
 		}
 
-		return l.rest
+		return PApp(
+			NewLazyFunction(
+				NewSignature(nil, nil, "", nil, nil, ""),
+				func(...*Thunk) Value {
+					v := l.rest.Eval()
+					l, ok := v.(ListType)
+
+					if !ok {
+						return NotListError(v)
+					}
+
+					return l
+				}))
 	})
 
 var appendFuncSignature = NewSignature([]string{"list"}, nil, "elems", nil, nil, "")

@@ -49,6 +49,14 @@ func TestListPrepend(t *testing.T) {
 	}
 }
 
+func TestListRestWithNonListValues(t *testing.T) {
+	for _, th := range []*Thunk{Nil, EmptyDictionary, NewNumber(100)} {
+		assert.Equal(t, "TypeError", PApp(Rest, th).Eval().(ErrorType).Name())
+	}
+
+	assert.Equal(t, "ValueError", PApp(Rest, ValueError("No way!")).Eval().(ErrorType).Name())
+}
+
 func TestListAppend(t *testing.T) {
 	for _, tss := range [][2][]*Thunk{
 		{{}, {True}},

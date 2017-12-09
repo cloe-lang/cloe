@@ -16,18 +16,19 @@ func Compile(path string) []Effect {
 		panic(err)
 	}
 
-	c := newCompiler(builtinsEnvironment(), nil)
+	c := newCompiler(builtinsEnvironment(), newModulesCache())
 	return c.compile(desugar.Desugar(module))
 }
 
-func subModule(path string) module {
+func (c *compiler) subModule(path string) module {
 	module, err := parse.SubModule(readFileOrStdin(path))
 
 	if err != nil {
 		panic(err)
 	}
 
-	c := newCompiler(builtinsEnvironment(), nil)
+	cc := newCompiler(builtinsEnvironment(), c.cache)
+	c = &cc
 	c.compile(desugar.Desugar(module))
 
 	return c.env.toMap()

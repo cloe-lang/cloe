@@ -37,3 +37,30 @@ Feature: Import statement
     """
     Hello, world!
     """
+
+  Scenario: Print values in cached modules
+    Given a file named "main.tisp" with:
+    """
+    (import "./mod1")
+    (import "./mod2")
+
+    (seq
+      (write mod1.stdin . end "")
+      (write mod2.stdin . end ""))
+    """
+    And a file named "mod1.tisp" with:
+    """
+    (import "./mod2")
+
+    (let stdin mod2.stdin)
+    """
+    And a file named "mod2.tisp" with:
+    """
+    (let stdin (read))
+    """
+    When I successfully run `sh -c 'echo Hello | tisp main.tisp'`
+    Then the stdout should contain exactly:
+    """
+    Hello
+    Hello
+    """

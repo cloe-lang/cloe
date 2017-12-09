@@ -7,13 +7,13 @@ import (
 )
 
 type environment struct {
-	me       map[string]*core.Thunk
+	me       module
 	fallback func(string) (*core.Thunk, error)
 }
 
 func newEnvironment(fallback func(string) (*core.Thunk, error)) environment {
 	return environment{
-		me:       make(map[string]*core.Thunk),
+		me:       make(module),
 		fallback: fallback,
 	}
 }
@@ -36,12 +36,12 @@ func (e environment) get(s string) *core.Thunk {
 	panic(fmt.Errorf("The name, %s is not found", s))
 }
 
-func (e environment) toMap() map[string]*core.Thunk {
+func (e environment) toMap() module {
 	return e.me
 }
 
 func (e environment) copy() environment {
-	m := make(map[string]*core.Thunk, len(e.me))
+	m := make(module, len(e.me))
 
 	for k, v := range e.me {
 		m[k] = v

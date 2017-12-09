@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/desugar"
 	"github.com/tisp-lang/tisp/src/lib/parse"
 )
@@ -22,12 +21,12 @@ func MainModule(path string) []Effect {
 }
 
 // SubModule compiles a sub module of a path into a map of names to thunks.
-func SubModule(path string) map[string]*core.Thunk {
+func SubModule(path string) module {
 	f, s := readFileOrStdin(path)
 	return subModule(builtinsEnvironment(), f, s)
 }
 
-func subModule(e environment, filename, source string) map[string]*core.Thunk {
+func subModule(e environment, filename, source string) module {
 	module, err := parse.SubModule(filename, source)
 
 	if err != nil {

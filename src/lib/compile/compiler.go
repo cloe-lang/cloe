@@ -11,11 +11,12 @@ import (
 )
 
 type compiler struct {
-	env environment
+	env   environment
+	cache modulesCache
 }
 
-func newCompiler(e environment) compiler {
-	return compiler{e}
+func newCompiler(e environment, c modulesCache) compiler {
+	return compiler{e, c}
 }
 
 func (c *compiler) compile(module []interface{}) []Effect {
@@ -49,7 +50,16 @@ func (c *compiler) compile(module []interface{}) []Effect {
 		case ast.Import:
 			m, ok := modules.Modules[x.Path()]
 
-			if !ok {
+			if !ok && c.cache != nil {
+				if cm, cached, err := c.cache.Get(x.Path()); err != nil {
+					panic(err)
+				} else if cached {
+					m = cm
+				} else {
+					m = SubModule(x.Path() + ".tisp")
+					c.cache.Set(x.Path(), m)
+				}
+			} else if !ok {
 				m = SubModule(x.Path() + ".tisp")
 			}
 

@@ -16,7 +16,7 @@ func MainModule(path string) []Effect {
 		panic(err)
 	}
 
-	c := newCompiler(builtinsEnvironment())
+	c := newCompiler(builtinsEnvironment(), nil)
 	return c.compile(desugar.Desugar(module))
 }
 
@@ -33,7 +33,7 @@ func subModule(e environment, filename, source string) module {
 		panic(err)
 	}
 
-	c := newCompiler(e)
+	c := newCompiler(e, nil)
 	c.compile(desugar.Desugar(module))
 
 	return c.env.toMap()

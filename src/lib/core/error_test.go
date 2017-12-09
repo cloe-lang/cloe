@@ -27,3 +27,11 @@ func TestErrorName(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, "foo", e.Name())
 }
+
+func TestErrorCatch(t *testing.T) {
+	_, ok := PApp(Catch, NewError("foo", "bar")).Eval().(DictionaryType)
+	assert.True(t, ok)
+
+	_, ok = PApp(Catch, Nil).Eval().(NilType)
+	assert.True(t, ok)
+}

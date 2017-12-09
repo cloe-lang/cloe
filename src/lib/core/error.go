@@ -30,7 +30,7 @@ var Catch = NewLazyFunction(
 		err, ok := v.(ErrorType)
 
 		if !ok {
-			return TypeError(v, "error")
+			return Nil
 		}
 
 		return NewDictionary(

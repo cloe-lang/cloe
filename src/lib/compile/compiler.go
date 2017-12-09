@@ -57,7 +57,10 @@ func (c *compiler) compile(module []interface{}) []Effect {
 					m = cm
 				} else {
 					m = subModule(x.Path() + ".tisp")
-					c.cache.Set(x.Path(), m)
+
+					if err := c.cache.Set(x.Path(), m); err != nil {
+						panic(err)
+					}
 				}
 			} else if !ok {
 				m = subModule(x.Path() + ".tisp")

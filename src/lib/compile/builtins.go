@@ -3,6 +3,8 @@ package compile
 import (
 	"github.com/tisp-lang/tisp/src/lib/builtins"
 	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/tisp-lang/tisp/src/lib/desugar"
+	"github.com/tisp-lang/tisp/src/lib/parse"
 	"github.com/tisp-lang/tisp/src/lib/scalar"
 )
 
@@ -92,11 +94,24 @@ func builtinsEnvironment() environment {
 					[first ..rest] (prepend (func first) (map func rest))))
 		`,
 	} {
-		for n, t := range subModule(e.copy(), "<builtins>", s) {
+		for n, t := range compileBuiltinModule(e.copy(), "<builtins>", s) {
 			e.set(n, t)
 			e.set("$"+n, t)
 		}
 	}
 
 	return e
+}
+
+func compileBuiltinModule(e environment, path, source string) module {
+	m, err := parse.SubModule(path, source)
+
+	if err != nil {
+		panic(err)
+	}
+
+	c := newCompiler(e, nil)
+	c.compile(desugar.Desugar(m))
+
+	return c.env.toMap()
 }

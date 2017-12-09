@@ -8,8 +8,8 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/parse"
 )
 
-// MainModule compiles a main module of a path into effects of thunks.
-func MainModule(path string) []Effect {
+// Compile compiles a main module of a path into effects of thunks.
+func Compile(path string) []Effect {
 	module, err := parse.MainModule(readFileOrStdin(path))
 
 	if err != nil {

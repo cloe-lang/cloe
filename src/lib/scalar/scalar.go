@@ -8,13 +8,23 @@ import (
 	"github.com/tisp-lang/tisp/src/lib/core"
 )
 
-var predefined = map[string]*core.Thunk{
-	"true":  core.True,
-	"false": core.False,
-	"nil":   core.Nil,
-	consts.Names.EmptyList:       core.EmptyList,
-	consts.Names.EmptyDictionary: core.EmptyDictionary,
-}
+var predefined = func() map[string]*core.Thunk {
+	m := map[string]*core.Thunk{
+		"true":  core.True,
+		"false": core.False,
+		"nil":   core.Nil,
+		consts.Names.EmptyList:       core.EmptyList,
+		consts.Names.EmptyDictionary: core.EmptyDictionary,
+	}
+
+	for k, v := range m {
+		if k[:1] != "$" {
+			m["$"+k] = v
+		}
+	}
+
+	return m
+}()
 
 // Convert converts a string into a scalar value of a number, string, bool, or
 // nil.

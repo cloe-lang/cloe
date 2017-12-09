@@ -90,7 +90,7 @@ func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
 		gensym.GenSym(),
 		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
 		d.takeLets(),
-		body,
+		app("$if", app("$=", app("$catch", arg), "$nil"), body, arg),
 		debug.NewGoInfo(0))
 
 	d.lets = append(d.lets, f)

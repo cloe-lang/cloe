@@ -37,3 +37,11 @@ Feature: Error
     When I successfully run `tisp main.tisp`
     Then the stdout should contain "name"
     And the stdout should contain "message"
+
+  Scenario: Catch an error passed by match expression
+    Given a file named "main.tisp" with:
+    """
+    (write ((catch (match (error "FooError" "") x (error "BarError" ""))) "name"))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain "FooError"

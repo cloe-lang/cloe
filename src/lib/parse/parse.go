@@ -53,7 +53,7 @@ func SubModule(file, source string) ([]interface{}, error) {
 }
 
 func (s *state) mainModule() comb.Parser {
-	return s.module(s.importModule(), s.let(), s.effect())
+	return s.Prefix(s.Maybe(s.shebang()), s.module(s.importModule(), s.let(), s.effect()))
 }
 
 func (s *state) subModule() comb.Parser {
@@ -433,4 +433,8 @@ func (s *state) exhaust(p comb.Parser) comb.Parser {
 	return s.Exhaust(p, func(s comb.State) error {
 		return fmt.Errorf("SyntaxError:%d:%d:\t%s", s.LineNumber(), s.LinePosition(), s.Line())
 	})
+}
+
+func (s *state) shebang() comb.Parser {
+	return s.Wrap(s.String("#!"), s.Many(s.NotChar('\n')), s.String("\n"))
 }

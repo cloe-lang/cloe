@@ -19,3 +19,14 @@ Feature: Others
     """
     Hello, world!
     """
+
+  Scenario: Run Tisp script with shebang
+    Given a file named "main.tisp" with mode "0755" and with:
+    """
+    #!/usr/bin/env tisp
+
+    (write "Hello, world!")
+    """
+    When I successfully run `sh -c ./main.tisp`
+    Then the stdout should contain exactly "Hello, world!"
+

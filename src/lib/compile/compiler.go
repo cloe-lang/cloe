@@ -56,11 +56,11 @@ func (c *compiler) compile(module []interface{}) []Effect {
 				} else if cached {
 					m = cm
 				} else {
-					m = SubModule(x.Path() + ".tisp")
+					m = subModule(x.Path() + ".tisp")
 					c.cache.Set(x.Path(), m)
 				}
 			} else if !ok {
-				m = SubModule(x.Path() + ".tisp")
+				m = subModule(x.Path() + ".tisp")
 			}
 
 			for k, v := range m {

@@ -20,20 +20,14 @@ func MainModule(path string) []Effect {
 	return c.compile(desugar.Desugar(module))
 }
 
-// SubModule compiles a sub module of a path into a map of names to thunks.
-func SubModule(path string) module {
-	f, s := readFileOrStdin(path)
-	return subModule(builtinsEnvironment(), f, s)
-}
-
-func subModule(e environment, filename, source string) module {
-	module, err := parse.SubModule(filename, source)
+func subModule(path string) module {
+	module, err := parse.SubModule(readFileOrStdin(path))
 
 	if err != nil {
 		panic(err)
 	}
 
-	c := newCompiler(e, nil)
+	c := newCompiler(builtinsEnvironment(), nil)
 	c.compile(desugar.Desugar(module))
 
 	return c.env.toMap()

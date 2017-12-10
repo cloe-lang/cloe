@@ -103,7 +103,11 @@ func (c *compiler) compileSubModule(path string) (module, error) {
 
 	cc := newCompiler(builtinsEnvironment(), c.cache)
 	c = &cc
-	c.compileModule(desugar.Desugar(m))
+	_, err = c.compileModule(desugar.Desugar(m))
+
+	if err != nil {
+		return nil, err
+	}
 
 	return c.env.toMap(), nil
 }

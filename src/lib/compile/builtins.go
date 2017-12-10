@@ -111,7 +111,12 @@ func compileBuiltinModule(e environment, path, source string) module {
 	}
 
 	c := newCompiler(e, nil)
-	c.compileModule(desugar.Desugar(m))
+
+	_, err = c.compileModule(desugar.Desugar(m))
+
+	if err != nil {
+		panic(err)
+	}
 
 	return c.env.toMap()
 }

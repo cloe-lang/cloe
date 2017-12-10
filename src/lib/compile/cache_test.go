@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewModulesCache(t *testing.T) {
-	newModulesCache()
+	assert.NotEqual(t, module(nil), newModulesCache())
 }
 
 func TestModulesSet(t *testing.T) {

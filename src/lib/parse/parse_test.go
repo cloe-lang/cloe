@@ -263,11 +263,3 @@ func TestBlank(t *testing.T) {
 func newStateWithoutFile(source string) *state {
 	return newState("", source)
 }
-
-func TestUnquoteStringFail(t *testing.T) {
-	defer func() {
-		assert.NotEqual(t, nil, recover())
-	}()
-
-	unquoteString("foo")
-}

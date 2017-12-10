@@ -1,8 +1,6 @@
 package ir
 
 import (
-	"fmt"
-
 	"github.com/tisp-lang/tisp/src/lib/core"
 )
 
@@ -17,7 +15,7 @@ type Switch struct {
 // NewSwitch creates a switch expression.
 func NewSwitch(m interface{}, cs []Case, d interface{}) Switch {
 	if d == nil {
-		panic(fmt.Errorf("Default cases must be provided in switch expressions"))
+		panic("Default cases must be provided in switch expressions")
 	}
 
 	vs := make([]interface{}, 0, len(cs))

@@ -13,7 +13,7 @@ type environment struct {
 
 func newEnvironment(fallback func(string) (*core.Thunk, error)) environment {
 	return environment{
-		me:       make(module),
+		me:       module{},
 		fallback: fallback,
 	}
 }

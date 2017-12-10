@@ -66,10 +66,10 @@ var Write = core.NewStrictFunction(
 			return core.NotListError(v)
 		}
 
-		elems, err := l.ToValues()
+		elems, e := l.ToValues()
 
-		if err != nil {
-			return err
+		if e != nil {
+			return e
 		}
 
 		ss := make([]string, 0, len(elems))
@@ -131,7 +131,11 @@ var Write = core.NewStrictFunction(
 				s)
 		}
 
-		fmt.Fprint(file, strings.Join(ss, options[0])+options[1])
+		_, err := fmt.Fprint(file, strings.Join(ss, options[0])+options[1])
+
+		if err != nil {
+			return core.EffectError(err.Error())
+		}
 
 		return core.NewEffect(core.Nil)
 	})

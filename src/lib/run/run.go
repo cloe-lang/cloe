@@ -70,6 +70,11 @@ func runEffect(t *core.Thunk, wg *sync.WaitGroup, fail func(error)) {
 }
 
 func fail(err error) {
-	fmt.Fprint(os.Stderr, err)
+	_, err = fmt.Fprint(os.Stderr, err)
+
+	if err != nil {
+		panic(err)
+	}
+
 	os.Exit(1)
 }

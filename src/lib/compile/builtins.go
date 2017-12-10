@@ -111,7 +111,7 @@ func compileBuiltinModule(e environment, path, source string) module {
 	}
 
 	c := newCompiler(e, nil)
-	c.compile(desugar.Desugar(m))
+	c.compileModule(desugar.Desugar(m))
 
 	return c.env.toMap()
 }

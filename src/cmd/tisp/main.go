@@ -47,7 +47,13 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	run.Run(compile.Compile(args["<filename>"].(string)))
+	es, err := compile.Compile(args["<filename>"].(string))
+
+	if err != nil {
+		panic(err)
+	}
+
+	run.Run(es)
 }
 
 func getArgs() map[string]interface{} {

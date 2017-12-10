@@ -6,8 +6,10 @@ import (
 
 	"github.com/tisp-lang/tisp/src/lib/ast"
 	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/tisp-lang/tisp/src/lib/desugar"
 	"github.com/tisp-lang/tisp/src/lib/ir"
 	"github.com/tisp-lang/tisp/src/lib/modules"
+	"github.com/tisp-lang/tisp/src/lib/parse"
 )
 
 type compiler struct {
@@ -19,10 +21,11 @@ func newCompiler(e environment, c modulesCache) compiler {
 	return compiler{e, c}
 }
 
-func (c *compiler) compile(module []interface{}) []Effect {
-	effects := make([]Effect, 0)
+func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
+	var err error
+	es := []Effect{}
 
-	for _, s := range module {
+	for _, s := range m {
 		switch x := s.(type) {
 		case ast.LetVar:
 			c.env.set(x.Name(), c.exprToThunk(x.Expr()))
@@ -46,24 +49,32 @@ func (c *compiler) compile(module []interface{}) []Effect {
 					vars,
 					c.exprToIR(varToIndex, x.Body())))
 		case ast.Effect:
-			effects = append(effects, NewEffect(c.exprToThunk(x.Expr()), x.Expanded()))
+			es = append(es, NewEffect(c.exprToThunk(x.Expr()), x.Expanded()))
 		case ast.Import:
 			m, ok := modules.Modules[x.Path()]
 
 			if !ok && c.cache != nil {
 				if cm, cached, err := c.cache.Get(x.Path()); err != nil {
-					panic(err)
+					return nil, err
 				} else if cached {
 					m = cm
 				} else {
-					m = c.subModule(x.Path() + ".tisp")
+					m, err = c.compileSubModule(x.Path() + ".tisp")
+
+					if err != nil {
+						return nil, err
+					}
 
 					if err := c.cache.Set(x.Path(), m); err != nil {
-						panic(err)
+						return nil, err
 					}
 				}
 			} else if !ok {
-				m = c.subModule(x.Path() + ".tisp")
+				m, err = c.compileSubModule(x.Path() + ".tisp")
+
+				if err != nil {
+					return nil, err
+				}
 			}
 
 			for k, v := range m {
@@ -74,7 +85,27 @@ func (c *compiler) compile(module []interface{}) []Effect {
 		}
 	}
 
-	return effects
+	return es, nil
+}
+
+func (c *compiler) compileSubModule(path string) (module, error) {
+	p, s, err := readFileOrStdin(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	m, err := parse.SubModule(p, s)
+
+	if err != nil {
+		return nil, err
+	}
+
+	cc := newCompiler(builtinsEnvironment(), c.cache)
+	c = &cc
+	c.compileModule(desugar.Desugar(m))
+
+	return c.env.toMap(), nil
 }
 
 func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {

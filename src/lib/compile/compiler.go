@@ -5,6 +5,7 @@ import (
 	"path"
 
 	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/tisp-lang/tisp/src/lib/consts"
 	"github.com/tisp-lang/tisp/src/lib/core"
 	"github.com/tisp-lang/tisp/src/lib/desugar"
 	"github.com/tisp-lang/tisp/src/lib/ir"
@@ -59,7 +60,7 @@ func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
 				} else if cached {
 					m = cm
 				} else {
-					m, err = c.compileSubModule(x.Path() + ".tisp")
+					m, err = c.compileSubModule(x.Path() + consts.FileExtension)
 
 					if err != nil {
 						return nil, err
@@ -70,7 +71,7 @@ func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
 					}
 				}
 			} else if !ok {
-				m, err = c.compileSubModule(x.Path() + ".tisp")
+				m, err = c.compileSubModule(x.Path() + consts.FileExtension)
 
 				if err != nil {
 					return nil, err

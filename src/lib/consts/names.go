@@ -12,3 +12,6 @@ var Names = struct {
 	EmptyList:          "$emptyList",
 	ListFunction:       "$list",
 }
+
+// FileExtension is a file extension of the language.
+const FileExtension = ".tisp"

@@ -8,7 +8,7 @@
 [![Google group](https://img.shields.io/badge/join-us-ff69b4.svg?style=flat-square)](https://groups.google.com/forum/#!forum/tisp-aliens)
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/tisp-lang/icon/master/shadowed.png" alt="logo"/>
+  <img src="https://raw.githubusercontent.com/tisp-lang/icon/master/icon.png" alt="logo"/>
 </div>
 
 Tisp is a "Time is Space" programming language.

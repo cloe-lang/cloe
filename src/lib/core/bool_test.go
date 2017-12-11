@@ -30,3 +30,13 @@ func TestBoolToString(t *testing.T) {
 	test("true", true)
 	test("false", false)
 }
+
+func TestIf(t *testing.T) {
+	assert.Equal(t, Nil.Eval(), PApp(If, True, Nil, False).Eval())
+	assert.Equal(t, Nil.Eval(), PApp(If, False, False, Nil).Eval())
+}
+
+func TestIfWithInvalidArguments(t *testing.T) {
+	_, ok := PApp(If, Nil, Nil, Nil).Eval().(ErrorType)
+	assert.True(t, ok)
+}

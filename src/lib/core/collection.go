@@ -37,18 +37,36 @@ var Include = NewStrictFunction(
 // Index extracts an element corresponding with a key.
 var Index = NewStrictFunction(
 	NewSignature(
-		[]string{"collection", "key"}, nil, "",
+		[]string{"collection", "key"}, nil, "keys",
 		nil, nil, "",
 	),
 	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		c, ok := v.(collection)
+		v := ts[2].Eval()
+		l, ok := v.(ListType)
 
 		if !ok {
-			return TypeError(v, "collection")
+			return NotListError(v)
 		}
 
-		return c.index(ts[1].Eval())
+		ks, err := l.ToValues()
+
+		if err != nil {
+			return err
+		}
+
+		v = ts[0].Eval()
+
+		for _, k := range append([]*Thunk{ts[1]}, ks...) {
+			c, ok := ensureNormal(v).(collection)
+
+			if !ok {
+				return NotCollectionError(v)
+			}
+
+			v = c.index(k.Eval())
+		}
+
+		return v
 	})
 
 // Insert inserts an element into a collection.

@@ -14,3 +14,14 @@ Feature: Collections
     It's me.
     ,
     """
+
+  Scenario: Chain indexing
+    Given a file named "main.tisp" with:
+    """
+    (write ({"foo" {"bar" 42}} "foo" "bar"))
+    """
+    When I successfully run `tisp main.tisp`
+    Then the stdout should contain exactly:
+    """
+    42
+    """

@@ -31,7 +31,9 @@ jobs:
 
       - run:
           name: Coverage report
-          command: goveralls -coverprofile=coverage.txt -service=circle-ci -repotoken $COVERALLS_TOKEN
+          command: |
+            bash <(curl -s https://codecov.io/bash)
+            goveralls -coverprofile=coverage.txt -service=circle-ci -repotoken $COVERALLS_TOKEN
 
       - run:
           name: Install binary

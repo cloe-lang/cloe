@@ -15,3 +15,7 @@ func TestPartial(t *testing.T) {
 	assert.True(t, ifFunc(True))
 	assert.True(t, !ifFunc(False))
 }
+
+func TestClosureToString(t *testing.T) {
+	assert.Equal(t, NewString("<function>").Eval(), PApp(ToString, PApp(Partial, If, True)).Eval())
+}

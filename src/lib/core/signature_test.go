@@ -13,6 +13,18 @@ func TestSignatureBindWithEmtpyArguments(t *testing.T) {
 	assert.NotEqual(t, (*Thunk)(nil), err)
 }
 
+func TestSignatureBindWithOptionalPositionalArguments(t *testing.T) {
+	s := NewSignature(nil, []OptionalArgument{NewOptionalArgument("x", Nil)}, "", nil, nil, "")
+
+	for _, args := range []Arguments{
+		NewArguments(nil, nil, nil),
+		NewArguments([]PositionalArgument{NewPositionalArgument(True, false)}, nil, nil),
+	} {
+		_, err := s.Bind(args)
+		assert.Equal(t, (*Thunk)(nil), err)
+	}
+}
+
 func TestSignatureBindExpandedPositionalArgument(t *testing.T) {
 	s := NewSignature([]string{"x"}, nil, "", nil, nil, "")
 	args := NewArguments([]PositionalArgument{NewPositionalArgument(NewList(Nil), true)}, nil, nil)

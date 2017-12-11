@@ -60,9 +60,7 @@ func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
 				} else if cached {
 					m = cm
 				} else {
-					m, err = c.compileSubModule(x.Path() + consts.FileExtension)
-
-					if err != nil {
+					if m, err = c.compileSubModule(x.Path() + consts.FileExtension); err != nil {
 						return nil, err
 					}
 
@@ -71,9 +69,7 @@ func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
 					}
 				}
 			} else if !ok {
-				m, err = c.compileSubModule(x.Path() + consts.FileExtension)
-
-				if err != nil {
+				if m, err = c.compileSubModule(x.Path() + consts.FileExtension); err != nil {
 					return nil, err
 				}
 			}

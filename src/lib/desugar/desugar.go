@@ -1,6 +1,6 @@
 package desugar
 
-import "github.com/tisp-lang/tisp/src/lib/desugar/match"
+import "github.com/coel-lang/coel/src/lib/desugar/match"
 
 // Desugar desugars a module of statements in AST.
 func Desugar(ss []interface{}) []interface{} {

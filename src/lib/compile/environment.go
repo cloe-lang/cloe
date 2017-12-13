@@ -3,7 +3,7 @@ package compile
 import (
 	"fmt"
 
-	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/core"
 )
 
 type environment struct {

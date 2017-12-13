@@ -3,7 +3,7 @@ package ast
 import (
 	"fmt"
 
-	"github.com/tisp-lang/tisp/src/lib/debug"
+	"github.com/coel-lang/coel/src/lib/debug"
 )
 
 // App represents an application of a function to arguments.

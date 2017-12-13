@@ -3,7 +3,7 @@ package core
 import (
 	"strings"
 
-	"github.com/tisp-lang/tisp/src/lib/systemt"
+	"github.com/coel-lang/coel/src/lib/systemt"
 )
 
 // ListType represents a list of values in the language.

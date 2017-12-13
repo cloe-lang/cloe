@@ -5,9 +5,9 @@ import (
 	"os"
 	"sync"
 
-	"github.com/tisp-lang/tisp/src/lib/compile"
-	"github.com/tisp-lang/tisp/src/lib/core"
-	"github.com/tisp-lang/tisp/src/lib/systemt"
+	"github.com/coel-lang/coel/src/lib/compile"
+	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/systemt"
 )
 
 const maxConcurrentEffects = 256

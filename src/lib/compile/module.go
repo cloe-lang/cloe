@@ -1,5 +1,5 @@
 package compile
 
-import "github.com/tisp-lang/tisp/src/lib/core"
+import "github.com/coel-lang/coel/src/lib/core"
 
 type module map[string]*core.Thunk

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/core"
 )
 
 func TestPost(t *testing.T) {

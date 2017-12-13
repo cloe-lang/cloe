@@ -3,9 +3,9 @@ package desugar
 import (
 	"testing"
 
-	"github.com/tisp-lang/tisp/src/lib/ast"
-	"github.com/tisp-lang/tisp/src/lib/consts"
-	"github.com/tisp-lang/tisp/src/lib/debug"
+	"github.com/coel-lang/coel/src/lib/ast"
+	"github.com/coel-lang/coel/src/lib/consts"
+	"github.com/coel-lang/coel/src/lib/debug"
 )
 
 func TestDesugarDictionaryExpansion(t *testing.T) {

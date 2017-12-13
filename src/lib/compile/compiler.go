@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/tisp-lang/tisp/src/lib/ast"
-	"github.com/tisp-lang/tisp/src/lib/consts"
-	"github.com/tisp-lang/tisp/src/lib/core"
-	"github.com/tisp-lang/tisp/src/lib/desugar"
-	"github.com/tisp-lang/tisp/src/lib/ir"
-	"github.com/tisp-lang/tisp/src/lib/modules"
-	"github.com/tisp-lang/tisp/src/lib/parse"
+	"github.com/coel-lang/coel/src/lib/ast"
+	"github.com/coel-lang/coel/src/lib/consts"
+	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/desugar"
+	"github.com/coel-lang/coel/src/lib/ir"
+	"github.com/coel-lang/coel/src/lib/modules"
+	"github.com/coel-lang/coel/src/lib/parse"
 )
 
 type compiler struct {

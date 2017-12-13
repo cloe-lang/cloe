@@ -3,7 +3,7 @@ package ir
 import (
 	"testing"
 
-	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/core"
 )
 
 func TestNewKeywordArgument(t *testing.T) {

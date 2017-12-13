@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/core"
 )
 
 var post = core.NewLazyFunction(

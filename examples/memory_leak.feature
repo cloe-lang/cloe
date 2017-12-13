@@ -6,7 +6,7 @@ Feature: Memory leak
 
     set -e
 
-    tisp $1 > /dev/null &
+    coel $1 > /dev/null &
     pid=$!
 
     sleep 2 # Wait for memory usage to be stable.
@@ -34,16 +34,16 @@ Feature: Memory leak
 
   Scenario: Run infinite effects
     This test succeeds only with Go 1.8 onward because of argument liveness.
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (let many42 (prepend (write 42) many42))
     ..many42
     """
-    When I run `sh leak_memory.sh main.tisp`
+    When I run `sh leak_memory.sh main.coel`
     Then the exit status should be 0
 
   Scenario: Evaluate deep recursion
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (def (f n)
       (if (= n 0)
@@ -52,25 +52,25 @@ Feature: Memory leak
 
     (write (f 100000000))
     """
-    When I run `sh leak_memory.sh main.tisp`
+    When I run `sh leak_memory.sh main.coel`
     Then the exit status should be 0
 
   Scenario: Apply a map function to an infinite list
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (let l (prepend 42 l))
 
     ..(map write l)
     """
-    When I run `sh leak_memory.sh main.tisp`
+    When I run `sh leak_memory.sh main.coel`
     Then the exit status should be 0
 
   Scenario: Apply a map function to an infinite list of map functions
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (let l (prepend map l))
 
     ..(map (\ (x) (write (typeOf x))) l)
     """
-    When I run `sh leak_memory.sh main.tisp`
+    When I run `sh leak_memory.sh main.coel`
     Then the exit status should be 0

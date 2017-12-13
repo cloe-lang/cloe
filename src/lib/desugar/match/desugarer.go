@@ -3,11 +3,11 @@ package match
 import (
 	"fmt"
 
-	"github.com/tisp-lang/tisp/src/lib/ast"
-	"github.com/tisp-lang/tisp/src/lib/consts"
-	"github.com/tisp-lang/tisp/src/lib/debug"
-	"github.com/tisp-lang/tisp/src/lib/gensym"
-	"github.com/tisp-lang/tisp/src/lib/scalar"
+	"github.com/coel-lang/coel/src/lib/ast"
+	"github.com/coel-lang/coel/src/lib/consts"
+	"github.com/coel-lang/coel/src/lib/debug"
+	"github.com/coel-lang/coel/src/lib/gensym"
+	"github.com/coel-lang/coel/src/lib/scalar"
 )
 
 type desugarer struct {

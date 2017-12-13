@@ -1,8 +1,8 @@
 package builtins
 
 import (
-	"github.com/tisp-lang/tisp/src/lib/core"
-	"github.com/tisp-lang/tisp/src/lib/systemt"
+	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/systemt"
 )
 
 // Par evaluates arguments asynchronously in parallel and returns the last one.

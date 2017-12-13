@@ -1,6 +1,6 @@
 package builtins
 
-import "github.com/tisp-lang/tisp/src/lib/core"
+import "github.com/coel-lang/coel/src/lib/core"
 
 // Dictionary creates a new dictionary from pairs of a key and value.
 var Dictionary = core.NewLazyFunction(

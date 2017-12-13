@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: golang
-    working_directory: /go/src/github.com/tisp-lang/tisp
+    working_directory: /go/src/github.com/coel-lang/coel
     steps:
       - checkout
 

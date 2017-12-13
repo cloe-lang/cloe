@@ -1,30 +1,30 @@
 Feature: Let statement
   Scenario: Define a variable
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (let foo 123)
     (write foo)
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     123
     """
 
   Scenario: Define a function
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (def (f x) x)
     (write (f 42))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     42
     """
 
   Scenario: Define a variable in a function
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (def (foo x)
       (let bar (+ x x))
@@ -32,14 +32,14 @@ Feature: Let statement
 
     (write (foo 21))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     42
     """
 
   Scenario: Define nested functions
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (def (f x)
       (def (g y) (+ x y))
@@ -47,14 +47,14 @@ Feature: Let statement
 
     (write (f 2007))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     2049
     """
 
   Scenario: Define complex nested functions
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (def (foo x y)
       (let bar (+ x x))
@@ -63,14 +63,14 @@ Feature: Let statement
 
     (write (foo 2 3))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     -20
     """
 
   Scenario: Define a function with a nested function definition
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (def (f x)
       (def (g y)
@@ -81,14 +81,14 @@ Feature: Let statement
 
     (write (f 123))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     1368
     """
 
   Scenario: Define a variable shadowing another
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (def (f x)
       (def (g x) x)
@@ -96,14 +96,14 @@ Feature: Let statement
 
     (write (f 123456))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     42
     """
 
   Scenario: Define a recursive variable
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (let l (prepend 42 l))
 
@@ -111,7 +111,7 @@ Feature: Let statement
     (write (l 1))
     (write (l 2))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     42

@@ -1,6 +1,6 @@
 Feature: Built-in functions
   Scenario: Get types of values
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (seq
       (write (typeOf true))
@@ -12,7 +12,7 @@ Feature: Built-in functions
       (write (typeOf +))
       (write (typeOf (partial + 1))))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     bool
@@ -26,18 +26,18 @@ Feature: Built-in functions
     """
 
   Scenario: Map a function to a list
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (map (\ (x) (* x x)) [1 2 3]))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     [1 4 9]
     """
 
   Scenario: Calculate indices of elements in a list
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (let l [1 2 3 42 -3 "foo"])
     (seq
@@ -45,7 +45,7 @@ Feature: Built-in functions
       (write (indexOf l 2))
       (write (indexOf l "foo")))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     3

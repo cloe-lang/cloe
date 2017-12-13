@@ -1,11 +1,11 @@
 package compile
 
 import (
-	"github.com/tisp-lang/tisp/src/lib/builtins"
-	"github.com/tisp-lang/tisp/src/lib/core"
-	"github.com/tisp-lang/tisp/src/lib/desugar"
-	"github.com/tisp-lang/tisp/src/lib/parse"
-	"github.com/tisp-lang/tisp/src/lib/scalar"
+	"github.com/coel-lang/coel/src/lib/builtins"
+	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/desugar"
+	"github.com/coel-lang/coel/src/lib/parse"
+	"github.com/coel-lang/coel/src/lib/scalar"
 )
 
 var goBuiltins = func() environment {

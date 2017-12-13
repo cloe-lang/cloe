@@ -1,6 +1,6 @@
 package compile
 
-import "github.com/tisp-lang/tisp/src/lib/core"
+import "github.com/coel-lang/coel/src/lib/core"
 
 // Effect represents an effect of a program.
 type Effect struct {

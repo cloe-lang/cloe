@@ -3,7 +3,7 @@ package match
 import (
 	"fmt"
 
-	"github.com/tisp-lang/tisp/src/lib/ast"
+	"github.com/coel-lang/coel/src/lib/ast"
 )
 
 type valueRenamer struct {

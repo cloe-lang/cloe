@@ -1,6 +1,6 @@
 Feature: Read function
   Scenario: Read stdin
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (read) . end "")
     """
@@ -12,7 +12,7 @@ Feature: Read function
     """
     When I run the following commands:
     """
-    tisp main.tisp < test.txt
+    coel main.coel < test.txt
     """
     Then the stdout should contain exactly:
     """
@@ -22,7 +22,7 @@ Feature: Read function
     """
 
   Scenario: Read a file
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (read . file "test.txt") . end "")
     """
@@ -32,7 +32,7 @@ Feature: Read function
     bar
     baz
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     foo

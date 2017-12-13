@@ -1,6 +1,6 @@
 package desugar
 
-import "github.com/tisp-lang/tisp/src/lib/ast"
+import "github.com/coel-lang/coel/src/lib/ast"
 
 type names map[string]bool
 

@@ -26,7 +26,7 @@ var kvss = [][][2]*Thunk{
 
 func TestDictionaryInsert(t *testing.T) {
 	for _, k := range []*Thunk{
-		True, False, Nil, NewNumber(42), NewString("tisp"),
+		True, False, Nil, NewNumber(42), NewString("coel"),
 	} {
 		_, ok := PApp(Insert, EmptyDictionary, k, Nil).Eval().(DictionaryType)
 		assert.True(t, ok)

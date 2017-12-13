@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tisp-lang/tisp/src/lib/core"
-	"github.com/tisp-lang/tisp/src/lib/systemt"
+	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/systemt"
 )
 
 func TestGetRequests(t *testing.T) {

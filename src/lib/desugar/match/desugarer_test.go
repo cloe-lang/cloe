@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tisp-lang/tisp/src/lib/consts"
+	"github.com/coel-lang/coel/src/lib/consts"
 )
 
 func TestEqualPatterns(t *testing.T) {

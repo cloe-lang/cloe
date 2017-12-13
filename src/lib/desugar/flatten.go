@@ -3,8 +3,8 @@ package desugar
 import (
 	"fmt"
 
-	"github.com/tisp-lang/tisp/src/lib/ast"
-	"github.com/tisp-lang/tisp/src/lib/gensym"
+	"github.com/coel-lang/coel/src/lib/ast"
+	"github.com/coel-lang/coel/src/lib/gensym"
 )
 
 func flattenStatement(s interface{}) []interface{} {

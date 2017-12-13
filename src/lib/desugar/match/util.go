@@ -1,8 +1,8 @@
 package match
 
 import (
-	"github.com/tisp-lang/tisp/src/lib/ast"
-	"github.com/tisp-lang/tisp/src/lib/debug"
+	"github.com/coel-lang/coel/src/lib/ast"
+	"github.com/coel-lang/coel/src/lib/debug"
 )
 
 func app(f interface{}, args ...interface{}) interface{} {

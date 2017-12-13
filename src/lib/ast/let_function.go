@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/kr/text"
-	"github.com/tisp-lang/tisp/src/lib/debug"
+	"github.com/coel-lang/coel/src/lib/debug"
 )
 
 // LetFunction represents a let-function statement node in ASTs.

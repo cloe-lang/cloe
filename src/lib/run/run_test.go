@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tisp-lang/tisp/src/lib/builtins"
-	"github.com/tisp-lang/tisp/src/lib/compile"
-	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/builtins"
+	"github.com/coel-lang/coel/src/lib/compile"
+	"github.com/coel-lang/coel/src/lib/core"
 )
 
 func TestRunWithNoThunk(t *testing.T) {

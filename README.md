@@ -1,22 +1,22 @@
-# Tisp
+# Coel
 
-[![Circle CI](https://img.shields.io/circleci/project/github/tisp-lang/tisp.svg?style=flat-square)](https://circleci.com/gh/tisp-lang/tisp)
-[![codeclimate](https://img.shields.io/codeclimate/github/kabisaict/flow.svg?style=flat-square)](https://codeclimate.com/github/tisp-lang/tisp)
-[![Go Report Card](https://goreportcard.com/badge/github.com/tisp-lang/tisp?style=flat-square)](https://goreportcard.com/report/github.com/tisp-lang/tisp)
-[![Coveralls](https://img.shields.io/coveralls/tisp-lang/tisp.svg?style=flat-square)](https://coveralls.io/github/tisp-lang/tisp)
-[![License](https://img.shields.io/github/license/tisp-lang/tisp.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Circle CI](https://img.shields.io/circleci/project/github/coel-lang/coel.svg?style=flat-square)](https://circleci.com/gh/coel-lang/coel)
+[![codeclimate](https://img.shields.io/codeclimate/github/kabisaict/flow.svg?style=flat-square)](https://codeclimate.com/github/coel-lang/coel)
+[![Go Report Card](https://goreportcard.com/badge/github.com/coel-lang/coel?style=flat-square)](https://goreportcard.com/report/github.com/coel-lang/coel)
+[![Coveralls](https://img.shields.io/coveralls/coel-lang/coel.svg?style=flat-square)](https://coveralls.io/github/coel-lang/coel)
+[![License](https://img.shields.io/github/license/coel-lang/coel.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/tisp-lang/icon/master/spaced.png" alt="logo"/>
+  <img src="https://raw.githubusercontent.com/coel-lang/icon/master/spaced.png" alt="logo"/>
 </div>
 
-Tisp is a functional programming language.
+Coel is a functional programming language.
 It aims to be simple, canonical, and practical.
 
 ## Installation
 
 ```
-go get github.com/tisp-lang/tisp/src/cmd/tisp
+go get github.com/coel-lang/coel/src/cmd/coel
 ```
 
 Go 1.8+ is required.
@@ -42,7 +42,7 @@ runtime.
 
 ## Documentation
 
-[Here](https://tisp-lang.gitbooks.io/tisp-programming-language/).
+[Here](https://coel-lang.gitbooks.io/coel-programming-language/).
 
 ## Examples
 

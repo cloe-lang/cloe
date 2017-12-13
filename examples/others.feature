@@ -1,32 +1,32 @@
 Feature: Others
-  Scenario: Run Tisp with an empty source
-    Given a file named "main.tisp" with:
+  Scenario: Run Coel with an empty source
+    Given a file named "main.coel" with:
     """
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly ""
 
   Scenario: Read a source from stdin
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write "Hello, world!")
     """
     When I run the following script:
     """
-    tisp < main.tisp
+    coel < main.coel
     """
     Then the stdout should contain exactly:
     """
     Hello, world!
     """
 
-  Scenario: Run Tisp script with shebang
-    Given a file named "main.tisp" with mode "0755" and with:
+  Scenario: Run Coel script with shebang
+    Given a file named "main.coel" with mode "0755" and with:
     """
-    #!/usr/bin/env tisp
+    #!/usr/bin/env coel
 
     (write "Hello, world!")
     """
-    When I successfully run `sh -c ./main.tisp`
+    When I successfully run `sh -c ./main.coel`
     Then the stdout should contain exactly "Hello, world!"
 

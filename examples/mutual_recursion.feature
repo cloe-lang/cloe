@@ -1,6 +1,6 @@
 Feature: Mutual recursion
   Scenario: Define 2 mutually recursive functions
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (mr
       (def (even? n)
@@ -22,7 +22,7 @@ Feature: Mutual recursion
       (write (even? 2049))
       (write (odd? 2049)))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     true
@@ -40,7 +40,7 @@ Feature: Mutual recursion
     """
 
   Scenario: Define mutually recursive functions with a nested let statement
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (mr
       (def (even? n)
@@ -63,7 +63,7 @@ Feature: Mutual recursion
       (write (even? 2049))
       (write (odd? 2049)))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     true
@@ -81,7 +81,7 @@ Feature: Mutual recursion
     """
 
   Scenario: Define mutually recursive functions with a shadowed variable
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (mr
       (def (even? n)
@@ -104,7 +104,7 @@ Feature: Mutual recursion
       (write (even? 2049))
       (write (odd? 2049)))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     true
@@ -122,7 +122,7 @@ Feature: Mutual recursion
     """
 
   Scenario: Define mutually recursive functions in a function
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (def (foo)
       (mr
@@ -147,7 +147,7 @@ Feature: Mutual recursion
       (write (even? 2049))
       (write (odd? 2049)))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     true

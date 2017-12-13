@@ -12,7 +12,7 @@ task :deps do
 end
 
 task :build do
-  sh 'go build -o bin/tisp src/cmd/tisp/main.go'
+  sh 'go build -o bin/coel src/cmd/coel/main.go'
 end
 
 task :fast_unit_test do
@@ -20,7 +20,7 @@ task :fast_unit_test do
 end
 
 task :unit_test do
-  coverage_file = "/tmp/tisp-unit-test-#{Process.pid}.coverage"
+  coverage_file = "/tmp/coel-unit-test-#{Process.pid}.coverage"
 
   sh "echo mode: atomic > #{TOTAL_COVERAGE_FILE}"
 

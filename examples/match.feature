@@ -1,16 +1,16 @@
 Feature: Match expression
   Scenario: Match scalars
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (match 42 42 "Matched!"))
     (write (match 42
       2049 "Not matched..."
       42 "Matched!"))
 
-    (write (match "Tisp" "Tisp" "Matched!"))
-    (write (match "Tisp"
-      "tisp" "Not matched..."
-      "Tisp" "Matched!"))
+    (write (match "Coel" "Coel" "Matched!"))
+    (write (match "Coel"
+      "coel" "Not matched..."
+      "Coel" "Matched!"))
 
     (write (match true true "Matched!"))
     (write (match true
@@ -21,7 +21,7 @@ Feature: Match expression
 
     (write (match "Matched!" x x))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     Matched!
@@ -35,7 +35,7 @@ Feature: Match expression
     """
 
   Scenario: Match collections
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (match [] [] "Matched!"))
     (write (match [42]
@@ -51,7 +51,7 @@ Feature: Match expression
       {"bar" 42} "Not matched..."
       {"foo" 42} "Matched!"))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     Matched!
@@ -61,7 +61,7 @@ Feature: Match expression
     """
 
   Scenario: Use wildcards
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (match "Matched!"
       42 "Not matched..."
@@ -83,7 +83,7 @@ Feature: Match expression
       {"bar" bar "foo" 2049} "Not matched..."
       {"foo" foo "bar" bar} bar))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     Matched!
@@ -92,33 +92,33 @@ Feature: Match expression
     """
 
   Scenario: Nest collections
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (match {"foo" 42 "bar" ["The pattern" "is" "Matched!"]}
       {"bar" [foo "is" baz] "foo" 42} baz
       {"foo" foo "bar" bar} "Not matched..."))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     Matched!
     """
 
   Scenario: Use rest pattern of list
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (match [[42 2049] ["This" "is" "Matched!"]]
       [[..foo] ["This" "is" "not" "Matched!"]] "Not matched..."
       [[..foo] ["This" ..bar]] (bar 1)))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     Matched!
     """
 
   Scenario: Use rest pattern of dictionary
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (match {"foo" {42 2049} "bar" {"This" "Matched!"}}
       [[..foo] ["This" "is" "not" "Matched!"]] "Not matched..."
@@ -126,19 +126,19 @@ Feature: Match expression
       {"foo" {..foo} "bar" {"this" bar}} "Not matched..."
       {"foo" {..foo} "bar" {"This" bar}} bar))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     Matched!
     """
 
   Scenario: Match an invalid list with a valid pattern
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (match (prepend "Matched!" {})
       [x ..xs] x))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     Matched!

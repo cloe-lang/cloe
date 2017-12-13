@@ -3,7 +3,7 @@ package ast
 import (
 	"fmt"
 
-	"github.com/tisp-lang/tisp/src/lib/debug"
+	"github.com/coel-lang/coel/src/lib/debug"
 )
 
 // Import represents an import of a sub module.

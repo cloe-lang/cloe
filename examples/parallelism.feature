@@ -1,17 +1,17 @@
 Feature: Parallelism
   Scenario: Evaluate effects in parallel
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (write (par [1 2 3] [4 5 6] [7 8 9]))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     [7 8 9]
     """
 
   Scenario: Evaluate effects sequentially
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (seq
       (write 0)
@@ -25,7 +25,7 @@ Feature: Parallelism
       (write 8)
       (write 9))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     0

@@ -1,6 +1,6 @@
 package builtins
 
-import "github.com/tisp-lang/tisp/src/lib/core"
+import "github.com/coel-lang/coel/src/lib/core"
 
 func checkEmptyList(l *core.Thunk, ifTrue core.Value) core.Value {
 	v := core.PApp(core.Equal, l, core.EmptyList).Eval()

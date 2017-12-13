@@ -1,18 +1,18 @@
 Feature: Import statement
   Scenario: Import a module
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (import "mod")
     (seq ..(mod.map write [1 2 3 4 5]))
     """
-    And a file named "mod.tisp" with:
+    And a file named "mod.coel" with:
     """
     (def (map func list)
         (match list
             [] []
             [first ..rest] (prepend (func first) (map func rest))))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     1
@@ -23,23 +23,23 @@ Feature: Import statement
     """
 
   Scenario: Import a module in a directory
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (import "modules/mod")
     (mod.Hello "world")
     """
-    And a file named "modules/mod.tisp" with:
+    And a file named "modules/mod.coel" with:
     """
     (def (Hello name) (write (merge "Hello, " name "!")))
     """
-    When I successfully run `tisp main.tisp`
+    When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
     Hello, world!
     """
 
   Scenario: Print values in cached modules
-    Given a file named "main.tisp" with:
+    Given a file named "main.coel" with:
     """
     (import "./mod1")
     (import "./mod2")
@@ -48,17 +48,17 @@ Feature: Import statement
       (write mod1.stdin . end "")
       (write mod2.stdin . end ""))
     """
-    And a file named "mod1.tisp" with:
+    And a file named "mod1.coel" with:
     """
     (import "./mod2")
 
     (let stdin mod2.stdin)
     """
-    And a file named "mod2.tisp" with:
+    And a file named "mod2.coel" with:
     """
     (let stdin (read))
     """
-    When I successfully run `sh -c 'echo Hello | tisp main.tisp'`
+    When I successfully run `sh -c 'echo Hello | coel main.coel'`
     Then the stdout should contain exactly:
     """
     Hello

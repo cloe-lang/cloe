@@ -1,8 +1,8 @@
 package desugar
 
 import (
-	"github.com/tisp-lang/tisp/src/lib/ast"
-	"github.com/tisp-lang/tisp/src/lib/gensym"
+	"github.com/coel-lang/coel/src/lib/ast"
+	"github.com/coel-lang/coel/src/lib/gensym"
 )
 
 func desugarSelfRecursiveStatement(x interface{}) []interface{} {

@@ -1,6 +1,6 @@
 package ir
 
-import "github.com/tisp-lang/tisp/src/lib/core"
+import "github.com/coel-lang/coel/src/lib/core"
 
 // Case represents a case of a pattern and a corresponding value in a switch expression.
 type Case struct {

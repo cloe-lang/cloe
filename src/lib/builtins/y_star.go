@@ -1,6 +1,6 @@
 package builtins
 
-import "github.com/tisp-lang/tisp/src/lib/core"
+import "github.com/coel-lang/coel/src/lib/core"
 
 // Ys is Y* combinator which takes functions whose first arguments are a list
 // of themselves applied to the combinator.

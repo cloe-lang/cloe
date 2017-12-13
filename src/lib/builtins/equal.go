@@ -1,6 +1,6 @@
 package builtins
 
-import "github.com/tisp-lang/tisp/src/lib/core"
+import "github.com/coel-lang/coel/src/lib/core"
 
 // Equal checks if all arguments are equal or not, and returns true if so or false otherwise.
 var Equal = core.NewStrictFunction(

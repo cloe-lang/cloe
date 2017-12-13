@@ -4,8 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/tisp-lang/tisp/src/lib/desugar"
-	"github.com/tisp-lang/tisp/src/lib/parse"
+	"github.com/coel-lang/coel/src/lib/desugar"
+	"github.com/coel-lang/coel/src/lib/parse"
 )
 
 // Compile compiles a main module of a path into effects of thunks.

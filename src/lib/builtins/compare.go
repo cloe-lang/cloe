@@ -1,6 +1,6 @@
 package builtins
 
-import "github.com/tisp-lang/tisp/src/lib/core"
+import "github.com/coel-lang/coel/src/lib/core"
 
 func createCompareFunction(checkOrder func(core.NumberType) bool) *core.Thunk {
 	return core.NewLazyFunction(

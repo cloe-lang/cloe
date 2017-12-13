@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/tisp-lang/tisp/src/lib/builtins"
-	"github.com/tisp-lang/tisp/src/lib/core"
-	"github.com/tisp-lang/tisp/src/lib/systemt"
+	"github.com/coel-lang/coel/src/lib/builtins"
+	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/systemt"
 )
 
 const requestChannelSize = 1024

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/tisp-lang/tisp/src/lib/consts"
-	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/consts"
+	"github.com/coel-lang/coel/src/lib/core"
 )
 
 var predefined = func() map[string]*core.Thunk {

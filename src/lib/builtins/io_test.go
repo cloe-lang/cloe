@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/tisp-lang/tisp/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/core"
 )
 
 func TestReadWithStdin(t *testing.T) {
@@ -27,7 +27,7 @@ func TestWrite(t *testing.T) {
 			nil),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},
-			[]core.KeywordArgument{core.NewKeywordArgument("file", core.NewString("/tmp/tisp.test"))},
+			[]core.KeywordArgument{core.NewKeywordArgument("file", core.NewString("/tmp/coel.test"))},
 			nil),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},

@@ -1,6 +1,6 @@
 package core
 
-import "github.com/tisp-lang/tisp/src/lib/systemt"
+import "github.com/coel-lang/coel/src/lib/systemt"
 
 type functionType struct {
 	signature Signature

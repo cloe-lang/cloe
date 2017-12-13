@@ -3,8 +3,8 @@ package builtins
 import (
 	"time"
 
-	"github.com/tisp-lang/tisp/src/lib/core"
-	"github.com/tisp-lang/tisp/src/lib/systemt"
+	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/systemt"
 )
 
 const maxConcurrency = 256

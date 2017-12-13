@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/docopt/docopt-go"
-	"github.com/tisp-lang/tisp/src/lib/compile"
-	"github.com/tisp-lang/tisp/src/lib/run"
+	"github.com/coel-lang/coel/src/lib/compile"
+	"github.com/coel-lang/coel/src/lib/run"
 )
 
 func main() {
@@ -57,17 +57,17 @@ func main() {
 }
 
 func getArgs() map[string]interface{} {
-	usage := `Tisp interpreter
+	usage := `Coel interpreter
 
 Usage:
-  tisp [-d] [-p <filename>] [<filename>]
+  coel [-d] [-p <filename>] [<filename>]
 
 Options:
   -d, --debug  Turn on debug mode.
   -p, --profile <filename>  Turn on profiling.
   -h, --help  Show this help.`
 
-	args, err := docopt.Parse(usage, nil, true, "Tisp 0.0.0", false)
+	args, err := docopt.Parse(usage, nil, true, "Coel 0.0.0", false)
 
 	if err != nil {
 		printToStderr(err.Error())

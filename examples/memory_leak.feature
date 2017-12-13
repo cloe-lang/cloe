@@ -46,9 +46,9 @@ Feature: Memory leak
     Given a file named "main.coel" with:
     """
     (def (f n)
-      (if (= n 0)
-          "OK!"
-          (f (- n 1))))
+      (match n
+        0 "OK!"
+        _ (f (- n 1))))
 
     (write (f 100000000))
     """

@@ -21,23 +21,39 @@ func rawBool(b bool) BoolType {
 // If returns the second argument when the first one is true or the third one
 // otherwise.
 var If = NewLazyFunction(
-	NewSignature(
-		[]string{"condition", "then", "else"}, nil, "",
-		nil, nil, "",
-	),
+	NewSignature(nil, nil, "conds", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
-		b, ok := v.(BoolType)
+		l, ok := v.(ListType)
 
 		if !ok {
-			return NotBoolError(v)
+			return NotListError(v)
 		}
 
-		if b {
-			return ts[1]
+		ts, err := l.ToThunks()
+
+		if err != nil {
+			return err
 		}
 
-		return ts[2]
+		if len(ts)%2 == 0 {
+			return argumentError("Number of arguments of if function must be even but %v.", len(ts))
+		}
+
+		for i := 0; i < len(ts)-2; i += 2 {
+			v := ts[i].Eval()
+			b, ok := v.(BoolType)
+
+			if !ok {
+				return NotBoolError(v)
+			}
+
+			if b {
+				return ts[i+1]
+			}
+		}
+
+		return ts[len(ts)-1]
 	})
 
 func (b BoolType) compare(c comparable) int {

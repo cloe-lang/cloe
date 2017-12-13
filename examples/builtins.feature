@@ -52,3 +52,16 @@ Feature: Built-in functions
     1
     5
     """
+
+  Scenario: Use multiple conditions with if function
+    Given a file named "main.coel" with:
+    """
+    (def (no) (write "No"))
+
+    (if false no true (write "Yes") false no no)
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    Yes
+    """

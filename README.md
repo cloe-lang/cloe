@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/github/license/tisp-lang/tisp.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/tisp-lang/icon/master/icon.png" alt="logo"/>
+  <img src="https://raw.githubusercontent.com/tisp-lang/icon/master/spaced.png" alt="logo"/>
 </div>
 
 Tisp is a functional programming language.

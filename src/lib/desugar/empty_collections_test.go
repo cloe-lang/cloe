@@ -3,10 +3,10 @@ package desugar
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/coel-lang/coel/src/lib/ast"
 	"github.com/coel-lang/coel/src/lib/consts"
 	"github.com/coel-lang/coel/src/lib/parse"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDesugarEmptyCollection(t *testing.T) {

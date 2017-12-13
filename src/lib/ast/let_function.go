@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kr/text"
 	"github.com/coel-lang/coel/src/lib/debug"
+	"github.com/kr/text"
 )
 
 // LetFunction represents a let-function statement node in ASTs.

@@ -3,8 +3,8 @@ package match
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/coel-lang/coel/src/lib/consts"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestEqualPatterns(t *testing.T) {

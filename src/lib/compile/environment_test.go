@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/stretchr/testify/assert"
 )
 
 func testFallback(s string) (*core.Thunk, error) {

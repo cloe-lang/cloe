@@ -4,10 +4,10 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/coel-lang/coel/src/lib/builtins"
 	"github.com/coel-lang/coel/src/lib/compile"
 	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestRunWithNoThunk(t *testing.T) {

@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/coel-lang/coel/src/lib/consts"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCompile(t *testing.T) {

@@ -6,9 +6,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/coel-lang/coel/src/lib/core"
 	"github.com/coel-lang/coel/src/lib/systemt"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGetRequests(t *testing.T) {

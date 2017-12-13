@@ -8,9 +8,9 @@ import (
 	"runtime/pprof"
 	"strings"
 
-	"github.com/docopt/docopt-go"
 	"github.com/coel-lang/coel/src/lib/compile"
 	"github.com/coel-lang/coel/src/lib/run"
+	"github.com/docopt/docopt-go"
 )
 
 func main() {

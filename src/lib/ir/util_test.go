@@ -4,9 +4,9 @@ import (
 	"math"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/coel-lang/coel/src/lib/core"
 	"github.com/coel-lang/coel/src/lib/debug"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCompileFunction(t *testing.T) {

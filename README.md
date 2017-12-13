@@ -5,24 +5,13 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/tisp-lang/tisp?style=flat-square)](https://goreportcard.com/report/github.com/tisp-lang/tisp)
 [![Coveralls](https://img.shields.io/coveralls/tisp-lang/tisp.svg?style=flat-square)](https://coveralls.io/github/tisp-lang/tisp)
 [![License](https://img.shields.io/github/license/tisp-lang/tisp.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Google group](https://img.shields.io/badge/join-us-ff69b4.svg?style=flat-square)](https://groups.google.com/forum/#!forum/tisp-aliens)
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/tisp-lang/icon/master/icon.png" alt="logo"/>
 </div>
 
-Tisp is a "Time is Space" programming language.
+Tisp is a functional programming language.
 It aims to be simple, canonical, and practical.
-
-This baby project is under heavy development.
-Any contributions would be appreciated.
-[Join the Google group today!](https://groups.google.com/forum/#!forum/tisp-aliens)
-
-## Current status
-
-See [the issues](https://github.com/tisp-lang/tisp/issues).
-Tisp is actively developed and work in progress.
-Stay tuned!
 
 ## Installation
 
@@ -34,19 +23,22 @@ Go 1.8+ is required.
 
 ## Features
 
-- Purely functional programming
-  - Impure function calls in pure functions are detected and raise errors at
-    runtime.
-- Implicit parallelism and concurrency
-  - Most of the time, you don't need to parallelize your code explicitly.
-    Tisp does it all for you!
-  - Inherently, programs written in Tisp run concurrently and can run
-    parallelly.
-- Optional injection of parallelism and causality
-  - You can also increase parallelism of your code or run functions
-    sequentially using `par` or `seq` primitives.
-- Asynchronous IO
-- Dynamic typing
+### Implicit parallelism and concurrency
+
+Inherently, programs written in the language run concurrently and can run
+parallelly.
+You don't need to parallelize your code explicitly as the language runtime does
+it all by itself.
+
+You can also increase parallelism of your code or run functions
+sequentially using `par` or `seq` primitives.
+
+### Semi-purely functional programming
+
+Reading data outside programs are regarded as pure and side effects going
+outside programs are treated as impure.
+Impure function calls in pure functions are inspected and raise errors at
+runtime.
 
 ## Documentation
 
@@ -54,13 +46,26 @@ Go 1.8+ is required.
 
 ## Examples
 
-Read and try [examples](examples) written in [Gherkin](https://cucumber.io/docs/reference).
+### Hello, world!
 
-## Contributing
+```
+(write "Hello, world!")
+```
 
-Please send pull requests, issues, questions or anything else.
-See also [the documentation](https://tisp-lang.gitbooks.io/tisp-programming-language/contribution_guide.html)
-on how to develop Tisp.
+### HTTP server
+
+```
+(import "http")
+
+(def (handler request)
+  ((request "respond") "Hello, world!"))
+
+(let requests (http.getRequests ":8080"))
+
+..(map handler requests)
+```
+
+See [examples](examples) directory for more.
 
 ## License
 

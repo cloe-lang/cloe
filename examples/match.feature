@@ -174,3 +174,19 @@ Feature: Match expression
     bar
     42
     """
+
+  Scenario: Use let-match statements in function definitions
+    Given a file named "main.coel" with:
+    """
+    (def (f x y)
+      (let [z1 z2 ..zs] x)
+      (let {"foo" value ..rest} y)
+      [z2 value])
+
+    (write (f ["foo" "bar" "baz"] {"foo" 42 "bar" 2049}))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    ["bar" 42]
+    """

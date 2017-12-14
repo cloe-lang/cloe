@@ -157,3 +157,20 @@ Feature: Match expression
     """
     [456 789]
     """
+
+  Scenario: Match collections with patterns in let statements
+    Given a file named "main.coel" with:
+    """
+    (let [x y ..xs] ["foo" "bar" "baz"])
+    (let {"foo" value ..rest} {"foo" 42 "bar" 2049})
+
+    (seq
+      (write y)
+      (write value))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    bar
+    42
+    """

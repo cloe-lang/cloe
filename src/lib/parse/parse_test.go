@@ -78,6 +78,17 @@ func TestLetVar(t *testing.T) {
 	}
 }
 
+func TestLetMatch(t *testing.T) {
+	for _, str := range []string{
+		`(let [123 x 789] [123 456 789])`,
+		`(let {"foo" x ..rest} {"foo" 42 "bar" 2049})`,
+	} {
+		s := newStateWithoutFile(str)
+		_, err := s.exhaust(s.letMatch())()
+		assert.Equal(t, nil, err)
+	}
+}
+
 func TestLetFunction(t *testing.T) {
 	for _, str := range []string{
 		"(def (foo) 123)",

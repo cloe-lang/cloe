@@ -86,7 +86,7 @@ func (s *state) let() comb.Parser {
 }
 
 func (s *state) strictLet() comb.Parser {
-	return s.Or(s.letVar(), s.letFunction(), s.mutuallyRecursiveLetFunctions())
+	return s.Or(s.letVar(), s.letMatch(), s.letFunction(), s.mutuallyRecursiveLetFunctions())
 }
 
 func (s *state) letVar() comb.Parser {
@@ -94,6 +94,13 @@ func (s *state) letVar() comb.Parser {
 		xs := x.([]interface{})
 		return ast.NewLetVar(xs[1].(string), xs[2])
 	}, s.list(s.strippedString(letString), s.identifier(), s.expression()))
+}
+
+func (s *state) letMatch() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		return ast.NewLetMatch(xs[1], xs[2])
+	}, s.list(s.strippedString(letString), s.Or(s.listLiteral(), s.dictLiteral()), s.expression()))
 }
 
 func (s *state) letFunction() comb.Parser {

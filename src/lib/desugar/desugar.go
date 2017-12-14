@@ -5,6 +5,7 @@ import "github.com/coel-lang/coel/src/lib/desugar/match"
 // Desugar desugars a module of statements in AST.
 func Desugar(ss []interface{}) []interface{} {
 	for _, f := range []func(interface{}) []interface{}{
+		desugarLetMatch,
 		desugarEmptyCollection,
 		desugarDictionaryExpansion,
 		desugarAnonymousFunctions,

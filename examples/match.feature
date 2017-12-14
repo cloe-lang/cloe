@@ -179,9 +179,9 @@ Feature: Match expression
     Given a file named "main.coel" with:
     """
     (def (f x y)
-      (let [z1 z2 ..zs] x)
-      (let {"foo" value ..rest} y)
-      [z2 value])
+      (let [_ x ..xs] x)
+      (let {"foo" y ..rest} y)
+      [x y])
 
     (write (f ["foo" "bar" "baz"] {"foo" 42 "bar" 2049}))
     """

@@ -1,6 +1,8 @@
 package desugar
 
-import "github.com/coel-lang/coel/src/lib/desugar/match"
+import (
+	"github.com/coel-lang/coel/src/lib/desugar/match"
+)
 
 // Desugar desugars a module of statements in AST.
 func Desugar(ss []interface{}) []interface{} {
@@ -10,7 +12,6 @@ func Desugar(ss []interface{}) []interface{} {
 		desugarDictionaryExpansion,
 		desugarAnonymousFunctions,
 		match.Desugar,
-		desugarRecursiveLetVar,
 		desugarMutualRecursionStatement,
 		desugarSelfRecursiveStatement,
 		flattenStatement,

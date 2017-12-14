@@ -93,8 +93,6 @@ func TestDesugar(t *testing.T) {
 						_, ok := l.(ast.LetFunction)
 						assert.False(t, ok)
 					}
-				case ast.LetVar:
-					assert.Equal(t, 0, len(newNames(x.Name()).findInExpression(x.Expr())))
 				case ast.Match:
 					t.Fail()
 				case ast.MutualRecursion:

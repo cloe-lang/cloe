@@ -2,7 +2,8 @@ Feature: Nondeterminism
   Scenario: Apply rally function to a infinite list
     Given a file named "main.coel" with:
     """
-    (let a (prepend 42 a))
+    (def (f) (prepend 42 (f)))
+    (let a (f))
     (write (first a))
     (let b (rest a))
     (write (first b))

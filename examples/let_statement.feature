@@ -111,10 +111,5 @@ Feature: Let statement
     (write (l 1))
     (write (l 2))
     """
-    When I successfully run `coel main.coel`
-    Then the stdout should contain exactly:
-    """
-    42
-    42
-    42
-    """
+    When I run `coel main.coel`
+    Then the exit status should be 1

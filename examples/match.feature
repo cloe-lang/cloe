@@ -143,3 +143,17 @@ Feature: Match expression
     """
     Matched!
     """
+
+  Scenario: Use match expression with let statements
+    Given a file named "main.coel" with:
+    """
+    (let y (match [123 456 789]
+      [x ..xs] xs))
+
+    (write y)
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    [456 789]
+    """

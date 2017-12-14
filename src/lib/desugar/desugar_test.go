@@ -73,6 +73,11 @@ func TestDesugar(t *testing.T) {
 					debug.NewGoInfo(0)),
 			}, debug.NewGoInfo(0)),
 		},
+		{
+			ast.NewLetVar(
+				"v",
+				ast.NewMatch("x", []ast.MatchCase{ast.NewMatchCase("y", "z")})),
+		},
 	} {
 		t.Logf("%#v", ss)
 

@@ -7,9 +7,9 @@ func Desugar(ss []interface{}) []interface{} {
 	for _, f := range []func(interface{}) []interface{}{
 		desugarEmptyCollection,
 		desugarDictionaryExpansion,
-		desugarRecursiveLetVar,
 		desugarAnonymousFunctions,
 		match.Desugar,
+		desugarRecursiveLetVar,
 		desugarMutualRecursionStatement,
 		desugarSelfRecursiveStatement,
 		flattenStatement,

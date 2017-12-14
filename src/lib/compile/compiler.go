@@ -36,11 +36,12 @@ func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
 
 			vars := make([]interface{}, 0, len(ls))
 			varToIndex := sig.NameToIndex()
+			nargs := len(varToIndex)
 
-			for _, l := range ls {
+			for i, l := range ls {
 				v := l.(ast.LetVar)
 				vars = append(vars, c.exprToIR(varToIndex, v.Expr()))
-				varToIndex[v.Name()] = len(varToIndex)
+				varToIndex[v.Name()] = nargs + i
 			}
 
 			c.env.set(

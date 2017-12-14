@@ -113,3 +113,19 @@ Feature: Let statement
     """
     When I run `coel main.coel`
     Then the exit status should be 1
+
+  Scenario: Shadow arguments
+    Given a file named "main.coel" with:
+    """
+    (def (f x)
+      (let x (+ x 1))
+      (let x (+ x 1))
+      x)
+
+    (write (f 1))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    3
+    """

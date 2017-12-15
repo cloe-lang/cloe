@@ -24,7 +24,7 @@ func NewDictionary(ks []Value, vs []*Thunk) *Thunk {
 	d := Normal(DictionaryType{rbt.NewDictionary(compare)})
 
 	for i, k := range ks {
-		d = PApp(Insert, d, Normal(k), vs[i])
+		d = PApp(Insert, d, Normal(ensureNormal(k)), vs[i])
 	}
 
 	return d

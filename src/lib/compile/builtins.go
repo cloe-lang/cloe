@@ -108,10 +108,7 @@ func builtinsEnvironment() environment {
 			(let min (generateMaxOrMinFunction "min" <))
 
 			(def (slice list (start 0) (end nil))
-				(let len (size list))
-				(let end (if (= end nil)
-					(if (> start len) start len)
-					end))
+				(let end (if (= end nil) (max start (size list)) end))
 				(if
 					(< end start) (error "ValueError" "start index must be less than end index")
 					(= end 0) []

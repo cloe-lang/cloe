@@ -97,3 +97,41 @@ Feature: Built-in functions
     []
     []
     """
+
+  Scenario: Calculate maximum and minimum of numbers
+    Given a file named "main.coel" with:
+    """
+    (seq
+      (write (max 1))
+      (write (max 1 2))
+      (write (max 1 2 3))
+      (write (max 3))
+      (write (max 3 2))
+      (write (max 3 2 1))
+      (write (max 3 2 4 -3 123 -45 1))
+      (write (min 1))
+      (write (min 1 2))
+      (write (min 1 2 3))
+      (write (min 3))
+      (write (min 3 2))
+      (write (min 3 2 1))
+      (write (min 3 2 4 -3 123 -45 1)))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    1
+    2
+    3
+    3
+    3
+    3
+    123
+    1
+    1
+    1
+    3
+    2
+    1
+    -45
+    """

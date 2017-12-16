@@ -92,6 +92,22 @@ func builtinsEnvironment() environment {
 				(match list
 					[] []
 					[first ..rest] (prepend (func first) (map func rest))))
+
+			(def (slice list (start 0) (end nil))
+				(let len (size list))
+				(let end (if (= end nil)
+					(if (> start len) start len)
+					end))
+				(if
+					(< end start) (error "ValueError" "start index must be less than end index")
+					(= end 0) []
+					(match list
+						[] []
+						[x ..xs]
+							(if
+								(> start 0) (slice xs (- start 1) (- end 1))
+								(= start 0) (prepend x (slice xs 0 (- end 1)))
+								[]))))
 		`,
 	} {
 		for n, t := range compileBuiltinModule(e.copy(), "<builtins>", s) {

@@ -4,10 +4,7 @@ import "github.com/coel-lang/coel/src/lib/core"
 
 // Equal checks if all arguments are equal or not, and returns true if so or false otherwise.
 var Equal = core.NewStrictFunction(
-	core.NewSignature(
-		[]string{}, nil, "xs",
-		nil, nil, "",
-	),
+	core.NewSignature(nil, nil, "xs", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
 		l := ts[0]
 
@@ -15,7 +12,7 @@ var Equal = core.NewStrictFunction(
 			return v
 		}
 
-		e0 := core.PApp(core.First, l)
+		e := core.PApp(core.First, l)
 		l = core.PApp(core.Rest, l)
 
 		for {
@@ -23,7 +20,7 @@ var Equal = core.NewStrictFunction(
 				return v
 			}
 
-			v := core.PApp(core.Equal, e0, core.PApp(core.First, l)).Eval()
+			v := core.PApp(core.Equal, e, core.PApp(core.First, l)).Eval()
 			b, ok := v.(core.BoolType)
 
 			if !ok {

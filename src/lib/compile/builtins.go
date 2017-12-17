@@ -135,6 +135,11 @@ func builtinsEnvironment() environment {
 
 			(def (not bool)
 				(if bool false true))
+
+			(def (zip ..lists)
+				(if (or ..(map (\ (list) (= 0 (size list))) lists))
+					[]
+					(prepend (map first lists) (zip ..(map rest lists)))))
 		`,
 	} {
 		for n, t := range compileBuiltinModule(e.copy(), "<builtins>", s) {

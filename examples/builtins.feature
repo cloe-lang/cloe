@@ -165,3 +165,14 @@ Feature: Built-in functions
     1
     -45
     """
+
+  Scenario: Zip lists
+    Given a file named "main.coel" with:
+    """
+    (write (zip [1 2 3] ["foo" "bar" "baz"]))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    [[1 "foo"] [2 "bar"] [3 "baz"]]
+    """

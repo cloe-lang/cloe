@@ -4,7 +4,7 @@ import (
 	"github.com/coel-lang/coel/src/lib/core"
 )
 
-// Seq runs arguments of effects sequentially.
+// Seq runs arguments of effects sequentially and returns the last one.
 var Seq = core.NewLazyFunction(
 	core.NewSignature(nil, nil, "effects", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {

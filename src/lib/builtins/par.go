@@ -5,7 +5,7 @@ import (
 	"github.com/coel-lang/coel/src/lib/systemt"
 )
 
-// Par evaluates arguments asynchronously in parallel and returns the last one.
+// Par evaluates arguments in parallel and returns the last one.
 var Par = core.NewLazyFunction(
 	core.NewSignature(
 		nil, nil, "xs",

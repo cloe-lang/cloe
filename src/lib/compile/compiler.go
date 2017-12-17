@@ -56,6 +56,10 @@ func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
 			m, ok := modules.Modules[x.Path()]
 
 			if !ok && c.cache != nil {
+				if x.Path()[:1] != "/" && x.Path()[:2] != "./" && x.Path()[:3] != "../" {
+					return nil, fmt.Errorf(`Module paths must start with "/", "./", or "../": %v`, x.Path())
+				}
+
 				if cm, cached, err := c.cache.Get(x.Path()); err != nil {
 					return nil, err
 				} else if cached {

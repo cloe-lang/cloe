@@ -57,8 +57,23 @@ func TestCompileStdin(t *testing.T) {
 }
 
 func TestCompileWithSubModule(t *testing.T) {
-	// Module script
+	m := createModuleScript(t)
 
+	f, err := ioutil.TempFile("", "")
+	assert.Nil(t, err)
+
+	f.WriteString(fmt.Sprintf(`(import "%v") (write (%v.hello "John"))`, m, filepath.Base(m)))
+
+	err = f.Close()
+	assert.Nil(t, err)
+
+	es, err := Compile(f.Name())
+
+	assert.Nil(t, err)
+	assert.Equal(t, 1, len(es))
+}
+
+func createModuleScript(t *testing.T) string {
 	f, err := ioutil.TempFile("", "")
 	assert.Nil(t, err)
 
@@ -67,25 +82,8 @@ func TestCompileWithSubModule(t *testing.T) {
 	err = f.Close()
 	assert.Nil(t, err)
 
-	m := f.Name()
 	err = os.Rename(f.Name(), f.Name()+consts.FileExtension)
-	fmt.Println(f.Name())
 	assert.Nil(t, err)
 
-	// Main script
-
-	f, err = ioutil.TempFile("", "")
-	assert.Nil(t, err)
-
-	f.WriteString(fmt.Sprintf(`(import "%v") (write (%v.hello "John"))`, m, filepath.Base(m)))
-
-	err = f.Close()
-	assert.Nil(t, err)
-
-	// Compile main script
-
-	es, err := Compile(f.Name())
-
-	assert.Nil(t, err)
-	assert.Equal(t, 1, len(es))
+	return f.Name()
 }

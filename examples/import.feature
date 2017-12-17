@@ -2,7 +2,7 @@ Feature: Import statement
   Scenario: Import a module
     Given a file named "main.coel" with:
     """
-    (import "mod")
+    (import "./mod")
     (seq ..(mod.map write [1 2 3 4 5]))
     """
     And a file named "mod.coel" with:
@@ -25,7 +25,7 @@ Feature: Import statement
   Scenario: Import a module in a directory
     Given a file named "main.coel" with:
     """
-    (import "modules/mod")
+    (import "./modules/mod")
     (mod.Hello "world")
     """
     And a file named "modules/mod.coel" with:
@@ -37,6 +37,17 @@ Feature: Import statement
     """
     Hello, world!
     """
+
+  Scenario: Import a module with invalid path
+    Given a file named "main.coel" with:
+    """
+    (import "mod")
+    """
+    And a file named "mod.coel" with:
+    """
+    """
+    When I run `coel main.coel`
+    Then the exit status should not be 0
 
   Scenario: Print values in cached modules
     Given a file named "main.coel" with:

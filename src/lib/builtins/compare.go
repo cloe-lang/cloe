@@ -4,7 +4,7 @@ import "github.com/coel-lang/coel/src/lib/core"
 
 func createCompareFunction(checkOrder func(core.NumberType) bool) *core.Thunk {
 	return core.NewLazyFunction(
-		core.NewSignature([]string{}, nil, "xs", nil, nil, ""),
+		core.NewSignature(nil, nil, "xs", nil, nil, ""),
 		func(ts ...*core.Thunk) core.Value {
 			l := ts[0]
 

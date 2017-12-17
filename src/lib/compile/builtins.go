@@ -119,6 +119,22 @@ func builtinsEnvironment() environment {
 								(> start 0) (slice xs (- start 1) (- end 1))
 								(= start 0) (prepend x (slice xs 0 (- end 1)))
 								[]))))
+
+			(def (generateAndOrOrFunction name operator)
+				(def (f ..bools)
+					(match bools
+						[] (error
+							"ValueError"
+							(merge "Number of arguments to " name " function must be greater than 1"))
+						[x] x
+						[x y ..xs] (f (operator x y) ..xs)))
+				f)
+
+			(let and (generateAndOrOrFunction "and" (\ (x y) (if x y false))))
+			(let or (generateAndOrOrFunction "or" (\ (x y) (if x true y))))
+
+			(def (not bool)
+				(if bool false true))
 		`,
 	} {
 		for n, t := range compileBuiltinModule(e.copy(), "<builtins>", s) {

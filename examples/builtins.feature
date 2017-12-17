@@ -66,6 +66,36 @@ Feature: Built-in functions
     Yes
     """
 
+  Scenario: Use boolean operators
+    Given a file named "main.coel" with:
+    """
+    (seq
+      (write (not true))
+      (write (not false))
+      (write (and true))
+      (write (or true))
+      (write (and true false))
+      (write (or true false))
+      (write (and true true))
+      (write (or false false))
+      (write (and true false true))
+      (write (or true false true)))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    false
+    true
+    true
+    true
+    false
+    true
+    true
+    false
+    false
+    true
+    """
+
   Scenario: Slice lists
     Given a file named "main.coel" with:
     """

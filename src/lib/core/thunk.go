@@ -27,7 +27,10 @@ type Thunk struct {
 
 // Normal creates a thunk of a normal value as its result.
 func Normal(v Value) *Thunk {
-	assertValueIsNormal("Normal's argument", v)
+	if t, ok := v.(*Thunk); ok {
+		return t
+	}
+
 	return &Thunk{result: v, state: normal}
 }
 

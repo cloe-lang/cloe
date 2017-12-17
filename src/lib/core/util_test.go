@@ -29,7 +29,7 @@ func TestInternalStrictDumpPanic(t *testing.T) {
 func TestInternalStrictDumpFail(t *testing.T) {
 	for _, th := range []*Thunk{
 		NewList(OutOfRangeError()),
-		NewDictionary([]Value{Nil.Eval()}, []*Thunk{OutOfRangeError()})} {
+		NewDictionary([]Value{Nil}, []*Thunk{OutOfRangeError()})} {
 		_, err := strictDump(th.Eval())
 		assert.NotEqual(t, (*Thunk)(nil), err)
 	}

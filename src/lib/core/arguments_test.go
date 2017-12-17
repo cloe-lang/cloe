@@ -18,7 +18,7 @@ func TestNewArgumentsMerging(t *testing.T) {
 func TestArgumentsEmpty(t *testing.T) {
 	for _, a := range []Arguments{
 		NewArguments(nil, nil, []*Thunk{Nil}),
-		NewArguments(nil, nil, []*Thunk{NewDictionary([]Value{Nil.Eval()}, []*Thunk{Nil})}),
+		NewArguments(nil, nil, []*Thunk{NewDictionary([]Value{Nil}, []*Thunk{Nil})}),
 	} {
 		th := a.empty()
 		assert.NotEqual(t, (*Thunk)(nil), th)

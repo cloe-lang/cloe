@@ -62,3 +62,10 @@ func TestAssertValueIsNormal(t *testing.T) {
 
 	assertValueIsNormal("This", Nil)
 }
+
+func TestNormal(t *testing.T) {
+	for _, v := range []Value{Nil.Eval(), Nil} {
+		_, ok := Normal(v).Eval().(ErrorType)
+		assert.False(t, ok)
+	}
+}

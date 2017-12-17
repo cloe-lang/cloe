@@ -13,7 +13,7 @@ Feature: Parallelism
   Scenario: Evaluate effects sequentially
     Given a file named "main.coel" with:
     """
-    (seq
+    (eseq
       (write 0)
       (write 1)
       (write 2)

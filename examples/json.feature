@@ -25,7 +25,7 @@ Feature: JSON
     """
     (import "json")
 
-    (seq
+    (eseq
       (write (json.encode {"foo" 42}))
       (write (json.encode {123 nil}))
       (write (json.encode {nil "bar"})))

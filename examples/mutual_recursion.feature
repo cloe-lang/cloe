@@ -8,7 +8,7 @@ Feature: Mutual recursion
       (def (odd? n)
         (if (= n 0) false (even? (- n 1)))))
 
-    (seq
+    (eseq
       (write (even? 0))
       (write (odd? 0))
       (write (even? 1))
@@ -49,7 +49,7 @@ Feature: Mutual recursion
       (def (odd? n)
         (if (= n 0) false (even? (- n 1)))))
 
-    (seq
+    (eseq
       (write (even? 0))
       (write (odd? 0))
       (write (even? 1))
@@ -90,7 +90,7 @@ Feature: Mutual recursion
       (def (odd? n)
         (if (= n 0) false (even? (- n 1)))))
 
-    (seq
+    (eseq
       (write (even? 0))
       (write (odd? 0))
       (write (even? 1))
@@ -133,7 +133,7 @@ Feature: Mutual recursion
     (let even? ((foo) 0))
     (let odd? ((foo) 1))
 
-    (seq
+    (eseq
       (write (even? 0))
       (write (odd? 0))
       (write (even? 1))

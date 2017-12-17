@@ -58,6 +58,7 @@ var goBuiltins = func() environment {
 
 		{"par", builtins.Par},
 		{"seq", builtins.Seq},
+		{"eseq", builtins.EffectSeq},
 		{"rally", builtins.Rally},
 
 		{"read", builtins.Read},

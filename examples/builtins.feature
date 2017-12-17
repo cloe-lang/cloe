@@ -2,7 +2,7 @@ Feature: Built-in functions
   Scenario: Get types of values
     Given a file named "main.coel" with:
     """
-    (seq
+    (eseq
       (write (typeOf true))
       (write (typeOf {"key" "value"}))
       (write (typeOf []))
@@ -40,7 +40,7 @@ Feature: Built-in functions
     Given a file named "main.coel" with:
     """
     (let l [1 2 3 42 -3 "foo"])
-    (seq
+    (eseq
       (write (indexOf l 42))
       (write (indexOf l 2))
       (write (indexOf l "foo")))
@@ -69,7 +69,7 @@ Feature: Built-in functions
   Scenario: Use boolean operators
     Given a file named "main.coel" with:
     """
-    (seq
+    (eseq
       (write (not true))
       (write (not false))
       (write (and true))
@@ -99,7 +99,7 @@ Feature: Built-in functions
   Scenario: Slice lists
     Given a file named "main.coel" with:
     """
-    (seq
+    (eseq
       (write (slice [1 2 3]))
       (write (slice [1 2 3] 0))
       (write (slice [1 2 3] 1 3))
@@ -131,7 +131,7 @@ Feature: Built-in functions
   Scenario: Calculate maximum and minimum of numbers
     Given a file named "main.coel" with:
     """
-    (seq
+    (eseq
       (write (max 1))
       (write (max 1 2))
       (write (max 1 2 3))

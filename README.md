@@ -42,7 +42,7 @@ runtime.
 
 ## Documentation
 
-[Here](https://coel-lang.gitbooks.io/coel-programming-language/).
+[Here](https://coel-lang.org).
 
 ## Examples
 

@@ -17,7 +17,7 @@ func TestStringMerge(t *testing.T) {
 	s := "foo"
 	th := NewString(s)
 
-	assert.Equal(t, string(PApp(Merge, th, th).Eval().(StringType)), s+s)
+	assert.Equal(t, s+s, string(PApp(Merge, th, th).Eval().(StringType)))
 }
 
 func TestStringMergeWithNonString(t *testing.T) {
@@ -30,11 +30,11 @@ func TestStringToList(t *testing.T) {
 	l := PApp(ToList, NewString(s))
 
 	for _, r := range s {
-		assert.Equal(t, string(PApp(First, l).Eval().(StringType)), string(r))
+		assert.Equal(t, string(r), string(PApp(First, l).Eval().(StringType)))
 		l = PApp(Rest, l)
 	}
 
-	assert.Equal(t, l.Eval().(ListType), emptyList)
+	assert.Equal(t, emptyList, l.Eval().(ListType))
 }
 
 func TestStringIndex(t *testing.T) {

@@ -16,8 +16,7 @@ func TestCompileBuiltinModule(t *testing.T) {
 
 func TestCompileBuiltinModuleWithInvalidSyntax(t *testing.T) {
 	defer func() {
-		_, ok := recover().(error)
-		assert.True(t, ok)
+		assert.NotNil(t, recover())
 	}()
 
 	compileBuiltinModule(newEnvironment(testFallback), "", `(def (foo x) x`)
@@ -25,8 +24,7 @@ func TestCompileBuiltinModuleWithInvalidSyntax(t *testing.T) {
 
 func TestCompileBuiltinModuleWithInvalidSource(t *testing.T) {
 	defer func() {
-		_, ok := recover().(error)
-		assert.True(t, ok)
+		assert.NotNil(t, recover())
 	}()
 
 	compileBuiltinModule(newEnvironment(testFallback), "", `(def (foo x) y)`)

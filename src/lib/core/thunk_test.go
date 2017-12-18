@@ -57,7 +57,7 @@ func TestThunkEvalEffectWithError(t *testing.T) {
 
 func TestAssertValueIsNormal(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	assertValueIsNormal("This", Nil)

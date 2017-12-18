@@ -35,7 +35,7 @@ func TestDictionaryInsert(t *testing.T) {
 
 func TestNewDictionaryPanic(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	NewDictionary([]Value{Nil}, []*Thunk{Nil, Nil}).Eval()
@@ -137,7 +137,7 @@ func TestDictionaryToList(t *testing.T) {
 			assert.True(t, testEqual(lv, dv))
 		}
 
-		assert.Equal(t, l.Eval().(ListType), emptyList)
+		assert.Equal(t, emptyList, l.Eval().(ListType))
 	}
 }
 

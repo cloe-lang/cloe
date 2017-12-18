@@ -20,7 +20,7 @@ func TestDumpFail(t *testing.T) {
 
 func TestInternalStrictDumpPanic(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	strictDump(nil)
@@ -99,10 +99,7 @@ func TestTypeOfError(t *testing.T) {
 
 func TestTypeOfFail(t *testing.T) {
 	defer func() {
-		r := recover()
-		assert.NotEqual(t, nil, r)
-		_, ok := r.(error)
-		assert.True(t, ok)
+		assert.NotNil(t, recover())
 	}()
 
 	PApp(TypeOf, Normal("foo")).Eval()

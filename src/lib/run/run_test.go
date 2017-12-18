@@ -31,7 +31,7 @@ func TestRunWithExpandedList(t *testing.T) {
 
 func TestEvalEffectListFail(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	wg := sync.WaitGroup{}
@@ -41,7 +41,7 @@ func TestEvalEffectListFail(t *testing.T) {
 
 func TestRunEffectFail(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	wg := sync.WaitGroup{}

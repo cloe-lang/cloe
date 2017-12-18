@@ -45,20 +45,20 @@ func TestSubModuleFail(t *testing.T) {
 func checkSuccessfulResult(t *testing.T, x interface{}, err error) {
 	t.Log("Result:", x)
 	t.Log("Error:", err)
-	assert.Equal(t, nil, err)
+	assert.Nil(t, err)
 }
 
 func checkFailedResult(t *testing.T, x interface{}, err error) {
 	t.Log("Result:", x)
 	t.Log("Error:", err)
-	assert.NotEqual(t, nil, err)
+	assert.NotNil(t, err)
 }
 
 func TestImportModule(t *testing.T) {
 	for _, str := range []string{`(import "foo")`, `(import "foo/bar")`} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.importModule())()
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 	}
 }
 
@@ -66,7 +66,7 @@ func TestImportModuleFail(t *testing.T) {
 	for _, str := range []string{"(import)", "(import foo)", `(import "\a\b\c\d")`} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.importModule())()
-		assert.NotEqual(t, nil, err)
+		assert.NotNil(t, err)
 	}
 }
 
@@ -74,7 +74,7 @@ func TestLetVar(t *testing.T) {
 	for _, str := range []string{"(let foo 123)", "(let foo (f x y))"} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.letVar())()
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 	}
 }
 
@@ -85,7 +85,7 @@ func TestLetMatch(t *testing.T) {
 	} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.letMatch())()
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 	}
 }
 
@@ -97,7 +97,7 @@ func TestLetFunction(t *testing.T) {
 	} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.letFunction())()
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 	}
 }
 
@@ -109,7 +109,7 @@ func TestMutuallyRecursiveLetFunctions(t *testing.T) {
 	} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.mutuallyRecursiveLetFunctions())()
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 	}
 }
 
@@ -117,7 +117,7 @@ func TestSignature(t *testing.T) {
 	for _, str := range []string{"", "x", "x y", "(x 123)", "..args", ". x", ". (x 123)", ". ..kwargs", "..args . ..kwargs"} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.signature())()
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 	}
 }
 
@@ -125,7 +125,7 @@ func TestEffect(t *testing.T) {
 	for _, str := range []string{"effect", "..effects", "(foo bar)", "..(foo bar)"} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.effect())()
-		assert.Equal(t, nil, err)
+		assert.Nil(t, err)
 	}
 }
 
@@ -144,8 +144,8 @@ func TestStringLiteral(t *testing.T) {
 
 		t.Logf("%#v", result)
 
-		assert.NotEqual(t, result, nil)
-		assert.Equal(t, err, nil)
+		assert.NotNil(t, result)
+		assert.Nil(t, err)
 	}
 }
 
@@ -155,8 +155,8 @@ func TestStrip(t *testing.T) {
 
 	t.Logf("%#v", result)
 
-	assert.NotEqual(t, result, nil)
-	assert.Equal(t, err, nil)
+	assert.NotNil(t, result)
+	assert.Nil(t, err)
 }
 
 func TestList(t *testing.T) {
@@ -166,8 +166,8 @@ func TestList(t *testing.T) {
 
 		t.Logf("%#v", result)
 
-		assert.NotEqual(t, result, nil)
-		assert.Equal(t, err, nil)
+		assert.NotNil(t, result)
+		assert.Nil(t, err)
 	}
 }
 
@@ -186,8 +186,8 @@ func TestExpression(t *testing.T) {
 
 		t.Logf("%#v", result)
 
-		assert.NotEqual(t, result, nil)
-		assert.Equal(t, err, nil)
+		assert.NotNil(t, result)
+		assert.Nil(t, err)
 	}
 }
 
@@ -200,8 +200,8 @@ func TestAnonymousFunction(t *testing.T) {
 
 		t.Logf("%#v", result)
 
-		assert.NotEqual(t, nil, result)
-		assert.Equal(t, nil, err)
+		assert.NotNil(t, result)
+		assert.Nil(t, err)
 	}
 }
 
@@ -216,8 +216,8 @@ func TestMatchExpression(t *testing.T) {
 
 		t.Logf("%#v", result)
 
-		assert.NotEqual(t, result, nil)
-		assert.Equal(t, err, nil)
+		assert.NotNil(t, result)
+		assert.Nil(t, err)
 	}
 }
 
@@ -228,7 +228,7 @@ func TestApp(t *testing.T) {
 		s := newStateWithoutFile(str)
 		result, err := s.exhaust(s.app())()
 		t.Logf("%#v", result)
-		assert.Equal(t, err, nil)
+		assert.Nil(t, err)
 	}
 }
 
@@ -237,7 +237,7 @@ func TestArguments(t *testing.T) {
 		s := newStateWithoutFile(str)
 		result, err := s.exhaust(s.arguments())()
 		t.Logf("%#v", result)
-		assert.Equal(t, err, nil)
+		assert.Nil(t, err)
 	}
 }
 
@@ -246,16 +246,16 @@ func TestIdentifier(t *testing.T) {
 
 	t.Log(err)
 
-	assert.Equal(t, result, nil)
-	assert.NotEqual(t, err, nil)
+	assert.Nil(t, result)
+	assert.NotNil(t, err)
 }
 
 func TestIdentifierFail(t *testing.T) {
 	for _, str := range []string{"", ".", "..", ".foo", "let"} {
 		s := newStateWithoutFile(str)
 		result, err := s.identifier()()
-		assert.Equal(t, result, nil)
-		assert.NotEqual(t, err, nil)
+		assert.Nil(t, result)
+		assert.NotNil(t, err)
 	}
 }
 
@@ -266,8 +266,8 @@ func TestBlank(t *testing.T) {
 
 		t.Log(result, err)
 
-		assert.Equal(t, result, nil)
-		assert.Equal(t, err, nil)
+		assert.Nil(t, result)
+		assert.Nil(t, err)
 	}
 }
 

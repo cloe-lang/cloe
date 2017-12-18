@@ -41,7 +41,7 @@ func TestSetFirstRest(t *testing.T) {
 		x, s = s.FirstRest()
 	}
 
-	assert.Equal(t, nil, x)
+	assert.Nil(t, x)
 	assert.True(t, s.Empty())
 }
 

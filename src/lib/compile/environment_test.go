@@ -18,8 +18,7 @@ func TestNewEnvironment(t *testing.T) {
 
 func TestEnvironmentGetFail(t *testing.T) {
 	defer func() {
-		_, ok := recover().(error)
-		assert.True(t, ok)
+		assert.NotNil(t, recover())
 	}()
 
 	newEnvironment(testFallback).get("foo")
@@ -29,5 +28,5 @@ func TestEnvironmentGet(t *testing.T) {
 	e := newEnvironment(testFallback)
 	e.set("foo", core.Nil)
 	th := e.get("foo")
-	assert.Equal(t, core.Nil, th)
+	assert.Equal(t, core.Nil.Eval(), th.Eval())
 }

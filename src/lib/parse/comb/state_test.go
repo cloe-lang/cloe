@@ -7,21 +7,21 @@ import (
 )
 
 func TestStateLine(t *testing.T) {
-	assert.Equal(t, NewState("a\nb\n").Line(), "a")
+	assert.Equal(t, "a", NewState("a\nb\n").Line())
 }
 
 func TestStateLineBeforeNewLine(t *testing.T) {
 	s := NewState("a\nb\n")
 	_, err := s.String("a")()
-	assert.Equal(t, s.Line(), "a")
-	assert.Equal(t, nil, err)
+	assert.Equal(t, "a", s.Line())
+	assert.Nil(t, err)
 }
 
 func TestStateLineAfterNewLine(t *testing.T) {
 	s := NewState("a\nb\n")
 	_, err := s.String("a\n")()
-	assert.Equal(t, s.Line(), "b")
-	assert.Equal(t, nil, err)
+	assert.Equal(t, "b", s.Line())
+	assert.Nil(t, err)
 }
 
 func TestStateLineNumber(t *testing.T) {

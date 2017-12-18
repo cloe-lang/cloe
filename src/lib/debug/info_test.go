@@ -13,7 +13,7 @@ func TestNewGoInfo(t *testing.T) {
 
 func TestNewGoInfoWithInvalidSkip(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	NewGoInfo(10)

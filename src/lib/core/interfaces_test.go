@@ -16,14 +16,14 @@ func testLess(t1, t2 *Thunk) bool {
 
 func TestLessFail(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	compare(NewNumber(42).Eval(), NewError("you", "failed.").Eval())
 }
 
-func testCompare(t1, t2 *Thunk) NumberType {
-	return PApp(Compare, t1, t2).Eval().(NumberType)
+func testCompare(t1, t2 *Thunk) int {
+	return int(PApp(Compare, t1, t2).Eval().(NumberType))
 }
 
 func TestCompareWithInvalidValues(t *testing.T) {

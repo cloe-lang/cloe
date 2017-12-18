@@ -11,49 +11,49 @@ func TestChars(t *testing.T) {
 	s := NewState("b")
 	x, err := s.Chars("abc")()
 	assert.Equal(t, 'b', x)
-	assert.Equal(t, nil, err)
+	assert.Nil(t, err)
 }
 
 func TestCharsFail(t *testing.T) {
 	s := NewState("d")
 	x, err := s.Chars("abc")()
-	assert.Equal(t, nil, x)
-	assert.NotEqual(t, nil, err)
+	assert.Nil(t, x)
+	assert.NotNil(t, err)
 }
 
 func TestNotChar(t *testing.T) {
 	s := NewState("a")
 	x, err := s.NotChar(' ')()
 	assert.Equal(t, 'a', x)
-	assert.Equal(t, nil, err)
+	assert.Nil(t, err)
 }
 
 func TestNotCharFail(t *testing.T) {
 	s := NewState(" ")
 	x, err := s.NotChar(' ')()
-	assert.Equal(t, nil, x)
-	assert.NotEqual(t, nil, err)
+	assert.Nil(t, x)
+	assert.NotNil(t, err)
 }
 
 func TestWrap(t *testing.T) {
 	s := NewState("abc")
 	x, err := s.Wrap(s.String("a"), s.String("b"), s.String("c"))()
 	assert.Equal(t, "b", x)
-	assert.Equal(t, nil, err)
+	assert.Nil(t, err)
 }
 
 func TestPrefix(t *testing.T) {
 	s := NewState("abc")
 	x, err := s.Prefix(s.String("ab"), s.String("c"))()
 	assert.Equal(t, "c", x)
-	assert.Equal(t, nil, err)
+	assert.Nil(t, err)
 }
 
 func TestPrefixFail(t *testing.T) {
 	s := NewState("abc")
 	x, err := s.Prefix(s.String("ad"), s.String("c"))()
-	assert.Equal(t, nil, x)
-	assert.NotEqual(t, nil, err)
+	assert.Nil(t, x)
+	assert.NotNil(t, err)
 }
 
 func TestMany(t *testing.T) {
@@ -63,8 +63,8 @@ func TestMany(t *testing.T) {
 
 		t.Logf("%#v", x)
 
-		assert.NotEqual(t, nil, x)
-		assert.Equal(t, nil, err)
+		assert.NotNil(t, x)
+		assert.Nil(t, err)
 	}
 }
 
@@ -87,8 +87,8 @@ func TestManyFail(t *testing.T) {
 
 		t.Logf("%#v", x)
 
-		assert.Equal(t, nil, x)
-		assert.NotEqual(t, nil, err)
+		assert.Nil(t, x)
+		assert.NotNil(t, err)
 	}
 }
 
@@ -102,8 +102,8 @@ func TestMany1(t *testing.T) {
 
 	t.Logf("%#v", x)
 
-	assert.NotEqual(t, nil, x)
-	assert.Equal(t, nil, err)
+	assert.NotNil(t, x)
+	assert.Nil(t, err)
 }
 
 func TestMany1Fail(t *testing.T) {
@@ -111,8 +111,8 @@ func TestMany1Fail(t *testing.T) {
 
 	t.Log(err)
 
-	assert.Equal(t, nil, x)
-	assert.NotEqual(t, nil, err)
+	assert.Nil(t, x)
+	assert.NotNil(t, err)
 }
 
 func TestMany1Nest(t *testing.T) {
@@ -121,8 +121,8 @@ func TestMany1Nest(t *testing.T) {
 
 	t.Logf("%#v", x)
 
-	assert.NotEqual(t, nil, x)
-	assert.Equal(t, nil, err)
+	assert.NotNil(t, x)
+	assert.Nil(t, err)
 }
 
 func testOr(str string) (interface{}, error) {
@@ -136,8 +136,8 @@ func TestOr(t *testing.T) {
 
 		t.Logf("%#v", x)
 
-		assert.NotEqual(t, nil, x)
-		assert.Equal(t, nil, err)
+		assert.NotNil(t, x)
+		assert.Nil(t, err)
 	}
 }
 
@@ -146,8 +146,8 @@ func TestOrFail(t *testing.T) {
 
 	t.Log(err)
 
-	assert.Equal(t, nil, x)
-	assert.NotEqual(t, nil, err)
+	assert.Nil(t, x)
+	assert.NotNil(t, err)
 }
 
 func TestMaybeSuccess(t *testing.T) {
@@ -157,7 +157,7 @@ func TestMaybeSuccess(t *testing.T) {
 	t.Log(x)
 
 	assert.Equal(t, "foo", x)
-	assert.Equal(t, nil, err)
+	assert.Nil(t, err)
 }
 
 func TestMaybeFailure(t *testing.T) {
@@ -166,14 +166,14 @@ func TestMaybeFailure(t *testing.T) {
 
 	t.Log(x)
 
-	assert.Equal(t, nil, x)
-	assert.Equal(t, nil, err)
+	assert.Nil(t, x)
+	assert.Nil(t, err)
 }
 
 func TestExhaustWithErroneousParser(t *testing.T) {
 	s := NewState("")
 	_, err := s.Exhaust(s.String("foo"), exhaustError)()
-	assert.NotEqual(t, nil, err)
+	assert.NotNil(t, err)
 }
 
 func TestStringify(t *testing.T) {
@@ -181,12 +181,12 @@ func TestStringify(t *testing.T) {
 	s := NewState(str)
 	x, err := s.Exhaust(s.Stringify(s.And(s.String(str))), exhaustError)()
 	assert.Equal(t, str, x)
-	assert.Equal(t, nil, err)
+	assert.Nil(t, err)
 }
 
 func TestStringifyFail(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	stringify(42)
@@ -196,14 +196,14 @@ func TestLazy(t *testing.T) {
 	s := NewState("foo")
 	x, err := s.Lazy(func() Parser { return s.String("foo") })()
 	assert.Equal(t, "foo", x)
-	assert.Equal(t, nil, err)
+	assert.Nil(t, err)
 }
 
 func TestVoid(t *testing.T) {
 	s := NewState("foo")
 	x, err := s.Void(s.String("foo"))()
-	assert.Equal(t, nil, x)
-	assert.Equal(t, nil, err)
+	assert.Nil(t, x)
+	assert.Nil(t, err)
 }
 
 func exhaustError(State) error {

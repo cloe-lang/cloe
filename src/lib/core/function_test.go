@@ -7,5 +7,5 @@ import (
 )
 
 func TestFunctionToString(t *testing.T) {
-	assert.Equal(t, NewString("<function>").Eval(), PApp(ToString, If).Eval())
+	assert.Equal(t, StringType("<function>"), PApp(ToString, If).Eval())
 }

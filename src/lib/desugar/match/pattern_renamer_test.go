@@ -9,7 +9,7 @@ import (
 
 func TestPatternRenamerRenameFail(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	newPatternRenamer().rename(

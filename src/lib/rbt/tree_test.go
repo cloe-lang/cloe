@@ -48,13 +48,13 @@ func TestTreeFirstRest(t *testing.T) {
 
 	x, tr := tr.FirstRest()
 
-	for _, xpected := range xs {
+	for _, expected := range xs {
 		t.Log(x)
-		assert.Equal(t, xpected, x)
+		assert.Equal(t, expected, x)
 		x, tr = tr.FirstRest()
 	}
 
-	assert.Equal(t, nil, x)
+	assert.Nil(t, x)
 	assert.True(t, tr.Empty())
 }
 

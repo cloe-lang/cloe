@@ -42,8 +42,8 @@ func TestDictionaryFirstRest(t *testing.T) {
 		k, v, d = d.FirstRest()
 	}
 
-	assert.Equal(t, nil, k)
-	assert.Equal(t, nil, v)
+	assert.Nil(t, k)
+	assert.Nil(t, v)
 	assert.True(t, d.Empty())
 }
 

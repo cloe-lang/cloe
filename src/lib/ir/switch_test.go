@@ -13,7 +13,7 @@ func TestNewSwitch(t *testing.T) {
 
 func TestNewSwitchNoDefaultCase(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	NewSwitch(0, []Case{}, nil)

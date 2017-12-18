@@ -32,7 +32,7 @@ func TestValueRenamerRename(t *testing.T) {
 
 func TestValueRenamerRenameFail(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	newValueRenamer(map[string]string{"foo": "bar"}).rename(

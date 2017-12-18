@@ -77,7 +77,7 @@ func TestDesugarMutualRecursion(t *testing.T) {
 
 func TestDesugarMutualRecursionWithOneFunction(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	desugarMutualRecursion(ast.NewMutualRecursion(
@@ -87,7 +87,7 @@ func TestDesugarMutualRecursionWithOneFunction(t *testing.T) {
 
 func TestDesugarMutualRecursionWithFunctionsOfSameName(t *testing.T) {
 	defer func() {
-		assert.NotEqual(t, nil, recover())
+		assert.NotNil(t, recover())
 	}()
 
 	desugarMutualRecursion(ast.NewMutualRecursion(

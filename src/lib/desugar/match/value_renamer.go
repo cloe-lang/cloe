@@ -43,15 +43,28 @@ func (r valueRenamer) rename(v interface{}) interface{} {
 		}
 
 		return ast.NewApp(r.rename(x.Function()), ast.NewArguments(ps, ks, ds), x.DebugInfo())
-	case ast.Switch:
-		cs := make([]ast.SwitchCase, 0, len(x.Cases()))
+	case ast.Match:
+		cs := make([]ast.MatchCase, 0, len(x.Cases()))
 
 		for _, c := range x.Cases() {
-			cs = append(cs, ast.NewSwitchCase(c.Pattern(), r.rename(c.Value())))
+			p, ns := newPatternRenamer().rename(c.Pattern())
+			cs = append(cs, ast.NewMatchCase(p, r.extend(ns).rename(c.Value())))
 		}
 
-		return newSwitch(r.rename(x.Value()), cs, r.rename(x.DefaultCase()))
+		return ast.NewMatch(r.rename(x.Value()), cs)
 	}
 
 	panic(fmt.Errorf("Invalid value: %#v", v))
+}
+
+func (r valueRenamer) extend(ns map[string]string) valueRenamer {
+	ms := make(map[string]string, len(r.nameMap)+len(ns))
+
+	for _, ns := range []map[string]string{r.nameMap, ns} {
+		for n, m := range ns {
+			ms[n] = m
+		}
+	}
+
+	return newValueRenamer(ms)
 }

@@ -190,3 +190,16 @@ Feature: Match expression
     """
     ["bar" 42]
     """
+
+  Scenario: Nest match expressions
+    Given a file named "main.coel" with:
+    """
+    (write (match [1 2 3]
+      [x ..xs] (match xs
+        [y ..ys] (+ x y))))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    3
+    """

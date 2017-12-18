@@ -14,10 +14,10 @@ func TestValueRenamerRename(t *testing.T) {
 	for _, x := range []interface{}{
 		"foo",
 		ast.NewPApp("foo", []interface{}{"bar"}, debug.NewGoInfo(0)),
-		ast.NewSwitch("123", []ast.SwitchCase{
-			ast.NewSwitchCase("456", "false"),
-			ast.NewSwitchCase("123", "true"),
-		}, `"Error occurred."`),
+		ast.NewMatch("123", []ast.MatchCase{
+			ast.NewMatchCase("456", "false"),
+			ast.NewMatchCase("123", "true"),
+		}),
 		ast.NewApp(
 			"foo",
 			ast.NewArguments(
@@ -36,5 +36,5 @@ func TestValueRenamerRenameFail(t *testing.T) {
 	}()
 
 	newValueRenamer(map[string]string{"foo": "bar"}).rename(
-		ast.NewMatch("nil", []ast.MatchCase{ast.NewMatchCase("nil", "nil")}))
+		ast.NewSwitch("nil", []ast.SwitchCase{ast.NewSwitchCase("nil", "nil")}, `"not so match"`))
 }

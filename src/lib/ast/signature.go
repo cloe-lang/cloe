@@ -94,7 +94,7 @@ func (hs halfSignature) String() string {
 	}
 
 	if hs.rest != "" {
-		ss = append(ss, hs.rest)
+		ss = append(ss, ".."+hs.rest)
 	}
 
 	return strings.Join(ss, " ")

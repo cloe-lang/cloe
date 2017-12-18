@@ -8,9 +8,9 @@ Feature: Import statement
     And a file named "mod.coel" with:
     """
     (def (map func list)
-        (match list
-            [] []
-            [first ..rest] (prepend (func first) (map func rest))))
+      (match list
+        [] []
+        [first ..rest] (prepend (func first) (map func rest))))
     """
     When I successfully run `coel main.coel`
     Then the stdout should contain exactly:

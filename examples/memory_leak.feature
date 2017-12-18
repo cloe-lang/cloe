@@ -74,3 +74,13 @@ Feature: Memory leak
     """
     When I run `sh leak_memory.sh main.coel`
     Then the exit status should be 0
+
+  Scenario: Apply max function to an infinite list
+    Given a file named "main.coel" with:
+    """
+    (def (f) (prepend 42 (f)))
+
+    (write (max ..(f)))
+    """
+    When I run `sh leak_memory.sh main.coel`
+    Then the exit status should be 0

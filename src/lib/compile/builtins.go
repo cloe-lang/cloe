@@ -96,13 +96,16 @@ func builtinsEnvironment() environment {
 
 			(def (generateMaxOrMinFunction name compare)
 				(def (maxOrMin ..ns)
+					(let x (ns 0))
+					(let y (ns 1))
+					(let m (if (compare x y) x y))
 					(match ns
 						[]
 							(error
 								"ValueError"
 								(merge "Number of arguments to " name " function must be greater than 1."))
 						[x] x
-						[x y ..xs] (maxOrMin (if (compare x y) x y) ..xs)))
+						[_ _ ..xs] (seq m (maxOrMin m ..xs))))
 				maxOrMin)
 
 			(let max (generateMaxOrMinFunction "max" >))

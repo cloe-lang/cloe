@@ -11,17 +11,26 @@ func createSeqFunction(f func(t *core.Thunk) core.Value) *core.Thunk {
 			l := ts[0]
 
 			for {
+				r := core.PApp(core.Rest, l)
+
+				v := core.PApp(core.Equal, r, core.EmptyList).Eval()
+				b, ok := v.(core.BoolType)
+
+				if !ok {
+					return core.NotBoolError(v)
+				}
+
 				t := core.PApp(core.First, l)
+
+				if b {
+					return t
+				}
 
 				if err, ok := f(t).(core.ErrorType); ok {
 					return err
 				}
 
-				l = core.PApp(core.Rest, l)
-
-				if v := checkEmptyList(l, t); v != nil {
-					return v
-				}
+				l = r
 			}
 		})
 }

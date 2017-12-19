@@ -203,3 +203,20 @@ Feature: Match expression
     """
     3
     """
+
+  Scenario: Use many match expressions in a function
+    Given a file named "main.coel" with:
+    """
+    (def (f ..xs)
+      (let xs (prepend 1 2 3 xs))
+      (match xs
+        [] (if true (match xs [x] x [..xs] "OOOOK"))
+        [x y ..xs] (match xs [] [x y] [x y ..xs] [..xs (+ x y)])))
+
+    (write (f 4 5 6))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    [5 6 7]
+    """

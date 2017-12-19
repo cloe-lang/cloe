@@ -134,7 +134,7 @@ func (l ListType) index(v Value) Value {
 	for {
 		if l == emptyList {
 			return OutOfRangeError()
-		} else if n == 0 {
+		} else if n == 1 {
 			return l.first
 		}
 
@@ -160,7 +160,7 @@ func (l ListType) insert(ts ...*Thunk) Value {
 
 	if err != nil {
 		return err
-	} else if n == 0 {
+	} else if n == 1 {
 		return PApp(Prepend, ts[1], Normal(l))
 	}
 
@@ -187,7 +187,7 @@ func (l ListType) delete(v Value) Value {
 	for {
 		if l == emptyList {
 			return OutOfRangeError()
-		} else if n == 0 {
+		} else if n == 1 {
 			return PApp(Merge, NewList(elems...), l.rest)
 		}
 
@@ -218,7 +218,7 @@ func checkIndex(v Value) (NumberType, Value) {
 		return 0, NotBoolError(v)
 	} else if !b {
 		return 0, NotIntError(n)
-	} else if n < 0 {
+	} else if n < 1 {
 		return 0, OutOfRangeError()
 	}
 

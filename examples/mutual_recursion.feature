@@ -130,8 +130,8 @@ Feature: Mutual recursion
         (def (odd? n)  (if (= n 0) false (even? (- n 1)))))
       [even? odd?])
 
-    (let even? ((foo) 0))
-    (let odd? ((foo) 1))
+    (let even? ((foo) 1))
+    (let odd? ((foo) 2))
 
     (eseq
       (write (even? 0))

@@ -3,9 +3,9 @@ Feature: Collections
     Given a file named "main.coel" with:
     """
     (eseq
-      (write ([123 [456 789] "foo" true nil false] 1))
+      (write ([123 [456 789] "foo" true nil false] 2))
       (write ({123 [456 789] "foo" "It's me." nil false} "foo"))
-      (write ("Hello, world!" 5)))
+      (write ("Hello, world!" 6)))
     """
     When I successfully run `coel main.coel`
     Then the stdout should contain exactly:

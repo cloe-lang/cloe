@@ -49,7 +49,7 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 			recs,
 			ast.NewLetVar(
 				f.Name(),
-				ast.NewPApp(recsList, []interface{}{fmt.Sprint(i)}, f.DebugInfo())))
+				ast.NewPApp(recsList, []interface{}{fmt.Sprint(i + 1)}, f.DebugInfo())))
 	}
 
 	return append(
@@ -80,7 +80,7 @@ func indexLetFunctions(fs ...ast.LetFunction) map[string]int {
 	n2i := make(map[string]int)
 
 	for i, f := range fs {
-		n2i[f.Name()] = i
+		n2i[f.Name()] = i + 1
 	}
 
 	if len(n2i) != len(fs) {

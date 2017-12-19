@@ -29,7 +29,7 @@ func TestCollectionFunctionsError(t *testing.T) {
 
 func TestIndexChain(t *testing.T) {
 	for _, ths := range [][2]*Thunk{
-		{PApp(NewList(NewList(Nil)), NewNumber(0), NewNumber(0)), Nil},
+		{PApp(NewList(NewList(Nil)), NewNumber(1), NewNumber(1)), Nil},
 		{
 			PApp(
 				NewDictionary(

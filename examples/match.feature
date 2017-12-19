@@ -109,7 +109,7 @@ Feature: Match expression
     """
     (write (match [[42 2049] ["This" "is" "Matched!"]]
       [[..foo] ["This" "is" "not" "Matched!"]] "Not matched..."
-      [[..foo] ["This" ..bar]] (bar 1)))
+      [[..foo] ["This" ..bar]] (bar 2)))
     """
     When I successfully run `coel main.coel`
     Then the stdout should contain exactly:

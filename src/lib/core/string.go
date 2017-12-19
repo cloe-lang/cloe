@@ -26,11 +26,11 @@ func (s StringType) index(v Value) Value {
 
 	i := int(n)
 
-	if i >= len(s) {
+	if i > len(s) {
 		return OutOfRangeError()
 	}
 
-	return s[i : i+1]
+	return s[i-1 : i]
 }
 
 func (s StringType) insert(ts ...*Thunk) Value {
@@ -41,7 +41,7 @@ func (s StringType) insert(ts ...*Thunk) Value {
 		return err
 	}
 
-	i := int(n)
+	i := int(n) - 1
 
 	if i > len(s) {
 		return OutOfRangeError()
@@ -82,7 +82,7 @@ func (s StringType) merge(ts ...*Thunk) Value {
 
 func (s StringType) delete(v Value) Value {
 	n, err := checkIndex(v)
-	i := int(n)
+	i := int(n) - 1
 
 	if err != nil {
 		return err

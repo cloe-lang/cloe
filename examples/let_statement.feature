@@ -107,9 +107,9 @@ Feature: Let statement
     """
     (let l (prepend 42 l))
 
-    (write (l 0))
     (write (l 1))
     (write (l 2))
+    (write (l 3))
     """
     When I run `coel main.coel`
     Then the exit status should be 1

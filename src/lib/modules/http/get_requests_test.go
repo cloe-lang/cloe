@@ -36,7 +36,7 @@ func TestGetRequests(t *testing.T) {
 
 	assert.True(t, ok)
 
-	r := core.PApp(th, core.NewNumber(0))
+	r := core.PApp(core.First, th)
 
 	testRequest(t, r)
 
@@ -75,7 +75,7 @@ func TestGetRequestsWithCustomStatus(t *testing.T) {
 	}()
 
 	th = core.App(
-		core.PApp(core.PApp(th, core.NewNumber(0)), core.NewString("respond")),
+		core.PApp(core.PApp(core.First, th), core.NewString("respond")),
 		core.NewArguments(
 			nil,
 			[]core.KeywordArgument{

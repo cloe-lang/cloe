@@ -84,7 +84,7 @@ func builtinsEnvironment() environment {
 			(def (list ..xs) xs)
 		`,
 		`
-			(def (indexOf list elem . (index 0))
+			(def (indexOf list elem . (index 1))
 				(match list
 					[] (error "ElementNotFoundError" "Could not find an element in a list")
 					[first ..rest] (if (= first elem) index (indexOf rest elem . index (+ index 1)))))
@@ -110,17 +110,17 @@ func builtinsEnvironment() environment {
 			(let max (generateMaxOrMinFunction "max" >))
 			(let min (generateMaxOrMinFunction "min" <))
 
-			(def (slice list (start 0) (end nil))
+			(def (slice list (start 1) (end nil))
 				(let end (if (= end nil) (max start (size list)) end))
 				(if
 					(< end start) (error "ValueError" "start index must be less than end index")
-					(= end 0) []
 					(match list
 						[] []
 						[x ..xs]
 							(if
-								(> start 0) (slice xs (- start 1) (- end 1))
-								(= start 0) (prepend x (slice xs 0 (- end 1)))
+								(= end 1) [x]
+								(> start 1) (slice xs (- start 1) (- end 1))
+								(= start 1) (prepend x (slice xs 1 (- end 1)))
 								[]))))
 
 			(def (generateAndOrOrFunction name operator)

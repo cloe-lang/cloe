@@ -40,7 +40,7 @@ func TestStringToList(t *testing.T) {
 func TestStringIndex(t *testing.T) {
 	assert.Equal(t,
 		NewString("b").Eval(),
-		PApp(NewString("abc"), NewNumber(1)).Eval().(StringType))
+		PApp(NewString("abc"), NewNumber(2)).Eval().(StringType))
 }
 
 func TestStringIndexWithInvalidIndexNumber(t *testing.T) {
@@ -56,9 +56,9 @@ func TestStringDelete(t *testing.T) {
 		index    float64
 		expected StringType
 	}{
-		{"a", 0, ""},
-		{"abc", 1, "ac"},
-		{"abc", 2, "ab"},
+		{"a", 1, ""},
+		{"abc", 2, "ac"},
+		{"abc", 3, "ab"},
 	} {
 		assert.Equal(t,
 			test.expected,
@@ -117,13 +117,13 @@ func TestStringInsert(t *testing.T) {
 		elem     StringType
 		expected StringType
 	}{
-		{"", 0, "", ""},
-		{"", 0, "a", "a"},
-		{"a", 0, "b", "ba"},
-		{"a", 1, "b", "ab"},
-		{"ab", 0, "c", "cab"},
-		{"ab", 1, "c", "acb"},
-		{"ab", 2, "c", "abc"},
+		{"", 1, "", ""},
+		{"", 1, "a", "a"},
+		{"a", 1, "b", "ba"},
+		{"a", 2, "b", "ab"},
+		{"ab", 1, "c", "cab"},
+		{"ab", 2, "c", "acb"},
+		{"ab", 3, "c", "abc"},
 	} {
 		assert.True(t, testEqual(
 			Normal(test.expected),
@@ -132,7 +132,7 @@ func TestStringInsert(t *testing.T) {
 }
 
 func TestStringInsertWithInvalidIndex(t *testing.T) {
-	for _, i := range []float64{-1, 100} {
+	for _, i := range []float64{-1, 0, 5, 100} {
 		_, ok := PApp(Insert, NewString("foo"), NewNumber(i), NewString("bar")).Eval().(ErrorType)
 		assert.True(t, ok)
 	}

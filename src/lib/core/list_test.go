@@ -127,12 +127,12 @@ func TestListIndex(t *testing.T) {
 		list  *Thunk
 		index float64
 	}{
-		{NewList(a), 0},
-		{NewList(True, a), 1},
-		{NewList(a, False), 0},
-		{NewList(True, False, a), 2},
-		{NewList(Nil, Nil, Nil, Nil, a), 4},
-		{NewList(Nil, Nil, Nil, a, Nil), 3},
+		{NewList(a), 1},
+		{NewList(True, a), 2},
+		{NewList(a, False), 1},
+		{NewList(True, False, a), 3},
+		{NewList(Nil, Nil, Nil, Nil, a), 5},
+		{NewList(Nil, Nil, Nil, a, Nil), 4},
 	} {
 		assert.True(t, testEqual(a, PApp(li.list, NewNumber(li.index))))
 	}
@@ -145,7 +145,7 @@ func TestListIndexFail(t *testing.T) {
 	}{
 		{NewList(), 0},
 		{NewList(), 1},
-		{NewList(Nil), 1},
+		{NewList(Nil), 2},
 		{NewList(Nil, Nil), 1.5},
 	} {
 		v := PApp(li.list, NewNumber(li.index)).Eval()
@@ -166,9 +166,9 @@ func TestListDelete(t *testing.T) {
 		index  float64
 		answer *Thunk
 	}{
-		{NewList(Nil), 0, NewList()},
-		{NewList(Nil, True), 1, NewList(Nil)},
-		{NewList(Nil, True, False), 2, NewList(Nil, True)},
+		{NewList(Nil), 1, NewList()},
+		{NewList(Nil, True), 2, NewList(Nil)},
+		{NewList(Nil, True, False), 3, NewList(Nil, True)},
 	} {
 		assert.True(t, testEqual(PApp(Delete, test.list, NewNumber(test.index)), test.answer))
 	}
@@ -211,12 +211,12 @@ func TestListInsert(t *testing.T) {
 		elem     *Thunk
 		expected *Thunk
 	}{
-		{NewList(), 0, Nil, NewList(Nil)},
-		{NewList(True), 0, False, NewList(False, True)},
-		{NewList(True), 1, False, NewList(True, False)},
-		{NewList(True, False), 0, Nil, NewList(Nil, True, False)},
-		{NewList(True, False), 1, Nil, NewList(True, Nil, False)},
-		{NewList(True, False), 2, Nil, NewList(True, False, Nil)},
+		{NewList(), 1, Nil, NewList(Nil)},
+		{NewList(True), 1, False, NewList(False, True)},
+		{NewList(True), 2, False, NewList(True, False)},
+		{NewList(True, False), 1, Nil, NewList(Nil, True, False)},
+		{NewList(True, False), 2, Nil, NewList(True, Nil, False)},
+		{NewList(True, False), 3, Nil, NewList(True, False, Nil)},
 	} {
 		assert.True(t, testEqual(test.expected, PApp(Insert, test.list, Normal(test.index), test.elem)))
 	}

@@ -222,6 +222,11 @@ func TestListInsert(t *testing.T) {
 	}
 }
 
+func TestListInsertFailure(t *testing.T) {
+	_, ok := PApp(Insert, EmptyList, NewNumber(0), Nil).Eval().(ErrorType)
+	assert.True(t, ok)
+}
+
 func TestListCompare(t *testing.T) {
 	assert.True(t, testCompare(NewList(), NewList()) == 0)
 	assert.True(t, testCompare(NewList(NewNumber(42)), NewList()) == 1)

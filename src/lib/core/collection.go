@@ -5,7 +5,7 @@ type collection interface {
 
 	include(Value) Value
 	index(Value) Value
-	insert(...*Thunk) Value
+	insert(*Thunk, *Thunk) Value
 	merge(...*Thunk) Value
 	delete(Value) Value
 	toList() Value
@@ -71,10 +71,7 @@ var Index = NewStrictFunction(
 
 // Insert inserts an element into a collection.
 var Insert = NewLazyFunction(
-	NewSignature(
-		[]string{"collection"}, nil, "values",
-		nil, nil, "",
-	),
+	NewSignature([]string{"collection"}, nil, "keyValuePairs", nil, nil, ""),
 	func(ts ...*Thunk) (result Value) {
 		v := ts[0].Eval()
 		c, ok := v.(collection)
@@ -83,20 +80,32 @@ var Insert = NewLazyFunction(
 			return NotCollectionError(v)
 		}
 
-		v = ts[1].Eval()
-		l, ok := v.(ListType)
+		l := ts[1]
 
-		if !ok {
-			return NotListError(v)
+		for {
+			v := PApp(Equal, l, EmptyList).Eval()
+			b, ok := v.(BoolType)
+
+			if !ok {
+				return NotBoolError(v)
+			} else if b {
+				break
+			}
+
+			x := PApp(First, l)
+			l = PApp(Rest, l)
+			y := PApp(First, l)
+			l = PApp(Rest, l)
+
+			v = ensureNormal(c.insert(x, y))
+			c, ok = v.(collection)
+
+			if !ok {
+				return NotCollectionError(v)
+			}
 		}
 
-		ts, err := l.ToThunks()
-
-		if err != nil {
-			return err
-		}
-
-		return c.insert(ts...)
+		return c
 	})
 
 // Merge merges more than 2 collections.

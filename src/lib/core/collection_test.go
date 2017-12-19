@@ -68,3 +68,12 @@ func TestIndexWithInvalidRestArguments(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, "FooError", e.Name())
 }
+
+func TestInsertChain(t *testing.T) {
+	for _, ts := range [][2]*Thunk{
+		{NewList(True, False), PApp(Insert, EmptyList, NewNumber(1), True, NewNumber(2), False)},
+		{NewList(True, False), PApp(Insert, EmptyList, NewNumber(1), False, NewNumber(1), True)},
+	} {
+		assert.True(t, testEqual(ts[0], ts[1]))
+	}
+}

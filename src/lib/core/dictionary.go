@@ -30,24 +30,20 @@ func NewDictionary(ks []Value, vs []*Thunk) *Thunk {
 	return d
 }
 
-func (d DictionaryType) insert(ts ...*Thunk) (result Value) {
+func (d DictionaryType) insert(t, tt *Thunk) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = r
 		}
 	}()
 
-	if len(ts) != 2 {
-		return NumArgsError("insert", "3 if a collection is a dictionary")
-	}
-
-	v := ts[0].Eval()
+	v := t.Eval()
 
 	if _, ok := v.(comparable); !ok {
 		return notComparableError(v)
 	}
 
-	return d.Insert(v, ts[1])
+	return d.Insert(v, tt)
 }
 
 func (d DictionaryType) call(args Arguments) Value {

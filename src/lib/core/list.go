@@ -150,21 +150,17 @@ func (l ListType) index(v Value) Value {
 	}
 }
 
-func (l ListType) insert(ts ...*Thunk) Value {
-	if len(ts) != 2 {
-		return NumArgsError("insert", "3 if a collection is a list")
-	}
-
-	v := ts[0].Eval()
+func (l ListType) insert(t, tt *Thunk) Value {
+	v := t.Eval()
 	n, err := checkIndex(v)
 
 	if err != nil {
 		return err
 	} else if n == 1 {
-		return PApp(Prepend, ts[1], Normal(l))
+		return PApp(Prepend, tt, Normal(l))
 	}
 
-	return PApp(Prepend, l.first, PApp(Insert, l.rest, Normal(n-1), ts[1]))
+	return PApp(Prepend, l.first, PApp(Insert, l.rest, Normal(n-1), tt))
 }
 
 func (l ListType) merge(ts ...*Thunk) Value {

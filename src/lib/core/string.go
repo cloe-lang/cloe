@@ -33,8 +33,8 @@ func (s StringType) index(v Value) Value {
 	return s[i-1 : i]
 }
 
-func (s StringType) insert(ts ...*Thunk) Value {
-	v := ts[0].Eval()
+func (s StringType) insert(t, tt *Thunk) Value {
+	v := t.Eval()
 	n, err := checkIndex(v)
 
 	if err != nil {
@@ -47,7 +47,7 @@ func (s StringType) insert(ts ...*Thunk) Value {
 		return OutOfRangeError()
 	}
 
-	v = ts[1].Eval()
+	v = tt.Eval()
 	ss, ok := v.(StringType)
 
 	if !ok {

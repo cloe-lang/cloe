@@ -37,7 +37,7 @@ func strictDump(v Value) (StringType, *Thunk) {
 		panic(fmt.Errorf("Invalid value: %#v", x))
 	}
 
-	s, ok := v.(StringType)
+	s, ok := ensureNormal(v).(StringType)
 
 	if !ok {
 		return "", NotStringError(v)

@@ -44,7 +44,11 @@ func (d *desugarer) desugar(x interface{}) interface{} {
 				cs = append(cs, renameBoundNamesInCase(ast.NewMatchCase(c.Pattern(), c.Value())))
 			}
 
-			return d.resultApp(d.createMatchFunction(cs), d.desugar(x.Value()))
+			f := newDesugarer().createMatchFunction(cs)
+
+			d.lets = append(d.lets, f)
+
+			return d.resultApp(f.Name(), d.desugar(x.Value()))
 		}
 
 		return nil
@@ -82,20 +86,16 @@ func (d *desugarer) resultApp(f interface{}, args ...interface{}) string {
 	return d.letTempVar(app(f, args...))
 }
 
-func (d *desugarer) createMatchFunction(cs []ast.MatchCase) interface{} {
+func (d *desugarer) createMatchFunction(cs []ast.MatchCase) ast.LetFunction {
 	arg := gensym.GenSym()
 	body := d.desugarCases(arg, cs, "$matchError")
 
-	f := d.desugar(ast.NewLetFunction(
+	return d.desugar(ast.NewLetFunction(
 		gensym.GenSym(),
 		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
 		d.takeLets(),
 		app("$if", app("$=", app("$catch", arg), "$nil"), body, arg),
 		debug.NewGoInfo(0))).(ast.LetFunction)
-
-	d.lets = append(d.lets, f)
-
-	return f.Name()
 }
 
 func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {

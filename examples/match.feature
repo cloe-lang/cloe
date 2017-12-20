@@ -220,3 +220,14 @@ Feature: Match expression
     """
     [5 6 7]
     """
+
+  Scenario: Use similar match expressions in a expression
+    Given a file named "main.coel" with:
+    """
+    (write [(match [1] [x] x) (match [1] [x] x)])
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    [1 1]
+    """

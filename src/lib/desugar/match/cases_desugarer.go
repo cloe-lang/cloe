@@ -10,65 +10,40 @@ import (
 	"github.com/coel-lang/coel/src/lib/scalar"
 )
 
-type desugarer struct {
+type casesDesugarer struct {
 	letBoundNames, lets []interface{}
 }
 
-func newDesugarer() *desugarer {
-	return &desugarer{nil, nil}
+func newCasesDesugarer() *casesDesugarer {
+	return &casesDesugarer{nil, nil}
 }
 
-func (d *desugarer) desugar(x interface{}) interface{} {
-	return ast.Convert(func(x interface{}) interface{} {
-		switch x := x.(type) {
-		case ast.LetFunction:
-			ls := make([]interface{}, 0, len(x.Lets()))
+func (d *casesDesugarer) Desugar(cs []ast.MatchCase) ast.LetFunction {
+	arg := gensym.GenSym()
+	body := d.desugarCases(arg, cs, "$matchError")
 
-			for _, l := range x.Lets() {
-				l := d.desugar(l)
-				ls = append(ls, append(d.takeLets(), l)...)
-			}
-
-			b := d.desugar(x.Body())
-
-			return ast.NewLetFunction(
-				x.Name(),
-				x.Signature(),
-				append(ls, d.takeLets()...),
-				b,
-				x.DebugInfo())
-		case ast.Match:
-			cs := make([]ast.MatchCase, 0, len(x.Cases()))
-
-			for _, c := range x.Cases() {
-				cs = append(cs, renameBoundNamesInCase(ast.NewMatchCase(c.Pattern(), c.Value())))
-			}
-
-			f := newDesugarer().createMatchFunction(cs)
-
-			d.lets = append(d.lets, f)
-
-			return d.resultApp(f.Name(), d.desugar(x.Value()))
-		}
-
-		return nil
-	}, x)
+	return ast.NewLetFunction(
+		gensym.GenSym(),
+		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
+		d.takeLets(),
+		app("$if", app("$=", app("$catch", arg), "$nil"), body, arg),
+		debug.NewGoInfo(0))
 }
 
-func (d *desugarer) takeLets() []interface{} {
+func (d *casesDesugarer) takeLets() []interface{} {
 	ls := append(d.letBoundNames, d.lets...)
 	d.letBoundNames = nil
 	d.lets = nil
 	return ls
 }
 
-func (d *desugarer) letTempVar(v interface{}) string {
+func (d *casesDesugarer) letTempVar(v interface{}) string {
 	s := gensym.GenSym()
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
 	return s
 }
 
-func (d *desugarer) bindName(p interface{}, v interface{}) string {
+func (d *casesDesugarer) bindName(p interface{}, v interface{}) string {
 	s := generalNamePatternToName(p)
 	d.letBoundNames = append(d.letBoundNames, ast.NewLetVar(s, v))
 	return s
@@ -76,29 +51,17 @@ func (d *desugarer) bindName(p interface{}, v interface{}) string {
 
 // matchedApp applies a function to arguments and creates a matched value of
 // match expression.
-func (d *desugarer) matchedApp(f interface{}, args ...interface{}) string {
+func (d *casesDesugarer) matchedApp(f interface{}, args ...interface{}) string {
 	return d.bindName(gensym.GenSym(), app(f, args...))
 }
 
 // resultApp applies a function to arguments and creates a result value of match
 // expression.
-func (d *desugarer) resultApp(f interface{}, args ...interface{}) string {
+func (d *casesDesugarer) resultApp(f interface{}, args ...interface{}) string {
 	return d.letTempVar(app(f, args...))
 }
 
-func (d *desugarer) createMatchFunction(cs []ast.MatchCase) ast.LetFunction {
-	arg := gensym.GenSym()
-	body := d.desugarCases(arg, cs, "$matchError")
-
-	return d.desugar(ast.NewLetFunction(
-		gensym.GenSym(),
-		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
-		d.takeLets(),
-		app("$if", app("$=", app("$catch", arg), "$nil"), body, arg),
-		debug.NewGoInfo(0))).(ast.LetFunction)
-}
-
-func (d *desugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	css := groupCases(cs)
 
 	if cs, ok := css[namePattern]; ok {
@@ -183,7 +146,7 @@ func isGeneralNamePattern(p interface{}) bool {
 	panic(fmt.Errorf("Invalid pattern: %#v", p))
 }
 
-func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	type group struct {
 		first interface{}
 		cases []ast.MatchCase
@@ -262,11 +225,11 @@ func (d *desugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc in
 	return d.resultApp("$if", app("$=", list, consts.Names.EmptyList), emptyCase, r)
 }
 
-func (d *desugarer) ifType(v interface{}, t string, then, els interface{}) interface{} {
+func (d *casesDesugarer) ifType(v interface{}, t string, then, els interface{}) interface{} {
 	return d.resultApp("$if", app("$=", app("$typeOf", v), "\""+t+"\""), then, els)
 }
 
-func (d *desugarer) desugarDictCases(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarDictCases(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	type group struct {
 		key   interface{}
 		cases []ast.MatchCase
@@ -312,7 +275,7 @@ func (d *desugarer) desugarDictCases(dict interface{}, cs []ast.MatchCase, dc in
 	return dc
 }
 
-func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	type group struct {
 		value interface{}
 		cases []ast.MatchCase
@@ -373,7 +336,7 @@ func (d *desugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCa
 	return d.desugarCases(value, cs, dc)
 }
 
-func (d *desugarer) defaultCaseOfGeneralNamePattern(v, p, body, dc interface{}) interface{} {
+func (d *casesDesugarer) defaultCaseOfGeneralNamePattern(v, p, body, dc interface{}) interface{} {
 	switch getPatternType(p) {
 	case namePattern:
 		return body
@@ -386,7 +349,7 @@ func (d *desugarer) defaultCaseOfGeneralNamePattern(v, p, body, dc interface{}) 
 	panic("Unreachable")
 }
 
-func (d *desugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	ks := []ast.SwitchCase{}
 
 	for _, c := range cs {

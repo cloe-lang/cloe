@@ -36,13 +36,3 @@ func letVarsToExpressions(ls []interface{}) []interface{} {
 
 	return es
 }
-
-func reverseSlice(xs []interface{}) []interface{} {
-	ys := make([]interface{}, 0, len(xs))
-
-	for i := range xs {
-		ys = append(ys, xs[len(xs)-i-1])
-	}
-
-	return ys
-}

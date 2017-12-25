@@ -160,35 +160,22 @@ var Delete = NewStrictFunction(
 	})
 
 // Size returns a size of a collection.
-var Size = NewLazyFunction(
-	NewSignature(
-		[]string{"collection"}, nil, "",
-		nil, nil, "",
-	),
-	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		c, ok := v.(collection)
-
-		if !ok {
-			return TypeError(v, "collection")
-		}
-
-		return c.size()
-	})
+var Size = newUnaryCollectionFunction(func(c collection) Value { return c.size() })
 
 // ToList converts a collection into a list of its elements.
-var ToList = NewLazyFunction(
-	NewSignature(
-		[]string{"listLike"}, nil, "",
-		nil, nil, "",
-	),
-	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		l, ok := v.(collection)
+var ToList = newUnaryCollectionFunction(func(c collection) Value { return c.toList() })
 
-		if !ok {
-			return TypeError(v, "collection")
-		}
+func newUnaryCollectionFunction(f func(c collection) Value) *Thunk {
+	return NewLazyFunction(
+		NewSignature([]string{"collection"}, nil, "", nil, nil, ""),
+		func(ts ...*Thunk) Value {
+			v := ts[0].Eval()
+			c, ok := v.(collection)
 
-		return l.toList()
-	})
+			if !ok {
+				return NotCollectionError(v)
+			}
+
+			return f(c)
+		})
+}

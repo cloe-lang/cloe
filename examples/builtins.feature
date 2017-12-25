@@ -174,3 +174,33 @@ Feature: Built-in functions
     """
     [[1 "foo"] [2 "bar"] [3 "baz"]]
     """
+
+  Scenario: Check if values are ordered or not
+    Given a file named "main.coel" with:
+    """
+    (eseq
+      ..(map (\ (x) (write (ordered? x))) [
+        123
+        "foo"
+        []
+        [123]
+        nil
+        true
+        {}
+        [{}]
+        [123 {}]
+      ]))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    true
+    true
+    true
+    true
+    false
+    false
+    false
+    false
+    false
+    """

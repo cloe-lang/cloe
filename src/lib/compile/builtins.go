@@ -84,6 +84,14 @@ func builtinsEnvironment() environment {
 			(def (list ..xs) xs)
 		`,
 		`
+			(def (bool? x) (= (typeOf x) "bool"))
+			(def (dict? x) (= (typeOf x) "dict"))
+			(def (function? x) (= (typeOf x) "function"))
+			(def (list? x) (= (typeOf x) "list"))
+			(def (nil? x) (= (typeOf x) "nil"))
+			(def (number? x) (= (typeOf x) "number"))
+			(def (string? x) (= (typeOf x) "string"))
+
 			(def (indexOf list elem . (index 1))
 				(match list
 					[] (error "ElementNotFoundError" "Could not find an element in a list")

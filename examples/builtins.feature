@@ -204,3 +204,43 @@ Feature: Built-in functions
     false
     false
     """
+
+  Scenario: Check if values are ordered or not
+    Given a file named "main.coel" with:
+    """
+    (eseq
+      ..(map write [
+        (bool? true)
+        (bool? 42)
+        (dict? {"foo" 42})
+        (dict? "foo")
+        (function? (\ (x) x))
+        (function? [])
+        (list? [42 "foo"])
+        (list? nil)
+        (nil? nil)
+        (nil? "foo")
+        (number? 42)
+        (number? [])
+        (string? "foo")
+        (string? nil)
+      ]))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    true
+    false
+    true
+    false
+    true
+    false
+    true
+    false
+    true
+    false
+    true
+    false
+    true
+    false
+    """

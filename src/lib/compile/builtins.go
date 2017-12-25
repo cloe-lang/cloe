@@ -24,7 +24,7 @@ var goBuiltins = func() environment {
 		{"prepend", core.Prepend},
 
 		{"typeOf", core.TypeOf},
-		{"isOrdered", core.IsOrdered},
+		{"ordered?", core.IsOrdered},
 
 		{"+", core.Add},
 		{"-", core.Sub},

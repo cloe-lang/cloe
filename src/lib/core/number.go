@@ -12,239 +12,122 @@ func NewNumber(n float64) *Thunk {
 }
 
 // Add sums up numbers of arguments.
-var Add = NewLazyFunction(
-	NewSignature(nil, nil, "nums", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		l, ok := v.(ListType)
-
-		if !ok {
-			return NotListError(v)
-		}
-
-		ts, err := l.ToValues()
-
-		if err != nil {
-			return err
-		}
-
-		sum := NumberType(0)
-
-		for _, t := range ts {
-			v := t.Eval()
-			n, ok := v.(NumberType)
-
-			if !ok {
-				return NotNumberError(v)
-			}
-
-			sum += n
-		}
-
-		return sum
-	})
+var Add = newCommutativeOperator(0, func(n, m NumberType) NumberType { return n + m })
 
 // Sub subtracts arguments of the second to the last from the first one as numbers.
-var Sub = NewLazyFunction(
-	NewSignature([]string{"minuend"}, nil, "subtrahends", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		n0, ok := v.(NumberType)
-
-		if !ok {
-			return NotNumberError(v)
-		}
-
-		v = ts[1].Eval()
-		l, ok := v.(ListType)
-
-		if !ok {
-			return NotListError(v)
-		}
-
-		ts, err := l.ToValues()
-
-		if err != nil {
-			return err
-		}
-
-		if len(ts) == 0 {
-			return NumArgsError("sub", ">= 1")
-		}
-
-		for _, t := range ts {
-			v := t.Eval()
-			n, ok := v.(NumberType)
-
-			if !ok {
-				return NotNumberError(v)
-			}
-
-			n0 -= n
-		}
-
-		return n0
-	})
+var Sub = newInverseOperator(func(n, m NumberType) NumberType { return n - m })
 
 // Mul multiplies numbers of arguments.
-var Mul = NewLazyFunction(
-	NewSignature(nil, nil, "nums", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		l, ok := v.(ListType)
-
-		if !ok {
-			return NotListError(v)
-		}
-
-		ts, err := l.ToValues()
-
-		if err != nil {
-			return err
-		}
-
-		prod := NumberType(1)
-
-		for _, t := range ts {
-			v := t.Eval()
-			n, ok := v.(NumberType)
-
-			if !ok {
-				return NotNumberError(v)
-			}
-
-			prod *= n
-		}
-
-		return prod
-	})
+var Mul = newCommutativeOperator(1, func(n, m NumberType) NumberType { return n * m })
 
 // Div divides the first argument by arguments of the second to the last one by one.
-var Div = NewLazyFunction(
-	NewSignature([]string{"dividend"}, nil, "divisors", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		n0, ok := v.(NumberType)
-
-		if !ok {
-			return NotNumberError(v)
-		}
-
-		v = ts[1].Eval()
-		l, ok := v.(ListType)
-
-		if !ok {
-			return NotListError(v)
-		}
-
-		ts, err := l.ToValues()
-
-		if err != nil {
-			return err
-		}
-
-		if len(ts) == 0 {
-			return NumArgsError("div", ">= 1")
-		}
-
-		for _, t := range ts {
-			v := t.Eval()
-			n, ok := v.(NumberType)
-
-			if !ok {
-				return NotNumberError(v)
-			}
-
-			n0 /= n
-		}
-
-		return n0
-	})
+var Div = newInverseOperator(func(n, m NumberType) NumberType { return n / m })
 
 // FloorDiv divides the first argument by arguments of the second to the last one by one.
-var FloorDiv = NewLazyFunction(
-	NewSignature([]string{"dividend"}, nil, "divisors", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		n0, ok := v.(NumberType)
-
-		if !ok {
-			return NotNumberError(v)
-		}
-
-		v = ts[1].Eval()
-		l, ok := v.(ListType)
-
-		if !ok {
-			return NotListError(v)
-		}
-
-		ts, err := l.ToValues()
-
-		if err != nil {
-			return err
-		}
-
-		if len(ts) == 0 {
-			return NumArgsError("floorDiv", ">= 1")
-		}
-
-		for _, t := range ts {
-			v := t.Eval()
-			n, ok := v.(NumberType)
-
-			if !ok {
-				return NotNumberError(v)
-			}
-
-			n0 = NumberType(math.Floor(float64(n0 / n)))
-		}
-
-		return n0
-	})
+var FloorDiv = newInverseOperator(func(n, m NumberType) NumberType {
+	return NumberType(math.Floor(float64(n / m)))
+})
 
 // Mod calculate a remainder of a division of the first argument by the second one.
-var Mod = NewStrictFunction(
-	NewSignature([]string{"dividend", "divisor"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		n1, ok := v.(NumberType)
-
-		if !ok {
-			return NotNumberError(v)
-		}
-
-		v = ts[1].Eval()
-		n2, ok := v.(NumberType)
-
-		if !ok {
-			return NotNumberError(v)
-		}
-
-		return NewNumber(math.Mod(float64(n1), float64(n2)))
-	})
+var Mod = newBinaryOperator(math.Mod)
 
 // Pow calculates an exponentiation from a base of the first argument and an
 // exponent of the second argument.
-var Pow = NewStrictFunction(
-	NewSignature([]string{"base", "exponent"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		n1, ok := v.(NumberType)
+var Pow = newBinaryOperator(math.Pow)
 
-		if !ok {
-			return NotNumberError(v)
-		}
+func newCommutativeOperator(i NumberType, f func(n, m NumberType) NumberType) *Thunk {
+	return NewLazyFunction(
+		NewSignature(nil, nil, "nums", nil, nil, ""),
+		func(ts ...*Thunk) Value {
+			v := ts[0].Eval()
+			l, ok := v.(ListType)
 
-		v = ts[1].Eval()
-		n2, ok := v.(NumberType)
+			if !ok {
+				return NotListError(v)
+			}
 
-		if !ok {
-			return NotNumberError(v)
-		}
+			ts, err := l.ToValues()
 
-		return NewNumber(math.Pow(float64(n1), float64(n2)))
-	})
+			if err != nil {
+				return err
+			}
+
+			a := i
+
+			for _, t := range ts {
+				v := t.Eval()
+				n, ok := v.(NumberType)
+
+				if !ok {
+					return NotNumberError(v)
+				}
+
+				a = f(a, n)
+			}
+
+			return a
+		})
+}
+
+func newInverseOperator(f func(n, m NumberType) NumberType) *Thunk {
+	return NewLazyFunction(
+		NewSignature([]string{"initial"}, nil, "nums", nil, nil, ""),
+		func(ts ...*Thunk) Value {
+			v := ts[0].Eval()
+			a, ok := v.(NumberType)
+
+			if !ok {
+				return NotNumberError(v)
+			}
+
+			v = ts[1].Eval()
+			l, ok := v.(ListType)
+
+			if !ok {
+				return NotListError(v)
+			}
+
+			ts, err := l.ToValues()
+
+			if err != nil {
+				return err
+			}
+
+			for _, t := range ts {
+				v := t.Eval()
+				n, ok := v.(NumberType)
+
+				if !ok {
+					return NotNumberError(v)
+				}
+
+				a = f(a, n)
+			}
+
+			return a
+		})
+}
+
+func newBinaryOperator(f func(n, m float64) float64) *Thunk {
+	return NewStrictFunction(
+		NewSignature([]string{"first", "second"}, nil, "", nil, nil, ""),
+		func(ts ...*Thunk) Value {
+			ns := [2]NumberType{}
+
+			for i, t := range ts {
+				v := t.Eval()
+				n, ok := v.(NumberType)
+
+				if !ok {
+					return NotNumberError(v)
+				}
+
+				ns[i] = n
+			}
+
+			return NumberType(f(float64(ns[0]), float64(ns[1])))
+		})
+}
 
 var isInt = NewLazyFunction(
 	NewSignature([]string{"number"}, nil, "", nil, nil, ""),

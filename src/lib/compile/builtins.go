@@ -121,6 +121,7 @@ func builtinsEnvironment() environment {
 			(def (slice list (start 1) (end nil))
 				(let end (if (= end nil) (max start (size list)) end))
 				(if
+					(string? list) (merge "" ..(slice (toList list) start end))
 					(< end start) (error "ValueError" "start index must be less than end index")
 					(match list
 						[] []

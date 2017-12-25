@@ -126,6 +126,37 @@ Feature: Built-in functions
     []
     """
 
+  Scenario: Slice strings
+    Given a file named "main.coel" with:
+    """
+    (eseq ..(map (\ (x) (write (dump x))) [
+        (slice "abc")
+        (slice "abc" 1)
+        (slice "abc" 2 3)
+        (slice "abc" 1 2)
+        (slice "abc" 2)
+        (slice "abc" . start 2)
+        (slice "abc" . end 1)
+        (slice "abc" . start 3)
+        (slice "abc" . start 4)
+        (slice "abc" . start 5)
+      ]))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    "abc"
+    "abc"
+    "bc"
+    "ab"
+    "bc"
+    "bc"
+    "a"
+    "c"
+    ""
+    ""
+    """
+
   Scenario: Calculate maximum and minimum of numbers
     Given a file named "main.coel" with:
     """

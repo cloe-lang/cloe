@@ -180,18 +180,9 @@ func (d *casesDesugarer) desugarListCases(list interface{}, cs []ast.MatchCase, 
 				debug.NewGoInfo(0)),
 			c.Value())
 
-		if isGeneralNamePattern(v) {
-			d.bindName(v, first)
-
-			if cs := cs[i+1:]; len(cs) > 0 {
-				dc = d.desugarListCases(list, cs, dc)
-			}
-
-			dc = d.defaultCaseOfGeneralNamePattern(
-				first,
-				v,
-				d.desugarListCases(rest, []ast.MatchCase{c}, dc),
-				dc)
+		var ok bool
+		if dc, ok = d.handleGeneralNamePattern(
+			v, first, cs, c, i, dc, list, rest, d.desugarListCases, d.desugarListCases); ok {
 			break
 		}
 
@@ -297,18 +288,9 @@ func (d *casesDesugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.Ma
 				debug.NewGoInfo(0)),
 			c.Value())
 
-		if isGeneralNamePattern(v) {
-			d.bindName(v, value)
-
-			if cs := cs[i+1:]; len(cs) != 0 {
-				dc = d.desugarDictCasesOfSameKey(dict, cs, dc)
-			}
-
-			dc = d.defaultCaseOfGeneralNamePattern(
-				value,
-				v,
-				d.desugarCases(rest, []ast.MatchCase{c}, dc),
-				dc)
+		var ok bool
+		if dc, ok = d.handleGeneralNamePattern(
+			v, value, cs, c, i, dc, dict, rest, d.desugarDictCasesOfSameKey, d.desugarDictCases); ok {
 			break
 		}
 
@@ -334,6 +316,30 @@ func (d *casesDesugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.Ma
 	}
 
 	return d.desugarCases(value, cs, dc)
+}
+
+func (d *casesDesugarer) handleGeneralNamePattern(
+	p, v interface{}, cs []ast.MatchCase, c ast.MatchCase, i int,
+	dc, original, rest interface{},
+	desugarRestCases, desugarCollectionCases func(interface{}, []ast.MatchCase, interface{}) interface{},
+) (interface{}, bool) {
+	if isGeneralNamePattern(p) {
+		d.bindName(p, v)
+
+		if cs := cs[i+1:]; len(cs) > 0 {
+			dc = desugarRestCases(original, cs, dc)
+		}
+
+		dc = d.defaultCaseOfGeneralNamePattern(
+			v,
+			p,
+			desugarCollectionCases(rest, []ast.MatchCase{c}, dc),
+			dc)
+
+		return dc, true
+	}
+
+	return dc, false
 }
 
 func (d *casesDesugarer) defaultCaseOfGeneralNamePattern(v, p, body, dc interface{}) interface{} {

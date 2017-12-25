@@ -16,6 +16,7 @@ func Desugar(ss []interface{}) []interface{} {
 		desugarSelfRecursiveStatement,
 		flattenStatement,
 		removeUnusedVariables,
+		removeAliases,
 	} {
 		new := make([]interface{}, 0, 2*len(ss))
 

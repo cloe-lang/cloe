@@ -17,3 +17,17 @@ func prependPosReqsToSig(ns []string, s ast.Signature) ast.Signature {
 		append(ns, s.PosReqs()...), s.PosOpts(), s.PosRest(),
 		s.KeyReqs(), s.KeyOpts(), s.KeyRest())
 }
+
+func renamer(a, b string) func(x interface{}) interface{} {
+	return func(x interface{}) interface{} {
+		return ast.Convert(func(x interface{}) interface{} {
+			s, ok := x.(string)
+
+			if !ok || s != a {
+				return nil
+			}
+
+			return b
+		}, x)
+	}
+}

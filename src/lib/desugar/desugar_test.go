@@ -78,6 +78,40 @@ func TestDesugar(t *testing.T) {
 				"v",
 				ast.NewMatch("x", []ast.MatchCase{ast.NewMatchCase("y", "z")})),
 		},
+		{
+			ast.NewLetMatch(
+				ast.NewPApp("$list", []interface{}{"123", "nil", "x"}, debug.NewGoInfo(0)),
+				"y"),
+		},
+		{
+			ast.NewLetMatch(
+				ast.NewPApp("$dict", []interface{}{"123", "x", "nil", "x"}, debug.NewGoInfo(0)),
+				"y"),
+		},
+		{
+			ast.NewLetFunction(
+				"factorial",
+				ast.NewSignature([]string{"n"}, nil, "", nil, nil, ""),
+				[]interface{}{
+					ast.NewLetMatch(
+						ast.NewPApp("$list", []interface{}{"123", "nil", "x"}, debug.NewGoInfo(0)),
+						"y"),
+					ast.NewLetMatch(
+						ast.NewPApp("$dict", []interface{}{"123", "x", "nil", "x"}, debug.NewGoInfo(0)),
+						"y"),
+				},
+				ast.NewMatch("n", []ast.MatchCase{
+					ast.NewMatchCase("0", "1"),
+					ast.NewMatchCase(
+						"_",
+						ast.NewPApp("*",
+							[]interface{}{"n", ast.NewPApp(
+								"factorial",
+								[]interface{}{ast.NewPApp("-", []interface{}{"n", "1"}, debug.NewGoInfo(0))},
+								debug.NewGoInfo(0))},
+							debug.NewGoInfo(0))),
+				}), debug.NewGoInfo(0)),
+		},
 	} {
 		t.Logf("%#v", ss)
 

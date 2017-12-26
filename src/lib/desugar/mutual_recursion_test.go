@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var letFooFunction = ast.NewLetFunction(
+var letFooFunction = ast.NewDefFunction(
 	"foo",
 	ast.NewSignature(nil, nil, "", nil, nil, ""),
 	nil,
@@ -18,14 +18,14 @@ var letFooFunction = ast.NewLetFunction(
 func TestDesugarMutualRecursion(t *testing.T) {
 	for _, mr := range []ast.MutualRecursion{
 		ast.NewMutualRecursion(
-			[]ast.LetFunction{
-				ast.NewLetFunction(
+			[]ast.DefFunction{
+				ast.NewDefFunction(
 					"foo",
 					ast.NewSignature(nil, nil, "", nil, nil, ""),
 					nil,
 					"nil",
 					debug.NewGoInfo(0)),
-				ast.NewLetFunction(
+				ast.NewDefFunction(
 					"bar",
 					ast.NewSignature(nil, nil, "", nil, nil, ""),
 					nil,
@@ -33,14 +33,14 @@ func TestDesugarMutualRecursion(t *testing.T) {
 					debug.NewGoInfo(0)),
 			}, debug.NewGoInfo(0)),
 		ast.NewMutualRecursion(
-			[]ast.LetFunction{
-				ast.NewLetFunction(
+			[]ast.DefFunction{
+				ast.NewDefFunction(
 					"foo",
 					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 					nil,
 					ast.NewPApp("bar", []interface{}{"x"}, debug.NewGoInfo(0)),
 					debug.NewGoInfo(0)),
-				ast.NewLetFunction(
+				ast.NewDefFunction(
 					"bar",
 					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 					nil,
@@ -48,12 +48,12 @@ func TestDesugarMutualRecursion(t *testing.T) {
 					debug.NewGoInfo(0)),
 			}, debug.NewGoInfo(0)),
 		ast.NewMutualRecursion(
-			[]ast.LetFunction{
-				ast.NewLetFunction(
+			[]ast.DefFunction{
+				ast.NewDefFunction(
 					"foo",
 					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 					[]interface{}{
-						ast.NewLetFunction(
+						ast.NewDefFunction(
 							"f",
 							ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 							nil,
@@ -63,7 +63,7 @@ func TestDesugarMutualRecursion(t *testing.T) {
 					},
 					ast.NewPApp("g", []interface{}{"x"}, debug.NewGoInfo(0)),
 					debug.NewGoInfo(0)),
-				ast.NewLetFunction(
+				ast.NewDefFunction(
 					"bar",
 					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 					nil,
@@ -81,7 +81,7 @@ func TestDesugarMutualRecursionWithOneFunction(t *testing.T) {
 	}()
 
 	desugarMutualRecursion(ast.NewMutualRecursion(
-		[]ast.LetFunction{letFooFunction},
+		[]ast.DefFunction{letFooFunction},
 		debug.NewGoInfo(0)))
 }
 
@@ -91,7 +91,7 @@ func TestDesugarMutualRecursionWithFunctionsOfSameName(t *testing.T) {
 	}()
 
 	desugarMutualRecursion(ast.NewMutualRecursion(
-		[]ast.LetFunction{letFooFunction, letFooFunction},
+		[]ast.DefFunction{letFooFunction, letFooFunction},
 		debug.NewGoInfo(0)))
 }
 
@@ -109,7 +109,7 @@ func TestLetStatementsToNames(t *testing.T) {
 				var name string
 
 				switch l := ls[i].(type) {
-				case ast.LetFunction:
+				case ast.DefFunction:
 					name = l.Name()
 				case ast.LetVar:
 					name = l.Name()

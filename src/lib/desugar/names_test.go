@@ -13,15 +13,15 @@ func TestNamesFindInLetVar(t *testing.T) {
 	assert.True(t, newNames(n).findInLetVar(ast.NewLetVar(n, n)).include(n))
 }
 
-func TestNamesFindInLetFunction(t *testing.T) {
+func TestNamesFindInDefFunction(t *testing.T) {
 	n := "x"
 
 	for _, test := range []struct {
-		letFunc ast.LetFunction
+		letFunc ast.DefFunction
 		answer  bool
 	}{
 		{
-			ast.NewLetFunction(
+			ast.NewDefFunction(
 				n,
 				ast.NewSignature(nil, nil, "", nil, nil, ""),
 				nil,
@@ -30,7 +30,7 @@ func TestNamesFindInLetFunction(t *testing.T) {
 			true,
 		},
 		{
-			ast.NewLetFunction(
+			ast.NewDefFunction(
 				n,
 				ast.NewSignature(nil, nil, "", nil, nil, ""),
 				[]interface{}{ast.NewLetVar(n, "y")},
@@ -39,16 +39,16 @@ func TestNamesFindInLetFunction(t *testing.T) {
 			false,
 		},
 	} {
-		assert.Equal(t, test.answer, newNames(n).findInLetFunction(test.letFunc).include(n))
+		assert.Equal(t, test.answer, newNames(n).findInDefFunction(test.letFunc).include(n))
 	}
 }
 
-func TestNamesFindInLetFunctionPanic(t *testing.T) {
+func TestNamesFindInDefFunctionPanic(t *testing.T) {
 	defer func() {
 		assert.NotNil(t, recover())
 	}()
 
-	newNames().findInLetFunction(ast.NewLetFunction(
+	newNames().findInDefFunction(ast.NewDefFunction(
 		"func",
 		ast.NewSignature(nil, nil, "", nil, nil, ""),
 		[]interface{}{nil},

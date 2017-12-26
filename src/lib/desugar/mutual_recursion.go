@@ -11,14 +11,14 @@ import (
 func desugarMutualRecursionStatement(x interface{}) []interface{} {
 	y := ast.Convert(func(x interface{}) interface{} {
 		switch x := x.(type) {
-		case ast.LetFunction:
+		case ast.DefFunction:
 			ls := make([]interface{}, 0, len(x.Lets()))
 
 			for _, l := range x.Lets() {
 				ls = append(ls, desugarMutualRecursionStatement(l)...)
 			}
 
-			return ast.NewLetFunction(x.Name(), x.Signature(), ls, x.Body(), x.DebugInfo())
+			return ast.NewDefFunction(x.Name(), x.Signature(), ls, x.Body(), x.DebugInfo())
 		case ast.MutualRecursion:
 			return desugarMutualRecursion(x)
 		}
@@ -34,11 +34,11 @@ func desugarMutualRecursionStatement(x interface{}) []interface{} {
 }
 
 func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
-	fs := mr.LetFunctions()
+	fs := mr.DefFunctions()
 	unrecs := make([]interface{}, 0, len(fs))
 
 	for _, f := range fs {
-		unrecs = append(unrecs, createUnrecursiveFunction(indexLetFunctions(fs...), f))
+		unrecs = append(unrecs, createUnrecursiveFunction(indexDefFunctions(fs...), f))
 	}
 
 	recsList := gensym.GenSym()
@@ -61,22 +61,22 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 			recs...)...)
 }
 
-func createUnrecursiveFunction(n2i map[string]int, f ast.LetFunction) ast.LetFunction {
+func createUnrecursiveFunction(n2i map[string]int, f ast.DefFunction) ast.DefFunction {
 	arg := gensym.GenSym()
 
 	return replaceNames(
 		arg,
 		n2i,
-		ast.NewLetFunction(
+		ast.NewDefFunction(
 			gensym.GenSym(),
 			prependPosReqsToSig([]string{arg}, f.Signature()),
 			f.Lets(),
 			f.Body(),
 			f.DebugInfo()),
-		f.DebugInfo()).(ast.LetFunction)
+		f.DebugInfo()).(ast.DefFunction)
 }
 
-func indexLetFunctions(fs ...ast.LetFunction) map[string]int {
+func indexDefFunctions(fs ...ast.DefFunction) map[string]int {
 	n2i := make(map[string]int)
 
 	for i, f := range fs {
@@ -99,7 +99,7 @@ func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.I
 			}
 
 			return x
-		case ast.LetFunction:
+		case ast.DefFunction:
 			n2i := copyNameToIndex(n2i)
 
 			for n := range signatureToNames(x.Signature()) {
@@ -110,7 +110,7 @@ func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.I
 
 			for _, l := range x.Lets() {
 				switch l := l.(type) {
-				case ast.LetFunction:
+				case ast.DefFunction:
 					delete(n2i, l.Name())
 				case ast.LetVar:
 					delete(n2i, l.Name())
@@ -121,7 +121,7 @@ func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.I
 				ls = append(ls, replaceNames(funcList, n2i, l, x.DebugInfo()))
 			}
 
-			return ast.NewLetFunction(
+			return ast.NewDefFunction(
 				x.Name(),
 				x.Signature(),
 				ls,
@@ -148,7 +148,7 @@ func letStatementsToNames(ls []interface{}) []interface{} {
 
 	for _, l := range ls {
 		switch l := l.(type) {
-		case ast.LetFunction:
+		case ast.DefFunction:
 			ns = append(ns, l.Name())
 		case ast.LetVar:
 			ns = append(ns, l.Name())

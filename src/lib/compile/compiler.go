@@ -30,7 +30,7 @@ func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
 		switch x := s.(type) {
 		case ast.LetVar:
 			c.env.set(x.Name(), c.exprToThunk(x.Expr()))
-		case ast.LetFunction:
+		case ast.DefFunction:
 			sig := x.Signature()
 			ls := x.Lets()
 

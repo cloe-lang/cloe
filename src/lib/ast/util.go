@@ -46,14 +46,14 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 		return x
 	case KeywordArgument:
 		return NewKeywordArgument(x.Name(), convert(x.Value()))
-	case LetFunction:
+	case DefFunction:
 		ls := make([]interface{}, 0, len(x.Lets()))
 
 		for _, l := range x.Lets() {
 			ls = append(ls, convert(l))
 		}
 
-		return NewLetFunction(
+		return NewDefFunction(
 			x.Name(),
 			convert(x.Signature()).(Signature),
 			ls,
@@ -72,10 +72,10 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 	case MatchCase:
 		return NewMatchCase(x.Pattern(), convert(x.Value()))
 	case MutualRecursion:
-		fs := make([]LetFunction, 0, len(x.LetFunctions()))
+		fs := make([]DefFunction, 0, len(x.DefFunctions()))
 
-		for _, f := range x.LetFunctions() {
-			fs = append(fs, convert(f).(LetFunction))
+		for _, f := range x.DefFunctions() {
+			fs = append(fs, convert(f).(DefFunction))
 		}
 
 		return NewMutualRecursion(fs, x.DebugInfo())

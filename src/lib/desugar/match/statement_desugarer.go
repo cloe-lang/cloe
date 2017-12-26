@@ -16,7 +16,7 @@ func newStatementDesugarer() *statementDesugarer {
 func (d *statementDesugarer) Desugar(x interface{}) interface{} {
 	return ast.Convert(func(x interface{}) interface{} {
 		switch x := x.(type) {
-		case ast.LetFunction:
+		case ast.DefFunction:
 			ls := make([]interface{}, 0, len(x.Lets()))
 
 			for _, l := range x.Lets() {
@@ -26,7 +26,7 @@ func (d *statementDesugarer) Desugar(x interface{}) interface{} {
 
 			b := d.Desugar(x.Body())
 
-			return ast.NewLetFunction(
+			return ast.NewDefFunction(
 				x.Name(),
 				x.Signature(),
 				append(ls, d.TakeLets()...),

@@ -9,13 +9,13 @@ import (
 
 // MutualRecursion represents a definition of mutually-recursive functions.
 type MutualRecursion struct {
-	letFunctions []LetFunction
+	letFunctions []DefFunction
 	info         debug.Info
 }
 
 // NewMutualRecursion creates a mutual recursion node from mutually-recursive
 // functions.
-func NewMutualRecursion(fs []LetFunction, i debug.Info) MutualRecursion {
+func NewMutualRecursion(fs []DefFunction, i debug.Info) MutualRecursion {
 	if len(fs) < 2 {
 		panic("A number of mutually recursive functions must be more than 2.")
 	}
@@ -23,9 +23,9 @@ func NewMutualRecursion(fs []LetFunction, i debug.Info) MutualRecursion {
 	return MutualRecursion{fs, i}
 }
 
-// LetFunctions returns let-function statements in a mutual recursion
+// DefFunctions returns let-function statements in a mutual recursion
 // definition.
-func (mr MutualRecursion) LetFunctions() []LetFunction {
+func (mr MutualRecursion) DefFunctions() []DefFunction {
 	return mr.letFunctions
 }
 

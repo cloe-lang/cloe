@@ -27,18 +27,18 @@ func (c *anonymousFunctionConverter) convert(x interface{}) interface{} {
 			n := gensym.GenSym()
 			c.lets = append(
 				c.lets,
-				desugarAnonymousFunctionsInLetFunction(
-					ast.NewLetFunction(n, x.Signature(), nil, x.Body(), debug.NewGoInfo(0))))
+				desugarAnonymousFunctionsInDefFunction(
+					ast.NewDefFunction(n, x.Signature(), nil, x.Body(), debug.NewGoInfo(0))))
 			return n
-		case ast.LetFunction:
-			return desugarAnonymousFunctionsInLetFunction(x)
+		case ast.DefFunction:
+			return desugarAnonymousFunctionsInDefFunction(x)
 		}
 
 		return nil
 	}, x)
 }
 
-func desugarAnonymousFunctionsInLetFunction(f ast.LetFunction) ast.LetFunction {
+func desugarAnonymousFunctionsInDefFunction(f ast.DefFunction) ast.DefFunction {
 	ls := make([]interface{}, 0, len(f.Lets()))
 
 	for _, l := range f.Lets() {
@@ -49,5 +49,5 @@ func desugarAnonymousFunctionsInLetFunction(f ast.LetFunction) ast.LetFunction {
 	b := c.convert(f.Body())
 	ls = append(ls, c.lets...)
 
-	return ast.NewLetFunction(f.Name(), f.Signature(), ls, b, f.DebugInfo())
+	return ast.NewDefFunction(f.Name(), f.Signature(), ls, b, f.DebugInfo())
 }

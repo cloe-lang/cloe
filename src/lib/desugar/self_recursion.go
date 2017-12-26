@@ -8,17 +8,17 @@ import (
 func desugarSelfRecursiveStatement(x interface{}) []interface{} {
 	y := ast.Convert(func(x interface{}) interface{} {
 		switch x := x.(type) {
-		case ast.LetFunction:
+		case ast.DefFunction:
 			x = desugarInnerSelfRecursions(x)
 
-			if len(newNames(x.Name()).findInLetFunction(x)) == 0 {
+			if len(newNames(x.Name()).findInDefFunction(x)) == 0 {
 				return x
 			}
 
 			unrec := gensym.GenSym()
 
 			return []interface{}{
-				ast.NewLetFunction(
+				ast.NewDefFunction(
 					unrec,
 					prependPosReqsToSig([]string{x.Name()}, x.Signature()),
 					x.Lets(),
@@ -38,12 +38,12 @@ func desugarSelfRecursiveStatement(x interface{}) []interface{} {
 	return []interface{}{y}
 }
 
-func desugarInnerSelfRecursions(f ast.LetFunction) ast.LetFunction {
+func desugarInnerSelfRecursions(f ast.DefFunction) ast.DefFunction {
 	ls := make([]interface{}, 0, 2*len(f.Lets()))
 
 	for _, l := range f.Lets() {
 		ls = append(ls, desugarSelfRecursiveStatement(l)...)
 	}
 
-	return ast.NewLetFunction(f.Name(), f.Signature(), ls, f.Body(), f.DebugInfo())
+	return ast.NewDefFunction(f.Name(), f.Signature(), ls, f.Body(), f.DebugInfo())
 }

@@ -6,7 +6,7 @@ import (
 
 func removeAliases(x interface{}) []interface{} {
 	return []interface{}{ast.Convert(func(x interface{}) interface{} {
-		f, ok := x.(ast.LetFunction)
+		f, ok := x.(ast.DefFunction)
 
 		if !ok {
 			return nil
@@ -34,6 +34,6 @@ func removeAliases(x interface{}) []interface{} {
 			b = r(b)
 		}
 
-		return ast.NewLetFunction(f.Name(), f.Signature(), reverseSlice(ls), b, f.DebugInfo())
+		return ast.NewDefFunction(f.Name(), f.Signature(), reverseSlice(ls), b, f.DebugInfo())
 	}, x)}
 }

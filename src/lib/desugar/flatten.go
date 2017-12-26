@@ -9,8 +9,8 @@ import (
 
 func flattenStatement(s interface{}) []interface{} {
 	switch s := s.(type) {
-	case ast.LetFunction:
-		return flattenLetFunction(s)
+	case ast.DefFunction:
+		return flattenDefFunction(s)
 	default:
 		return []interface{}{s}
 	}
@@ -26,7 +26,7 @@ func flattenStatements(old []interface{}) []interface{} {
 	return new
 }
 
-func flattenLetFunction(f ast.LetFunction) []interface{} {
+func flattenDefFunction(f ast.DefFunction) []interface{} {
 	f = flattenInnerStatements(f)
 
 	ss := make([]interface{}, 0)
@@ -38,8 +38,8 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 		case ast.LetVar:
 			ls = append(ls, l)
 			ns.add(l.Name())
-		case ast.LetFunction:
-			args := ns.findInLetFunction(l).slice()
+		case ast.DefFunction:
+			args := ns.findInDefFunction(l).slice()
 			n := gensym.GenSym()
 
 			ss = append(ss, letFlattenedFunction(l, n, args))
@@ -51,11 +51,11 @@ func flattenLetFunction(f ast.LetFunction) []interface{} {
 		}
 	}
 
-	return append(ss, ast.NewLetFunction(f.Name(), f.Signature(), ls, f.Body(), f.DebugInfo()))
+	return append(ss, ast.NewDefFunction(f.Name(), f.Signature(), ls, f.Body(), f.DebugInfo()))
 }
 
-func letFlattenedFunction(f ast.LetFunction, n string, args []string) ast.LetFunction {
-	return ast.NewLetFunction(
+func letFlattenedFunction(f ast.DefFunction, n string, args []string) ast.DefFunction {
+	return ast.NewDefFunction(
 		n,
 		prependPosReqsToSig(args, f.Signature()),
 		f.Lets(),
@@ -63,7 +63,7 @@ func letFlattenedFunction(f ast.LetFunction, n string, args []string) ast.LetFun
 		f.DebugInfo())
 }
 
-func letClosure(f ast.LetFunction, n string, args []string) ast.LetVar {
+func letClosure(f ast.DefFunction, n string, args []string) ast.LetVar {
 	return ast.NewLetVar(
 		f.Name(),
 		ast.NewApp(
@@ -82,8 +82,8 @@ func namesToPosArgs(ns []string) []ast.PositionalArgument {
 	return ps
 }
 
-func flattenInnerStatements(f ast.LetFunction) ast.LetFunction {
-	return ast.NewLetFunction(
+func flattenInnerStatements(f ast.DefFunction) ast.DefFunction {
+	return ast.NewDefFunction(
 		f.Name(),
 		f.Signature(),
 		flattenStatements(f.Lets()),

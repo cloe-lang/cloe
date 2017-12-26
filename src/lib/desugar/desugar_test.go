@@ -21,7 +21,7 @@ func TestDesugar(t *testing.T) {
 				ast.NewAnonymousFunction(ast.NewSignature(nil, nil, "", nil, nil, ""), "123")),
 		},
 		{
-			ast.NewLetFunction(
+			ast.NewDefFunction(
 				"foo",
 				ast.NewSignature(nil, nil, "", nil, nil, ""),
 				nil,
@@ -29,7 +29,7 @@ func TestDesugar(t *testing.T) {
 				debug.NewGoInfo(0)),
 		},
 		{
-			ast.NewLetFunction(
+			ast.NewDefFunction(
 				"foo",
 				ast.NewSignature(nil, nil, "", nil, nil, ""),
 				[]interface{}{
@@ -41,7 +41,7 @@ func TestDesugar(t *testing.T) {
 				debug.NewGoInfo(0)),
 		},
 		{
-			ast.NewLetFunction(
+			ast.NewDefFunction(
 				"factorial",
 				ast.NewSignature([]string{"n"}, nil, "", nil, nil, ""),
 				nil,
@@ -58,14 +58,14 @@ func TestDesugar(t *testing.T) {
 				}), debug.NewGoInfo(0)),
 		},
 		{
-			ast.NewMutualRecursion([]ast.LetFunction{
-				ast.NewLetFunction(
+			ast.NewMutualRecursion([]ast.DefFunction{
+				ast.NewDefFunction(
 					"foo",
 					ast.NewSignature(nil, nil, "", nil, nil, ""),
 					nil,
 					"bar",
 					debug.NewGoInfo(0)),
-				ast.NewLetFunction(
+				ast.NewDefFunction(
 					"bar",
 					ast.NewSignature(nil, nil, "", nil, nil, ""),
 					nil,
@@ -89,7 +89,7 @@ func TestDesugar(t *testing.T) {
 				"y"),
 		},
 		{
-			ast.NewLetFunction(
+			ast.NewDefFunction(
 				"factorial",
 				ast.NewSignature([]string{"n"}, nil, "", nil, nil, ""),
 				[]interface{}{
@@ -120,11 +120,11 @@ func TestDesugar(t *testing.T) {
 				switch x := x.(type) {
 				case ast.AnonymousFunction:
 					t.Fail()
-				case ast.LetFunction:
-					assert.Equal(t, 0, len(newNames(x.Name()).findInLetFunction(x)))
+				case ast.DefFunction:
+					assert.Equal(t, 0, len(newNames(x.Name()).findInDefFunction(x)))
 
 					for _, l := range x.Lets() {
-						_, ok := l.(ast.LetFunction)
+						_, ok := l.(ast.DefFunction)
 						assert.False(t, ok)
 					}
 				case ast.Match:

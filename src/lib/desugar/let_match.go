@@ -62,7 +62,7 @@ func convertLetMatch(x interface{}) interface{} {
 		}
 
 		return ls
-	case ast.LetFunction:
+	case ast.DefFunction:
 		ls := make([]interface{}, 0, len(x.Lets()))
 
 		for _, l := range x.Lets() {
@@ -76,7 +76,7 @@ func convertLetMatch(x interface{}) interface{} {
 			}
 		}
 
-		return ast.NewLetFunction(x.Name(), x.Signature(), ls, x.Body(), x.DebugInfo())
+		return ast.NewDefFunction(x.Name(), x.Signature(), ls, x.Body(), x.DebugInfo())
 	}
 
 	return nil

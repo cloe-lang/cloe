@@ -18,11 +18,11 @@ func newCasesDesugarer() *casesDesugarer {
 	return &casesDesugarer{nil, nil}
 }
 
-func (d *casesDesugarer) Desugar(cs []ast.MatchCase) ast.LetFunction {
+func (d *casesDesugarer) Desugar(cs []ast.MatchCase) ast.DefFunction {
 	arg := gensym.GenSym()
 	body := d.desugarCases(arg, cs, "$matchError")
 
-	return ast.NewLetFunction(
+	return ast.NewDefFunction(
 		gensym.GenSym(),
 		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
 		d.takeLets(),

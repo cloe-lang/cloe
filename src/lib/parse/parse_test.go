@@ -89,7 +89,7 @@ func TestLetMatch(t *testing.T) {
 	}
 }
 
-func TestLetFunction(t *testing.T) {
+func TestDefFunction(t *testing.T) {
 	for _, str := range []string{
 		"(def (foo) 123)",
 		"(def (foo x) (f x y))",
@@ -101,14 +101,14 @@ func TestLetFunction(t *testing.T) {
 	}
 }
 
-func TestMutuallyRecursiveLetFunctions(t *testing.T) {
+func TestMutuallyRecursiveDefFunctions(t *testing.T) {
 	for _, str := range []string{
 		`(mr
 			(def (even? n) (if (= n 0) true (odd? (- n 1))))
 			(def (odd? n) (if (= n 0) false (even? (- n 1)))))`,
 	} {
 		s := newStateWithoutFile(str)
-		_, err := s.exhaust(s.mutuallyRecursiveLetFunctions())()
+		_, err := s.exhaust(s.mutuallyRecursiveDefFunctions())()
 		assert.Nil(t, err)
 	}
 }

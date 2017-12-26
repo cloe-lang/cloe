@@ -59,9 +59,9 @@ func (ns names) include(n string) bool {
 	return ok
 }
 
-// findInLetFunction finds names in a let-function node. This assumes that a
+// findInDefFunction finds names in a let-function node. This assumes that a
 // given let-function statement does not define its function recursively.
-func (ns names) findInLetFunction(f ast.LetFunction) names {
+func (ns names) findInDefFunction(f ast.DefFunction) names {
 	ns = ns.copy()
 	ns.subtract(signatureToNames(f.Signature()))
 
@@ -72,9 +72,9 @@ func (ns names) findInLetFunction(f ast.LetFunction) names {
 		case ast.LetVar:
 			ns.delete(l.Name())
 			ms.merge(ns.findInLetVar(l))
-		case ast.LetFunction:
+		case ast.DefFunction:
 			ns.delete(l.Name())
-			ms.merge(ns.findInLetFunction(l))
+			ms.merge(ns.findInDefFunction(l))
 		default:
 			panic("Unreachable")
 		}

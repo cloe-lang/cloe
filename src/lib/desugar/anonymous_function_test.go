@@ -13,13 +13,13 @@ func TestDesugarAnonymousFunctions(t *testing.T) {
 		ast.NewLetVar(
 			"foo",
 			ast.NewAnonymousFunction(ast.NewSignature(nil, nil, "", nil, nil, ""), "123")),
-		ast.NewLetFunction(
+		ast.NewDefFunction(
 			"foo",
 			ast.NewSignature(nil, nil, "", nil, nil, ""),
 			nil,
 			ast.NewAnonymousFunction(ast.NewSignature(nil, nil, "", nil, nil, ""), "123"),
 			debug.NewGoInfo(0)),
-		ast.NewLetFunction(
+		ast.NewDefFunction(
 			"foo",
 			ast.NewSignature(nil, nil, "", nil, nil, ""),
 			[]interface{}{

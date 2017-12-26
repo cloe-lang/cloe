@@ -6,7 +6,7 @@ import (
 
 func removeUnusedVariables(x interface{}) []interface{} {
 	return []interface{}{ast.Convert(func(x interface{}) interface{} {
-		f, ok := x.(ast.LetFunction)
+		f, ok := x.(ast.DefFunction)
 
 		if !ok {
 			return nil
@@ -23,7 +23,7 @@ func removeUnusedVariables(x interface{}) []interface{} {
 			}
 		}
 
-		return ast.NewLetFunction(f.Name(), f.Signature(), reverseSlice(ls), f.Body(), f.DebugInfo())
+		return ast.NewDefFunction(f.Name(), f.Signature(), reverseSlice(ls), f.Body(), f.DebugInfo())
 	}, x)}
 }
 

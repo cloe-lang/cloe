@@ -33,13 +33,16 @@ func NewList(ts ...*Thunk) *Thunk {
 
 // Prepend prepends multiple elements to a list of the last argument.
 var Prepend = NewLazyFunction(
-	NewSignature(
-		nil, nil, "elemsAndList",
-		nil, nil, "",
-	),
+	NewSignature(nil, nil, "elemsAndList", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
-		ts, err := v.(ListType).ToThunks()
+		l, ok := v.(ListType)
+
+		if !ok {
+			return NotListError(v)
+		}
+
+		ts, err := l.ToThunks()
 
 		if err != nil {
 			return err
@@ -63,10 +66,7 @@ func cons(t1, t2 *Thunk) ListType {
 
 // First takes the first element in a list.
 var First = NewLazyFunction(
-	NewSignature(
-		[]string{"list"}, nil, "",
-		nil, nil, "",
-	),
+	NewSignature([]string{"list"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		l, ok := v.(ListType)
@@ -82,10 +82,7 @@ var First = NewLazyFunction(
 
 // Rest returns a list which has the second to last elements of a given list.
 var Rest = NewLazyFunction(
-	NewSignature(
-		[]string{"list"}, nil, "",
-		nil, nil, "",
-	),
+	NewSignature([]string{"list"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		l, ok := v.(ListType)

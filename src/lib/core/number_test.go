@@ -60,6 +60,39 @@ func TestNumberPow(t *testing.T) {
 		PApp(Pow, NewNumber(n1), NewNumber(n2)).Eval().(NumberType))
 }
 
+func TestNumberFunctionsError(t *testing.T) {
+	for _, th := range []*Thunk{
+		PApp(Add, Nil),
+		App(Add, NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil, nil)),
+		App(Add, NewArguments([]PositionalArgument{
+			NewPositionalArgument(NewNumber(42), false),
+			NewPositionalArgument(Nil, true),
+		}, nil, nil)),
+		PApp(Sub, Nil),
+		App(Sub, NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil, nil)),
+		App(Sub, NewArguments([]PositionalArgument{
+			NewPositionalArgument(NewNumber(42), false),
+			NewPositionalArgument(Nil, true),
+		}, nil, nil)),
+		App(Sub, NewArguments([]PositionalArgument{
+			NewPositionalArgument(NewNumber(42), false),
+			NewPositionalArgument(NewNumber(42), false),
+			NewPositionalArgument(Nil, true),
+		}, nil, nil)),
+		App(Sub, NewArguments([]PositionalArgument{
+			NewPositionalArgument(NewNumber(42), false),
+			NewPositionalArgument(NewNumber(42), false),
+			NewPositionalArgument(Nil, false),
+		}, nil, nil)),
+		PApp(Mod, Nil, NewNumber(42)),
+		PApp(Mod, NewNumber(42), Nil),
+		PApp(isInt, Nil),
+	} {
+		_, ok := th.Eval().(ErrorType)
+		assert.True(t, ok)
+	}
+}
+
 func TestNumberToString(t *testing.T) {
 	for _, c := range []struct {
 		expected string

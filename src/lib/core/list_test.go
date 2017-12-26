@@ -2,7 +2,9 @@ package core
 
 import (
 	"testing"
+	"time"
 
+	"github.com/coel-lang/coel/src/lib/systemt"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -238,4 +240,40 @@ func TestListCompare(t *testing.T) {
 	assert.True(t, testCompare(
 		NewList(NewNumber(42), NewNumber(2049)),
 		NewList(NewNumber(42), NewNumber(1))) == 1)
+}
+
+func TestListFunctionsError(t *testing.T) {
+	for _, th := range []*Thunk{
+		App(Prepend, NewArguments([]PositionalArgument{
+			NewPositionalArgument(emptyListError(), true),
+		}, nil, nil)),
+		App(Prepend, NewArguments([]PositionalArgument{
+			NewPositionalArgument(PApp(Prepend, Nil, emptyListError()), true),
+		}, nil, nil)),
+		PApp(Prepend),
+		PApp(PApp(Prepend, Nil, emptyListError()), NewNumber(2)),
+		PApp(First, EmptyList),
+		PApp(Rest, EmptyList),
+		PApp(Delete, EmptyList, NewNumber(1)),
+		PApp(Delete, PApp(Prepend, Nil, emptyListError()), NewNumber(2)),
+		PApp(Delete, NewList(Nil), emptyListError()),
+		PApp(NewList(Nil), emptyListError()),
+		PApp(NewList(Nil), NewNumber(0)),
+		PApp(NewList(Nil), NewNumber(0.5)),
+		PApp(Compare, NewList(Nil), NewList(Nil)),
+		PApp(ToString, PApp(Prepend, Nil, emptyListError())),
+		PApp(Size, PApp(Prepend, Nil, emptyListError())),
+		PApp(Include, NewList(emptyListError()), Nil),
+	} {
+		_, ok := th.Eval().(ErrorType)
+		assert.True(t, ok)
+	}
+}
+
+func TestListToValues(t *testing.T) {
+	go systemt.RunDaemons()
+
+	NewList(Nil).Eval().(ListType).ToValues()
+
+	time.Sleep(100 * time.Millisecond)
 }

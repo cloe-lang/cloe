@@ -8,12 +8,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNamesFindWithLetVar(t *testing.T) {
+func TestNamesFindInLetVar(t *testing.T) {
 	n := "x"
 	assert.True(t, newNames(n).findInLetVar(ast.NewLetVar(n, n)).include(n))
 }
 
-func TestNamesFindWithLetFunction(t *testing.T) {
+func TestNamesFindInLetFunction(t *testing.T) {
 	n := "x"
 
 	for _, test := range []struct {

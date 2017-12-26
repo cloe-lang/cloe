@@ -42,3 +42,58 @@ func TestNamesFindInLetFunction(t *testing.T) {
 		assert.Equal(t, test.answer, newNames(n).findInLetFunction(test.letFunc).include(n))
 	}
 }
+
+func TestNamesFindInLetFunctionPanic(t *testing.T) {
+	defer func() {
+		assert.NotNil(t, recover())
+	}()
+
+	newNames().findInLetFunction(ast.NewLetFunction(
+		"func",
+		ast.NewSignature(nil, nil, "", nil, nil, ""),
+		[]interface{}{nil},
+		"x",
+		debug.NewGoInfo(0)))
+}
+
+func TestNamesFindInExpression(t *testing.T) {
+	n := "x"
+
+	for _, c := range []struct {
+		expression interface{}
+		answer     bool
+	}{
+		{
+			"x",
+			true,
+		},
+		{
+			ast.NewPApp("f", []interface{}{"x"}, debug.NewGoInfo(0)),
+			true,
+		},
+		{
+			ast.NewApp("f", ast.NewArguments(nil, []ast.KeywordArgument{
+				ast.NewKeywordArgument("foo", "x"),
+			}, nil), debug.NewGoInfo(0)),
+			true,
+		},
+		{
+			ast.NewApp("f", ast.NewArguments(nil, nil, []interface{}{"x"}), debug.NewGoInfo(0)),
+			true,
+		},
+		{
+			ast.NewAnonymousFunction(ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""), "x"),
+			false,
+		},
+	} {
+		assert.Equal(t, c.answer, newNames(n).findInExpression(c.expression).include(n))
+	}
+}
+
+func TestNamesFindInExpressionPanic(t *testing.T) {
+	defer func() {
+		assert.NotNil(t, recover())
+	}()
+
+	newNames().findInExpression(nil)
+}

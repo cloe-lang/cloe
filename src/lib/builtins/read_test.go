@@ -14,25 +14,12 @@ func TestReadWithStdin(t *testing.T) {
 }
 
 func TestReadError(t *testing.T) {
-	for _, a := range []core.Arguments{
-		core.NewArguments(
-			[]core.PositionalArgument{core.NewPositionalArgument(core.True, false)},
-			nil,
-			nil),
-		core.NewArguments(
-			[]core.PositionalArgument{
-				core.NewPositionalArgument(core.NewString("nonExistentFile"), false),
-			},
-			nil,
-			nil),
-		core.NewArguments(
-			[]core.PositionalArgument{
-				core.NewPositionalArgument(core.NewError("", ""), false),
-			},
-			nil,
-			nil),
+	for _, th := range []*core.Thunk{
+		core.True,
+		core.NewString("nonExistentFile"),
+		core.NewError("", ""),
 	} {
-		_, ok := core.App(Read, a).Eval().(core.ErrorType)
+		_, ok := core.PApp(Read, th).Eval().(core.ErrorType)
 		assert.True(t, ok)
 	}
 }

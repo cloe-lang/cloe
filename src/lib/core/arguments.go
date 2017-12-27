@@ -131,7 +131,7 @@ func (args Arguments) Merge(old Arguments) Arguments {
 		l = old.expandedList
 	} else {
 		ps = args.positionals
-		l = PApp(Append, append([]*Thunk{args.expandedList}, old.positionals...)...)
+		l = PApp(Merge, args.expandedList, NewList(old.positionals...))
 
 		if old.expandedList != nil {
 			l = PApp(Merge, l, old.expandedList)

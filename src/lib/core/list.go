@@ -108,13 +108,6 @@ var Rest = NewLazyFunction(
 				}))
 	})
 
-// Append appends an element at the end of a given list.
-var Append = NewLazyFunction(
-	NewSignature([]string{"list"}, nil, "elems", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		return PApp(Merge, ts...)
-	})
-
 func (l ListType) call(args Arguments) Value {
 	return Index.Eval().(callable).call(NewPositionalArguments(Normal(l)).Merge(args))
 }

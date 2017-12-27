@@ -21,7 +21,7 @@ func NewArguments(
 
 	for i, p := range ps {
 		if p.expanded {
-			l = mergeRestPositionalArgs(ps[i].value, ps[i+1:]...)
+			l = mergePositionalArguments(ps[i:])
 			break
 		}
 
@@ -31,14 +31,16 @@ func NewArguments(
 	return Arguments{ts, l, ks, ds}
 }
 
-func mergeRestPositionalArgs(t *Thunk, ps ...PositionalArgument) *Thunk {
-	for _, p := range ps {
+func mergePositionalArguments(ps []PositionalArgument) *Thunk {
+	t := EmptyList
+
+	for i := range ps {
+		p := ps[len(ps)-i-1]
+
 		if p.expanded {
-			t = PApp(Merge, t, p.value)
+			t = PApp(Merge, p.value, t)
 		} else {
-			t = PApp(
-				NewLazyFunction(appendFuncSignature, appendFunc), // Avoid initialization loop
-				t, p.value)
+			t = PApp(Prepend, p.value, t)
 		}
 	}
 

@@ -33,8 +33,7 @@ func TestCompareWithInvalidValues(t *testing.T) {
 		{NewNumber(0), False},
 		{NewNumber(0), Nil},
 		{True, Nil},
-		{NewDictionary([]Value{Nil}, []*Thunk{Nil}),
-			NewDictionary([]Value{Nil}, []*Thunk{Nil})},
+		{NewDictionary([]KeyValue{{Nil, Nil}}), NewDictionary([]KeyValue{{Nil, Nil}})},
 		{NotNumberError(Nil), NotNumberError(Nil)},
 	} {
 		v := PApp(Compare, ts[0], ts[1]).Eval()

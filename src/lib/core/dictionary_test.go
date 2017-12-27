@@ -33,14 +33,6 @@ func TestDictionaryInsert(t *testing.T) {
 	}
 }
 
-func TestNewDictionaryPanic(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	NewDictionary([]Value{Nil}, []*Thunk{Nil, Nil}).Eval()
-}
-
 func TestDictionaryInsertFail(t *testing.T) {
 	l := NewList(NewError("you", "failed."))
 	v := PApp(Insert, PApp(Insert, EmptyDictionary, l, Nil), l, Nil).Eval()
@@ -220,8 +212,8 @@ func TestDictionaryToString(t *testing.T) {
 
 func TestDictionaryStringFail(t *testing.T) {
 	for _, th := range []*Thunk{
-		NewDictionary([]Value{Nil}, []*Thunk{OutOfRangeError()}),
-		NewDictionary([]Value{Nil}, []*Thunk{NewList(OutOfRangeError())}),
+		NewDictionary([]KeyValue{{Nil, OutOfRangeError()}}),
+		NewDictionary([]KeyValue{{Nil, NewList(OutOfRangeError())}}),
 	} {
 		v := PApp(ToString, th).Eval()
 		t.Logf("%#v", v)
@@ -285,36 +277,36 @@ func TestDictionaryMerge(t *testing.T) {
 func TestDictionaryError(t *testing.T) {
 	for _, th := range []*Thunk{
 		PApp(
-			NewDictionary([]Value{OutOfRangeError()}, []*Thunk{Nil}),
+			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),
 			Nil),
 		PApp(
-			NewDictionary([]Value{Nil}, []*Thunk{Nil}),
+			NewDictionary([]KeyValue{{Nil, Nil}}),
 			OutOfRangeError()),
 		PApp(
 			Insert,
-			NewDictionary([]Value{OutOfRangeError()}, []*Thunk{Nil}),
+			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),
 			Nil),
 		PApp(
 			Insert,
-			NewDictionary([]Value{Nil}, []*Thunk{Nil}),
+			NewDictionary([]KeyValue{{Nil, Nil}}),
 			OutOfRangeError()),
 		PApp(
 			Merge,
 			EmptyDictionary,
-			NewDictionary([]Value{OutOfRangeError()}, []*Thunk{Nil})),
+			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}})),
 		PApp(
 			Include,
-			NewDictionary([]Value{OutOfRangeError()}, []*Thunk{Nil}),
+			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),
 			Nil),
 		PApp(
 			ToString,
-			NewDictionary([]Value{OutOfRangeError()}, []*Thunk{Nil})),
+			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}})),
 		PApp(
 			ToString,
-			NewDictionary([]Value{Nil}, []*Thunk{OutOfRangeError()})),
+			NewDictionary([]KeyValue{{Nil, OutOfRangeError()}})),
 		PApp(
 			Delete,
-			NewDictionary([]Value{OutOfRangeError()}, []*Thunk{Nil}),
+			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),
 			Nil),
 	} {
 		v := th.Eval()

@@ -52,13 +52,8 @@ func handleMethodResult(r *http.Response, err error, errorOption *core.Thunk) co
 		return httpError(err)
 	}
 
-	return core.NewDictionary(
-		[]core.Value{
-			core.NewString("status").Eval(),
-			core.NewString("body").Eval(),
-		},
-		[]*core.Thunk{
-			core.NewNumber(float64(r.StatusCode)),
-			core.NewString(string(bs)),
-		})
+	return core.NewDictionary([]core.KeyValue{
+		{core.NewString("status"), core.NewNumber(float64(r.StatusCode))},
+		{core.NewString("body"), core.NewString(string(bs))},
+	})
 }

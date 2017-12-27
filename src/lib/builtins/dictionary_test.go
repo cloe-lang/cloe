@@ -13,19 +13,14 @@ func TestDictionary(t *testing.T) {
 		{core.NewNumber(123), core.NewNumber(456)},
 		{core.NewNumber(123), core.True, core.NewNumber(456), core.False},
 	} {
-		ks := make([]core.Value, len(ts)/2)
-		vs := make([]*core.Thunk, len(ts)/2)
+		kvs := make([]core.KeyValue, 0, len(ts)/2)
 
-		for i, t := range ts {
-			if i%2 == 0 {
-				ks[i/2] = t.Eval()
-			} else {
-				vs[i/2] = t
-			}
+		for i := 0; i < len(ts); i += 2 {
+			kvs = append(kvs, core.KeyValue{ts[i], ts[i+1]})
 		}
 
 		assert.True(t, bool(core.PApp(core.Equal,
 			core.PApp(Dictionary, ts...),
-			core.NewDictionary(ks, vs)).Eval().(core.BoolType)))
+			core.NewDictionary(kvs)).Eval().(core.BoolType)))
 	}
 }

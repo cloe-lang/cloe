@@ -28,13 +28,11 @@ func NewSwitch(m interface{}, cs []Case, d interface{}) Switch {
 }
 
 func compileCasesToDict(cs []Case) *core.Thunk {
-	ks := make([]core.Value, 0, len(cs))
-	vs := make([]*core.Thunk, 0, len(cs))
+	kvs := make([]core.KeyValue, 0, len(cs))
 
 	for i, c := range cs {
-		ks = append(ks, c.pattern.Eval())
-		vs = append(vs, core.NewNumber(float64(i)))
+		kvs = append(kvs, core.KeyValue{c.pattern, core.NewNumber(float64(i))})
 	}
 
-	return core.Normal(core.NewDictionary(ks, vs).Eval())
+	return core.Normal(core.NewDictionary(kvs).Eval())
 }

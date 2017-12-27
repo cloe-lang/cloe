@@ -72,57 +72,53 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	wg.Add(1)
 
 	h.Requests <- core.NewDictionary(
-		[]core.Value{
-			core.NewString("body").Eval(),
-			core.NewString("method").Eval(),
-			core.NewString("url").Eval(),
-			core.NewString("respond").Eval(),
-		},
-		[]*core.Thunk{
-			core.NewString(string(b)),
-			core.NewString(r.Method),
-			core.NewString(r.URL.String()),
-			core.NewLazyFunction(
-				core.NewSignature(
-					nil,
-					[]core.OptionalArgument{
-						core.NewOptionalArgument("body", core.NewString("")),
-					}, "",
-					nil,
-					[]core.OptionalArgument{
-						core.NewOptionalArgument("status", core.NewNumber(200)),
-					},
-					"",
-				),
-				func(ts ...*core.Thunk) core.Value {
-					defer wg.Done()
+		[]core.KeyValue{
+			{core.NewString("body"), core.NewString(string(b))},
+			{core.NewString("method"), core.NewString(r.Method)},
+			{core.NewString("url"), core.NewString(r.URL.String())},
+			{
+				core.NewString("respond"),
+				core.NewLazyFunction(
+					core.NewSignature(
+						nil,
+						[]core.OptionalArgument{
+							core.NewOptionalArgument("body", core.NewString("")),
+						}, "",
+						nil,
+						[]core.OptionalArgument{
+							core.NewOptionalArgument("status", core.NewNumber(200)),
+						},
+						"",
+					),
+					func(ts ...*core.Thunk) core.Value {
+						defer wg.Done()
 
-					v := ts[1].Eval()
-					n, ok := v.(core.NumberType)
+						v := ts[1].Eval()
+						n, ok := v.(core.NumberType)
 
-					if !ok {
-						return core.NotNumberError(v)
-					}
+						if !ok {
+							return core.NotNumberError(v)
+						}
 
-					if float64(n) != float64(int(n)) {
-						return core.NotIntError(n)
-					}
+						if float64(n) != float64(int(n)) {
+							return core.NotIntError(n)
+						}
 
-					w.WriteHeader(int(n))
+						w.WriteHeader(int(n))
 
-					v = ts[0].Eval()
-					s, ok := v.(core.StringType)
+						v = ts[0].Eval()
+						s, ok := v.(core.StringType)
 
-					if !ok {
-						return core.NotStringError(v)
-					}
+						if !ok {
+							return core.NotStringError(v)
+						}
 
-					if _, err := w.Write(([]byte)(s)); err != nil {
-						return httpError(err)
-					}
+						if _, err := w.Write(([]byte)(s)); err != nil {
+							return httpError(err)
+						}
 
-					return core.NewEffect(core.Nil)
-				}),
+						return core.NewEffect(core.Nil)
+					})},
 		})
 
 	wg.Wait()

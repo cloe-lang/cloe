@@ -43,15 +43,13 @@ func convertToValue(x interface{}) *core.Thunk {
 
 		return core.NewList(ts...)
 	case map[string]interface{}:
-		ks := []core.Value{}
-		vs := []*core.Thunk{}
+		kvs := make([]core.KeyValue, 0, len(x))
 
 		for k, v := range x {
-			ks = append(ks, core.NewString(k).Eval())
-			vs = append(vs, convertToValue(v))
+			kvs = append(kvs, core.KeyValue{core.NewString(k), convertToValue(v)})
 		}
 
-		return core.NewDictionary(ks, vs)
+		return core.NewDictionary(kvs)
 	case string:
 		return core.NewString(x)
 	case float64:

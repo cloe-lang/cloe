@@ -37,7 +37,7 @@ func TestSignatureBindExpandedDictionary(t *testing.T) {
 	args := NewArguments(
 		nil,
 		nil,
-		[]*Thunk{NewDictionary([]Value{NewString("foo")}, []*Thunk{Nil})})
+		[]*Thunk{NewDictionary([]KeyValue{{NewString("foo"), Nil}})})
 	_, err := s.Bind(args)
 	assert.Equal(t, (*Thunk)(nil), err)
 }
@@ -54,7 +54,7 @@ func TestSignatureBindRestKeywordArguments(t *testing.T) {
 	args := NewArguments(
 		nil,
 		[]KeywordArgument{NewKeywordArgument("foo", Nil)},
-		[]*Thunk{NewDictionary([]Value{NewString("bar")}, []*Thunk{Nil})})
+		[]*Thunk{NewDictionary([]KeyValue{{NewString("bar"), Nil}})})
 	_, err := s.Bind(args)
 	assert.Equal(t, (*Thunk)(nil), err)
 }
@@ -96,7 +96,7 @@ func TestSignatureBindExpandedDictionaries(t *testing.T) {
 			NewPositionalArgument(EmptyDictionary, false),
 		},
 		nil,
-		[]*Thunk{NewDictionary([]Value{NewString("key")}, []*Thunk{True})}))
+		[]*Thunk{NewDictionary([]KeyValue{{NewString("key"), True}})}))
 
 	v := App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("value", NewNumber(42))}, nil)).Eval()
 

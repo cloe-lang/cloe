@@ -29,7 +29,7 @@ func TestInternalStrictDumpPanic(t *testing.T) {
 func TestInternalStrictDumpFail(t *testing.T) {
 	for _, th := range []*Thunk{
 		NewList(OutOfRangeError()),
-		NewDictionary([]Value{Nil}, []*Thunk{OutOfRangeError()})} {
+		NewDictionary([]KeyValue{{Nil, OutOfRangeError()}})} {
 		_, err := strictDump(th.Eval())
 		assert.NotEqual(t, (*Thunk)(nil), err)
 	}
@@ -79,7 +79,7 @@ func TestTypeOf(t *testing.T) {
 		{"bool", True},
 		{"number", NewNumber(123)},
 		{"string", NewString("foo")},
-		{"dict", NewDictionary(nil, nil)},
+		{"dict", EmptyDictionary},
 		{"error", NewError("MyError", "This is error.")},
 		{"function", identity},
 		{"function", PApp(Partial, identity)},

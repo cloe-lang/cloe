@@ -32,9 +32,7 @@ func TestIndexChain(t *testing.T) {
 		{PApp(NewList(NewList(Nil)), NewNumber(1), NewNumber(1)), Nil},
 		{
 			PApp(
-				NewDictionary(
-					[]Value{Nil},
-					[]*Thunk{NewDictionary([]Value{True}, []*Thunk{False})}),
+				NewDictionary([]KeyValue{{Nil, NewDictionary([]KeyValue{{True, False}})}}),
 				Nil,
 				True),
 			False,

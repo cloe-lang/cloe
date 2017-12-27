@@ -27,15 +27,15 @@ func TestEncode(t *testing.T) {
 		), `["foo",42,"bar"]`},
 		{core.EmptyDictionary, "{}"},
 		{
-			core.NewDictionary([]core.Value{core.Nil}, []*core.Thunk{core.Nil}),
+			core.NewDictionary([]core.KeyValue{{core.Nil, core.Nil}}),
 			`{"null":null}`,
 		},
 		{
-			core.NewDictionary([]core.Value{core.NewNumber(42)}, []*core.Thunk{core.NewNumber(42)}),
+			core.NewDictionary([]core.KeyValue{{core.NewNumber(42), core.NewNumber(42)}}),
 			`{"42":42}`,
 		},
 		{
-			core.NewDictionary([]core.Value{core.True}, []*core.Thunk{core.True}),
+			core.NewDictionary([]core.KeyValue{{core.True, core.True}}),
 			`{"true":true}`,
 		},
 	} {
@@ -61,18 +61,11 @@ func TestEncodeAndDecode(t *testing.T) {
 			core.NewString("bar"),
 		),
 		core.EmptyDictionary,
-		core.NewDictionary(
-			[]core.Value{
-				core.NewString("foo").Eval(),
-				core.NewString("bar").Eval(),
-				core.NewString("baz").Eval(),
-			},
-			[]*core.Thunk{
-				core.NewNumber(42),
-				core.True,
-				core.NewString("blah"),
-			},
-		),
+		core.NewDictionary([]core.KeyValue{
+			{core.NewString("foo"), core.NewNumber(42)},
+			{core.NewString("bar"), core.True},
+			{core.NewString("baz"), core.NewString("blah")},
+		}),
 	} {
 		s, ok := core.PApp(encode, th).Eval().(core.StringType)
 

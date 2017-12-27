@@ -34,9 +34,10 @@ var Catch = NewLazyFunction(
 			return Nil
 		}
 
-		return NewDictionary(
-			[]Value{NewString("name").Eval(), NewString("message").Eval()},
-			[]*Thunk{NewString(err.name), NewString(err.message)})
+		return NewDictionary([]KeyValue{
+			{NewString("name"), NewString(err.name)},
+			{NewString("message"), NewString(err.message)},
+		})
 	})
 
 // Name returns a name of an error.

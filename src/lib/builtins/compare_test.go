@@ -49,7 +49,7 @@ func TestLessError(t *testing.T) {
 		{core.Nil},
 		{core.True},
 		{core.False},
-		{core.NewDictionary(nil, nil)},
+		{core.NewDictionary(nil)},
 		{core.NewNumber(42), core.Nil},
 		{core.NewString("foo"), core.Nil},
 	} {

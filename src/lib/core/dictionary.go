@@ -12,19 +12,20 @@ type DictionaryType struct {
 }
 
 // EmptyDictionary is a thunk of an empty dictionary.
-var EmptyDictionary = NewDictionary(nil, nil)
+var EmptyDictionary = NewDictionary(nil)
+
+// KeyValue is a pair of a key and value inserted into dictionaries.
+type KeyValue struct {
+	Key, Value *Thunk
+}
 
 // NewDictionary creates a dictionary from keys of values and their
 // corresponding values of thunks.
-func NewDictionary(ks []Value, vs []*Thunk) *Thunk {
-	if len(ks) != len(vs) {
-		panic("Number of keys doesn't match with number of values.")
-	}
-
+func NewDictionary(kvs []KeyValue) *Thunk {
 	d := Normal(DictionaryType{rbt.NewDictionary(compare)})
 
-	for i, k := range ks {
-		d = PApp(Insert, d, Normal(k), vs[i])
+	for _, kv := range kvs {
+		d = PApp(Insert, d, kv.Key, kv.Value)
 	}
 
 	return d

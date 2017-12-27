@@ -126,6 +126,19 @@ Feature: Built-in functions
     []
     """
 
+  Scenario: Slice an infinite list
+    Given a file named "main.coel" with:
+    """
+    (def (f) (prepend 42 (f)))
+
+    (write (slice (f) 1 3))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    [42 42 42]
+    """
+
   Scenario: Slice strings
     Given a file named "main.coel" with:
     """

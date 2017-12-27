@@ -1,6 +1,8 @@
 package run
 
 import (
+	"errors"
+	"os"
 	"sync"
 	"testing"
 
@@ -48,4 +50,24 @@ func TestRunEffectFail(t *testing.T) {
 	sem <- true
 	wg.Add(1)
 	runEffect(core.Nil, &wg, func(err error) { panic(err) })
+}
+
+func TestFail(t *testing.T) {
+	s := 0
+
+	fail := failWithExit(func(i int) { s = i })
+
+	fail(errors.New("foo"))
+
+	assert.Equal(t, 1, s)
+}
+
+func TestFailPanic(t *testing.T) {
+	defer func() {
+		assert.NotNil(t, recover())
+	}()
+
+	os.Stderr.Close()
+	fail := failWithExit(func(int) {})
+	fail(errors.New("foo"))
 }

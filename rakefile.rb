@@ -53,6 +53,7 @@ task test: %i[unit_test command_test]
 task :format do
   sh 'go fix ./...'
   sh 'go fmt ./...'
+  sh 'gofmt -s -w .'
 
   Dir.glob '**/*.go' do |file|
     sh "goimports -w #{file}"

@@ -36,8 +36,8 @@ var goBuiltins = func() environment {
 		">":  builtins.Greater,
 		">=": builtins.GreaterEq,
 
-		"toStr": core.ToString,
-		"dump":  core.Dump,
+		"toString": core.ToString,
+		"dump":     core.Dump,
 
 		"delete":  core.Delete,
 		"include": core.Include,

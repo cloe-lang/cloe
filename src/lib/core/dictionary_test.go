@@ -17,7 +17,7 @@ var kvss = [][][2]*Thunk{
 		{NewNumber(2), NewString("Mr. Value")},
 	},
 	{
-		{NewString("go"), NewList(NewList(), Nil, NewNumber(123))},
+		{NewString("go"), NewList(EmptyList, Nil, NewNumber(123))},
 		{False, NewNumber(42)},
 		{True, False},
 		{NewNumber(2), NewString("Mr. Value")},

@@ -32,7 +32,7 @@ func TestListComparable(t *testing.T) {
 		{{False}, {True}},
 		{{True, False}, {True, True}},
 		{{NewNumber(123), NewNumber(456)}, {NewNumber(123), NewNumber(2049)}},
-		{{NewNumber(123), NewList()}, {NewNumber(123), Nil}},
+		{{NewNumber(123), EmptyList}, {NewNumber(123), Nil}},
 	} {
 		assert.True(t, testLess(NewList(tss[0]...), NewList(tss[1]...)))
 	}
@@ -44,7 +44,7 @@ func TestListPrepend(t *testing.T) {
 		{{False}, {True}},
 		{{True, False}, {True, True}},
 		{{NewNumber(123), NewNumber(456)}, {NewNumber(123), NewNumber(2049)}},
-		{{NewNumber(123), NewList()}, {NewNumber(123), Nil}},
+		{{NewNumber(123), EmptyList}, {NewNumber(123), Nil}},
 	} {
 		l := PApp(Prepend, append(tss[0], NewList(tss[1]...))...)
 		assert.True(t, testEqual(NewList(append(tss[0], tss[1]...)...), l))
@@ -65,7 +65,7 @@ func TestListMerge(t *testing.T) {
 		{{False}, {True}, {True, True}},
 		{{True, False}, {True, False, False, True}},
 		{{NewNumber(123), NewNumber(456)}, {NewNumber(123), NewNumber(2049)}},
-		{{NewNumber(123), NewList()}, {NewNumber(123), Nil}, {True, False, True}},
+		{{NewNumber(123), EmptyList}, {NewNumber(123), Nil}, {True, False, True}},
 	} {
 		all := make([]*Thunk, 0)
 		for _, ts := range tss {
@@ -94,7 +94,7 @@ func TestListToString(t *testing.T) {
 		expected string
 		thunk    *Thunk
 	}{
-		{"[]", NewList()},
+		{"[]", EmptyList},
 		{"[123]", NewList(NewNumber(123))},
 		{"[123 nil]", NewList(NewNumber(123), Nil)},
 		{"[[123]]", NewList(NewList(NewNumber(123)))},
@@ -127,8 +127,8 @@ func TestListIndexFail(t *testing.T) {
 		list  *Thunk
 		index float64
 	}{
-		{NewList(), 0},
-		{NewList(), 1},
+		{EmptyList, 0},
+		{EmptyList, 1},
 		{NewList(Nil), 2},
 		{NewList(Nil, Nil), 1.5},
 	} {
@@ -150,7 +150,7 @@ func TestListDelete(t *testing.T) {
 		index  float64
 		answer *Thunk
 	}{
-		{NewList(Nil), 1, NewList()},
+		{NewList(Nil), 1, EmptyList},
 		{NewList(Nil, True), 2, NewList(Nil)},
 		{NewList(Nil, True, False), 3, NewList(Nil, True)},
 	} {
@@ -163,7 +163,7 @@ func TestListSize(t *testing.T) {
 		list *Thunk
 		size NumberType
 	}{
-		{NewList(), 0},
+		{EmptyList, 0},
 		{NewList(Nil), 1},
 		{NewList(Nil, True), 2},
 		{NewList(Nil, True, False), 3},
@@ -178,7 +178,7 @@ func TestListInclude(t *testing.T) {
 		elem   *Thunk
 		answer BoolType
 	}{
-		{NewList(), Nil, false},
+		{EmptyList, Nil, false},
 		{NewList(Nil), Nil, true},
 		{NewList(Nil, True), True, true},
 		{NewList(Nil, False), True, false},
@@ -195,7 +195,7 @@ func TestListInsert(t *testing.T) {
 		elem     *Thunk
 		expected *Thunk
 	}{
-		{NewList(), 1, Nil, NewList(Nil)},
+		{EmptyList, 1, Nil, NewList(Nil)},
 		{NewList(True), 1, False, NewList(False, True)},
 		{NewList(True), 2, False, NewList(True, False)},
 		{NewList(True, False), 1, Nil, NewList(Nil, True, False)},
@@ -212,9 +212,9 @@ func TestListInsertFailure(t *testing.T) {
 }
 
 func TestListCompare(t *testing.T) {
-	assert.True(t, testCompare(NewList(), NewList()) == 0)
-	assert.True(t, testCompare(NewList(NewNumber(42)), NewList()) == 1)
-	assert.True(t, testCompare(NewList(), NewList(NewNumber(42))) == -1)
+	assert.True(t, testCompare(EmptyList, EmptyList) == 0)
+	assert.True(t, testCompare(NewList(NewNumber(42)), EmptyList) == 1)
+	assert.True(t, testCompare(EmptyList, NewList(NewNumber(42))) == -1)
 	assert.True(t, testCompare(NewList(NewNumber(42)), NewList(NewNumber(42))) == 0)
 	assert.True(t, testCompare(NewList(NewNumber(42)), NewList(NewNumber(2049))) == -1)
 	assert.True(t, testCompare(NewList(NewNumber(2049)), NewList(NewNumber(42))) == 1)

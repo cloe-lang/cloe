@@ -74,7 +74,7 @@ func TestTypeOf(t *testing.T) {
 		thunk *Thunk
 	}{
 		{"nil", Nil},
-		{"list", NewList()},
+		{"list", EmptyList},
 		{"list", EmptyList},
 		{"bool", True},
 		{"number", NewNumber(123)},

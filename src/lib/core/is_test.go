@@ -22,7 +22,7 @@ func TestIsOrdered(t *testing.T) {
 		Nil,
 		True,
 		False,
-		NewDictionary(nil),
+		EmptyDictionary,
 		NewList(Nil, True),
 		NewList(NewNumber(42), Nil),
 		NewList(NewNumber(42), EmptyList, NewList(Nil)),

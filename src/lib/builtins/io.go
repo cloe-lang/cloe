@@ -24,7 +24,7 @@ var Read = core.NewLazyFunction(
 			file, err = os.Open(string(s))
 
 			if err != nil {
-				return core.EffectError(err.Error())
+				return readError(err)
 			}
 		} else if _, ok := v.(core.NilType); !ok {
 			s, err := core.StrictDump(v)
@@ -41,11 +41,15 @@ var Read = core.NewLazyFunction(
 		s, err := ioutil.ReadAll(file)
 
 		if err != nil {
-			return core.EffectError(err.Error())
+			return readError(err)
 		}
 
 		return core.NewString(string(s))
 	})
+
+func readError(err error) *core.Thunk {
+	return core.NewError("ReadError", err.Error())
+}
 
 // Write writes string representation of arguments to stdout.
 var Write = core.NewStrictFunction(

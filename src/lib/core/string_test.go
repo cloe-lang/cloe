@@ -139,7 +139,7 @@ func TestStringInsertWithInvalidIndex(t *testing.T) {
 }
 
 func TestStringInsertWithNonString(t *testing.T) {
-	_, ok := PApp(Insert, NewString("foo"), NewNumber(0), Nil).Eval().(ErrorType)
+	_, ok := PApp(Insert, NewString("foo"), NewNumber(1), Nil).Eval().(ErrorType)
 	assert.True(t, ok)
 }
 

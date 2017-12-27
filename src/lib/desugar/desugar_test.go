@@ -13,7 +13,7 @@ func TestDesugar(t *testing.T) {
 		{
 			ast.NewLetVar(
 				"foo",
-				ast.NewPApp("prepend", []interface{}{"42", "foo"}, debug.NewGoInfo(0))),
+				ast.NewPApp("+", []interface{}{"42", "foo"}, debug.NewGoInfo(0))),
 		},
 		{
 			ast.NewLetVar(

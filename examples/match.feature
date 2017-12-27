@@ -135,7 +135,7 @@ Feature: Match expression
   Scenario: Match an invalid list with a valid pattern
     Given a file named "main.coel" with:
     """
-    (write (match (prepend "Matched!" {})
+    (write (match ["Matched!" ..{}]
       [x ..xs] x))
     """
     When I successfully run `coel main.coel`
@@ -208,7 +208,7 @@ Feature: Match expression
     Given a file named "main.coel" with:
     """
     (def (f ..xs)
-      (let xs (prepend 1 2 3 xs))
+      (let xs [1 2 3 ..xs])
       (match xs
         [] (if true (match xs [x] x [..xs] "OOOOK"))
         [x y ..xs] (match xs [] [x y] [x y ..xs] [..xs (+ x y)])))

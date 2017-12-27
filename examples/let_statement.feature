@@ -105,7 +105,7 @@ Feature: Let statement
   Scenario: Define a recursive variable
     Given a file named "main.coel" with:
     """
-    (let l (prepend 42 l))
+    (let l [42 ..l])
 
     (write (l 1))
     (write (l 2))

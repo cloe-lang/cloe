@@ -21,7 +21,6 @@ var goBuiltins = func() environment {
 
 		{"first", core.First},
 		{"rest", core.Rest},
-		{"prepend", core.Prepend},
 
 		{"typeOf", core.TypeOf},
 		{"ordered?", core.IsOrdered},
@@ -100,7 +99,7 @@ func builtinsEnvironment() environment {
 			(def (map func list)
 				(match list
 					[] []
-					[first ..rest] (prepend (func first) (map func rest))))
+					[first ..rest] [(func first) ..(map func rest)]))
 
 			(def (generateMaxOrMinFunction name compare)
 				(def (maxOrMin ..ns)
@@ -129,7 +128,7 @@ func builtinsEnvironment() environment {
 							(if
 								(= end 1) [x]
 								(> start 1) (slice xs (- start 1) (- end 1))
-								(= start 1) (prepend x (slice xs 1 (- end 1)))
+								(= start 1) [x ..(slice xs 1 (- end 1))]
 								[]))))
 
 			(def (generateAndOrOrFunction name operator)
@@ -151,7 +150,7 @@ func builtinsEnvironment() environment {
 			(def (zip ..lists)
 				(if (or ..(map (\ (list) (= 0 (size list))) lists))
 					[]
-					(prepend (map first lists) (zip ..(map rest lists)))))
+					[(map first lists) ..(zip ..(map rest lists))]))
 		`,
 	} {
 		for n, t := range compileBuiltinModule(e.copy(), "<builtins>", s) {

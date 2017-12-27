@@ -129,7 +129,7 @@ Feature: Built-in functions
   Scenario: Slice an infinite list
     Given a file named "main.coel" with:
     """
-    (def (f) (prepend 42 (f)))
+    (def (f) [42 ..(f)])
 
     (write (slice (f) 1 3))
     """

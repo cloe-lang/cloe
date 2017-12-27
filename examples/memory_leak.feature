@@ -36,7 +36,7 @@ Feature: Memory leak
     This test succeeds only with Go 1.8 onward because of argument liveness.
     Given a file named "main.coel" with:
     """
-    (def (f) (prepend (write 42) (f)))
+    (def (f) [(write 42) ..(f)])
     ..(f)
     """
     When I run `sh leak_memory.sh main.coel`
@@ -58,7 +58,7 @@ Feature: Memory leak
   Scenario: Apply a map function to an infinite list
     Given a file named "main.coel" with:
     """
-    (def (f) (prepend 42 (f)))
+    (def (f) [42 ..(f)])
 
     ..(map write (f))
     """
@@ -68,7 +68,7 @@ Feature: Memory leak
   Scenario: Apply a map function to an infinite list of map functions
     Given a file named "main.coel" with:
     """
-    (def (f) (prepend map (f)))
+    (def (f) [map ..(f)])
 
     ..(map (\ (x) (write (typeOf x))) (f))
     """
@@ -78,7 +78,7 @@ Feature: Memory leak
   Scenario: Apply max function to an infinite list
     Given a file named "main.coel" with:
     """
-    (def (f) (prepend 42 (f)))
+    (def (f) [42 ..(f)])
 
     (write (max ..(f)))
     """

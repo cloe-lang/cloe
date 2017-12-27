@@ -73,7 +73,7 @@ func (args *Arguments) restPositionals() *Thunk {
 		return NewList(ts...)
 	}
 
-	return PApp(Merge, NewList(ts...), l)
+	return PApp(Prepend, append(ts, l)...)
 }
 
 func (args *Arguments) searchKeyword(s string) *Thunk {

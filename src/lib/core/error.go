@@ -22,7 +22,8 @@ func NewError(n, m string, xs ...interface{}) *Thunk {
 	})
 }
 
-// Catch returns a dictionary of .
+// Catch returns a dictionary containing a name and message of a catched error,
+// or nil otherwise.
 var Catch = NewLazyFunction(
 	NewSignature([]string{"error"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {

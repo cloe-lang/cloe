@@ -26,7 +26,7 @@ func createReadFunction(stdin io.Reader) *core.Thunk {
 				file, err = os.Open(string(s))
 
 				if err != nil {
-					return readError(err)
+					return fileError(err)
 				}
 			} else if _, ok := v.(core.NilType); !ok {
 				s, err := core.StrictDump(v)
@@ -43,13 +43,9 @@ func createReadFunction(stdin io.Reader) *core.Thunk {
 			s, err := ioutil.ReadAll(file)
 
 			if err != nil {
-				return readError(err)
+				return fileError(err)
 			}
 
 			return core.NewString(string(s))
 		})
-}
-
-func readError(err error) *core.Thunk {
-	return core.NewError("ReadError", err.Error())
 }

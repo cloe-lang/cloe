@@ -77,7 +77,7 @@ var Write = core.NewStrictFunction(
 				os.FileMode(mode))
 
 			if err != nil {
-				return core.EffectError(err.Error())
+				return fileError(err)
 			}
 		} else if n, ok := fileArg.(core.NumberType); ok && n == 2 {
 			file = os.Stderr
@@ -96,7 +96,7 @@ var Write = core.NewStrictFunction(
 		_, err := fmt.Fprint(file, strings.Join(ss, options[0])+options[1])
 
 		if err != nil {
-			return core.EffectError(err.Error())
+			return fileError(err)
 		}
 
 		return core.NewEffect(core.Nil)

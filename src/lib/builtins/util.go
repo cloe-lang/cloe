@@ -14,3 +14,7 @@ func checkEmptyList(l *core.Thunk, ifTrue core.Value) core.Value {
 
 	return nil
 }
+
+func fileError(err error) *core.Thunk {
+	return core.NewError("FileError", err.Error())
+}

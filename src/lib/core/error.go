@@ -132,16 +132,6 @@ func NotCollectionError(v Value) *Thunk {
 	return TypeError(v, "collection")
 }
 
-// InputError creates a thunk which represents an input error.
-func InputError(m string, xs ...interface{}) *Thunk {
-	return NewError("InputError", m, xs...)
-}
-
-// EffectError creates a thunk which represents an effect error.
-func EffectError(m string, xs ...interface{}) *Thunk {
-	return NewError("EffectError", m, xs...)
-}
-
 // NotEffectError creates an error value for a pure value which is expected to be an effect value.
 func NotEffectError(v Value) *Thunk {
 	return TypeError(v, "effect")

@@ -11,65 +11,62 @@ import (
 var goBuiltins = func() environment {
 	e := newEnvironment(scalar.Convert)
 
-	for _, nv := range []struct {
-		name  string
-		value *core.Thunk
-	}{
-		{"if", core.If},
+	for s, t := range map[string]*core.Thunk{
+		"if": core.If,
 
-		{"partial", core.Partial},
+		"partial": core.Partial,
 
-		{"first", core.First},
-		{"rest", core.Rest},
+		"first": core.First,
+		"rest":  core.Rest,
 
-		{"typeOf", core.TypeOf},
-		{"ordered?", core.IsOrdered},
+		"typeOf":   core.TypeOf,
+		"ordered?": core.IsOrdered,
 
-		{"+", core.Add},
-		{"-", core.Sub},
-		{"*", core.Mul},
-		{"/", core.Div},
-		{"//", core.FloorDiv},
-		{"mod", core.Mod},
-		{"**", core.Pow},
+		"+":   core.Add,
+		"-":   core.Sub,
+		"*":   core.Mul,
+		"/":   core.Div,
+		"//":  core.FloorDiv,
+		"mod": core.Mod,
+		"**":  core.Pow,
 
-		{"=", builtins.Equal},
-		{"<", builtins.Less},
-		{"<=", builtins.LessEq},
-		{">", builtins.Greater},
-		{">=", builtins.GreaterEq},
+		"=":  builtins.Equal,
+		"<":  builtins.Less,
+		"<=": builtins.LessEq,
+		">":  builtins.Greater,
+		">=": builtins.GreaterEq,
 
-		{"toStr", core.ToString},
-		{"dump", core.Dump},
+		"toStr": core.ToString,
+		"dump":  core.Dump,
 
-		{"delete", core.Delete},
-		{"include", core.Include},
-		{"insert", core.Insert},
-		{"merge", core.Merge},
-		{"size", core.Size},
-		{"toList", core.ToList},
+		"delete":  core.Delete,
+		"include": core.Include,
+		"insert":  core.Insert,
+		"merge":   core.Merge,
+		"size":    core.Size,
+		"toList":  core.ToList,
 
-		{"dict", builtins.Dictionary},
-		{"error", core.Error},
+		"dict":  builtins.Dictionary,
+		"error": core.Error,
 
-		{"y", builtins.Y},
-		{"ys", builtins.Ys},
+		"y":  builtins.Y,
+		"ys": builtins.Ys,
 
-		{"par", builtins.Par},
-		{"seq", builtins.Seq},
-		{"eseq", builtins.EffectSeq},
-		{"rally", builtins.Rally},
+		"par":   builtins.Par,
+		"seq":   builtins.Seq,
+		"eseq":  builtins.EffectSeq,
+		"rally": builtins.Rally,
 
-		{"read", builtins.Read},
-		{"write", builtins.Write},
+		"read":  builtins.Read,
+		"write": builtins.Write,
 
-		{"matchError", core.NewError("MatchError", "A value didn't match with any pattern.")},
-		{"catch", core.Catch},
+		"matchError": core.NewError("MatchError", "A value didn't match with any pattern."),
+		"catch":      core.Catch,
 
-		{"pure", core.Pure},
+		"pure": core.Pure,
 	} {
-		e.set(nv.name, nv.value)
-		e.set("$"+nv.name, nv.value)
+		e.set(s, t)
+		e.set("$"+s, t)
 	}
 
 	return e

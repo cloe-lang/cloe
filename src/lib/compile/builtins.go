@@ -148,7 +148,7 @@ func builtinsEnvironment() environment {
 				(if bool false true))
 
 			(def (zip ..lists)
-				(if (or ..(map (\ (list) (= 0 (size list))) lists))
+				(if (or ..(map (\ (list) (= list [])) lists))
 					[]
 					[(map first lists) ..(zip ..(map rest lists))]))
 		`,

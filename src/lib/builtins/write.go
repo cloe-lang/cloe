@@ -60,11 +60,12 @@ var Write = core.NewStrictFunction(
 		}
 
 		file := os.Stdout
-
 		fileArg := ts[3].Eval()
+
 		if s, ok := fileArg.(core.StringType); ok {
 			v := ts[4].Eval()
 			mode, ok := v.(core.NumberType)
+
 			if !ok {
 				return core.NotNumberError(v)
 			}

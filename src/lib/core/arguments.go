@@ -1,6 +1,9 @@
 package core
 
 // Arguments represents a structured set of arguments passed to a predicate.
+// It allows destructive operations to internal properties because it is
+// guaranteed by Thunks that arguments objects are never reused as a function
+// call creates a Thunk.
 type Arguments struct {
 	positionals   []*Thunk
 	expandedList  *Thunk

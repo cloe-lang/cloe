@@ -14,10 +14,7 @@ const requestChannelSize = 1024
 const responseChannelSize = 1024
 
 var getRequests = core.NewLazyFunction(
-	core.NewSignature(
-		[]string{"address"}, nil, "",
-		nil, nil, "",
-	),
+	core.NewSignature([]string{"address"}, nil, "", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
 		v := ts[0].Eval()
 		s, ok := v.(core.StringType)

@@ -40,6 +40,11 @@ var Catch = NewLazyFunction(
 		})
 	})
 
+// Chain chains 2 errors with debug information.
+func (e ErrorType) Chain(i debug.Info) ErrorType {
+	return ErrorType{e.name, e.message, append(e.callTrace, i)}
+}
+
 // Name returns a name of an error.
 func (e ErrorType) Name() string {
 	return e.name

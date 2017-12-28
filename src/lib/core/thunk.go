@@ -57,8 +57,8 @@ func PApp(f *Thunk, ps ...*Thunk) *Thunk {
 	return AppWithInfo(f, NewPositionalArguments(ps...), debug.NewGoInfo(1))
 }
 
-// EvalAny evaluates a thunk and returns a pure or impure (effect) value.
-func (t *Thunk) EvalAny(pure bool) Value {
+// evalAny evaluates a thunk and returns a pure or impure (effect) value.
+func (t *Thunk) evalAny() Value {
 	if t.lock(normal) {
 		for {
 			v := t.swapFunction(nil).Eval()
@@ -87,19 +87,13 @@ func (t *Thunk) EvalAny(pure bool) Value {
 			}
 
 			if ok := child.delegateEval(t); !ok {
-				t.result = child.EvalAny(pure)
+				t.result = child.evalAny()
 				t.chainError(t.result)
 				break
 			}
 		}
 
 		assertValueIsNormal("Thunk.result", t.result)
-
-		if _, impure := t.result.(effectType); pure && impure {
-			t.result = ImpureFunctionError(t.result).Eval()
-		} else if !pure && !impure {
-			t.result = NotEffectError(t.result).Eval()
-		}
 
 		t.finalize()
 	} else {
@@ -169,8 +163,7 @@ func (t *Thunk) storeState(new thunkState) {
 
 func (t *Thunk) chainError(v Value) bool {
 	if e, ok := v.(ErrorType); ok {
-		e.callTrace = append(e.callTrace, t.info)
-		t.result = e
+		t.result = e.Chain(t.info)
 		return true
 	}
 
@@ -185,22 +178,23 @@ func assertValueIsNormal(s string, v Value) {
 
 // Eval evaluates a pure value.
 func (t *Thunk) Eval() Value {
-	return t.EvalAny(true)
+	v := t.evalAny()
+
+	if _, ok := v.(effectType); ok {
+		return ImpureFunctionError(v).Eval().(ErrorType).Chain(t.info)
+	}
+
+	return t.result
 }
 
 // EvalEffect evaluates an effect expression.
 func (t *Thunk) EvalEffect() Value {
-	v := t.EvalAny(false)
-
-	if err, ok := v.(ErrorType); ok {
-		return err
-	}
-
-	o, ok := v.(effectType)
+	v := t.evalAny()
+	e, ok := v.(effectType)
 
 	if !ok {
-		return NotEffectError(v).Eval()
+		return NotEffectError(v).Eval().(ErrorType).Chain(t.info)
 	}
 
-	return o.value.Eval()
+	return e.value.Eval()
 }

@@ -9,7 +9,7 @@ import (
 var impureFunction = NewLazyFunction(
 	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		return NewEffect(ts[0])
+		return newEffect(ts[0])
 	})
 
 func TestThunkEvalWithNotCallable(t *testing.T) {

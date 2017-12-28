@@ -9,7 +9,7 @@ import (
 )
 
 // Write writes string representation of arguments to stdout.
-var Write = core.NewStrictFunction(
+var Write = core.NewEffectFunction(
 	core.NewSignature(
 		nil, nil, "args",
 		nil, []core.OptionalArgument{
@@ -99,5 +99,5 @@ var Write = core.NewStrictFunction(
 			return fileError(err)
 		}
 
-		return core.NewEffect(core.Nil)
+		return core.Nil
 	})

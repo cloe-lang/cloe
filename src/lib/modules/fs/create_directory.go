@@ -6,7 +6,7 @@ import (
 	"github.com/coel-lang/coel/src/lib/core"
 )
 
-var createDirectory = core.NewLazyFunction(
+var createDirectory = core.NewEffectFunction(
 	core.NewSignature(
 		[]string{"name"}, nil, "", nil,
 		[]core.OptionalArgument{core.NewOptionalArgument("existOk", core.False)}, "",
@@ -28,7 +28,7 @@ var createDirectory = core.NewLazyFunction(
 
 		if b {
 			if f, err := os.Stat(string(s)); err == nil && f.IsDir() {
-				return core.NewEffect(core.Nil)
+				return core.Nil
 			}
 		}
 
@@ -38,5 +38,5 @@ var createDirectory = core.NewLazyFunction(
 			return fileSystemError(err)
 		}
 
-		return core.NewEffect(core.Nil)
+		return core.Nil
 	})

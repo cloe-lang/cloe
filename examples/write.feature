@@ -98,5 +98,3 @@ Feature: Write function
     Then the exit status should not be 0
     And the stdout should contain exactly ""
     And the stderr should contain "Error"
-    And the stderr should contain "main.coel"
-    And the stderr should contain "(write 42 . file nil)"

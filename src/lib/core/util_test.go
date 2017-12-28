@@ -44,7 +44,7 @@ func TestStrictDump(t *testing.T) {
 		EmptyDictionary,
 		NewNumber(42),
 		NewString("foo"),
-		NewEffect(Nil),
+		newEffect(Nil),
 	} {
 		s, err := StrictDump(th.Eval())
 		assert.NotEqual(t, "", s)

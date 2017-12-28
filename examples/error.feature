@@ -26,8 +26,6 @@ Feature: Error
     Then the exit status should not be 0
     And the stdout should contain exactly ""
     And the stderr should contain "Error"
-    And the stderr should contain "main.coel"
-    And the stderr should contain "(write (((f 123) 456) . x 0))"
 
   Scenario: Catch an error
     Given a file named "main.coel" with:

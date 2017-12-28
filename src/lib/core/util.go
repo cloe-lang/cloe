@@ -87,7 +87,7 @@ var identity = NewLazyFunction(
 var TypeOf = NewLazyFunction(
 	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		// No case of EffectType should be here.
+		// No case of effectType should be here.
 		switch ts[0].Eval().(type) {
 		case BoolType:
 			return NewString("bool")

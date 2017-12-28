@@ -1,17 +1,17 @@
 package core
 
-// EffectType represents an effect value returned from an impure function.
-// EffectType is meant to be used to distinguish calls of pure and impure
+// effectType represents an effect value returned from an impure function.
+// effectType is meant to be used to distinguish calls of pure and impure
 // functions and also represent a "result" value of an impure function which
 // can be extracted by a special function named "out" and passed to a pure
 // function.
-type EffectType struct {
+type effectType struct {
 	value *Thunk
 }
 
-// NewEffect creates an effect value.
-func NewEffect(value *Thunk) *Thunk {
-	return Normal(EffectType{value})
+// newEffect creates an effect value.
+func newEffect(value *Thunk) *Thunk {
+	return Normal(effectType{value})
 }
 
 // Pure extracts a result value in an effect value.
@@ -21,6 +21,6 @@ var Pure = NewLazyFunction(
 		return ts[0].EvalEffect()
 	})
 
-func (o EffectType) string() Value {
+func (o effectType) string() Value {
 	return StringType("<effect>")
 }

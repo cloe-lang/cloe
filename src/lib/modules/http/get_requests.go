@@ -75,7 +75,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			{core.NewString("url"), core.NewString(r.URL.String())},
 			{
 				core.NewString("respond"),
-				core.NewLazyFunction(
+				core.NewEffectFunction(
 					core.NewSignature(
 						nil,
 						[]core.OptionalArgument{
@@ -114,7 +114,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							return httpError(err)
 						}
 
-						return core.NewEffect(core.Nil)
+						return core.Nil
 					})},
 		})
 

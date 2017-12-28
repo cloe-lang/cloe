@@ -95,7 +95,7 @@ func (t *Thunk) EvalAny(pure bool) Value {
 
 		assertValueIsNormal("Thunk.result", t.result)
 
-		if _, impure := t.result.(EffectType); pure && impure {
+		if _, impure := t.result.(effectType); pure && impure {
 			t.result = ImpureFunctionError(t.result).Eval()
 		} else if !pure && !impure {
 			t.result = NotEffectError(t.result).Eval()
@@ -196,7 +196,7 @@ func (t *Thunk) EvalEffect() Value {
 		return err
 	}
 
-	o, ok := v.(EffectType)
+	o, ok := v.(effectType)
 
 	if !ok {
 		return NotEffectError(v).Eval()

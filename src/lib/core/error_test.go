@@ -35,3 +35,9 @@ func TestErrorCatch(t *testing.T) {
 	_, ok = PApp(Catch, Nil).Eval().(NilType)
 	assert.True(t, ok)
 }
+
+func TestKeyNotFoundErrorFail(t *testing.T) {
+	assert.NotEqual(t,
+		"KeyNotFoundError",
+		keyNotFoundError(NewError("", "")).Eval().(ErrorType).Name())
+}

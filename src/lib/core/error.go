@@ -142,11 +142,6 @@ func NotEffectError(v Value) *Thunk {
 	return TypeError(v, "effect")
 }
 
-// ImpureFunctionError creates an error value for execution of an impure function.
-func ImpureFunctionError(v Value) *Thunk {
-	return TypeError(v, "pure value")
-}
-
 // OutOfRangeError creates an error value for an out-of-range index to a list.
 func OutOfRangeError() *Thunk {
 	return NewError("OutOfRangeError", "Index is out of range.")

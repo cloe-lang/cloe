@@ -15,6 +15,6 @@ func TestNewEffectFunction(t *testing.T) {
 		NewSignature(nil, nil, "", nil, nil, ""),
 		func(...*Thunk) Value { return Nil }))
 
-	assert.Equal(t, "TypeError", th.Eval().(ErrorType).Name())
+	assert.Equal(t, "ImpureFunctionError", th.Eval().(ErrorType).Name())
 	assert.Equal(t, Nil.Eval(), th.EvalEffect().(NilType))
 }

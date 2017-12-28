@@ -178,10 +178,8 @@ func assertValueIsNormal(s string, v Value) {
 
 // Eval evaluates a pure value.
 func (t *Thunk) Eval() Value {
-	v := t.evalAny()
-
-	if _, ok := v.(effectType); ok {
-		return ImpureFunctionError(v).Eval().(ErrorType).Chain(t.info)
+	if _, ok := t.evalAny().(effectType); ok {
+		return impureFunctionError().Eval().(ErrorType).Chain(t.info)
 	}
 
 	return t.result

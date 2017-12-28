@@ -20,7 +20,3 @@ var Pure = NewLazyFunction(
 	func(ts ...*Thunk) Value {
 		return ts[0].EvalEffect()
 	})
-
-func (o effectType) string() Value {
-	return StringType("<effect>")
-}

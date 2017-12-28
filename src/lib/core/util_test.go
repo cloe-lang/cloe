@@ -26,6 +26,14 @@ func TestInternalStrictDumpPanic(t *testing.T) {
 	strictDump(nil)
 }
 
+func TestInternalStrictDumpPanicWithEffect(t *testing.T) {
+	defer func() {
+		assert.NotNil(t, recover())
+	}()
+
+	strictDump(effectType{Nil})
+}
+
 func TestInternalStrictDumpFail(t *testing.T) {
 	for _, th := range []*Thunk{
 		NewList(OutOfRangeError()),
@@ -44,7 +52,6 @@ func TestStrictDump(t *testing.T) {
 		EmptyDictionary,
 		NewNumber(42),
 		NewString("foo"),
-		newEffect(Nil),
 	} {
 		s, err := StrictDump(th.Eval())
 		assert.NotEqual(t, "", s)

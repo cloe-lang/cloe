@@ -175,6 +175,10 @@ func keyNotFoundError(v Value) *Thunk {
 	return NewError("KeyNotFoundError", "The key %s is not found in a dictionary.", s)
 }
 
+func impureFunctionError() *Thunk {
+	return NewError("ImpureFunctionError", "Impure function is called in pure context.")
+}
+
 // Error creates an error value with an error name and message.
 var Error = NewLazyFunction(
 	NewSignature([]string{"name", "messasge"}, nil, "", nil, nil, ""),

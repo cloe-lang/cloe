@@ -54,10 +54,7 @@ task :format do
   sh 'go fix ./...'
   sh 'go fmt ./...'
   sh 'gofmt -s -w .'
-
-  Dir.glob '**/*.go' do |file|
-    sh "goimports -w #{file}"
-  end
+  sh 'goimports -w .'
 
   sh 'rubocop -a'
 end

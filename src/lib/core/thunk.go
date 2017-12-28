@@ -63,7 +63,8 @@ func (t *Thunk) evalAny() Value {
 		for {
 			v := t.swapFunction(nil).Eval()
 
-			if t.chainError(v) {
+			if _, ok := v.(ErrorType); ok {
+				t.result = v
 				break
 			}
 
@@ -76,7 +77,7 @@ func (t *Thunk) evalAny() Value {
 
 			t.result = f.call(t.swapArguments(Arguments{}))
 
-			if t.chainError(t.result) {
+			if _, ok := t.result.(ErrorType); ok {
 				break
 			}
 
@@ -88,12 +89,15 @@ func (t *Thunk) evalAny() Value {
 
 			if ok := child.delegateEval(t); !ok {
 				t.result = child.evalAny()
-				t.chainError(t.result)
 				break
 			}
 		}
 
 		assertValueIsNormal("Thunk.result", t.result)
+
+		if e, ok := t.result.(ErrorType); ok {
+			t.result = e.Chain(t.info)
+		}
 
 		t.finalize()
 	} else {
@@ -159,15 +163,6 @@ func (t *Thunk) loadState() thunkState {
 
 func (t *Thunk) storeState(new thunkState) {
 	atomic.StoreInt32((*int32)(&t.state), int32(new))
-}
-
-func (t *Thunk) chainError(v Value) bool {
-	if e, ok := v.(ErrorType); ok {
-		t.result = e.Chain(t.info)
-		return true
-	}
-
-	return false
 }
 
 func assertValueIsNormal(s string, v Value) {

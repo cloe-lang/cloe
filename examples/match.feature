@@ -164,7 +164,7 @@ Feature: Match expression
     (let [x y ..xs] ["foo" "bar" "baz"])
     (let {"foo" value ..rest} {"foo" 42 "bar" 2049})
 
-    (eseq
+    (seq!
       (write y)
       (write value))
     """

@@ -3,7 +3,7 @@ Feature: Import statement
     Given a file named "main.coel" with:
     """
     (import "./mod")
-    (eseq ..(mod.map write [1 2 3 4 5]))
+    (seq! ..(mod.map write [1 2 3 4 5]))
     """
     And a file named "mod.coel" with:
     """
@@ -55,7 +55,7 @@ Feature: Import statement
     (import "./mod1")
     (import "./mod2")
 
-    (eseq
+    (seq!
       (write mod1.stdin . end "")
       (write mod2.stdin . end ""))
     """

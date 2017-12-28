@@ -12,7 +12,7 @@ Feature: Regular Expression
     """
     (import "re")
 
-    (eseq
+    (seq!
       (write (re.match "ab*c" "ac"))
       (write (re.match "ab+c" "ac"))
       (write (re.match "ab*c" "abbbbbc")))
@@ -30,7 +30,7 @@ Feature: Regular Expression
     """
     (import "re")
 
-    (eseq
+    (seq!
       (write (re.find "abc" "ac"))
       (write (re.find "ab*c" "ac"))
       (write (re.find "a(bc+)" "abcccc"))
@@ -50,7 +50,7 @@ Feature: Regular Expression
     """
     (import "re")
 
-    (eseq
+    (seq!
       (write (re.replace "abc"    "foo"    "ac"))
       (write (re.replace "ab*c"   "x${0}z" "ac"))
       (write (re.replace "a(bc+)" "x${1}z" "abcccc"))

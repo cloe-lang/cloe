@@ -2,7 +2,7 @@ Feature: Built-in functions
   Scenario: Get types of values
     Given a file named "main.coel" with:
     """
-    (eseq
+    (seq!
       (write (typeOf true))
       (write (typeOf {"key" "value"}))
       (write (typeOf []))
@@ -40,7 +40,7 @@ Feature: Built-in functions
     Given a file named "main.coel" with:
     """
     (let l [1 2 3 42 -3 "foo"])
-    (eseq
+    (seq!
       (write (indexOf l 42))
       (write (indexOf l 2))
       (write (indexOf l "foo")))
@@ -69,7 +69,7 @@ Feature: Built-in functions
   Scenario: Use boolean operators
     Given a file named "main.coel" with:
     """
-    (eseq
+    (seq!
       (write (not true))
       (write (not false))
       (write (and true))
@@ -99,7 +99,7 @@ Feature: Built-in functions
   Scenario: Slice lists
     Given a file named "main.coel" with:
     """
-    (eseq
+    (seq!
       (write (slice [1 2 3]))
       (write (slice [1 2 3] 1))
       (write (slice [1 2 3] 2 3))
@@ -142,7 +142,7 @@ Feature: Built-in functions
   Scenario: Slice strings
     Given a file named "main.coel" with:
     """
-    (eseq ..(map (\ (x) (write (dump x))) [
+    (seq! ..(map (\ (x) (write (dump x))) [
         (slice "abc")
         (slice "abc" 1)
         (slice "abc" 2 3)
@@ -173,7 +173,7 @@ Feature: Built-in functions
   Scenario: Calculate maximum and minimum of numbers
     Given a file named "main.coel" with:
     """
-    (eseq
+    (seq!
       (write (max 1))
       (write (max 1 2))
       (write (max 1 2 3))
@@ -222,7 +222,7 @@ Feature: Built-in functions
   Scenario: Check if values are ordered or not
     Given a file named "main.coel" with:
     """
-    (eseq
+    (seq!
       ..(map (\ (x) (write (ordered? x))) [
         123
         "foo"
@@ -252,7 +252,7 @@ Feature: Built-in functions
   Scenario: Check if values are ordered or not
     Given a file named "main.coel" with:
     """
-    (eseq
+    (seq!
       ..(map write [
         (bool? true)
         (bool? 42)

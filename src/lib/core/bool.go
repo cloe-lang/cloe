@@ -4,18 +4,18 @@ package core
 type BoolType bool
 
 // True is a true value.
-var True = NewBool(true)
+var True = Normal(BoolType(true))
 
 // False is a false value.
-var False = NewBool(false)
+var False = Normal(BoolType(false))
 
 // NewBool converts a Go boolean value into BoolType.
 func NewBool(b bool) *Thunk {
-	return Normal(rawBool(b))
-}
+	if b {
+		return True
+	}
 
-func rawBool(b bool) BoolType {
-	return BoolType(b)
+	return False
 }
 
 // If returns the second argument when the first one is true or the third one

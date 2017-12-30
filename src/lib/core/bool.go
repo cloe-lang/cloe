@@ -21,7 +21,7 @@ func NewBool(b bool) *Thunk {
 // If returns the second argument when the first one is true or the third one
 // otherwise.
 var If = NewLazyFunction(
-	NewSignature(nil, nil, "conds", nil, nil, ""),
+	NewSignature(nil, nil, "args", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		l, ok := v.(ListType)

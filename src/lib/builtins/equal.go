@@ -4,7 +4,7 @@ import "github.com/coel-lang/coel/src/lib/core"
 
 // Equal checks if all arguments are equal or not, and returns true if so or false otherwise.
 var Equal = core.NewStrictFunction(
-	core.NewSignature(nil, nil, "xs", nil, nil, ""),
+	core.NewSignature(nil, nil, "args", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
 		l := ts[0]
 

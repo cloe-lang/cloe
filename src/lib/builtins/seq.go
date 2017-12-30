@@ -6,7 +6,7 @@ import (
 
 func createSeqFunction(f func(t *core.Thunk) core.Value) *core.Thunk {
 	return core.NewLazyFunction(
-		core.NewSignature(nil, nil, "xs", nil, nil, ""),
+		core.NewSignature(nil, nil, "args", nil, nil, ""),
 		func(ts ...*core.Thunk) core.Value {
 			l := ts[0]
 

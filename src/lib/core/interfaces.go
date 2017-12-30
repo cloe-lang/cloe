@@ -22,7 +22,7 @@ type stringable interface {
 
 // ToString converts some value into one of StringType.
 var ToString = NewLazyFunction(
-	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		s, ok := v.(stringable)

@@ -13,10 +13,7 @@ const channelCloseDuration = 100 * time.Millisecond
 
 // Rally sorts arguments by time.
 var Rally = core.NewLazyFunction(
-	core.NewSignature(
-		nil, nil, "xs",
-		nil, nil, "",
-	),
+	core.NewSignature(nil, nil, "args", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
 		vs := make(chan core.Value, valueChannelCapacity)
 

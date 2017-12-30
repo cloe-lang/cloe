@@ -1,6 +1,6 @@
 package core
 
-var isOrderedSignature = NewSignature([]string{"x"}, nil, "", nil, nil, "")
+var isOrderedSignature = NewSignature([]string{"arg"}, nil, "", nil, nil, "")
 
 // IsOrdered checks if a value is ordered or not.
 var IsOrdered = NewLazyFunction(isOrderedSignature, isOrderedFunction)

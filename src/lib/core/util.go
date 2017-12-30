@@ -14,7 +14,7 @@ type dumpable interface {
 
 // Dump dumps a value into a string type value.
 var Dump = NewLazyFunction(
-	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		s, err := strictDump(ts[0].Eval())
 
@@ -80,12 +80,12 @@ func ensureNormal(v Value) Value {
 }
 
 var identity = NewLazyFunction(
-	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value { return ts[0] })
 
 // TypeOf returns a type name of an argument as a string.
 var TypeOf = NewLazyFunction(
-	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		// No case of effectType should be here.
 		switch ts[0].Eval().(type) {

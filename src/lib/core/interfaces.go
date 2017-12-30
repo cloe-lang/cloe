@@ -68,7 +68,7 @@ type ordered interface {
 
 // Compare compares 2 values and returns -1 when x < y, 0 when x = y, and 1 when x > y.
 var Compare = NewStrictFunction(
-	NewSignature([]string{"x", "y"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"left", "right"}, nil, "", nil, nil, ""),
 	rawCompare)
 
 func rawCompare(ts ...*Thunk) Value {

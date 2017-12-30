@@ -16,7 +16,7 @@ func newEffect(value *Thunk) *Thunk {
 
 // Pure extracts a result value in an effect value.
 var Pure = NewLazyFunction(
-	NewSignature([]string{"effect"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		return ts[0].EvalEffect()
 	})

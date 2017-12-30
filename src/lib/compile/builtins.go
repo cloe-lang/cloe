@@ -64,7 +64,6 @@ var goBuiltins = func() environment {
 	}
 
 	for s, t := range map[string]*core.Thunk{
-		"dict":       builtins.Dictionary,
 		"matchError": core.NewError("MatchError", "A value didn't match with any pattern."),
 		"y":          builtins.Y,
 		"ys":         builtins.Ys,
@@ -80,7 +79,16 @@ func builtinsEnvironment() environment {
 
 	for _, s := range []string{
 		`
-			(def (list ..xs) xs)
+			(def (list ..args)
+				args)
+
+			(def (dict ..args)
+				(if (= args [])
+					{}
+					(insert
+						(dict ..(rest (rest args)))
+						(first args)
+						(first (rest args)))))
 		`,
 		`
 			(def (bool? x) (= (typeOf x) "bool"))

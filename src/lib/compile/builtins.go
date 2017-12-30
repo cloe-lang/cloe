@@ -8,6 +8,8 @@ import (
 	"github.com/coel-lang/coel/src/lib/scalar"
 )
 
+const builtinsFilename = "<builtins>"
+
 var goBuiltins = func() environment {
 	e := newEnvironment(scalar.Convert)
 
@@ -77,8 +79,7 @@ var goBuiltins = func() environment {
 func builtinsEnvironment() environment {
 	e := goBuiltins.copy()
 
-	for _, s := range []string{
-		`
+	for n, t := range compileBuiltinModule(e.copy(), builtinsFilename, `
 			(def (list ..args)
 				args)
 
@@ -89,8 +90,11 @@ func builtinsEnvironment() environment {
 						(dict ..(rest (rest args)))
 						(first args)
 						(first (rest args)))))
-		`,
-		`
+		`) {
+		e.set("$"+n, t)
+	}
+
+	for n, t := range compileBuiltinModule(e.copy(), builtinsFilename, `
 			(def (bool? x) (= (typeOf x) "bool"))
 			(def (dict? x) (= (typeOf x) "dict"))
 			(def (function? x) (= (typeOf x) "function"))
@@ -159,12 +163,9 @@ func builtinsEnvironment() environment {
 				(if (or ..(map (\ (list) (= list [])) lists))
 					[]
 					[(map first lists) ..(zip ..(map rest lists))]))
-		`,
-	} {
-		for n, t := range compileBuiltinModule(e.copy(), "<builtins>", s) {
-			e.set(n, t)
-			e.set("$"+n, t)
-		}
+		`) {
+		e.set(n, t)
+		e.set("$"+n, t)
 	}
 
 	return e

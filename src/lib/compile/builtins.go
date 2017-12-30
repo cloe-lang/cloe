@@ -46,9 +46,6 @@ var goBuiltins = func() environment {
 		"size":    core.Size,
 		"toList":  core.ToList,
 
-		"dict":  builtins.Dictionary,
-		"error": core.Error,
-
 		"par":   builtins.Par,
 		"seq":   builtins.Seq,
 		"seq!":  builtins.EffectSeq,
@@ -57,6 +54,7 @@ var goBuiltins = func() environment {
 		"read":  builtins.Read,
 		"write": builtins.Write,
 
+		"error": core.Error,
 		"catch": core.Catch,
 
 		"pure": core.Pure,
@@ -66,10 +64,10 @@ var goBuiltins = func() environment {
 	}
 
 	for s, t := range map[string]*core.Thunk{
-		"y":  builtins.Y,
-		"ys": builtins.Ys,
-
+		"dict":       builtins.Dictionary,
 		"matchError": core.NewError("MatchError", "A value didn't match with any pattern."),
+		"y":          builtins.Y,
+		"ys":         builtins.Ys,
 	} {
 		e.set("$"+s, t)
 	}

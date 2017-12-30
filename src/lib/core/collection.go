@@ -14,10 +14,7 @@ type collection interface {
 
 // Include returns true if a collection includes an element, or false otherwise.
 var Include = NewStrictFunction(
-	NewSignature(
-		[]string{"collection", "elem"}, nil, "",
-		nil, nil, "",
-	),
+	NewSignature([]string{"collection", "elem"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		c, ok := v.(collection)
@@ -36,10 +33,7 @@ var Include = NewStrictFunction(
 
 // Index extracts an element corresponding with a key.
 var Index = NewStrictFunction(
-	NewSignature(
-		[]string{"collection", "key"}, nil, "keys",
-		nil, nil, "",
-	),
+	NewSignature([]string{"collection", "key"}, nil, "keys", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[2].Eval()
 		l, ok := v.(ListType)
@@ -110,10 +104,7 @@ var Insert = NewLazyFunction(
 
 // Merge merges more than 2 collections.
 var Merge = NewLazyFunction(
-	NewSignature(
-		[]string{"x"}, nil, "ys",
-		nil, nil, "",
-	),
+	NewSignature([]string{"collection"}, nil, "collections", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		m, ok := v.(collection)
@@ -144,10 +135,7 @@ var Merge = NewLazyFunction(
 
 // Delete deletes an element corresponding with a key.
 var Delete = NewStrictFunction(
-	NewSignature(
-		[]string{"collection", "elem"}, nil, "",
-		nil, nil, "",
-	),
+	NewSignature([]string{"collection", "elem"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
 		d, ok := v.(collection)

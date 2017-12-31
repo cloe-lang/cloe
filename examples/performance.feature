@@ -46,7 +46,7 @@ Feature: Performance
     wait
     go=$(bench ./main)
 
-    python -c "if $go / $coel > 8: exit(1)"
+    python -c "if $coel / $go < 0.15: exit(1)"
     """
     When I successfully run `go build main.go`
     And I successfully run `sh main.sh`

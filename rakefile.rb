@@ -5,7 +5,8 @@ task :deps do
   sh %w[go get -u
         github.com/alecthomas/gometalinter
         github.com/mattn/goveralls
-        github.com/raviqqe/liche].join ' '
+        github.com/raviqqe/liche
+        github.com/raviqqe/rpm].join ' '
   sh 'gometalinter --install'
   sh 'go get -d -t ./...'
   sh 'gem install rake rubocop'

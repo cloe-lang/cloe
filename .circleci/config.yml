@@ -30,6 +30,14 @@ jobs:
           command: rake command_test
 
       - run:
+          name: Performance test
+          command: rake performance_test
+
+      - run:
+          name: Data race test
+          command: rake data_race_test
+
+      - run:
           name: Coverage report
           command: |
             bash <(curl -s https://codecov.io/bash)

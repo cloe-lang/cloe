@@ -29,7 +29,6 @@ task :unit_test do
     sh %W[go test
           -covermode atomic
           -coverprofile #{coverage_file}
-          #{`uname -m` =~ /x86_64/ ? '-race' : ''}
           #{package}].join ' '
 
     verbose false do
@@ -49,7 +48,16 @@ task command_test: :build do
         examples].join ' '
 end
 
-task test: %i[unit_test command_test]
+task :performance_test do
+  sh 'go test -v -tags performance -run "^TestPerformance" ./...'
+end
+
+task :data_race_test do
+  raise 'Architecture is not amd64' unless `uname -m` =~ /x86_64/
+  sh 'go test -race ./...'
+end
+
+task test: %i[unit_test command_test performance_test]
 
 task :bench do
   sh "go test -bench . -run '^$' ./..."

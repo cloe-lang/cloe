@@ -32,10 +32,7 @@ func lazyFactorial(t *core.Thunk) float64 {
 }
 
 var lazyFactorialImpl = core.NewLazyFunction(
-	core.NewSignature(
-		[]string{"me", "num"}, nil, "",
-		nil, nil, "",
-	),
+	core.NewSignature([]string{"me", "num"}, nil, "", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
 		return core.PApp(core.If,
 			core.PApp(core.Equal, ts[1], core.NewNumber(0)),
@@ -47,18 +44,14 @@ var lazyFactorialImpl = core.NewLazyFunction(
 
 func BenchmarkY(b *testing.B) {
 	go systemt.RunDaemons()
-	b.Log(core.PApp(toZero, core.NewNumber(float64(b.N))).Eval())
+	core.PApp(toZero, core.NewNumber(float64(b.N))).Eval()
 }
 
 var toZero = core.PApp(Y, core.NewLazyFunction(
-	core.NewSignature(
-		[]string{"me", "num"}, nil, "",
-		nil, nil, "",
-	),
+	core.NewSignature([]string{"me", "num"}, nil, "", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
 		return core.PApp(core.If,
 			core.PApp(core.Equal, ts[1], core.NewNumber(0)),
 			core.NewString("Benchmark finished!"),
-
 			core.PApp(ts[0], core.PApp(core.Sub, ts[1], core.NewNumber(1))))
 	}))

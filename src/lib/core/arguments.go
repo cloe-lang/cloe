@@ -34,8 +34,15 @@ func NewArguments(
 func mergePositionalArguments(ps []PositionalArgument) *Thunk {
 	t := EmptyList
 
-	for i := range ps {
-		p := ps[len(ps)-i-1]
+	// Optimization for a common pattern of (func a b c ... ..xs).
+	// Note that Merge is O(n) but Prepend is O(1).
+	if last := len(ps) - 1; ps[last].expanded {
+		t = ps[last].value
+		ps = ps[:last]
+	}
+
+	for i := len(ps) - 1; i >= 0; i-- {
+		p := ps[i]
 
 		if p.expanded {
 			t = PApp(Merge, p.value, t)

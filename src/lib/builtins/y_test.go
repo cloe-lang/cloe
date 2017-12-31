@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/coel-lang/coel/src/lib/systemt"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -45,7 +46,8 @@ var lazyFactorialImpl = core.NewLazyFunction(
 	})
 
 func BenchmarkY(b *testing.B) {
-	b.Log(core.PApp(toZero, core.NewNumber(10000)).Eval())
+	go systemt.RunDaemons()
+	b.Log(core.PApp(toZero, core.NewNumber(float64(b.N))).Eval())
 }
 
 var toZero = core.PApp(Y, core.NewLazyFunction(

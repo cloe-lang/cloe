@@ -51,6 +51,10 @@ end
 
 task test: %i[unit_test command_test]
 
+task :bench do
+  sh "go test -bench . -run '^$' ./..."
+end
+
 task :format do
   sh 'go fix ./...'
   sh 'go fmt ./...'

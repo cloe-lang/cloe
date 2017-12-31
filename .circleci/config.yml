@@ -36,5 +36,9 @@ jobs:
             goveralls -coverprofile=coverage.txt -service=circle-ci -repotoken $COVERALLS_TOKEN
 
       - run:
+          name: Benchmark
+          command: rake bench
+
+      - run:
           name: Install binary
           command: rake install

@@ -60,7 +60,7 @@ func TestTreeFirstRest(t *testing.T) {
 
 func TestTreeSize(t *testing.T) {
 	tr := NewTree(compare)
-	assert.Equal(t, 0, tr.Size())
+	assert.Zero(t, tr.Size())
 	tr = tr.Insert(0)
 	assert.Equal(t, 1, tr.Size())
 	tr = tr.Insert(1)
@@ -70,9 +70,9 @@ func TestTreeSize(t *testing.T) {
 	tr = tr.Remove(1)
 	assert.Equal(t, 1, tr.Size())
 	tr = tr.Remove(0)
-	assert.Equal(t, 0, tr.Size())
+	assert.Zero(t, tr.Size())
 	tr = tr.Remove(0)
-	assert.Equal(t, 0, tr.Size())
+	assert.Zero(t, tr.Size())
 }
 
 func TestTreeMerge(t *testing.T) {

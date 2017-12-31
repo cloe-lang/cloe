@@ -90,7 +90,7 @@ func TestDictionaryDelete(t *testing.T) {
 	d, ok := v.(DictionaryType)
 	t.Logf("%#v", v)
 	assert.True(t, ok)
-	assert.Equal(t, 0, d.Size())
+	assert.Zero(t, d.Size())
 }
 
 func TestDictionaryDeleteFail(t *testing.T) {

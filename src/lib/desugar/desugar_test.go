@@ -121,7 +121,7 @@ func TestDesugar(t *testing.T) {
 				case ast.AnonymousFunction:
 					t.Fail()
 				case ast.DefFunction:
-					assert.Equal(t, 0, len(newNames(x.Name()).findInDefFunction(x)))
+					assert.Zero(t, len(newNames(x.Name()).findInDefFunction(x)))
 
 					for _, l := range x.Lets() {
 						_, ok := l.(ast.DefFunction)

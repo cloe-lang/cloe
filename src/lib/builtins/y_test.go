@@ -47,6 +47,10 @@ func BenchmarkY(b *testing.B) {
 	core.PApp(toZero, core.NewNumber(float64(b.N))).Eval()
 }
 
+func BenchmarkGoY(b *testing.B) {
+	toZeroGo(float64(b.N))
+}
+
 var toZero = core.PApp(Y, core.NewLazyFunction(
 	core.NewSignature([]string{"me", "num"}, nil, "", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
@@ -55,3 +59,15 @@ var toZero = core.PApp(Y, core.NewLazyFunction(
 			core.NewString("Benchmark finished!"),
 			core.PApp(ts[0], core.PApp(core.Sub, ts[1], core.NewNumber(1))))
 	}))
+
+func toZeroGo(f float64) string {
+	t := core.NewNumber(f)
+	n := t.Eval().(core.NumberType)
+
+	for n > 0 {
+		t = core.PApp(core.Sub, t, core.NewNumber(1))
+		n = t.Eval().(core.NumberType)
+	}
+
+	return "Benchmark finished!"
+}

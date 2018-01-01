@@ -114,8 +114,8 @@ func builtinsEnvironment() environment {
 					[first ..rest] [(func first) ..(map func rest)]))
 
 			(def (generateMaxOrMinFunction name compare)
-				(def (maxOrMin ..ns)
-					(match ns
+				(def (maxOrMin ..args)
+					(match args
 						[]
 							(error
 								"ValueError"

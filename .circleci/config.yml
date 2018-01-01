@@ -48,5 +48,5 @@ jobs:
           command: rake bench
 
       - run:
-          name: Install binary
+          name: Installation
           command: rake install

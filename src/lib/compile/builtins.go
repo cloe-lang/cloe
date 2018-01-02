@@ -113,6 +113,11 @@ func builtinsEnvironment() environment {
 					[] []
 					[first ..rest] [(func first) ..(map func rest)]))
 
+			(def (reduce func list)
+				(match list
+					[x] x
+					[x y ..xs] (reduce func [(func x y) ..xs])))
+
 			(def (generateMaxOrMinFunction name compare)
 				(def (maxOrMin ..args)
 					(match args

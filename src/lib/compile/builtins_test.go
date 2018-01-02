@@ -34,6 +34,36 @@ func TestCompileBuiltinModuleWithInvalidSource(t *testing.T) {
 	compileBuiltinModule(newEnvironment(testFallback), "", `(def (foo x) y)`)
 }
 
+func TestReduce(t *testing.T) {
+	f := builtinsEnvironment().get("$reduce")
+
+	for _, ts := range [][2]*core.Thunk{
+		{
+			core.PApp(f, core.Add, core.NewList(core.NewNumber(1), core.NewNumber(2), core.NewNumber(3))),
+			core.NewNumber(6),
+		},
+		{
+			core.PApp(f, core.Sub, core.NewList(core.NewNumber(1), core.NewNumber(2), core.NewNumber(3))),
+			core.NewNumber(-4),
+		},
+	} {
+		t.Log(core.PApp(core.ToString, ts[0]).Eval())
+		assert.True(t, bool(core.PApp(core.Equal, ts[0], ts[1]).Eval().(core.BoolType)))
+	}
+}
+
+func TestReduceError(t *testing.T) {
+	f := builtinsEnvironment().get("$reduce")
+
+	for _, th := range []*core.Thunk{
+		core.PApp(f, core.Add, core.EmptyList),
+		core.PApp(f, core.IsOrdered, core.EmptyList),
+	} {
+		_, ok := th.Eval().(core.ErrorType)
+		assert.True(t, ok)
+	}
+}
+
 func TestMapOrder(t *testing.T) {
 	b := func(N int) float64 {
 		var start time.Time

@@ -168,6 +168,13 @@ func builtinsEnvironment() environment {
 				(if (or ..(map (\ (list) (= list [])) lists))
 					[]
 					[(map first lists) ..(zip ..(map rest lists))]))
+
+			(def (filter func list)
+				(match list
+					[] []
+					[x ..xs]
+						(match (filter func xs)
+							xs (if (func x) [x ..xs] xs))))
 		`) {
 		e.set(n, t)
 		e.set("$"+n, t)

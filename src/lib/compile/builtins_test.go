@@ -64,6 +64,30 @@ func TestReduceError(t *testing.T) {
 	}
 }
 
+func TestFilter(t *testing.T) {
+	f := builtinsEnvironment().get("$filter")
+
+	for _, ts := range [][2]*core.Thunk{
+		{
+			core.PApp(f, core.IsOrdered, core.EmptyList),
+			core.EmptyList,
+		},
+		{
+			core.PApp(f, core.IsOrdered, core.NewList(core.NewString("foo"))),
+			core.NewList(core.NewString("foo")),
+		},
+		{
+			core.PApp(f,
+				core.IsOrdered,
+				core.NewList(core.NewNumber(42), core.EmptyDictionary, core.Nil, core.EmptyList)),
+			core.NewList(core.NewNumber(42), core.EmptyList),
+		},
+	} {
+		t.Log(core.PApp(core.ToString, ts[0]).Eval())
+		assert.True(t, bool(core.PApp(core.Equal, ts[0], ts[1]).Eval().(core.BoolType)))
+	}
+}
+
 func TestMapOrder(t *testing.T) {
 	b := func(N int) float64 {
 		var start time.Time

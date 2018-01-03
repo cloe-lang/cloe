@@ -87,7 +87,14 @@ func rawCompare(ts ...*Thunk) Value {
 	}
 
 	if reflect.TypeOf(o1) != reflect.TypeOf(o2) {
-		return TypeError(o1, reflect.TypeOf(o2).Name())
+		v := PApp(TypeOf, ts[1]).Eval()
+		s, ok := v.(StringType)
+
+		if !ok {
+			return NotStringError(v)
+		}
+
+		return TypeError(o1, string(s))
 	}
 
 	if l1, ok := o1.(ListType); ok {

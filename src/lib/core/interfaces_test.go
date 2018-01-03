@@ -45,6 +45,13 @@ func TestCompareWithInvalidValues(t *testing.T) {
 	}
 }
 
+func TestCompareErrorMessage(t *testing.T) {
+	e, ok := PApp(Compare, EmptyList, NewString("foo")).Eval().(ErrorType)
+
+	assert.True(t, ok)
+	assert.Equal(t, "[] is not a string.", e.message)
+}
+
 func TestOrdered(t *testing.T) {
 	for _, th := range []*Thunk{
 		NewNumber(42),

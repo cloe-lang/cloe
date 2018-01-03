@@ -1,6 +1,8 @@
 package compile
 
 import (
+	"math"
+	"math/rand"
 	"testing"
 	"time"
 
@@ -138,6 +140,45 @@ func TestSortError(t *testing.T) {
 			nil)).Eval().(core.ErrorType)
 
 	assert.True(t, ok)
+}
+
+func TestSortWithBigLists(t *testing.T) {
+	for i := 0; i < 4; i++ {
+		benchmarkSort(int(math.Pow10(i)), 1, func() {})
+	}
+}
+
+func BenchmarkSort100(b *testing.B) {
+	benchmarkSort(100, b.N, b.ResetTimer)
+}
+
+func BenchmarkSort1000(b *testing.B) {
+	benchmarkSort(1000, b.N, b.ResetTimer)
+}
+
+func BenchmarkSort10000(b *testing.B) {
+	benchmarkSort(10000, b.N, b.ResetTimer)
+}
+
+func benchmarkSort(size, N int, resetTimer func()) {
+	go systemt.RunDaemons()
+
+	f := builtinsEnvironment().get("$sort")
+	r := rand.New(rand.NewSource(42))
+	ts := make([]*core.Thunk, size)
+
+	for i := range ts {
+		ts[i] = core.NewNumber(r.Float64())
+	}
+
+	l := core.NewList(ts...)
+	l.Eval()
+
+	resetTimer()
+
+	for i := 0; i < N; i++ {
+		core.PApp(f, l).Eval()
+	}
 }
 
 func TestMapOrder(t *testing.T) {

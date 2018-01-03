@@ -175,6 +175,27 @@ func builtinsEnvironment() environment {
 					[x ..xs]
 						(match (filter func xs)
 							xs (if (func x) [x ..xs] xs))))
+
+			(def (sort list . (less <))
+				(let sort (partial sort . less less))
+				(let pivot (list (// (size list) 2)))
+				(match list
+					[] []
+					[x] [x]
+					_ [
+						..(sort (filter (\ (x) (less x pivot)) list))
+						..(filter (\ (x) (and (not (less x pivot)) (not (less pivot x)))) list)
+						..(sort (filter (\ (x) (less pivot x)) list))]))
+
+			(let sortImpl sort)
+
+			(def (sort list . (less <))
+				(let x (first list))
+				(match list
+					[] []
+					_ (if (less x x)
+						(error "ValueError" "less function should not be reflexive.")
+						(sortImpl list . less less))))
 		`) {
 		e.set(n, t)
 		e.set("$"+n, t)

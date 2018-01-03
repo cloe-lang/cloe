@@ -88,6 +88,58 @@ func TestFilter(t *testing.T) {
 	}
 }
 
+func TestSort(t *testing.T) {
+	go systemt.RunDaemons()
+
+	for _, ts := range [][2]*core.Thunk{
+		{
+			core.EmptyList,
+			core.EmptyList,
+		},
+		{
+			core.NewList(core.NewNumber(42)),
+			core.NewList(core.NewNumber(42)),
+		},
+		{
+			core.NewList(core.NewNumber(2), core.NewNumber(1)),
+			core.NewList(core.NewNumber(1), core.NewNumber(2)),
+		},
+		{
+			core.NewList(core.NewNumber(1), core.NewNumber(1)),
+			core.NewList(core.NewNumber(1), core.NewNumber(1)),
+		},
+		{
+			core.NewList(core.NewNumber(3), core.NewNumber(2), core.NewNumber(1)),
+			core.NewList(core.NewNumber(1), core.NewNumber(2), core.NewNumber(3)),
+		},
+		{
+			core.NewList(core.NewNumber(2), core.NewNumber(3), core.NewNumber(1), core.NewNumber(-123)),
+			core.NewList(core.NewNumber(-123), core.NewNumber(1), core.NewNumber(2), core.NewNumber(3)),
+		},
+	} {
+		th := core.PApp(builtinsEnvironment().get("sort"), ts[0])
+		t.Log(core.PApp(core.ToString, th).Eval())
+		assert.True(t, bool(core.PApp(core.Equal, th, ts[1]).Eval().(core.BoolType)))
+	}
+}
+
+func TestSortError(t *testing.T) {
+	go systemt.RunDaemons()
+
+	_, ok := core.App(
+		builtinsEnvironment().get("$sort"),
+		core.NewArguments(
+			[]core.PositionalArgument{
+				core.NewPositionalArgument(core.NewList(core.NewNumber(42)), false),
+			},
+			[]core.KeywordArgument{
+				core.NewKeywordArgument("less", builtins.LessEq),
+			},
+			nil)).Eval().(core.ErrorType)
+
+	assert.True(t, ok)
+}
+
 func TestMapOrder(t *testing.T) {
 	b := func(N int) float64 {
 		var start time.Time

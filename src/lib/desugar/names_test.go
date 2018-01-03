@@ -38,6 +38,15 @@ func TestNamesFindInDefFunction(t *testing.T) {
 				debug.NewGoInfo(0)),
 			false,
 		},
+		{
+			ast.NewDefFunction(
+				n,
+				ast.NewSignature(nil, nil, "", nil, nil, ""),
+				[]interface{}{ast.NewLetVar(n, "x")},
+				"42",
+				debug.NewGoInfo(0)),
+			true,
+		},
 	} {
 		assert.Equal(t, test.answer, newNames(n).findInDefFunction(test.letFunc).include(n))
 	}

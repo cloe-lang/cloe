@@ -70,8 +70,8 @@ func (ns names) findInDefFunction(f ast.DefFunction) names {
 	for _, l := range f.Lets() {
 		switch l := l.(type) {
 		case ast.LetVar:
-			ns.delete(l.Name())
 			ms.merge(ns.findInLetVar(l))
+			ns.delete(l.Name())
 		case ast.DefFunction:
 			ns.delete(l.Name())
 			ms.merge(ns.findInDefFunction(l))

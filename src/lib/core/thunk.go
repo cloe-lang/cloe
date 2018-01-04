@@ -93,8 +93,6 @@ func (t *Thunk) evalAny() Value {
 			}
 		}
 
-		assertValueIsNormal("Thunk.result", t.result)
-
 		if e, ok := t.result.(ErrorType); ok {
 			t.result = e.Chain(t.info)
 		}
@@ -103,8 +101,6 @@ func (t *Thunk) evalAny() Value {
 	} else {
 		t.blackHole.Wait()
 	}
-
-	assertValueIsNormal("Thunk.result", t.result)
 
 	return t.result
 }
@@ -163,12 +159,6 @@ func (t *Thunk) loadState() thunkState {
 
 func (t *Thunk) storeState(new thunkState) {
 	atomic.StoreInt32((*int32)(&t.state), int32(new))
-}
-
-func assertValueIsNormal(s string, v Value) {
-	if _, ok := v.(*Thunk); ok {
-		panic(s + " is *Thunk")
-	}
 }
 
 // Eval evaluates a pure value.

@@ -55,14 +55,6 @@ func TestThunkEvalEffectWithError(t *testing.T) {
 	assert.Equal(t, "OutOfRangeError", err.name)
 }
 
-func TestAssertValueIsNormal(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	assertValueIsNormal("This", Nil)
-}
-
 func TestNormal(t *testing.T) {
 	for _, v := range []Value{Nil.Eval(), Nil} {
 		_, ok := Normal(v).Eval().(ErrorType)

@@ -90,6 +90,45 @@ func TestFilter(t *testing.T) {
 	}
 }
 
+func BenchmarkFilter(b *testing.B) {
+	go systemt.RunDaemons()
+
+	f := builtinsEnvironment().get("$filter")
+	l := randomNumberList(10000)
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		core.PApp(core.ToString, core.PApp(f, core.IsOrdered, l)).Eval()
+	}
+}
+
+func BenchmarkFilterBare(b *testing.B) {
+	go systemt.RunDaemons()
+
+	f := core.PApp(builtins.Y, core.NewLazyFunction(
+		core.NewSignature([]string{"me", "func", "list"}, nil, "", nil, nil, ""),
+		func(ts ...*core.Thunk) core.Value {
+			f := ts[1]
+			l := ts[2]
+
+			return core.PApp(core.If,
+				core.PApp(core.Equal, l, core.EmptyList),
+				core.EmptyList,
+				core.PApp(core.Prepend,
+					core.PApp(f, core.PApp(core.First, l)),
+					core.PApp(ts[0], f, core.PApp(core.Rest, l))))
+		}))
+
+	l := randomNumberList(10000)
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		core.PApp(core.ToString, core.PApp(f, core.IsOrdered, l)).Eval()
+	}
+}
+
 func TestSort(t *testing.T) {
 	go systemt.RunDaemons()
 
@@ -164,15 +203,7 @@ func benchmarkSort(size, N int, resetTimer func()) {
 	go systemt.RunDaemons()
 
 	f := builtinsEnvironment().get("$sort")
-	r := rand.New(rand.NewSource(42))
-	ts := make([]*core.Thunk, size)
-
-	for i := range ts {
-		ts[i] = core.NewNumber(r.Float64())
-	}
-
-	l := core.NewList(ts...)
-	l.Eval()
+	l := randomNumberList(size)
 
 	resetTimer()
 
@@ -239,4 +270,17 @@ func many42() *core.Thunk {
 		func(ts ...*core.Thunk) core.Value {
 			return core.PApp(core.Prepend, core.NewNumber(42), core.PApp(ts[0]))
 		})))
+}
+
+func randomNumberList(n int) *core.Thunk {
+	r := rand.New(rand.NewSource(42))
+	ts := make([]*core.Thunk, n)
+
+	for i := range ts {
+		ts[i] = core.NewNumber(r.Float64())
+	}
+
+	l := core.NewList(ts...)
+	l.Eval()
+	return l
 }

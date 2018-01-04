@@ -74,6 +74,7 @@ end
 
 task :lint do
   sh %w[gometalinter
+        --deadline 2m
         --disable gocyclo
         --disable vetshadow
         --enable gofmt

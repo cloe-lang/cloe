@@ -19,10 +19,7 @@ func (f functionType) call(args Arguments) Value {
 
 // NewLazyFunction creates a function whose arguments are evaluated lazily.
 func NewLazyFunction(s Signature, f func(...*Thunk) Value) *Thunk {
-	return Normal(functionType{
-		signature: s,
-		function:  f,
-	})
+	return Normal(functionType{s, f})
 }
 
 // NewStrictFunction creates a function whose arguments are evaluated strictly.
@@ -39,10 +36,7 @@ func NewStrictFunction(s Signature, f func(...*Thunk) Value) *Thunk {
 
 // NewEffectFunction creates a effect function which returns an effect value.
 func NewEffectFunction(s Signature, f func(...*Thunk) Value) *Thunk {
-	return Normal(functionType{
-		s,
-		func(ts ...*Thunk) Value { return newEffect(Normal(f(ts...))) },
-	})
+	return Normal(functionType{s, func(ts ...*Thunk) Value { return newEffect(Normal(f(ts...))) }})
 }
 
 func (f functionType) string() Value {

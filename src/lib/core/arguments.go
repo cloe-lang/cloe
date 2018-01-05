@@ -31,6 +31,12 @@ func NewArguments(
 	return Arguments{ts, l, ks, ds}
 }
 
+// NewPositionalArguments creates an Arguments which consists of unexpanded
+// positional arguments.
+func NewPositionalArguments(ts ...*Thunk) Arguments {
+	return Arguments{ts, nil, nil, nil}
+}
+
 func mergePositionalArguments(ps []PositionalArgument) *Thunk {
 	t := EmptyList
 

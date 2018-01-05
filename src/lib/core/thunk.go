@@ -61,7 +61,8 @@ func PApp(f *Thunk, ps ...*Thunk) *Thunk {
 func (t *Thunk) evalAny() Value {
 	if t.lock(normal) {
 		for {
-			v := t.swapFunction(nil).Eval()
+			v := t.function.Eval()
+			t.function = nil
 
 			if _, ok := v.(ErrorType); ok {
 				t.result = v
@@ -75,7 +76,8 @@ func (t *Thunk) evalAny() Value {
 				break
 			}
 
-			t.result = f.call(t.swapArguments(Arguments{}))
+			t.result = f.call(t.args)
+			t.args = Arguments{}
 
 			if _, ok := t.result.(ErrorType); ok {
 				break
@@ -120,26 +122,14 @@ func (t *Thunk) lock(s thunkState) bool {
 
 func (t *Thunk) delegateEval(parent *Thunk) bool {
 	if t.lock(spinLock) {
-		parent.function = t.swapFunction(identity)
-		parent.args = t.swapArguments(Arguments{[]*Thunk{parent}, nil, nil, nil})
+		parent.function, t.function = t.function, identity
+		parent.args, t.args = t.args, NewPositionalArguments(parent)
 		parent.info = t.info
 		t.storeState(app)
 		return true
 	}
 
 	return false
-}
-
-func (t *Thunk) swapFunction(new *Thunk) *Thunk {
-	old := t.function
-	t.function = new
-	return old
-}
-
-func (t *Thunk) swapArguments(new Arguments) Arguments {
-	old := t.args
-	t.args = new
-	return old
 }
 
 func (t *Thunk) finalize() {

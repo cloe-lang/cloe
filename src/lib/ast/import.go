@@ -9,11 +9,11 @@ import (
 // Import represents an import of a sub module.
 type Import struct {
 	path string
-	info debug.Info
+	info *debug.Info
 }
 
 // NewImport creates an Import.
-func NewImport(path string, info debug.Info) Import {
+func NewImport(path string, info *debug.Info) Import {
 	return Import{path, info}
 }
 

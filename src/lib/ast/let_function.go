@@ -14,12 +14,12 @@ type DefFunction struct {
 	signature Signature
 	lets      []interface{}
 	body      interface{}
-	info      debug.Info
+	info      *debug.Info
 }
 
 // NewDefFunction creates a DefFunction from its function name, signature,
 // internal let statements, and a body expression.
-func NewDefFunction(name string, sig Signature, lets []interface{}, expr interface{}, i debug.Info) DefFunction {
+func NewDefFunction(name string, sig Signature, lets []interface{}, expr interface{}, i *debug.Info) DefFunction {
 	return DefFunction{name, sig, lets, expr, i}
 }
 
@@ -45,7 +45,7 @@ func (f DefFunction) Body() interface{} {
 }
 
 // DebugInfo returns debug information of a function defined by the let-function statement.
-func (f DefFunction) DebugInfo() debug.Info {
+func (f DefFunction) DebugInfo() *debug.Info {
 	return f.info
 }
 

@@ -22,7 +22,7 @@ type Thunk struct {
 	args      Arguments
 	state     thunkState
 	blackHole sync.WaitGroup
-	info      debug.Info
+	info      *debug.Info
 }
 
 // Normal creates a thunk of a normal value as its result.
@@ -41,7 +41,7 @@ func App(f *Thunk, args Arguments) *Thunk {
 
 // AppWithInfo is the same as App except that it stores debug information
 // in the thunk.
-func AppWithInfo(f *Thunk, args Arguments, i debug.Info) *Thunk {
+func AppWithInfo(f *Thunk, args Arguments, i *debug.Info) *Thunk {
 	t := &Thunk{
 		function: f,
 		args:     args,

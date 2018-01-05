@@ -90,7 +90,7 @@ func indexDefFunctions(fs ...ast.DefFunction) map[string]int {
 	return n2i
 }
 
-func replaceNames(funcList string, n2i map[string]int, x interface{}, di debug.Info) interface{} {
+func replaceNames(funcList string, n2i map[string]int, x interface{}, di *debug.Info) interface{} {
 	return ast.Convert(func(x interface{}) interface{} {
 		switch x := x.(type) {
 		case string:

@@ -11,7 +11,7 @@ import (
 // debugging.
 type ErrorType struct {
 	name, message string
-	callTrace     []debug.Info
+	callTrace     []*debug.Info
 }
 
 // NewError creates an error value from its name and a formatted message.
@@ -41,7 +41,7 @@ var Catch = NewLazyFunction(
 	})
 
 // Chain chains 2 errors with debug information.
-func (e ErrorType) Chain(i debug.Info) ErrorType {
+func (e ErrorType) Chain(i *debug.Info) ErrorType {
 	return ErrorType{e.name, e.message, append(e.callTrace, i)}
 }
 
@@ -196,5 +196,5 @@ var Error = NewLazyFunction(
 			return NotStringError(v)
 		}
 
-		return ErrorType{string(n), string(m), []debug.Info{debug.NewGoInfo(1)}}
+		return ErrorType{string(n), string(m), []*debug.Info{debug.NewGoInfo(1)}}
 	})

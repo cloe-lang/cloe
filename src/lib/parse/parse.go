@@ -70,7 +70,7 @@ func (s *state) module(ps ...comb.Parser) comb.Parser {
 func (s *state) importModule() comb.Parser {
 	return s.withInfo(
 		s.list(s.strippedString(importString), s.stringLiteral()),
-		func(x interface{}, i debug.Info) (interface{}, error) {
+		func(x interface{}, i *debug.Info) (interface{}, error) {
 			s, err := strconv.Unquote(x.([]interface{})[1].(string))
 
 			if err != nil {
@@ -110,7 +110,7 @@ func (s *state) letFunction() comb.Parser {
 			s.list(s.identifier(), s.signature()),
 			s.Many(s.let()),
 			s.expression()),
-		func(x interface{}, i debug.Info) (interface{}, error) {
+		func(x interface{}, i *debug.Info) (interface{}, error) {
 			xs := x.([]interface{})
 			ys := xs[1].([]interface{})
 			return ast.NewDefFunction(ys[0].(string), ys[1].(ast.Signature), xs[2].([]interface{}), xs[3], i), nil
@@ -250,7 +250,7 @@ func (s *state) pattern() comb.Parser {
 func (s *state) mutuallyRecursiveDefFunctions() comb.Parser {
 	return s.withInfo(
 		s.list(s.strippedString(mutualRecString), s.Many(s.letFunction())),
-		func(x interface{}, i debug.Info) (interface{}, error) {
+		func(x interface{}, i *debug.Info) (interface{}, error) {
 			xs := x.([]interface{})[1].([]interface{})
 			fs := make([]ast.DefFunction, 0, len(xs))
 
@@ -274,13 +274,13 @@ func (s *state) app() comb.Parser {
 func (s *state) appWithInfo(p comb.Parser, f func(interface{}) (interface{}, ast.Arguments)) comb.Parser {
 	return s.withInfo(
 		p,
-		func(x interface{}, i debug.Info) (interface{}, error) {
+		func(x interface{}, i *debug.Info) (interface{}, error) {
 			f, args := f(x)
 			return ast.NewApp(f, args, i), nil
 		})
 }
 
-func (s *state) withInfo(p comb.Parser, f func(interface{}, debug.Info) (interface{}, error)) comb.Parser {
+func (s *state) withInfo(p comb.Parser, f func(interface{}, *debug.Info) (interface{}, error)) comb.Parser {
 	return func() (interface{}, error) {
 		i := s.debugInfo()
 		x, err := p()

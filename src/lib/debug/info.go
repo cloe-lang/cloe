@@ -13,14 +13,14 @@ type Info struct {
 }
 
 // NewInfo creates a Info.
-func NewInfo(file string, lineNumber, linePosition int, source string) Info {
-	return Info{file, lineNumber, linePosition, source}
+func NewInfo(file string, lineNumber, linePosition int, source string) *Info {
+	return &Info{file, lineNumber, linePosition, source}
 }
 
 // NewGoInfo creates a Info of debug information about Go source.
-func NewGoInfo(skip int) Info {
+func NewGoInfo(skip int) *Info {
 	if !Debug {
-		return Info{}
+		return nil
 	}
 
 	_, file, line, ok := runtime.Caller(skip + 1)
@@ -34,8 +34,8 @@ func NewGoInfo(skip int) Info {
 
 // Lines returns string representation of Info which can be printed on stdout or
 // stderr as is.
-func (i Info) Lines() string {
-	if i == (Info{}) {
+func (i *Info) Lines() string {
+	if i == nil {
 		return ""
 	}
 

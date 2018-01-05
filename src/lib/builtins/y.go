@@ -12,10 +12,7 @@ import "github.com/coel-lang/coel/src/lib/core"
 // because top-level recursive functions generate infinitely nested closures.
 // (i.e. closure{f, x} where x will also be evaluated as closure{f, x}.)
 var Y = core.NewLazyFunction(
-	core.NewSignature(
-		[]string{"function"}, nil, "",
-		nil, nil, "",
-	),
+	core.NewSignature([]string{"function"}, nil, "", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
 		return y(ts[0])
 	})
@@ -24,10 +21,6 @@ func y(f *core.Thunk) core.Value {
 	return core.RawFunctionType(func(args core.Arguments) core.Value {
 		return core.App(
 			f,
-			core.NewArguments(
-				[]core.PositionalArgument{core.NewPositionalArgument(core.Normal(y(f)), false)},
-				nil,
-				nil,
-			).Merge(args))
+			core.NewPositionalArguments(core.Normal(y(f))).Merge(args))
 	})
 }

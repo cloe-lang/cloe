@@ -208,7 +208,7 @@ func benchmarkSort(size, N int, resetTimer func()) {
 	resetTimer()
 
 	for i := 0; i < N; i++ {
-		core.PApp(f, l).Eval()
+		core.PApp(core.First, core.PApp(f, l)).Eval()
 	}
 }
 

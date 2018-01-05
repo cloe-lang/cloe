@@ -19,8 +19,6 @@ var Y = core.NewLazyFunction(
 
 func y(f *core.Thunk) core.Value {
 	return core.RawFunctionType(func(args core.Arguments) core.Value {
-		return core.App(
-			f,
-			core.NewPositionalArguments(core.Normal(y(f))).Merge(args))
+		return core.App(f, core.NewPositionalArguments(core.Normal(y(f))).Merge(args))
 	})
 }

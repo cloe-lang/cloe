@@ -60,7 +60,7 @@ end
 task test: %i[unit_test command_test performance_test]
 
 task :bench do
-  sh "go test -bench . -run '^$' ./..."
+  sh "go test -bench . -run '^$' -benchmem ./..."
 end
 
 task :format do

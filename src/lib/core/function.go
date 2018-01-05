@@ -25,10 +25,12 @@ func NewLazyFunction(s Signature, f func(...*Thunk) Value) *Thunk {
 // NewStrictFunction creates a function whose arguments are evaluated strictly.
 func NewStrictFunction(s Signature, f func(...*Thunk) Value) *Thunk {
 	return NewLazyFunction(s, func(ts ...*Thunk) Value {
-		for _, t := range ts {
-			tt := t
-			systemt.Daemonize(func() { tt.Eval() })
-		}
+		systemt.Daemonize(func() {
+			for _, t := range ts {
+				tt := t
+				systemt.Daemonize(func() { tt.Eval() })
+			}
+		})
 
 		return f(ts...)
 	})

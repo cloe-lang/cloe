@@ -19,6 +19,10 @@ func NewInfo(file string, lineNumber, linePosition int, source string) Info {
 
 // NewGoInfo creates a Info of debug information about Go source.
 func NewGoInfo(skip int) Info {
+	if !Debug {
+		return Info{}
+	}
+
 	_, file, line, ok := runtime.Caller(skip + 1)
 
 	if !ok {
@@ -31,6 +35,10 @@ func NewGoInfo(skip int) Info {
 // Lines returns string representation of Info which can be printed on stdout or
 // stderr as is.
 func (i Info) Lines() string {
+	if i == (Info{}) {
+		return ""
+	}
+
 	p := "NA"
 
 	if i.linePosition > 0 {

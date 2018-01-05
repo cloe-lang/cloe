@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/coel-lang/coel/src/lib/compile"
+	"github.com/coel-lang/coel/src/lib/debug"
 	"github.com/coel-lang/coel/src/lib/run"
 	"github.com/docopt/docopt-go"
 )
@@ -17,6 +18,8 @@ func main() {
 	args := getArgs()
 
 	if !args["--debug"].(bool) {
+		debug.Debug = true
+
 		defer func() {
 			if r := recover(); r != nil {
 				switch x := r.(type) {

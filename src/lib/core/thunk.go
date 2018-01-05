@@ -64,24 +64,16 @@ func (t *Thunk) evalAny() Value {
 			v := t.function.Eval()
 			t.function = nil
 
-			if _, ok := v.(ErrorType); ok {
-				t.result = v
-				break
-			}
-
 			f, ok := v.(callable)
 
 			if !ok {
 				t.result = NotCallableError(v).Eval()
+				t.args = Arguments{}
 				break
 			}
 
 			t.result = f.call(t.args)
 			t.args = Arguments{}
-
-			if _, ok := t.result.(ErrorType); ok {
-				break
-			}
 
 			child, ok := t.result.(*Thunk)
 
@@ -89,7 +81,7 @@ func (t *Thunk) evalAny() Value {
 				break
 			}
 
-			if ok := child.delegateEval(t); !ok {
+			if !child.delegateEval(t) {
 				t.result = child.evalAny()
 				break
 			}
@@ -99,7 +91,9 @@ func (t *Thunk) evalAny() Value {
 			t.result = e.Chain(t.info)
 		}
 
-		t.finalize()
+		// No need to clean up or finalize t.function, t.args, and t.state here
+		// because of invariants.
+		t.blackHole.Done()
 	} else {
 		t.blackHole.Wait()
 	}
@@ -130,13 +124,6 @@ func (t *Thunk) delegateEval(parent *Thunk) bool {
 	}
 
 	return false
-}
-
-func (t *Thunk) finalize() {
-	t.function = nil
-	t.args = Arguments{}
-	t.storeState(normal)
-	t.blackHole.Done()
 }
 
 func (t *Thunk) compareAndSwapState(old, new thunkState) bool {

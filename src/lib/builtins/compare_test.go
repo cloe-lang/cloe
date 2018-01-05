@@ -60,6 +60,17 @@ func TestLessError(t *testing.T) {
 	}
 }
 
+func TestLessNoPanic(t *testing.T) {
+	assert.NotPanics(t, func() {
+		core.App(Less, core.NewArguments(
+			[]core.PositionalArgument{
+				core.NewPositionalArgument(core.NewList(core.NewError("", ""), core.NewNumber(42)), true),
+			},
+			nil,
+			nil)).Eval()
+	})
+}
+
 func TestLessEqTrue(t *testing.T) {
 	for _, ts := range [][]*core.Thunk{
 		{},

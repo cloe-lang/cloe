@@ -55,7 +55,3 @@ func (s Signature) Bind(args Arguments) ([]*Thunk, *Thunk) {
 func (s Signature) arity() int {
 	return s.positionals.arity() + s.keywords.arity()
 }
-
-func argumentError(m string, xs ...interface{}) *Thunk {
-	return NewError("ArgumentError", m, xs...)
-}

@@ -174,6 +174,10 @@ func impureFunctionError() *Thunk {
 	return NewError("ImpureFunctionError", "Impure function is called in pure context.")
 }
 
+func argumentError(m string, xs ...interface{}) *Thunk {
+	return NewError("ArgumentError", m, xs...)
+}
+
 // Error creates an error value with an error name and message.
 var Error = NewLazyFunction(
 	NewSignature([]string{"name", "messasge"}, nil, "", nil, nil, ""),

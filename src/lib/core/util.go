@@ -54,10 +54,7 @@ func StrictDump(v Value) (string, *Thunk) {
 
 // Equal checks if 2 values are equal or not.
 var Equal = NewStrictFunction(
-	NewSignature(
-		[]string{"x", "y"}, nil, "",
-		nil, nil, "",
-	),
+	NewSignature([]string{"x", "y"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) (v Value) {
 		defer func() {
 			if r := recover(); r != nil {

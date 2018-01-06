@@ -11,10 +11,8 @@ import (
 
 func TestWrite(t *testing.T) {
 	for _, a := range []core.Arguments{
-		core.NewArguments(
-			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},
-			nil,
-			nil),
+		core.NewPositionalArguments(core.Nil),
+		core.NewPositionalArguments(core.Nil, core.Nil),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},
 			[]core.KeywordArgument{core.NewKeywordArgument("sep", core.NewString(","))},
@@ -46,23 +44,19 @@ func TestWriteError(t *testing.T) {
 	defer os.Remove(d)
 
 	for _, a := range []core.Arguments{
-		core.NewArguments(
-			[]core.PositionalArgument{core.NewPositionalArgument(core.NewError("", ""), false)},
-			nil,
-			nil),
+		core.NewPositionalArguments(core.NewError("", "")),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.NewError("", ""), true)},
 			nil,
 			nil),
-		core.NewArguments(
-			[]core.PositionalArgument{
-				core.NewPositionalArgument(core.PApp(core.Prepend, core.Nil, core.NewError("", "")), true),
-			},
-			nil,
-			nil),
+		core.NewPositionalArguments(core.PApp(core.Prepend, core.Nil, core.NewError("", ""))),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},
 			[]core.KeywordArgument{core.NewKeywordArgument("sep", core.Nil)},
+			nil),
+		core.NewArguments(
+			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},
+			[]core.KeywordArgument{core.NewKeywordArgument("end", core.Nil)},
 			nil),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},

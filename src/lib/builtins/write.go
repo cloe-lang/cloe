@@ -20,84 +20,94 @@ var Write = core.NewEffectFunction(
 		}, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
-		v := ts[0].Eval()
-		l, ok := v.(core.ListType)
+		sep, err := evalString(ts[1])
 
-		if !ok {
-			return core.NotListError(v)
+		if err != nil {
+			return err
 		}
 
-		elems, e := l.ToValues()
+		f, err := evalFileArguments(ts[3], ts[4])
 
-		if e != nil {
-			return e
+		if err != nil {
+			return err
 		}
 
-		ss := make([]string, 0, len(elems))
+		t := ts[0]
+		ss := []string{}
 
-		for _, t := range elems {
-			v := core.PApp(core.ToString, t).Eval()
-			s, ok := v.(core.StringType)
+		for {
+			v := core.PApp(core.Equal, t, core.EmptyList).Eval()
+			b, ok := v.(core.BoolType)
 
 			if !ok {
-				return core.NotStringError(v)
+				return core.NotBoolError(v)
+			} else if b {
+				break
 			}
 
-			ss = append(ss, string(s))
-		}
-
-		var options [2]string
-
-		for i, t := range ts[1:3] {
-			v := t.Eval()
-			s, ok := v.(core.StringType)
-
-			if !ok {
-				return core.NotStringError(v)
-			}
-
-			options[i] = string(s)
-		}
-
-		file := os.Stdout
-		fileArg := ts[3].Eval()
-
-		if s, ok := fileArg.(core.StringType); ok {
-			v := ts[4].Eval()
-			mode, ok := v.(core.NumberType)
-
-			if !ok {
-				return core.NotNumberError(v)
-			}
-
-			var err error
-			file, err = os.OpenFile(
-				string(s),
-				os.O_CREATE|os.O_TRUNC|os.O_WRONLY,
-				os.FileMode(mode))
-
-			if err != nil {
-				return fileError(err)
-			}
-		} else if n, ok := fileArg.(core.NumberType); ok && n == 2 {
-			file = os.Stderr
-		} else if !(ok && n == 1) {
-			s, err := core.StrictDump(fileArg)
+			s, err := evalString(core.PApp(core.ToString, core.PApp(core.First, t)))
 
 			if err != nil {
 				return err
 			}
 
-			return core.ValueError(
-				"file optional argument's value must be 1 or 2, or a string filename. Got %s.",
-				s)
+			ss = append(ss, s)
+			t = core.PApp(core.Rest, t)
 		}
 
-		_, err := fmt.Fprint(file, strings.Join(ss, options[0])+options[1])
+		end, err := evalString(ts[2])
 
 		if err != nil {
+			return err
+		}
+
+		if _, err := fmt.Fprint(f, strings.Join(ss, sep)+end); err != nil {
 			return fileError(err)
 		}
 
 		return core.Nil
 	})
+
+func evalString(t *core.Thunk) (string, *core.Thunk) {
+	v := t.Eval()
+	s, ok := v.(core.StringType)
+
+	if !ok {
+		return "", core.NotStringError(v)
+	}
+
+	return string(s), nil
+}
+
+func evalFileArguments(f, m *core.Thunk) (*os.File, *core.Thunk) {
+	switch x := f.Eval().(type) {
+	case core.StringType:
+		v := m.Eval()
+		m, ok := v.(core.NumberType)
+
+		if !ok {
+			return nil, core.NotNumberError(v)
+		}
+
+		f, err := os.OpenFile(
+			string(x),
+			os.O_CREATE|os.O_TRUNC|os.O_WRONLY,
+			os.FileMode(m))
+
+		if err != nil {
+			return nil, fileError(err)
+		}
+
+		return f, nil
+	case core.NumberType:
+		switch x {
+		case 1:
+			return os.Stdout, nil
+		case 2:
+			return os.Stderr, nil
+		}
+	}
+
+	return nil, core.ValueError(
+		"file optional argument's value must be 1 or 2, or a string filename.")
+}

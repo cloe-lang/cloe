@@ -65,3 +65,9 @@ func TestIfWithInvalidRestArgument(t *testing.T) {
 		assert.True(t, ok)
 	}
 }
+
+func BenchmarkIf(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		PApp(If, False, False, False, False, False, False, False, False, True).Eval()
+	}
+}

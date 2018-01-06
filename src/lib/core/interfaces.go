@@ -87,7 +87,7 @@ func rawCompare(ts ...*Thunk) Value {
 	}
 
 	if reflect.TypeOf(o1) != reflect.TypeOf(o2) {
-		s, err := EvalString(PApp(TypeOf, ts[1]))
+		s, err := PApp(TypeOf, ts[1]).EvalString()
 
 		if err != nil {
 			return err

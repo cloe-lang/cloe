@@ -35,7 +35,7 @@ func NewList(ts ...*Thunk) *Thunk {
 var Prepend = NewLazyFunction(
 	NewSignature(nil, nil, "elemsAndList", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		l, err := EvalList(ts[0])
+		l, err := ts[0].EvalList()
 
 		if err != nil {
 			return err
@@ -67,7 +67,7 @@ func cons(t1, t2 *Thunk) ListType {
 var First = NewLazyFunction(
 	NewSignature([]string{"list"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		l, err := EvalList(ts[0])
+		l, err := ts[0].EvalList()
 
 		if err != nil {
 			return err
@@ -82,7 +82,7 @@ var First = NewLazyFunction(
 var Rest = NewLazyFunction(
 	NewSignature([]string{"list"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		l, err := EvalList(ts[0])
+		l, err := ts[0].EvalList()
 
 		if err != nil {
 			return err
@@ -94,7 +94,7 @@ var Rest = NewLazyFunction(
 			NewLazyFunction(
 				NewSignature(nil, nil, "", nil, nil, ""),
 				func(...*Thunk) Value {
-					l, err := EvalList(l.rest)
+					l, err := l.rest.EvalList()
 
 					if err != nil {
 						return err
@@ -123,7 +123,7 @@ func (l ListType) index(v Value) Value {
 		}
 
 		var err Value
-		if l, err = EvalList(l.rest); err != nil {
+		if l, err = l.rest.EvalList(); err != nil {
 			return err
 		}
 
@@ -171,7 +171,7 @@ func (l ListType) delete(v Value) Value {
 		elems = append(elems, l.first)
 
 		var err Value
-		if l, err = EvalList(l.rest); err != nil {
+		if l, err = l.rest.EvalList(); err != nil {
 			return err
 		}
 
@@ -186,7 +186,7 @@ func checkIndex(v Value) (NumberType, Value) {
 		return 0, NotNumberError(v)
 	}
 
-	b, err := EvalBool(PApp(isInt, Normal(n)))
+	b, err := PApp(isInt, Normal(n)).EvalBool()
 
 	if err != nil {
 		return 0, err
@@ -256,7 +256,7 @@ func (l ListType) string() Value {
 	ss := make([]string, 0, len(ts))
 
 	for _, t := range ts {
-		s, err := EvalString(PApp(Dump, t))
+		s, err := PApp(Dump, t).EvalString()
 
 		if err != nil {
 			return err
@@ -276,7 +276,7 @@ func (l ListType) ToThunks() ([]*Thunk, *Thunk) {
 		ts = append(ts, l.first)
 
 		var err Value
-		if l, err = EvalList(l.rest); err != nil {
+		if l, err = l.rest.EvalList(); err != nil {
 			return nil, Normal(err)
 		}
 	}
@@ -315,7 +315,7 @@ func (l ListType) include(elem Value) Value {
 		return False
 	}
 
-	b, err := EvalBool(PApp(Equal, l.first, Normal(elem)))
+	b, err := PApp(Equal, l.first, Normal(elem)).EvalBool()
 
 	if err != nil {
 		return err
@@ -338,7 +338,7 @@ func (l ListType) Rest() *Thunk {
 
 // IsEmptyList returns true if a given list is empty, or false otherwise.
 func IsEmptyList(t *Thunk) (bool, Value) {
-	if l, err := EvalList(t); err != nil {
+	if l, err := t.EvalList(); err != nil {
 		return false, err
 	} else if l == emptyList {
 		return true, nil

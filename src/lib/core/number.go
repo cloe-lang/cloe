@@ -39,7 +39,7 @@ func newCommutativeOperator(i NumberType, f func(n, m NumberType) NumberType) *T
 	return NewLazyFunction(
 		NewSignature(nil, nil, "nums", nil, nil, ""),
 		func(ts ...*Thunk) Value {
-			l, err := EvalList(ts[0])
+			l, err := ts[0].EvalList()
 
 			if err != nil {
 				return err
@@ -54,7 +54,7 @@ func newCommutativeOperator(i NumberType, f func(n, m NumberType) NumberType) *T
 			a := i
 
 			for _, t := range ts {
-				n, err := EvalNumber(t)
+				n, err := t.EvalNumber()
 
 				if err != nil {
 					return err
@@ -71,13 +71,13 @@ func newInverseOperator(f func(n, m NumberType) NumberType) *Thunk {
 	return NewLazyFunction(
 		NewSignature([]string{"initial"}, nil, "nums", nil, nil, ""),
 		func(ts ...*Thunk) Value {
-			a, err := EvalNumber(ts[0])
+			a, err := ts[0].EvalNumber()
 
 			if err != nil {
 				return err
 			}
 
-			l, err := EvalList(ts[1])
+			l, err := ts[1].EvalList()
 
 			if err != nil {
 				return err
@@ -90,7 +90,7 @@ func newInverseOperator(f func(n, m NumberType) NumberType) *Thunk {
 			}
 
 			for _, t := range ts {
-				n, err := EvalNumber(t)
+				n, err := t.EvalNumber()
 
 				if err != nil {
 					return err
@@ -110,7 +110,7 @@ func newBinaryOperator(f func(n, m float64) float64) *Thunk {
 			ns := [2]NumberType{}
 
 			for i, t := range ts {
-				n, err := EvalNumber(t)
+				n, err := t.EvalNumber()
 
 				if err != nil {
 					return err
@@ -126,7 +126,7 @@ func newBinaryOperator(f func(n, m float64) float64) *Thunk {
 var isInt = NewLazyFunction(
 	NewSignature([]string{"number"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		n, err := EvalNumber(ts[0])
+		n, err := ts[0].EvalNumber()
 
 		if err != nil {
 			return err

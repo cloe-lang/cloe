@@ -47,7 +47,7 @@ func (s StringType) insert(t, tt *Thunk) Value {
 		return OutOfRangeError()
 	}
 
-	ss, err := EvalString(tt)
+	ss, err := tt.EvalString()
 
 	if err != nil {
 		return err
@@ -66,7 +66,7 @@ func (s StringType) merge(ts ...*Thunk) Value {
 	ss := make([]string, 0, len(ts))
 
 	for _, t := range ts {
-		s, err := EvalString(t)
+		s, err := t.EvalString()
 
 		if err != nil {
 			return err

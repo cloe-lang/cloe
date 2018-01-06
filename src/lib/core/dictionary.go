@@ -155,7 +155,7 @@ func (d DictionaryType) compare(c comparable) int {
 }
 
 func (d DictionaryType) string() Value {
-	l, err := EvalList(PApp(ToList, Normal(d)))
+	l, err := PApp(ToList, Normal(d)).EvalList()
 
 	if err != nil {
 		return err
@@ -170,7 +170,7 @@ func (d DictionaryType) string() Value {
 	ss := make([]string, 2*len(ts))
 
 	for i, t := range ts {
-		l, err := EvalList(t)
+		l, err := t.EvalList()
 
 		if err != nil {
 			return err
@@ -188,7 +188,7 @@ func (d DictionaryType) string() Value {
 				return err
 			}
 
-			s, err := EvalString(PApp(Dump, Normal(v)))
+			s, err := PApp(Dump, Normal(v)).EvalString()
 
 			if err != nil {
 				return err

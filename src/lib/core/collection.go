@@ -35,7 +35,7 @@ var Include = NewStrictFunction(
 var Index = NewStrictFunction(
 	NewSignature([]string{"collection", "key"}, nil, "keys", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		l, err := EvalList(ts[2])
+		l, err := ts[2].EvalList()
 
 		if err != nil {
 			return err
@@ -105,7 +105,7 @@ var Merge = NewLazyFunction(
 			return TypeError(v, "collection")
 		}
 
-		l, err := EvalList(ts[1])
+		l, err := ts[1].EvalList()
 
 		if err != nil {
 			return err

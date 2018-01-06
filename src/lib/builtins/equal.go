@@ -20,7 +20,7 @@ var Equal = core.NewLazyFunction(
 				return v
 			}
 
-			b, err := core.EvalBool(core.PApp(core.Equal, e, core.PApp(core.First, l)))
+			b, err := core.PApp(core.Equal, e, core.PApp(core.First, l)).EvalBool()
 
 			if err != nil {
 				return err

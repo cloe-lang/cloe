@@ -66,7 +66,7 @@ var Write = core.NewEffectFunction(
 	})
 
 func evalGoString(t *core.Thunk) (string, core.Value) {
-	s, err := core.EvalString(t)
+	s, err := t.EvalString()
 
 	if err != nil {
 		return "", err
@@ -78,7 +78,7 @@ func evalGoString(t *core.Thunk) (string, core.Value) {
 func evalFileArguments(f, m *core.Thunk) (*os.File, core.Value) {
 	switch x := f.Eval().(type) {
 	case core.StringType:
-		m, e := core.EvalNumber(m)
+		m, e := m.EvalNumber()
 
 		if e != nil {
 			return nil, e

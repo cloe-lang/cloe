@@ -14,7 +14,7 @@ func createExitFunction(exit func(int)) *core.Thunk {
 			nil, []core.OptionalArgument{core.NewOptionalArgument("status", core.NewNumber(0))}, "",
 			nil, nil, ""),
 		func(ts ...*core.Thunk) core.Value {
-			n, err := core.EvalNumber(ts[0])
+			n, err := ts[0].EvalNumber()
 
 			if err != nil {
 				return err

@@ -16,7 +16,7 @@ const responseChannelSize = 1024
 var getRequests = core.NewLazyFunction(
 	core.NewSignature([]string{"address"}, nil, "", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
-		s, err := core.EvalString(ts[0])
+		s, err := ts[0].EvalString()
 
 		if err != nil {
 			return err
@@ -89,7 +89,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					func(ts ...*core.Thunk) core.Value {
 						defer wg.Done()
 
-						n, err := core.EvalNumber(ts[1])
+						n, err := ts[1].EvalNumber()
 
 						if err != nil {
 							return err
@@ -101,7 +101,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 						w.WriteHeader(int(n))
 
-						s, err := core.EvalString(ts[0])
+						s, err := ts[0].EvalString()
 
 						if err != nil {
 							return err

@@ -26,7 +26,7 @@ var If = NewLazyFunction(
 		t := ts[0]
 
 		for {
-			l, err := EvalList(t)
+			l, err := t.EvalList()
 
 			if err != nil {
 				return err
@@ -34,7 +34,7 @@ var If = NewLazyFunction(
 				return argumentError("Not enough arguments to if function.")
 			}
 
-			ll, err := EvalList(l.rest)
+			ll, err := l.rest.EvalList()
 
 			if err != nil {
 				return err
@@ -42,7 +42,7 @@ var If = NewLazyFunction(
 				return l.first
 			}
 
-			b, err := EvalBool(l.first)
+			b, err := l.first.EvalBool()
 
 			if err != nil {
 				return err

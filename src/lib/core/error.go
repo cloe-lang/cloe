@@ -181,13 +181,13 @@ func argumentError(m string, xs ...interface{}) *Thunk {
 var Error = NewLazyFunction(
 	NewSignature([]string{"name", "messasge"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		n, err := EvalString(ts[0])
+		n, err := ts[0].EvalString()
 
 		if err != nil {
 			return err
 		}
 
-		m, err := EvalString(ts[1])
+		m, err := ts[1].EvalString()
 
 		if err != nil {
 			return err

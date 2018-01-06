@@ -158,3 +158,51 @@ func (t *Thunk) EvalEffect() Value {
 
 	return e.value.Eval()
 }
+
+// EvalBool evaluates a thunk which is expected to be a boolean value.
+func (t *Thunk) EvalBool() (BoolType, Value) {
+	v := t.Eval()
+	b, ok := v.(BoolType)
+
+	if !ok {
+		return false, NotBoolError(v).Eval()
+	}
+
+	return b, nil
+}
+
+// EvalList evaluates a thunk which is expected to be a list value.
+func (t *Thunk) EvalList() (ListType, Value) {
+	v := t.Eval()
+	l, ok := v.(ListType)
+
+	if !ok {
+		return emptyList, NotListError(v).Eval()
+	}
+
+	return l, nil
+}
+
+// EvalNumber evaluates a thunk which is expected to be a number value.
+func (t *Thunk) EvalNumber() (NumberType, Value) {
+	v := t.Eval()
+	n, ok := v.(NumberType)
+
+	if !ok {
+		return 0, NotNumberError(v).Eval()
+	}
+
+	return n, nil
+}
+
+// EvalString evaluates a thunk which is expected to be a string value.
+func (t *Thunk) EvalString() (StringType, Value) {
+	v := t.Eval()
+	s, ok := v.(StringType)
+
+	if !ok {
+		return "", NotStringError(v).Eval()
+	}
+
+	return s, nil
+}

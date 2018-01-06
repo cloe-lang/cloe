@@ -65,7 +65,7 @@ func encodeValue(v core.Value) (result string, err *core.Thunk) {
 
 		return "[" + strings.Join(ss, ",") + "]", nil
 	case core.DictionaryType:
-		l, err := core.EvalList(core.PApp(core.ToList, core.Normal(v)))
+		l, err := core.PApp(core.ToList, core.Normal(v)).EvalList()
 
 		if err != nil {
 			return "", core.Normal(err)
@@ -80,7 +80,7 @@ func encodeValue(v core.Value) (result string, err *core.Thunk) {
 		ss := make([]string, 0, len(ts))
 
 		for _, t := range ts {
-			l, err := core.EvalList(t)
+			l, err := t.EvalList()
 
 			if err != nil {
 				return "", core.Normal(err)

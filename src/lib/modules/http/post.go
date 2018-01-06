@@ -21,7 +21,7 @@ var post = core.NewLazyFunction(
 		ss := make([]string, 0, 3)
 
 		for i := 0; i < cap(ss); i++ {
-			s, err := core.EvalString(ts[i])
+			s, err := ts[i].EvalString()
 
 			if err != nil {
 				return err

@@ -6,7 +6,7 @@ func evaluateStringArguments(ts []*core.Thunk) ([]string, core.Value) {
 	ss := make([]string, 0, len(ts))
 
 	for _, t := range ts {
-		s, err := core.EvalString(t)
+		s, err := t.EvalString()
 
 		if err != nil {
 			return nil, err

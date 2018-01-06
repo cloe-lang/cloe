@@ -14,11 +14,10 @@ var get = core.NewLazyFunction(
 		nil, []core.OptionalArgument{core.NewOptionalArgument("error", core.True)}, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
-		v := ts[0].Eval()
-		s, ok := v.(core.StringType)
+		s, e := core.EvalString(ts[0])
 
-		if !ok {
-			return core.NotStringError(v)
+		if e != nil {
+			return e
 		}
 
 		r, err := http.Get(string(s))
@@ -37,11 +36,10 @@ func handleMethodResult(r *http.Response, err error, errorOption *core.Thunk) co
 		return httpError(err)
 	}
 
-	v := errorOption.Eval()
-	b, ok := v.(core.BoolType)
+	b, e := core.EvalBool(errorOption)
 
-	if !ok {
-		return core.NotBoolError(v)
+	if e != nil {
+		return e
 	}
 
 	if b && r.StatusCode/100 != 2 {

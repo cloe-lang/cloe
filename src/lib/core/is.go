@@ -20,11 +20,10 @@ func isOrderedFunction(ts ...*Thunk) Value {
 	l := ts[0]
 
 	for {
-		v := PApp(Equal, l, EmptyList).Eval()
-		b, ok := v.(BoolType)
+		b, err := EvalBool(PApp(Equal, l, EmptyList))
 
-		if !ok {
-			return NotBoolError(v)
+		if err != nil {
+			return err
 		} else if b {
 			return True
 		}
@@ -32,11 +31,10 @@ func isOrderedFunction(ts ...*Thunk) Value {
 		t := PApp(First, l)
 		l = PApp(Rest, l)
 
-		v = PApp(NewLazyFunction(isOrderedSignature, isOrderedFunction), t).Eval()
-		b, ok = v.(BoolType)
+		b, err = EvalBool(PApp(NewLazyFunction(isOrderedSignature, isOrderedFunction), t))
 
-		if !ok {
-			return NotBoolError(v)
+		if err != nil {
+			return err
 		} else if !b {
 			return False
 		}

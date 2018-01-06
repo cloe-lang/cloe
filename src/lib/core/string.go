@@ -47,11 +47,10 @@ func (s StringType) insert(t, tt *Thunk) Value {
 		return OutOfRangeError()
 	}
 
-	v = tt.Eval()
-	ss, ok := v.(StringType)
+	ss, err := EvalString(tt)
 
-	if !ok {
-		return NotStringError(v)
+	if err != nil {
+		return err
 	}
 
 	return s[:i] + ss + s[i:]
@@ -67,11 +66,10 @@ func (s StringType) merge(ts ...*Thunk) Value {
 	ss := make([]string, 0, len(ts))
 
 	for _, t := range ts {
-		v := t.Eval()
-		s, ok := v.(StringType)
+		s, err := EvalString(t)
 
-		if !ok {
-			return TypeError(v, "String")
+		if err != nil {
+			return err
 		}
 
 		ss = append(ss, string(s))

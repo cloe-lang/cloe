@@ -12,18 +12,16 @@ var createDirectory = core.NewEffectFunction(
 		[]core.OptionalArgument{core.NewOptionalArgument("existOk", core.False)}, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
-		v := ts[0].Eval()
-		s, ok := v.(core.StringType)
+		s, e := core.EvalString(ts[0])
 
-		if !ok {
-			return core.NotStringError(v)
+		if e != nil {
+			return e
 		}
 
-		v = ts[1].Eval()
-		b, ok := v.(core.BoolType)
+		b, e := core.EvalBool(ts[1])
 
-		if !ok {
-			return core.NotBoolError(v)
+		if e != nil {
+			return e
 		}
 
 		if b {
@@ -32,9 +30,7 @@ var createDirectory = core.NewEffectFunction(
 			}
 		}
 
-		err := os.Mkdir(string(s), os.ModeDir|0775)
-
-		if err != nil {
+		if err := os.Mkdir(string(s), os.ModeDir|0775); err != nil {
 			return fileSystemError(err)
 		}
 

@@ -27,8 +27,7 @@ func NewError(n, m string, xs ...interface{}) *Thunk {
 var Catch = NewLazyFunction(
 	NewSignature([]string{"error"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		err, ok := v.(ErrorType)
+		err, ok := ts[0].Eval().(ErrorType)
 
 		if !ok {
 			return Nil
@@ -182,18 +181,16 @@ func argumentError(m string, xs ...interface{}) *Thunk {
 var Error = NewLazyFunction(
 	NewSignature([]string{"name", "messasge"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		n, ok := v.(StringType)
+		n, err := EvalString(ts[0])
 
-		if !ok {
-			return NotStringError(v)
+		if err != nil {
+			return err
 		}
 
-		v = ts[1].Eval()
-		m, ok := v.(StringType)
+		m, err := EvalString(ts[1])
 
-		if !ok {
-			return NotStringError(v)
+		if err != nil {
+			return err
 		}
 
 		return ErrorType{string(n), string(m), []*debug.Info{debug.NewGoInfo(1)}}

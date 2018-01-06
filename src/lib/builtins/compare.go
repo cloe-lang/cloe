@@ -13,14 +13,10 @@ func createCompareFunction(checkOrder func(core.NumberType) bool) *core.Thunk {
 			}
 
 			prev := core.PApp(core.First, l)
-			v := core.PApp(core.IsOrdered, prev).Eval()
-			b, ok := v.(core.BoolType)
 
-			if !ok {
-				return core.NotBoolError(v)
-			}
-
-			if !b {
+			if b, err := core.EvalBool(core.PApp(core.IsOrdered, prev)); err != nil {
+				return err
+			} else if !b {
 				return core.NotOrderedError(prev.Eval())
 			}
 
@@ -33,11 +29,8 @@ func createCompareFunction(checkOrder func(core.NumberType) bool) *core.Thunk {
 
 				current := core.PApp(core.First, l)
 
-				v := core.PApp(core.Compare, prev, current).Eval()
-				n, ok := v.(core.NumberType)
-
-				if !ok {
-					return core.NotBoolError(v)
+				if n, err := core.EvalNumber(core.PApp(core.Compare, prev, current)); err != nil {
+					return err
 				} else if !checkOrder(n) {
 					return core.False
 				}

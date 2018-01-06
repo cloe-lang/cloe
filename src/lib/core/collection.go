@@ -77,11 +77,10 @@ var Insert = NewLazyFunction(
 		l := ts[1]
 
 		for {
-			v := PApp(Equal, l, EmptyList).Eval()
-			b, ok := v.(BoolType)
+			b, err := EvalBool(PApp(Equal, l, EmptyList))
 
-			if !ok {
-				return NotBoolError(v)
+			if err != nil {
+				return err
 			} else if b {
 				break
 			}

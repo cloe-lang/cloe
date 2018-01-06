@@ -22,11 +22,8 @@ var Rally = core.NewLazyFunction(
 			sem := make(chan bool, maxConcurrency)
 
 			for {
-				v := core.PApp(core.Equal, l, core.EmptyList).Eval()
-				b, ok := v.(core.BoolType)
-
-				if !ok {
-					vs <- core.NotBoolError(v).Eval()
+				if b, err := core.EvalBool(core.PApp(core.Equal, l, core.EmptyList)); err != nil {
+					vs <- err
 					break
 				} else if b {
 					// HACK: Wait for other goroutines to put elements in a value channel

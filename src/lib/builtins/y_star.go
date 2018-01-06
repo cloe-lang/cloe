@@ -31,11 +31,8 @@ var Ys = core.NewLazyFunction(
 	})
 
 func createNewFuncs(olds, applyF *core.Thunk) *core.Thunk {
-	v := core.PApp(core.Equal, olds, core.EmptyList).Eval()
-	b, ok := v.(core.BoolType)
-
-	if !ok {
-		return core.NotBoolError(v)
+	if b, err := core.EvalBool(core.PApp(core.Equal, olds, core.EmptyList)); err != nil {
+		return core.Normal(err)
 	} else if b {
 		return core.EmptyList
 	}

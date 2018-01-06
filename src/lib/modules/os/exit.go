@@ -14,11 +14,10 @@ func createExitFunction(exit func(int)) *core.Thunk {
 			nil, []core.OptionalArgument{core.NewOptionalArgument("status", core.NewNumber(0))}, "",
 			nil, nil, ""),
 		func(ts ...*core.Thunk) core.Value {
-			v := ts[0].Eval()
-			n, ok := v.(core.NumberType)
+			n, err := core.EvalNumber(ts[0])
 
-			if !ok {
-				return core.NotNumberError(v)
+			if err != nil {
+				return err
 			}
 
 			exit(int(n))

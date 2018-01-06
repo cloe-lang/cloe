@@ -3,11 +3,10 @@ package builtins
 import "github.com/coel-lang/coel/src/lib/core"
 
 func checkEmptyList(l *core.Thunk, ifTrue core.Value) core.Value {
-	v := core.PApp(core.Equal, l, core.EmptyList).Eval()
-	b, ok := v.(core.BoolType)
+	b, err := core.EvalBool(core.PApp(core.Equal, l, core.EmptyList))
 
-	if !ok {
-		return core.NotBoolError(v).Eval()
+	if err != nil {
+		return err
 	} else if b {
 		return ifTrue
 	}

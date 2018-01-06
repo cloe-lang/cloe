@@ -21,11 +21,10 @@ var post = core.NewLazyFunction(
 		ss := make([]string, 0, 3)
 
 		for i := 0; i < cap(ss); i++ {
-			v := ts[i].Eval()
-			s, ok := v.(core.StringType)
+			s, err := core.EvalString(ts[i])
 
-			if !ok {
-				return core.NotStringError(v)
+			if err != nil {
+				return err
 			}
 
 			ss = append(ss, string(s))

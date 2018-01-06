@@ -18,18 +18,19 @@ func createReadFunction(stdin io.Reader) *core.Thunk {
 			nil, nil, "",
 		),
 		func(ts ...*core.Thunk) core.Value {
-			v := ts[0].Eval()
 			file := stdin
 
-			if s, ok := v.(core.StringType); ok {
+			switch x := ts[0].Eval().(type) {
+			case core.StringType:
 				var err error
-				file, err = os.Open(string(s))
+				file, err = os.Open(string(x))
 
 				if err != nil {
 					return fileError(err)
 				}
-			} else if _, ok := v.(core.NilType); !ok {
-				s, err := core.StrictDump(v)
+			case core.NilType:
+			default:
+				s, err := core.StrictDump(x)
 
 				if err != nil {
 					return err

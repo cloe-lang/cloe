@@ -187,11 +187,10 @@ func (d DictionaryType) string() Value {
 				return err
 			}
 
-			v = PApp(Dump, Normal(v)).Eval()
-			s, ok := v.(StringType)
+			s, err := EvalString(PApp(Dump, Normal(v)))
 
-			if !ok {
-				return NotStringError(v)
+			if err != nil {
+				return err
 			}
 
 			ss[2*i+j] = string(s)

@@ -195,11 +195,10 @@ func checkIndex(v Value) (NumberType, Value) {
 		return 0, NotNumberError(v)
 	}
 
-	v = PApp(isInt, Normal(n)).Eval()
-	b, ok := v.(BoolType)
+	b, err := EvalBool(PApp(isInt, Normal(n)))
 
-	if !ok {
-		return 0, NotBoolError(v)
+	if err != nil {
+		return 0, err
 	} else if !b {
 		return 0, NotIntError(n)
 	} else if n < 1 {
@@ -266,11 +265,10 @@ func (l ListType) string() Value {
 	ss := make([]string, 0, len(ts))
 
 	for _, t := range ts {
-		v := PApp(Dump, t).Eval()
-		s, ok := v.(StringType)
+		s, err := EvalString(PApp(Dump, t))
 
-		if !ok {
-			return NotStringError(v)
+		if err != nil {
+			return err
 		}
 
 		ss = append(ss, string(s))
@@ -329,11 +327,10 @@ func (l ListType) include(elem Value) Value {
 		return False
 	}
 
-	v := PApp(Equal, l.first, Normal(elem)).Eval()
-	b, ok := v.(BoolType)
+	b, err := EvalBool(PApp(Equal, l.first, Normal(elem)))
 
-	if !ok {
-		return NotBoolError(v)
+	if err != nil {
+		return err
 	} else if b {
 		return True
 	}

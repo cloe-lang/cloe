@@ -44,11 +44,10 @@ var If = NewLazyFunction(
 				return l.first
 			}
 
-			v = l.first.Eval()
-			b, ok := v.(BoolType)
+			b, err := EvalBool(l.first)
 
-			if !ok {
-				return NotBoolError(v)
+			if err != nil {
+				return err
 			} else if b {
 				return ll.first
 			}

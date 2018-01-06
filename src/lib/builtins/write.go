@@ -20,7 +20,7 @@ var Write = core.NewEffectFunction(
 		}, "",
 	),
 	func(ts ...*core.Thunk) core.Value {
-		sep, err := evalString(ts[1])
+		sep, err := evalGoString(ts[1])
 
 		if err != nil {
 			return err
@@ -36,16 +36,13 @@ var Write = core.NewEffectFunction(
 		ss := []string{}
 
 		for {
-			v := core.PApp(core.Equal, t, core.EmptyList).Eval()
-			b, ok := v.(core.BoolType)
-
-			if !ok {
-				return core.NotBoolError(v)
+			if b, err := core.EvalBool(core.PApp(core.Equal, t, core.EmptyList)); err != nil {
+				return err
 			} else if b {
 				break
 			}
 
-			s, err := evalString(core.PApp(core.ToString, core.PApp(core.First, t)))
+			s, err := evalGoString(core.PApp(core.ToString, core.PApp(core.First, t)))
 
 			if err != nil {
 				return err
@@ -55,7 +52,7 @@ var Write = core.NewEffectFunction(
 			t = core.PApp(core.Rest, t)
 		}
 
-		end, err := evalString(ts[2])
+		end, err := evalGoString(ts[2])
 
 		if err != nil {
 			return err
@@ -68,25 +65,23 @@ var Write = core.NewEffectFunction(
 		return core.Nil
 	})
 
-func evalString(t *core.Thunk) (string, *core.Thunk) {
-	v := t.Eval()
-	s, ok := v.(core.StringType)
+func evalGoString(t *core.Thunk) (string, core.Value) {
+	s, err := core.EvalString(t)
 
-	if !ok {
-		return "", core.NotStringError(v)
+	if err != nil {
+		return "", err
 	}
 
 	return string(s), nil
 }
 
-func evalFileArguments(f, m *core.Thunk) (*os.File, *core.Thunk) {
+func evalFileArguments(f, m *core.Thunk) (*os.File, core.Value) {
 	switch x := f.Eval().(type) {
 	case core.StringType:
-		v := m.Eval()
-		m, ok := v.(core.NumberType)
+		m, e := core.EvalNumber(m)
 
-		if !ok {
-			return nil, core.NotNumberError(v)
+		if e != nil {
+			return nil, e
 		}
 
 		f, err := os.OpenFile(

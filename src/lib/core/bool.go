@@ -23,37 +23,38 @@ func NewBool(b bool) *Thunk {
 var If = NewLazyFunction(
 	NewSignature(nil, nil, "args", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		l, ok := v.(ListType)
+		t := ts[0]
 
-		if !ok {
-			return NotListError(v)
-		}
+		for {
+			v := t.Eval()
+			l, ok := v.(ListType)
 
-		ts, err := l.ToThunks()
+			if !ok {
+				return NotListError(v)
+			} else if l == emptyList {
+				return argumentError("Not enough arguments to if function.")
+			}
 
-		if err != nil {
-			return err
-		}
+			v = l.rest.Eval()
+			ll, ok := v.(ListType)
 
-		if len(ts)%2 == 0 {
-			return argumentError("Number of arguments of if function must be even but %v.", len(ts))
-		}
+			if !ok {
+				return NotListError(v)
+			} else if ll == emptyList {
+				return l.first
+			}
 
-		for i := 0; i < len(ts)-2; i += 2 {
-			v := ts[i].Eval()
+			v = l.first.Eval()
 			b, ok := v.(BoolType)
 
 			if !ok {
 				return NotBoolError(v)
+			} else if b {
+				return ll.first
 			}
 
-			if b {
-				return ts[i+1]
-			}
+			t = ll.rest
 		}
-
-		return ts[len(ts)-1]
 	})
 
 func (b BoolType) compare(c comparable) int {

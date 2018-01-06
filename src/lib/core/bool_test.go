@@ -42,8 +42,9 @@ func TestIfWithMultipleConditions(t *testing.T) {
 
 func TestIfWithInvalidArguments(t *testing.T) {
 	for _, th := range []*Thunk{
+		PApp(If),
 		PApp(If, Nil, Nil, Nil),
-		PApp(If, True, Nil),
+		PApp(If, False, Nil),
 	} {
 		_, ok := th.Eval().(ErrorType)
 		assert.True(t, ok)

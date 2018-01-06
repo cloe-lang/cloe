@@ -64,7 +64,7 @@ var indexOf = core.NewLazyFunction(
 		l, e := ts[0], ts[1]
 
 		for i := 1; ; i++ {
-			if v := checkEmptyList(l, core.ValueError("A value is not in a list.")); v != nil {
+			if v := core.ReturnIfEmptyList(l, core.ValueError("A value is not in a list.")); v != nil {
 				return v
 			}
 

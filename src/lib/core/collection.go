@@ -35,20 +35,19 @@ var Include = NewStrictFunction(
 var Index = NewStrictFunction(
 	NewSignature([]string{"collection", "key"}, nil, "keys", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		v := ts[2].Eval()
-		l, ok := v.(ListType)
-
-		if !ok {
-			return NotListError(v)
-		}
-
-		ks, err := l.ToValues()
+		l, err := EvalList(ts[2])
 
 		if err != nil {
 			return err
 		}
 
-		v = ts[0].Eval()
+		ks, e := l.ToValues()
+
+		if e != nil {
+			return e
+		}
+
+		v := ts[0].Eval()
 
 		for _, k := range append([]*Thunk{ts[1]}, ks...) {
 			c, ok := ensureNormal(v).(collection)
@@ -77,12 +76,8 @@ var Insert = NewLazyFunction(
 		l := ts[1]
 
 		for {
-			b, err := EvalBool(PApp(Equal, l, EmptyList))
-
-			if err != nil {
-				return err
-			} else if b {
-				break
+			if v := ReturnIfEmptyList(l, c); v != nil {
+				return v
 			}
 
 			x := PApp(First, l)
@@ -97,8 +92,6 @@ var Insert = NewLazyFunction(
 				return NotCollectionError(v)
 			}
 		}
-
-		return c
 	})
 
 // Merge merges more than 2 collections.
@@ -112,17 +105,16 @@ var Merge = NewLazyFunction(
 			return TypeError(v, "collection")
 		}
 
-		v = ts[1].Eval()
-		l, ok := v.(ListType)
-
-		if !ok {
-			return NotListError(v)
-		}
-
-		ts, err := l.ToThunks()
+		l, err := EvalList(ts[1])
 
 		if err != nil {
 			return err
+		}
+
+		ts, e := l.ToThunks()
+
+		if e != nil {
+			return e
 		}
 
 		if len(ts) == 0 {

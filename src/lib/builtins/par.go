@@ -15,7 +15,7 @@ var Par = core.NewLazyFunction(
 			t := core.PApp(core.First, l)
 			l = core.PApp(core.Rest, l)
 
-			if v := checkEmptyList(l, t); v != nil {
+			if v := core.ReturnIfEmptyList(l, t); v != nil {
 				return v
 			}
 

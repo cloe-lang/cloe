@@ -35,17 +35,16 @@ func NewList(ts ...*Thunk) *Thunk {
 var Prepend = NewLazyFunction(
 	NewSignature(nil, nil, "elemsAndList", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		l, ok := v.(ListType)
-
-		if !ok {
-			return NotListError(v)
-		}
-
-		ts, err := l.ToThunks()
+		l, err := EvalList(ts[0])
 
 		if err != nil {
 			return err
+		}
+
+		ts, e := l.ToThunks()
+
+		if e != nil {
+			return e
 		} else if len(ts) == 0 {
 			return NumArgsError("prepend", "> 0")
 		}
@@ -68,11 +67,10 @@ func cons(t1, t2 *Thunk) ListType {
 var First = NewLazyFunction(
 	NewSignature([]string{"list"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		l, ok := v.(ListType)
+		l, err := EvalList(ts[0])
 
-		if !ok {
-			return NotListError(v)
+		if err != nil {
+			return err
 		} else if l == emptyList {
 			return emptyListError()
 		}
@@ -84,11 +82,10 @@ var First = NewLazyFunction(
 var Rest = NewLazyFunction(
 	NewSignature([]string{"list"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
-		l, ok := v.(ListType)
+		l, err := EvalList(ts[0])
 
-		if !ok {
-			return NotListError(v)
+		if err != nil {
+			return err
 		} else if l == emptyList {
 			return emptyListError()
 		}
@@ -97,11 +94,10 @@ var Rest = NewLazyFunction(
 			NewLazyFunction(
 				NewSignature(nil, nil, "", nil, nil, ""),
 				func(...*Thunk) Value {
-					v := l.rest.Eval()
-					l, ok := v.(ListType)
+					l, err := EvalList(l.rest)
 
-					if !ok {
-						return NotListError(v)
+					if err != nil {
+						return err
 					}
 
 					return l
@@ -126,12 +122,9 @@ func (l ListType) index(v Value) Value {
 			return l.first
 		}
 
-		v = l.rest.Eval()
-		var ok bool
-		l, ok = v.(ListType)
-
-		if !ok {
-			return NotListError(v)
+		var err Value
+		if l, err = EvalList(l.rest); err != nil {
+			return err
 		}
 
 		n--
@@ -176,12 +169,10 @@ func (l ListType) delete(v Value) Value {
 		}
 
 		elems = append(elems, l.first)
-		v = l.rest.Eval()
-		var ok bool
-		l, ok = v.(ListType)
 
-		if !ok {
-			return NotListError(v)
+		var err Value
+		if l, err = EvalList(l.rest); err != nil {
+			return err
 		}
 
 		n--
@@ -284,12 +275,9 @@ func (l ListType) ToThunks() ([]*Thunk, *Thunk) {
 	for l != emptyList {
 		ts = append(ts, l.first)
 
-		v := l.rest.Eval()
-		var ok bool
-		l, ok = v.(ListType)
-
-		if !ok {
-			return nil, NotListError(v)
+		var err Value
+		if l, err = EvalList(l.rest); err != nil {
+			return nil, Normal(err)
 		}
 	}
 
@@ -336,4 +324,36 @@ func (l ListType) include(elem Value) Value {
 	}
 
 	return PApp(Include, l.rest, Normal(elem))
+}
+
+// First returns a first element in a list.
+func (l ListType) First() *Thunk {
+	return l.first
+}
+
+// Rest returns elements in a list except the first one.
+func (l ListType) Rest() *Thunk {
+	return l.rest
+}
+
+// IsEmptyList returns true if a given list is empty, or false otherwise.
+func IsEmptyList(t *Thunk) (bool, Value) {
+	if l, err := EvalList(t); err != nil {
+		return false, err
+	} else if l == emptyList {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+// ReturnIfEmptyList returns true if a given list is empty, or false otherwise.
+func ReturnIfEmptyList(t *Thunk, v Value) Value {
+	if b, err := IsEmptyList(t); err != nil {
+		return err
+	} else if b {
+		return v
+	}
+
+	return nil
 }

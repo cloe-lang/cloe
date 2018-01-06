@@ -1,9 +1,9 @@
 package core
 
-var isOrderedSignature = NewSignature([]string{"arg"}, nil, "", nil, nil, "")
-
 // IsOrdered checks if a value is ordered or not.
-var IsOrdered = NewLazyFunction(isOrderedSignature, isOrderedFunction)
+var IsOrdered = NewLazyFunction(
+	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
+	isOrderedFunction)
 
 func isOrderedFunction(ts ...*Thunk) Value {
 	v := ts[0].Eval()
@@ -20,21 +20,18 @@ func isOrderedFunction(ts ...*Thunk) Value {
 	l := ts[0]
 
 	for {
-		b, err := EvalBool(PApp(Equal, l, EmptyList))
-
-		if err != nil {
-			return err
-		} else if b {
-			return True
+		if v := ReturnIfEmptyList(l, True); v != nil {
+			return v
 		}
 
 		t := PApp(First, l)
 		l = PApp(Rest, l)
 
-		b, err = EvalBool(PApp(NewLazyFunction(isOrderedSignature, isOrderedFunction), t))
+		v := ensureNormal(isOrderedFunction(t))
+		b, ok := v.(BoolType)
 
-		if err != nil {
-			return err
+		if !ok {
+			return NotBoolError(v)
 		} else if !b {
 			return False
 		}

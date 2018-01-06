@@ -8,7 +8,7 @@ func createCompareFunction(checkOrder func(core.NumberType) bool) *core.Thunk {
 		func(ts ...*core.Thunk) core.Value {
 			l := ts[0]
 
-			if v := checkEmptyList(l, core.True); v != nil {
+			if v := core.ReturnIfEmptyList(l, core.True); v != nil {
 				return v
 			}
 
@@ -23,7 +23,7 @@ func createCompareFunction(checkOrder func(core.NumberType) bool) *core.Thunk {
 			for {
 				l = core.PApp(core.Rest, l)
 
-				if v := checkEmptyList(l, core.True); v != nil {
+				if v := core.ReturnIfEmptyList(l, core.True); v != nil {
 					return v
 				}
 

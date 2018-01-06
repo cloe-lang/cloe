@@ -65,33 +65,31 @@ func encodeValue(v core.Value) (result string, err *core.Thunk) {
 
 		return "[" + strings.Join(ss, ",") + "]", nil
 	case core.DictionaryType:
-		x := core.PApp(core.ToList, core.Normal(v)).Eval()
-		l, ok := x.(core.ListType)
-
-		if !ok {
-			return "", core.NotListError(v)
-		}
-
-		ts, err := l.ToValues()
+		l, err := core.EvalList(core.PApp(core.ToList, core.Normal(v)))
 
 		if err != nil {
-			return "", err
+			return "", core.Normal(err)
+		}
+
+		ts, e := l.ToValues()
+
+		if e != nil {
+			return "", e
 		}
 
 		ss := make([]string, 0, len(ts))
 
 		for _, t := range ts {
-			v := t.Eval()
-			l, ok := v.(core.ListType)
-
-			if !ok {
-				return "", core.NotListError(v)
-			}
-
-			ts, err := l.ToThunks()
+			l, err := core.EvalList(t)
 
 			if err != nil {
-				return "", err
+				return "", core.Normal(err)
+			}
+
+			ts, e := l.ToThunks()
+
+			if e != nil {
+				return "", e
 			}
 
 			kv := [2]string{}

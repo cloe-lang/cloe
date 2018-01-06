@@ -26,20 +26,18 @@ var If = NewLazyFunction(
 		t := ts[0]
 
 		for {
-			v := t.Eval()
-			l, ok := v.(ListType)
+			l, err := EvalList(t)
 
-			if !ok {
-				return NotListError(v)
+			if err != nil {
+				return err
 			} else if l == emptyList {
 				return argumentError("Not enough arguments to if function.")
 			}
 
-			v = l.rest.Eval()
-			ll, ok := v.(ListType)
+			ll, err := EvalList(l.rest)
 
-			if !ok {
-				return NotListError(v)
+			if err != nil {
+				return err
 			} else if ll == emptyList {
 				return l.first
 			}

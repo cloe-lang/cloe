@@ -39,17 +39,16 @@ func newCommutativeOperator(i NumberType, f func(n, m NumberType) NumberType) *T
 	return NewLazyFunction(
 		NewSignature(nil, nil, "nums", nil, nil, ""),
 		func(ts ...*Thunk) Value {
-			v := ts[0].Eval()
-			l, ok := v.(ListType)
-
-			if !ok {
-				return NotListError(v)
-			}
-
-			ts, err := l.ToValues()
+			l, err := EvalList(ts[0])
 
 			if err != nil {
 				return err
+			}
+
+			ts, e := l.ToValues()
+
+			if e != nil {
+				return e
 			}
 
 			a := i
@@ -78,11 +77,10 @@ func newInverseOperator(f func(n, m NumberType) NumberType) *Thunk {
 				return err
 			}
 
-			v := ts[1].Eval()
-			l, ok := v.(ListType)
+			l, err := EvalList(ts[1])
 
-			if !ok {
-				return NotListError(v)
+			if err != nil {
+				return err
 			}
 
 			ts, e := l.ToValues()

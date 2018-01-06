@@ -22,7 +22,7 @@ var Rally = core.NewLazyFunction(
 			sem := make(chan bool, maxConcurrency)
 
 			for {
-				if b, err := core.EvalBool(core.PApp(core.Equal, l, core.EmptyList)); err != nil {
+				if b, err := core.IsEmptyList(l); err != nil {
 					vs <- err
 					break
 				} else if b {

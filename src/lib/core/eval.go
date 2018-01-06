@@ -12,6 +12,18 @@ func EvalBool(t *Thunk) (BoolType, Value) {
 	return b, nil
 }
 
+// EvalList evaluates a thunk which is expected to be a list value.
+func EvalList(t *Thunk) (ListType, Value) {
+	v := t.Eval()
+	l, ok := v.(ListType)
+
+	if !ok {
+		return emptyList, NotListError(v).Eval()
+	}
+
+	return l, nil
+}
+
 // EvalNumber evaluates a thunk which is expected to be a number value.
 func EvalNumber(t *Thunk) (NumberType, Value) {
 	v := t.Eval()

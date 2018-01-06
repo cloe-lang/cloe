@@ -155,30 +155,31 @@ func (d DictionaryType) compare(c comparable) int {
 }
 
 func (d DictionaryType) string() Value {
-	v := PApp(ToList, Normal(d)).Eval()
-	l, ok := v.(ListType)
-
-	if !ok {
-		return NotListError(v)
-	}
-
-	ts, err := l.ToValues()
+	l, err := EvalList(PApp(ToList, Normal(d)))
 
 	if err != nil {
-		return err.Eval()
+		return err
+	}
+
+	ts, e := l.ToValues()
+
+	if e != nil {
+		return e
 	}
 
 	ss := make([]string, 2*len(ts))
 
 	for i, t := range ts {
-		v := t.Eval()
-		if err, ok := v.(ErrorType); ok {
+		l, err := EvalList(t)
+
+		if err != nil {
 			return err
 		}
 
-		ts, err := v.(ListType).ToValues()
-		if err != nil {
-			return err
+		ts, e := l.ToValues()
+
+		if e != nil {
+			return e
 		}
 
 		for j, t := range ts {

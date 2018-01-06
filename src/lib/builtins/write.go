@@ -36,7 +36,7 @@ var Write = core.NewEffectFunction(
 		ss := []string{}
 
 		for {
-			if b, err := core.EvalBool(core.PApp(core.Equal, t, core.EmptyList)); err != nil {
+			if b, err := core.IsEmptyList(t); err != nil {
 				return err
 			} else if b {
 				break

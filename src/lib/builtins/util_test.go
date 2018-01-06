@@ -8,7 +8,7 @@ import (
 )
 
 func TestCheckEmptyListFail(t *testing.T) {
-	v := checkEmptyList(core.OutOfRangeError(), core.Nil)
+	v := core.ReturnIfEmptyList(core.OutOfRangeError(), core.Nil)
 	t.Log(v)
 	_, ok := v.(core.ErrorType)
 	assert.True(t, ok)

@@ -8,7 +8,7 @@ var Equal = core.NewLazyFunction(
 	func(ts ...*core.Thunk) core.Value {
 		l := ts[0]
 
-		if v := checkEmptyList(l, core.True); v != nil {
+		if v := core.ReturnIfEmptyList(l, core.True); v != nil {
 			return v
 		}
 
@@ -16,7 +16,7 @@ var Equal = core.NewLazyFunction(
 		l = core.PApp(core.Rest, l)
 
 		for {
-			if v := checkEmptyList(l, core.True); v != nil {
+			if v := core.ReturnIfEmptyList(l, core.True); v != nil {
 				return v
 			}
 

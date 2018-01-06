@@ -60,23 +60,3 @@ func TestYsWithErroneousArgument(t *testing.T) {
 	_, ok := v.(core.ErrorType)
 	assert.True(t, ok)
 }
-
-func TestYsWithNoRecursiveFunction(t *testing.T) {
-	v := core.PApp(Ys).Eval()
-	_, ok := v.(core.ErrorType)
-	assert.True(t, ok)
-}
-
-func TestYsWithErroneousNestedFunctionList(t *testing.T) {
-	v := core.App(
-		Ys,
-		core.NewArguments(
-			[]core.PositionalArgument{
-				core.NewPositionalArgument(core.OutOfRangeError(), false),
-				core.NewPositionalArgument(core.OutOfRangeError(), true),
-			},
-			nil,
-			nil)).Eval()
-	_, ok := v.(core.ErrorType)
-	assert.True(t, ok)
-}

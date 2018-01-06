@@ -5,68 +5,48 @@ import "github.com/coel-lang/coel/src/lib/core"
 // Ys is Y* combinator which takes functions whose first arguments are a list
 // of themselves applied to the combinator.
 var Ys = core.NewLazyFunction(
-	core.NewSignature(
-		nil, nil, "functions",
-		nil, nil, "",
-	),
+	core.NewSignature(nil, nil, "functions", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
-		v := ts[0].Eval()
-		l, ok := v.(core.ListType)
+		t := ts[0]
 
-		if !ok {
-			return core.ValueError("Rest arguments must be a list.")
-		}
-
-		fs, err := l.ToThunks()
-
-		if err != nil {
-			return err
-		}
-
-		if len(fs) == 0 {
-			return core.NumArgsError("ys", ">= 1")
-		}
-
-		f := core.NewLazyFunction(
-			core.NewSignature(
-				[]string{"x"}, nil, "",
-				nil, nil, "",
-			),
-			func(ps ...*core.Thunk) core.Value {
-				p := ps[0]
+		return core.PApp(xx, core.NewLazyFunction(
+			core.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+			func(ts ...*core.Thunk) core.Value {
+				s := ts[0]
 
 				applyF := core.NewLazyFunction(
-					core.NewSignature(
-						[]string{"f"}, nil, "args",
-						nil, nil, "kwargs",
-					),
-					func(qs ...*core.Thunk) core.Value {
-						return core.App(qs[0], core.NewArguments(
+					core.NewSignature([]string{"f"}, nil, "args", nil, nil, "kwargs"),
+					func(ts ...*core.Thunk) core.Value {
+						return core.App(ts[0], core.NewArguments(
 							[]core.PositionalArgument{
-								core.NewPositionalArgument(core.PApp(p, p), false),
-								core.NewPositionalArgument(qs[1], true),
+								core.NewPositionalArgument(core.PApp(s, s), false),
+								core.NewPositionalArgument(ts[1], true),
 							},
 							nil,
-							[]*core.Thunk{qs[2]}))
+							[]*core.Thunk{ts[2]}))
 					})
 
-				newFs := make([]*core.Thunk, 0, len(fs))
-
-				for _, f := range fs {
-					newFs = append(newFs, core.PApp(core.Partial, applyF, f))
-				}
-
-				return core.NewList(newFs...)
-			})
-
-		return core.PApp(xx, f)
+				return createNewFuncs(t, applyF)
+			}))
 	})
 
+func createNewFuncs(olds, applyF *core.Thunk) *core.Thunk {
+	v := core.PApp(core.Equal, olds, core.EmptyList).Eval()
+	b, ok := v.(core.BoolType)
+
+	if !ok {
+		return core.NotBoolError(v)
+	} else if b {
+		return core.EmptyList
+	}
+
+	return core.PApp(core.Prepend,
+		core.PApp(core.Partial, applyF, core.PApp(core.First, olds)),
+		createNewFuncs(core.PApp(core.Rest, olds), applyF))
+}
+
 var xx = core.NewLazyFunction(
-	core.NewSignature(
-		[]string{"x"}, nil, "",
-		nil, nil, "",
-	),
+	core.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
 	func(ts ...*core.Thunk) core.Value {
 		return core.PApp(ts[0], ts[0])
 	})

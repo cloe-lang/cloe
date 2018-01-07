@@ -105,9 +105,9 @@ var Equal = NewLazyFunction(
 // Compare compares 2 values and returns -1 when x < y, 0 when x = y, and 1 when x > y.
 var Compare = NewStrictFunction(
 	NewSignature([]string{"left", "right"}, nil, "", nil, nil, ""),
-	rawCompare)
+	compareAsOrdered)
 
-func rawCompare(ts ...*Thunk) Value {
+func compareAsOrdered(ts ...*Thunk) Value {
 	v := ts[0].Eval()
 	o1, ok := v.(ordered)
 
@@ -137,11 +137,33 @@ func rawCompare(ts ...*Thunk) Value {
 	}
 
 	c := o1.compare(o2)
+
 	if c < 0 {
-		return NewNumber(-1)
+		return NumberType(-1)
 	} else if c > 0 {
-		return NewNumber(1)
+		return NumberType(1)
 	}
 
-	return NewNumber(0)
+	return NumberType(0)
+}
+
+func compareListsAsOrdered(l, ll ListType) Value {
+	if l == emptyList && ll == emptyList {
+		return NumberType(0)
+	} else if l == emptyList {
+		return NumberType(-1)
+	} else if ll == emptyList {
+		return NumberType(1)
+	}
+
+	v := ensureNormal(compareAsOrdered(l.first, ll.first))
+	n, ok := v.(NumberType)
+
+	if !ok {
+		return NotNumberError(v)
+	} else if n == 0 {
+		return compareAsOrdered(l.rest, ll.rest)
+	}
+
+	return n
 }

@@ -72,6 +72,9 @@ func TestDictionaryIndexFail(t *testing.T) {
 	for _, th := range []*Thunk{
 		PApp(EmptyDictionary, Nil),
 		PApp(PApp(Insert, EmptyDictionary, NewList(OutOfRangeError()), Nil), NewList(Nil)),
+		PApp(
+			PApp(Insert, EmptyDictionary, NewList(Nil, OutOfRangeError()), Nil),
+			NewList(Nil, NewError("", ""))),
 	} {
 		v := th.Eval()
 		t.Logf("%#v", v)
@@ -305,6 +308,9 @@ func TestDictionaryError(t *testing.T) {
 		PApp(
 			ToString,
 			NewDictionary([]KeyValue{{Nil, OutOfRangeError()}})),
+		PApp(
+			ToString,
+			NewDictionary([]KeyValue{{NewList(OutOfRangeError()), OutOfRangeError()}})),
 		PApp(
 			Delete,
 			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),

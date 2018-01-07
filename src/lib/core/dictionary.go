@@ -154,7 +154,13 @@ func (d DictionaryType) compare(c comparable) int {
 	return compare(d.toList(), c.(DictionaryType).toList())
 }
 
-func (d DictionaryType) string() Value {
+func (d DictionaryType) string() (result Value) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = r
+		}
+	}()
+
 	ss := []string{}
 
 	for !d.Empty() {

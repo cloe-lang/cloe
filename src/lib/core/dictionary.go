@@ -161,13 +161,13 @@ func (d DictionaryType) string() Value {
 
 		k, v, d = d.FirstRest()
 
-		sk, err := PApp(Dump, Normal(k)).EvalString()
+		sk, err := StrictDump(k)
 
 		if err != nil {
 			return err
 		}
 
-		sv, err := PApp(Dump, v).EvalString()
+		sv, err := StrictDump(v.Eval())
 
 		if err != nil {
 			return err

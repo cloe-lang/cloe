@@ -91,9 +91,9 @@ var TypeOf = NewLazyFunction(
 		case RawFunctionType:
 			return NewString("function")
 
-		// TODO: Remove this line and use catch function to check if a value is an
-		// error or not.
 		case ErrorType:
+			// TODO: Remove this case and use catch function to check if a value is an
+			// error or not.
 			return NewString("error")
 		}
 

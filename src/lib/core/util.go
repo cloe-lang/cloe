@@ -52,42 +52,6 @@ func StrictDump(v Value) (string, *Thunk) {
 	return string(s), err
 }
 
-// Equal checks if all arguments are equal or not.
-var Equal = NewLazyFunction(
-	NewSignature(nil, nil, "args", nil, nil, ""),
-	func(ts ...*Thunk) (v Value) {
-		defer func() {
-			if r := recover(); r != nil {
-				v = r
-			}
-		}()
-
-		t := ts[0]
-		l, err := t.EvalList()
-
-		if err != nil {
-			return err
-		} else if l == emptyList {
-			return True
-		}
-
-		e := l.first.Eval()
-
-		for {
-			l, err = l.rest.EvalList()
-
-			if err != nil {
-				return err
-			} else if l == emptyList {
-				return True
-			}
-
-			if compare(e, l.first.Eval()) != 0 {
-				return False
-			}
-		}
-	})
-
 // ensureNormal evaluates nested thunks into WHNF values.
 // This function must be used with care because it prevents tail call
 // elimination.

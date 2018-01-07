@@ -66,6 +66,42 @@ type ordered interface {
 	ordered()
 }
 
+// Equal checks if all arguments are equal or not.
+var Equal = NewLazyFunction(
+	NewSignature(nil, nil, "args", nil, nil, ""),
+	func(ts ...*Thunk) (v Value) {
+		defer func() {
+			if r := recover(); r != nil {
+				v = r
+			}
+		}()
+
+		t := ts[0]
+		l, err := t.EvalList()
+
+		if err != nil {
+			return err
+		} else if l == emptyList {
+			return True
+		}
+
+		e := l.first.Eval()
+
+		for {
+			l, err = l.rest.EvalList()
+
+			if err != nil {
+				return err
+			} else if l == emptyList {
+				return True
+			}
+
+			if compare(e, l.first.Eval()) != 0 {
+				return False
+			}
+		}
+	})
+
 // Compare compares 2 values and returns -1 when x < y, 0 when x = y, and 1 when x > y.
 var Compare = NewStrictFunction(
 	NewSignature([]string{"left", "right"}, nil, "", nil, nil, ""),

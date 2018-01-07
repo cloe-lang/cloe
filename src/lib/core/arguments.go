@@ -109,11 +109,11 @@ func (args *Arguments) searchKeyword(s string) *Thunk {
 
 		k := StringType(s)
 
+		// Using DictionaryType.{Search,Remove} methods is safe here
+		// because the key is always StringType.
 		if v, ok := d.Search(k); ok {
-			ds := make([]*Thunk, len(args.expandedDicts))
-			copy(ds, args.expandedDicts)
-			ds[i] = Normal(d.Remove(k))
-			args.expandedDicts = ds
+			args.expandedDicts = append([]*Thunk{}, args.expandedDicts...)
+			args.expandedDicts[i] = Normal(d.Remove(k))
 			return v
 		}
 	}

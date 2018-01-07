@@ -69,25 +69,35 @@ var Insert = NewLazyFunction(
 			return NotCollectionError(v)
 		}
 
-		l := ts[1]
+		l, err := ts[1].EvalList()
 
-		for {
-			if v := ReturnIfEmptyList(l, c); v != nil {
-				return v
+		if err != nil {
+			return err
+		}
+
+		for !l.Empty() {
+			k := l.First()
+			l, err = l.Rest().EvalList()
+
+			if err != nil {
+				return err
 			}
 
-			x := PApp(First, l)
-			l = PApp(Rest, l)
-			y := PApp(First, l)
-			l = PApp(Rest, l)
-
-			v = ensureNormal(c.insert(x, y))
+			v = ensureNormal(c.insert(k, l.First()))
 			c, ok = v.(collection)
 
 			if !ok {
 				return NotCollectionError(v)
 			}
+
+			l, err = l.Rest().EvalList()
+
+			if err != nil {
+				return err
+			}
 		}
+
+		return c
 	})
 
 // Merge merges more than 2 collections.

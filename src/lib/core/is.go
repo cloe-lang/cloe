@@ -6,34 +6,29 @@ var IsOrdered = NewLazyFunction(
 	isOrderedFunction)
 
 func isOrderedFunction(ts ...*Thunk) Value {
-	v := ts[0].Eval()
+	switch x := ts[0].Eval().(type) {
+	case ErrorType:
+		return x
+	case ListType:
+		for !x.Empty() {
+			v := ensureNormal(isOrderedFunction(x.First()))
+			b, ok := v.(BoolType)
 
-	if e, ok := v.(ErrorType); ok {
-		return e
-	}
+			if !ok {
+				return NotBoolError(v)
+			} else if !b {
+				return False
+			}
 
-	if _, ok := v.(ListType); !ok {
-		_, ok := v.(ordered)
+			var err Value
+			if x, err = x.Rest().EvalList(); err != nil {
+				return err
+			}
+		}
+
+		return True
+	default:
+		_, ok := x.(ordered)
 		return NewBool(ok)
-	}
-
-	l := ts[0]
-
-	for {
-		if v := ReturnIfEmptyList(l, True); v != nil {
-			return v
-		}
-
-		t := PApp(First, l)
-		l = PApp(Rest, l)
-
-		v := ensureNormal(isOrderedFunction(t))
-		b, ok := v.(BoolType)
-
-		if !ok {
-			return NotBoolError(v)
-		} else if !b {
-			return False
-		}
 	}
 }

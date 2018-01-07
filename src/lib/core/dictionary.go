@@ -35,22 +35,6 @@ func NewDictionary(kvs []KeyValue) *Thunk {
 	return d
 }
 
-func (d DictionaryType) insert(t, tt *Thunk) (result Value) {
-	defer func() {
-		if r := recover(); r != nil {
-			result = r
-		}
-	}()
-
-	v := t.Eval()
-
-	if _, ok := v.(comparable); !ok {
-		return notComparableError(v)
-	}
-
-	return d.Insert(v, tt)
-}
-
 func (d DictionaryType) call(args Arguments) Value {
 	return Index.Eval().(callable).call(NewPositionalArguments(Normal(d)).Merge(args))
 }
@@ -75,7 +59,29 @@ func (d DictionaryType) index(v Value) (result Value) {
 	return keyNotFoundError(k)
 }
 
-func (d DictionaryType) toList() Value {
+func (d DictionaryType) insert(t, tt *Thunk) (result Value) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = r
+		}
+	}()
+
+	v := t.Eval()
+
+	if _, ok := v.(comparable); !ok {
+		return notComparableError(v)
+	}
+
+	return d.Insert(v, tt)
+}
+
+func (d DictionaryType) toList() (result Value) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = r
+		}
+	}()
+
 	k, v, rest := d.FirstRest()
 
 	if k == nil {
@@ -87,7 +93,13 @@ func (d DictionaryType) toList() Value {
 		PApp(ToList, Normal(rest)))
 }
 
-func (d DictionaryType) merge(ts ...*Thunk) Value {
+func (d DictionaryType) merge(ts ...*Thunk) (result Value) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = r
+		}
+	}()
+
 	for _, t := range ts {
 		v := t.Eval()
 		dd, ok := v.(DictionaryType)
@@ -155,7 +167,13 @@ func (d DictionaryType) size() Value {
 	return NumberType(d.Size())
 }
 
-func (d DictionaryType) include(v Value) Value {
+func (d DictionaryType) include(v Value) (result Value) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = r
+		}
+	}()
+
 	_, ok := d.Search(v)
 	return NewBool(ok)
 }

@@ -299,9 +299,17 @@ func TestDictionaryError(t *testing.T) {
 			EmptyDictionary,
 			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}})),
 		PApp(
+			Merge,
+			NewDictionary([]KeyValue{{NewList(OutOfRangeError()), Nil}}),
+			NewDictionary([]KeyValue{{NewList(OutOfRangeError()), Nil}})),
+		PApp(
 			Include,
 			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),
 			Nil),
+		PApp(
+			Include,
+			NewDictionary([]KeyValue{{NewList(Nil), Nil}}),
+			NewList(OutOfRangeError())),
 		PApp(
 			ToString,
 			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}})),
@@ -315,6 +323,9 @@ func TestDictionaryError(t *testing.T) {
 			Delete,
 			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),
 			Nil),
+		PApp(
+			ToList,
+			NewDictionary([]KeyValue{{NewList(OutOfRangeError()), Nil}})),
 	} {
 		v := th.Eval()
 		t.Log(v)

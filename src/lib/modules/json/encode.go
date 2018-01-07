@@ -17,16 +17,14 @@ var encode = core.NewLazyFunction(
 
 		if err != nil {
 			return err
-		}
-
-		if s == "" {
+		} else if s == "" {
 			return jsonEncodeError
 		}
 
 		return core.NewString(s)
 	})
 
-func encodeValue(v core.Value) (result string, err *core.Thunk) {
+func encodeValue(v core.Value) (string, core.Value) {
 	switch v := v.(type) {
 	case core.NilType:
 		return "null", nil
@@ -41,26 +39,24 @@ func encodeValue(v core.Value) (result string, err *core.Thunk) {
 
 		return "false", nil
 	case core.ErrorType:
-		return "", core.Normal(v)
+		return "", v
 	case core.ListType:
-		ts, err := v.ToThunks()
+		ss := []string{}
 
-		if err != nil {
-			return "", err
-		}
-
-		ss := make([]string, 0, len(ts))
-
-		for _, t := range ts {
-			s, err := encodeValue(t.Eval())
+		for !v.Empty() {
+			s, err := encodeValue(v.First().Eval())
 
 			if err != nil {
 				return "", err
-			} else if s == "" {
-				continue
+			} else if s != "" {
+				ss = append(ss, s)
 			}
 
-			ss = append(ss, s)
+			v, err = v.Rest().EvalList()
+
+			if err != nil {
+				return "", err
+			}
 		}
 
 		return "[" + strings.Join(ss, ",") + "]", nil
@@ -68,56 +64,56 @@ func encodeValue(v core.Value) (result string, err *core.Thunk) {
 		l, err := core.PApp(core.ToList, core.Normal(v)).EvalList()
 
 		if err != nil {
-			return "", core.Normal(err)
+			return "", err
 		}
 
-		ts, e := l.ToValues()
+		ss := []string{}
 
-		if e != nil {
-			return "", e
-		}
-
-		ss := make([]string, 0, len(ts))
-
-		for _, t := range ts {
-			l, err := t.EvalList()
+		for !l.Empty() {
+			ll, err := l.First().EvalList()
 
 			if err != nil {
-				return "", core.Normal(err)
+				return "", err
 			}
 
-			ts, e := l.ToThunks()
+			kk := ll.First().Eval()
 
-			if e != nil {
-				return "", e
-			}
-
-			kv := [2]string{}
-
-			for i, t := range ts {
-				if i == 0 {
-					switch t.Eval().(type) {
-					case core.BoolType, core.NilType, core.NumberType:
-						s, err := encodeValue(t.Eval())
-
-						if err != nil {
-							return "", err
-						}
-
-						t = core.NewString(s)
-					}
-				}
-
-				s, err := encodeValue(t.Eval())
+			switch kk.(type) {
+			case core.BoolType, core.NilType, core.NumberType:
+				s, err := encodeValue(kk)
 
 				if err != nil {
 					return "", err
 				}
 
-				kv[i] = s
+				kk = core.StringType(s)
 			}
 
-			ss = append(ss, kv[0]+":"+kv[1])
+			k, err := encodeValue(kk)
+
+			if err != nil {
+				return "", err
+			}
+
+			ll, err = ll.Rest().EvalList()
+
+			if err != nil {
+				return "", err
+			}
+
+			v, err := encodeValue(ll.First().Eval())
+
+			if err != nil {
+				return "", err
+			}
+
+			ss = append(ss, k+":"+v)
+
+			l, err = l.Rest().EvalList()
+
+			if err != nil {
+				return "", err
+			}
 		}
 
 		return "{" + strings.Join(ss, ",") + "}", nil

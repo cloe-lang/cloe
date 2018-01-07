@@ -18,29 +18,34 @@ var Rally = core.NewLazyFunction(
 		vs := make(chan core.Value, valueChannelCapacity)
 
 		systemt.Daemonize(func() {
-			l := ts[0]
+			l, err := ts[0].EvalList()
+
+			if err != nil {
+				vs <- err
+				return
+			}
+
 			sem := make(chan bool, maxConcurrency)
 
-			for {
-				if b, err := core.IsEmptyList(l); err != nil {
-					vs <- err
-					break
-				} else if b {
-					// HACK: Wait for other goroutines to put elements in a value channel
-					// for a while. This is only for unit test.
-					time.Sleep(channelCloseDuration)
-					vs <- nil
-					break
-				}
-
+			for !l.Empty() {
 				sem <- true
 				go func(t *core.Thunk) {
 					vs <- t.Eval()
 					<-sem
-				}(core.PApp(core.First, l))
+				}(l.First())
 
-				l = core.PApp(core.Rest, l)
+				l, err = l.Rest().EvalList()
+
+				if err != nil {
+					vs <- err
+					break
+				}
 			}
+
+			// HACK: Wait for other goroutines to put elements in a value channel
+			// for a while. This is only for unit test.
+			time.Sleep(channelCloseDuration)
+			vs <- nil
 		})
 
 		return core.PApp(core.PApp(Y, core.NewLazyFunction(

@@ -58,7 +58,7 @@ func TestIndexWithInvalidRestArguments(t *testing.T) {
 		NewArguments(
 			[]PositionalArgument{
 				NewPositionalArgument(Nil, false),
-				NewPositionalArgument(PApp(Prepend, Nil, NewError("FooError", "Hi!")), true),
+				NewPositionalArgument(NewError("FooError", "Hi!"), true),
 			},
 			nil,
 			nil)).Eval().(ErrorType)

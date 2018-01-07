@@ -32,24 +32,28 @@ var Write = core.NewEffectFunction(
 			return err
 		}
 
-		t := ts[0]
+		l, err := ts[0].EvalList()
+
+		if err != nil {
+			return err
+		}
+
 		ss := []string{}
 
-		for {
-			if b, err := core.IsEmptyList(t); err != nil {
-				return err
-			} else if b {
-				break
-			}
-
-			s, err := evalGoString(core.PApp(core.ToString, core.PApp(core.First, t)))
+		for !l.Empty() {
+			s, err := evalGoString(core.PApp(core.ToString, l.First()))
 
 			if err != nil {
 				return err
 			}
 
 			ss = append(ss, s)
-			t = core.PApp(core.Rest, t)
+
+			l, err = l.Rest().EvalList()
+
+			if err != nil {
+				return err
+			}
 		}
 
 		end, err := evalGoString(ts[2])

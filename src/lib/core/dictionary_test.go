@@ -129,7 +129,7 @@ func TestDictionaryToList(t *testing.T) {
 			assert.True(t, testEqual(lv, dv))
 		}
 
-		assert.Equal(t, emptyList, l.Eval().(ListType))
+		assert.True(t, l.Eval().(ListType).Empty())
 	}
 }
 
@@ -205,6 +205,7 @@ func TestDictionaryToString(t *testing.T) {
 		{"{}", EmptyDictionary},
 		{"{true nil}", PApp(Insert, EmptyDictionary, True, Nil)},
 		{"{false nil true nil}", PApp(Insert, PApp(Insert, EmptyDictionary, True, Nil), False, Nil)},
+		{`{"foo" "bar"}`, NewDictionary([]KeyValue{{NewString("foo"), NewString("bar")}})},
 	} {
 		assert.Equal(t, StringType(xs.expected), PApp(ToString, xs.thunk).Eval())
 	}

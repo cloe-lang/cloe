@@ -123,10 +123,6 @@ func (d DictionaryType) toList() Value {
 
 func (d DictionaryType) merge(ts ...*Thunk) Value {
 	for _, t := range ts {
-		go t.Eval()
-	}
-
-	for _, t := range ts {
 		v := t.Eval()
 		dd, ok := v.(DictionaryType)
 
@@ -155,47 +151,29 @@ func (d DictionaryType) compare(c comparable) int {
 }
 
 func (d DictionaryType) string() Value {
-	l, err := PApp(ToList, Normal(d)).EvalList()
+	ss := []string{}
 
-	if err != nil {
-		return err
-	}
+	for !d.Empty() {
+		var (
+			k Value
+			v *Thunk
+		)
 
-	ts, e := l.ToValues()
+		k, v, d = d.FirstRest()
 
-	if e != nil {
-		return e
-	}
-
-	ss := make([]string, 2*len(ts))
-
-	for i, t := range ts {
-		l, err := t.EvalList()
+		sk, err := PApp(Dump, Normal(k)).EvalString()
 
 		if err != nil {
 			return err
 		}
 
-		ts, e := l.ToValues()
+		sv, err := PApp(Dump, v).EvalString()
 
-		if e != nil {
-			return e
+		if err != nil {
+			return err
 		}
 
-		for j, t := range ts {
-			v := t.Eval()
-			if err, ok := v.(ErrorType); ok {
-				return err
-			}
-
-			s, err := PApp(Dump, Normal(v)).EvalString()
-
-			if err != nil {
-				return err
-			}
-
-			ss[2*i+j] = string(s)
-		}
+		ss = append(ss, string(sk), string(sv))
 	}
 
 	return StringType("{" + strings.Join(ss, " ") + "}")

@@ -45,22 +45,22 @@ func newCommutativeOperator(i NumberType, f func(n, m NumberType) NumberType) *T
 				return err
 			}
 
-			ts, e := l.ToValues()
-
-			if e != nil {
-				return e
-			}
-
 			a := i
 
-			for _, t := range ts {
-				n, err := t.EvalNumber()
+			for !l.Empty() {
+				n, err := l.First().EvalNumber()
 
 				if err != nil {
 					return err
 				}
 
 				a = f(a, n)
+
+				l, err = l.Rest().EvalList()
+
+				if err != nil {
+					return err
+				}
 			}
 
 			return a
@@ -83,20 +83,20 @@ func newInverseOperator(f func(n, m NumberType) NumberType) *Thunk {
 				return err
 			}
 
-			ts, e := l.ToValues()
-
-			if e != nil {
-				return e
-			}
-
-			for _, t := range ts {
-				n, err := t.EvalNumber()
+			for !l.Empty() {
+				n, err := l.First().EvalNumber()
 
 				if err != nil {
 					return err
 				}
 
 				a = f(a, n)
+
+				l, err = l.Rest().EvalList()
+
+				if err != nil {
+					return err
+				}
 			}
 
 			return a

@@ -2,9 +2,7 @@ package core
 
 import (
 	"testing"
-	"time"
 
-	"github.com/coel-lang/coel/src/lib/systemt"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -250,12 +248,4 @@ func TestListFunctionsError(t *testing.T) {
 		_, ok := th.Eval().(ErrorType)
 		assert.True(t, ok)
 	}
-}
-
-func TestListToValues(t *testing.T) {
-	go systemt.RunDaemons()
-
-	NewList(Nil).Eval().(ListType).ToValues()
-
-	time.Sleep(100 * time.Millisecond)
 }

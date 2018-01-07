@@ -35,28 +35,24 @@ var Include = NewStrictFunction(
 var Index = NewStrictFunction(
 	NewSignature([]string{"collection", "key"}, nil, "keys", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		l, err := ts[2].EvalList()
-
-		if err != nil {
-			return err
-		}
-
-		ks, e := l.ToValues()
-
-		if e != nil {
-			return e
-		}
-
 		v := ts[0].Eval()
+		l := cons(ts[1], ts[2])
 
-		for _, k := range append([]*Thunk{ts[1]}, ks...) {
-			c, ok := ensureNormal(v).(collection)
+		for !l.Empty() {
+			c, ok := v.(collection)
 
 			if !ok {
 				return NotCollectionError(v)
 			}
 
-			v = c.index(k.Eval())
+			v = ensureNormal(c.index(l.First().Eval()))
+
+			var err Value
+			l, err = l.Rest().EvalList()
+
+			if err != nil {
+				return err
+			}
 		}
 
 		return v
@@ -99,7 +95,7 @@ var Merge = NewLazyFunction(
 	NewSignature([]string{"collection"}, nil, "collections", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		v := ts[0].Eval()
-		m, ok := v.(collection)
+		c, ok := v.(collection)
 
 		if !ok {
 			return TypeError(v, "collection")
@@ -109,19 +105,23 @@ var Merge = NewLazyFunction(
 
 		if err != nil {
 			return err
+		} else if l.Empty() {
+			return c
 		}
 
-		ts, e := l.ToThunks()
+		ts = []*Thunk{}
 
-		if e != nil {
-			return e
+		for !l.Empty() {
+			ts = append(ts, l.First())
+
+			l, err = l.Rest().EvalList()
+
+			if err != nil {
+				return err
+			}
 		}
 
-		if len(ts) == 0 {
-			return m
-		}
-
-		return m.merge(ts...)
+		return c.merge(ts...)
 	})
 
 // Delete deletes an element corresponding with a key.

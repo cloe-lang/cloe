@@ -2,8 +2,6 @@ package core
 
 import (
 	"strings"
-
-	"github.com/coel-lang/coel/src/lib/systemt"
 )
 
 // ListType represents a list of values in the language.
@@ -22,7 +20,7 @@ var (
 
 // NewList creates a list from its elements.
 func NewList(ts ...*Thunk) *Thunk {
-	l := Normal(emptyList)
+	l := EmptyList
 
 	for i := len(ts) - 1; i >= 0; i-- {
 		l = Normal(cons(ts[i], l))
@@ -34,30 +32,23 @@ func NewList(ts ...*Thunk) *Thunk {
 // Prepend prepends multiple elements to a list of the last argument.
 var Prepend = NewLazyFunction(
 	NewSignature(nil, nil, "elemsAndList", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		l, err := ts[0].EvalList()
+	prepend)
 
-		if err != nil {
-			return err
-		}
+func prepend(ts ...*Thunk) Value {
+	l, err := ts[0].EvalList()
 
-		ts, e := l.ToThunks()
+	if err != nil {
+		return err
+	} else if l.Empty() {
+		return NumArgsError("prepend", "> 0")
+	}
 
-		if e != nil {
-			return e
-		} else if len(ts) == 0 {
-			return NumArgsError("prepend", "> 0")
-		}
+	if v := ReturnIfEmptyList(l.Rest(), l.First()); v != nil {
+		return v
+	}
 
-		last := len(ts) - 1
-		t := ts[last]
-
-		for i := last - 1; i >= 0; i-- {
-			t = Normal(cons(ts[i], t))
-		}
-
-		return t
-	})
+	return cons(l.First(), Normal(prepend(l.Rest())))
+}
 
 func cons(t1, t2 *Thunk) ListType {
 	return ListType{t1, t2}
@@ -71,7 +62,7 @@ var First = NewLazyFunction(
 
 		if err != nil {
 			return err
-		} else if l == emptyList {
+		} else if l.Empty() {
 			return emptyListError()
 		}
 
@@ -86,7 +77,7 @@ var Rest = NewLazyFunction(
 
 		if err != nil {
 			return err
-		} else if l == emptyList {
+		} else if l.Empty() {
 			return emptyListError()
 		}
 
@@ -116,7 +107,7 @@ func (l ListType) index(v Value) Value {
 	}
 
 	for {
-		if l == emptyList {
+		if l.Empty() {
 			return OutOfRangeError()
 		} else if n == 1 {
 			return l.first
@@ -145,7 +136,7 @@ func (l ListType) insert(t, tt *Thunk) Value {
 }
 
 func (l ListType) merge(ts ...*Thunk) Value {
-	if l == emptyList {
+	if l.Empty() {
 		return PApp(Merge, ts...)
 	}
 
@@ -162,7 +153,7 @@ func (l ListType) delete(v Value) Value {
 	elems := make([]*Thunk, 0)
 
 	for {
-		if l == emptyList {
+		if l.Empty() {
 			return OutOfRangeError()
 		} else if n == 1 {
 			return PApp(Merge, NewList(elems...), l.rest)
@@ -206,11 +197,11 @@ func (l ListType) toList() Value {
 func (l ListType) compare(x comparable) int {
 	ll := x.(ListType)
 
-	if l == emptyList && ll == emptyList {
+	if l.Empty() && ll.Empty() {
 		return 0
-	} else if l == emptyList {
+	} else if l.Empty() {
 		return -1
-	} else if ll == emptyList {
+	} else if ll.Empty() {
 		return 1
 	}
 
@@ -226,71 +217,46 @@ func (l ListType) compare(x comparable) int {
 func (ListType) ordered() {}
 
 func (l ListType) string() Value {
-	ts, err := l.ToValues()
+	ss := []string{}
 
-	if err != nil {
-		return err.Eval()
-	}
-
-	ss := make([]string, 0, len(ts))
-
-	for _, t := range ts {
-		s, err := PApp(Dump, t).EvalString()
+	for !l.Empty() {
+		s, err := PApp(Dump, l.First()).EvalString()
 
 		if err != nil {
 			return err
 		}
 
 		ss = append(ss, string(s))
+
+		l, err = l.Rest().EvalList()
+
+		if err != nil {
+			return err
+		}
 	}
 
 	return StringType("[" + strings.Join(ss, " ") + "]")
 }
 
-// ToThunks converts a list into a slice of its elements as thunks.
-func (l ListType) ToThunks() ([]*Thunk, *Thunk) {
-	ts := make([]*Thunk, 0)
+func (l ListType) size() Value {
+	n := NumberType(0)
 
-	for l != emptyList {
-		ts = append(ts, l.first)
+	for !l.Empty() {
+		n++
 
 		var err Value
-		if l, err = l.rest.EvalList(); err != nil {
-			return nil, Normal(err)
+		l, err = l.Rest().EvalList()
+
+		if err != nil {
+			return err
 		}
 	}
 
-	return ts, nil
-}
-
-// ToValues converts a list into a slice of its elements as values.
-func (l ListType) ToValues() ([]*Thunk, *Thunk) {
-	ts, err := l.ToThunks()
-
-	if err != nil {
-		return nil, err
-	}
-
-	for _, t := range ts {
-		tt := t
-		systemt.Daemonize(func() { tt.Eval() })
-	}
-
-	return ts, nil
-}
-
-func (l ListType) size() Value {
-	ts, err := l.ToThunks()
-
-	if err != nil {
-		return err
-	}
-
-	return NumberType(len(ts))
+	return n
 }
 
 func (l ListType) include(elem Value) Value {
-	if l == emptyList {
+	if l.Empty() {
 		return False
 	}
 
@@ -315,22 +281,16 @@ func (l ListType) Rest() *Thunk {
 	return l.rest
 }
 
-// IsEmptyList returns true if a given list is empty, or false otherwise.
-func IsEmptyList(t *Thunk) (bool, Value) {
-	if l, err := t.EvalList(); err != nil {
-		return false, err
-	} else if l == emptyList {
-		return true, nil
-	}
-
-	return false, nil
+// Empty returns true if the list is empty.
+func (l ListType) Empty() bool {
+	return l == ListType{}
 }
 
 // ReturnIfEmptyList returns true if a given list is empty, or false otherwise.
 func ReturnIfEmptyList(t *Thunk, v Value) Value {
-	if b, err := IsEmptyList(t); err != nil {
+	if l, err := t.EvalList(); err != nil {
 		return err
-	} else if b {
+	} else if l.Empty() {
 		return v
 	}
 

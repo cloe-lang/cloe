@@ -34,7 +34,7 @@ func TestStringToList(t *testing.T) {
 		l = PApp(Rest, l)
 	}
 
-	assert.Equal(t, emptyList, l.Eval().(ListType))
+	assert.True(t, l.Eval().(ListType).Empty())
 }
 
 func TestStringIndex(t *testing.T) {

@@ -30,7 +30,7 @@ var If = NewLazyFunction(
 
 			if err != nil {
 				return err
-			} else if l == emptyList {
+			} else if l.Empty() {
 				return argumentError("Not enough arguments to if function.")
 			}
 
@@ -38,7 +38,7 @@ var If = NewLazyFunction(
 
 			if err != nil {
 				return err
-			} else if ll == emptyList {
+			} else if ll.Empty() {
 				return l.first
 			}
 

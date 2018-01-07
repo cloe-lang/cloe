@@ -81,7 +81,7 @@ var Equal = NewLazyFunction(
 
 		if err != nil {
 			return err
-		} else if l == emptyList {
+		} else if l.Empty() {
 			return True
 		}
 
@@ -92,7 +92,7 @@ var Equal = NewLazyFunction(
 
 			if err != nil {
 				return err
-			} else if l == emptyList {
+			} else if l.Empty() {
 				return True
 			}
 
@@ -148,11 +148,11 @@ func compareAsOrdered(ts ...*Thunk) Value {
 }
 
 func compareListsAsOrdered(l, ll ListType) Value {
-	if l == emptyList && ll == emptyList {
+	if l.Empty() && ll.Empty() {
 		return NumberType(0)
-	} else if l == emptyList {
+	} else if l.Empty() {
 		return NumberType(-1)
-	} else if ll == emptyList {
+	} else if ll.Empty() {
 		return NumberType(1)
 	}
 

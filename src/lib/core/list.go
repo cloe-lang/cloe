@@ -150,16 +150,16 @@ func (l ListType) delete(v Value) Value {
 		return err
 	}
 
-	elems := make([]*Thunk, 0)
+	es := []*Thunk{}
 
 	for {
 		if l.Empty() {
 			return OutOfRangeError()
 		} else if n == 1 {
-			return PApp(Merge, NewList(elems...), l.rest)
+			return PApp(Prepend, append(es, l.rest)...)
 		}
 
-		elems = append(elems, l.first)
+		es = append(es, l.first)
 
 		var err Value
 		if l, err = l.rest.EvalList(); err != nil {

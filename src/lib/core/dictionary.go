@@ -75,44 +75,6 @@ func (d DictionaryType) index(v Value) (result Value) {
 	return keyNotFoundError(k)
 }
 
-// Insert wraps rbt.Dictionary.Insert().
-func (d DictionaryType) Insert(k Value, v *Thunk) DictionaryType {
-	return DictionaryType{d.Dictionary.Insert(k, v)}
-}
-
-// Search wraps rbt.Dictionary.Search().
-func (d DictionaryType) Search(k Value) (*Thunk, bool) {
-	v, ok := d.Dictionary.Search(k)
-
-	if !ok {
-		return nil, false
-	}
-
-	return v.(*Thunk), true
-}
-
-// Remove wraps rbt.Dictionary.Remove().
-func (d DictionaryType) Remove(k Value) DictionaryType {
-	return DictionaryType{d.Dictionary.Remove(k)}
-}
-
-// FirstRest wraps rbt.Dictionary.FirstRest().
-func (d DictionaryType) FirstRest() (Value, *Thunk, DictionaryType) {
-	k, v, rest := d.Dictionary.FirstRest()
-	d = DictionaryType{rest}
-
-	if k == nil {
-		return nil, nil, d
-	}
-
-	return k.(Value), v.(*Thunk), d
-}
-
-// Merge wraps rbt.Dictionary.Merge().
-func (d DictionaryType) Merge(dd DictionaryType) DictionaryType {
-	return DictionaryType{d.Dictionary.Merge(dd.Dictionary)}
-}
-
 func (d DictionaryType) toList() Value {
 	k, v, rest := d.FirstRest()
 
@@ -196,4 +158,42 @@ func (d DictionaryType) size() Value {
 func (d DictionaryType) include(v Value) Value {
 	_, ok := d.Search(v)
 	return NewBool(ok)
+}
+
+// Insert wraps rbt.Dictionary.Insert().
+func (d DictionaryType) Insert(k Value, v *Thunk) DictionaryType {
+	return DictionaryType{d.Dictionary.Insert(k, v)}
+}
+
+// Search wraps rbt.Dictionary.Search().
+func (d DictionaryType) Search(k Value) (*Thunk, bool) {
+	v, ok := d.Dictionary.Search(k)
+
+	if !ok {
+		return nil, false
+	}
+
+	return v.(*Thunk), true
+}
+
+// Remove wraps rbt.Dictionary.Remove().
+func (d DictionaryType) Remove(k Value) DictionaryType {
+	return DictionaryType{d.Dictionary.Remove(k)}
+}
+
+// FirstRest wraps rbt.Dictionary.FirstRest().
+func (d DictionaryType) FirstRest() (Value, *Thunk, DictionaryType) {
+	k, v, rest := d.Dictionary.FirstRest()
+	d = DictionaryType{rest}
+
+	if k == nil {
+		return nil, nil, d
+	}
+
+	return k.(Value), v.(*Thunk), d
+}
+
+// Merge wraps rbt.Dictionary.Merge().
+func (d DictionaryType) Merge(dd DictionaryType) DictionaryType {
+	return DictionaryType{d.Dictionary.Merge(dd.Dictionary)}
 }

@@ -38,6 +38,7 @@ func TestListComparable(t *testing.T) {
 
 func TestListPrepend(t *testing.T) {
 	for _, tss := range [][2][]*Thunk{
+		{{}, {}},
 		{{}, {True}},
 		{{False}, {True}},
 		{{True, False}, {True, True}},
@@ -47,6 +48,13 @@ func TestListPrepend(t *testing.T) {
 		l := PApp(Prepend, append(tss[0], NewList(tss[1]...))...)
 		assert.True(t, testEqual(NewList(append(tss[0], tss[1]...)...), l))
 	}
+}
+
+func TestListPrependToMergedLists(t *testing.T) {
+	l := NewList(Nil)
+	assert.Equal(t,
+		NumberType(2),
+		PApp(Size, PApp(Prepend, PApp(Merge, l, PApp(Prepend, l)))).Eval().(NumberType))
 }
 
 func TestListRestWithNonListValues(t *testing.T) {

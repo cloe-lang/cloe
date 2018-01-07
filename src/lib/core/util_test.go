@@ -78,7 +78,6 @@ func TestTypeOf(t *testing.T) {
 		{"number", NewNumber(123)},
 		{"string", NewString("foo")},
 		{"dict", EmptyDictionary},
-		{"error", NewError("MyError", "This is error.")},
 		{"function", identity},
 		{"function", PApp(Partial, identity)},
 	} {
@@ -89,10 +88,15 @@ func TestTypeOf(t *testing.T) {
 }
 
 func TestTypeOfError(t *testing.T) {
-	v := PApp(impureFunction, NewNumber(42)).Eval()
-	_, ok := v.(ErrorType)
-	t.Log(v)
-	assert.True(t, ok)
+	for _, th := range []*Thunk{
+		NewError("MyError", "This is error."),
+		PApp(impureFunction, NewNumber(42)),
+	} {
+		v := PApp(TypeOf, th).Eval()
+		_, ok := v.(ErrorType)
+		t.Log(v)
+		assert.True(t, ok)
+	}
 }
 
 func TestTypeOfFail(t *testing.T) {

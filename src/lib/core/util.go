@@ -67,7 +67,7 @@ var TypeOf = NewLazyFunction(
 	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
 		// No case of effectType should be here.
-		switch ts[0].Eval().(type) {
+		switch v := ts[0].Eval().(type) {
 		case BoolType:
 			return NewString("bool")
 		case DictionaryType:
@@ -87,10 +87,8 @@ var TypeOf = NewLazyFunction(
 			return NewString("function")
 
 		case ErrorType:
-			// TODO: Remove this case and use catch function to check if a value is an
-			// error or not.
-			return NewString("error")
+			return v
 		}
 
-		panic(fmt.Errorf("Invalid value: %#v", ts[0].Eval()))
+		panic("Unreachable")
 	})

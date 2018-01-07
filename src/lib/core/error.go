@@ -82,7 +82,7 @@ func TypeError(v Value, typ string) *Thunk {
 	s, err := StrictDump(v)
 
 	if err != nil {
-		return err
+		return Normal(err)
 	}
 
 	return NewError("TypeError", "%s is not a %s.", s, typ)
@@ -163,7 +163,7 @@ func keyNotFoundError(v Value) *Thunk {
 	s, err := StrictDump(v)
 
 	if err != nil {
-		return err
+		return Normal(err)
 	}
 
 	return NewError("KeyNotFoundError", "The key %s is not found in a dictionary.", s)

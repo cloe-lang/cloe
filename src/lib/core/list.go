@@ -220,7 +220,7 @@ func (l ListType) string() Value {
 	ss := []string{}
 
 	for !l.Empty() {
-		s, err := PApp(Dump, l.First()).EvalString()
+		s, err := StrictDump(l.First().Eval())
 
 		if err != nil {
 			return err

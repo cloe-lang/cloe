@@ -16,7 +16,7 @@ type dumpable interface {
 var Dump = NewLazyFunction(
 	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
 	func(ts ...*Thunk) Value {
-		s, err := strictDump(ts[0].Eval())
+		s, err := StrictDump(ts[0].Eval())
 
 		if err != nil {
 			return err
@@ -25,10 +25,11 @@ var Dump = NewLazyFunction(
 		return s
 	})
 
-func strictDump(v Value) (StringType, *Thunk) {
-	switch x := v.(type) {
+// StrictDump is a variant of Dump which evaluates input strictly.
+func StrictDump(v Value) (StringType, Value) {
+	switch x := ensureNormal(v).(type) {
 	case ErrorType:
-		return "", Normal(x)
+		return "", x
 	case dumpable:
 		v = x.dump()
 	case stringable:
@@ -40,16 +41,10 @@ func strictDump(v Value) (StringType, *Thunk) {
 	s, ok := ensureNormal(v).(StringType)
 
 	if !ok {
-		return "", NotStringError(v)
+		return "", NotStringError(v).Eval()
 	}
 
 	return s, nil
-}
-
-// StrictDump is a variant of Dump which evaluates input strictly.
-func StrictDump(v Value) (string, *Thunk) {
-	s, err := strictDump(ensureNormal(v))
-	return string(s), err
 }
 
 // ensureNormal evaluates nested thunks into WHNF values.

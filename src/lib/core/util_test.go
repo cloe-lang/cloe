@@ -59,16 +59,6 @@ func TestStrictDump(t *testing.T) {
 	}
 }
 
-func TestEqualFail(t *testing.T) {
-	for _, ts := range [][]*Thunk{
-		{OutOfRangeError(), Nil},
-		{True, True, OutOfRangeError()},
-	} {
-		_, ok := PApp(Equal, ts...).Eval().(ErrorType)
-		assert.True(t, ok)
-	}
-}
-
 func TestIdentity(t *testing.T) {
 	for _, th := range []*Thunk{Nil, NewNumber(42), True, False, NewString("foo")} {
 		assert.True(t, testEqual(PApp(identity, th), th))
@@ -110,4 +100,67 @@ func TestTypeOfFail(t *testing.T) {
 	}()
 
 	PApp(TypeOf, Normal("foo")).Eval()
+}
+
+func TestEqualTrue(t *testing.T) {
+	for _, ts := range [][]*Thunk{
+		{},
+		{True},
+		{True, True},
+		{Nil, Nil},
+		{NewNumber(42), NewNumber(42)},
+		{NewNumber(42), NewNumber(42), NewNumber(42)},
+	} {
+		assert.True(t, bool(PApp(Equal, ts...).Eval().(BoolType)))
+	}
+}
+
+func TestEqualFalse(t *testing.T) {
+	for _, ts := range [][]*Thunk{
+		{True, False},
+		{NewNumber(0), NewNumber(42)},
+		{NewNumber(0), NewNumber(0), NewNumber(42)},
+		{NewNumber(0), NewNumber(42), NewNumber(42)},
+		{NewList(NewNumber(42), NewNumber(42)), many42()},
+		{NewList(NewNumber(42), NewNumber(42)), many42()},
+		{many42(), NewList(NewNumber(42), NewNumber(42))},
+	} {
+		assert.True(t, !bool(PApp(Equal, ts...).Eval().(BoolType)))
+	}
+}
+
+func TestEqualFail(t *testing.T) {
+	for _, a := range []Arguments{
+		NewPositionalArguments(NewError("", ""), Nil),
+		NewPositionalArguments(Nil, NewError("", "")),
+		NewArguments(
+			[]PositionalArgument{NewPositionalArgument(OutOfRangeError(), true)},
+			nil,
+			nil),
+		NewArguments(
+			[]PositionalArgument{
+				NewPositionalArgument(Nil, false),
+				NewPositionalArgument(OutOfRangeError(), true),
+			},
+			nil,
+			nil),
+		NewArguments(
+			[]PositionalArgument{
+				NewPositionalArgument(Nil, false),
+				NewPositionalArgument(NewList(OutOfRangeError()), true),
+			},
+			nil,
+			nil),
+	} {
+		_, ok := App(Equal, a).Eval().(ErrorType)
+		assert.True(t, ok)
+	}
+}
+
+func many42() *Thunk {
+	return PApp(Prepend, NewNumber(42), PApp(NewLazyFunction(
+		NewSignature(nil, nil, "", nil, nil, ""),
+		func(...*Thunk) Value {
+			return many42()
+		})))
 }

@@ -52,9 +52,9 @@ func StrictDump(v Value) (string, *Thunk) {
 	return string(s), err
 }
 
-// Equal checks if 2 values are equal or not.
-var Equal = NewStrictFunction(
-	NewSignature([]string{"x", "y"}, nil, "", nil, nil, ""),
+// Equal checks if all arguments are equal or not.
+var Equal = NewLazyFunction(
+	NewSignature(nil, nil, "args", nil, nil, ""),
 	func(ts ...*Thunk) (v Value) {
 		defer func() {
 			if r := recover(); r != nil {
@@ -62,7 +62,30 @@ var Equal = NewStrictFunction(
 			}
 		}()
 
-		return BoolType(compare(ts[0].Eval(), ts[1].Eval()) == 0)
+		t := ts[0]
+		l, err := t.EvalList()
+
+		if err != nil {
+			return err
+		} else if l == emptyList {
+			return True
+		}
+
+		e := l.first.Eval()
+
+		for {
+			l, err = l.rest.EvalList()
+
+			if err != nil {
+				return err
+			} else if l == emptyList {
+				return True
+			}
+
+			if compare(e, l.first.Eval()) != 0 {
+				return False
+			}
+		}
 	})
 
 // ensureNormal evaluates nested thunks into WHNF values.

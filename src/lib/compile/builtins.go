@@ -32,7 +32,7 @@ var goBuiltins = func() environment {
 		"mod": core.Mod,
 		"**":  core.Pow,
 
-		"=":  builtins.Equal,
+		"=":  core.Equal,
 		"<":  builtins.Less,
 		"<=": builtins.LessEq,
 		">":  builtins.Greater,

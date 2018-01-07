@@ -122,17 +122,16 @@ func (l ListType) index(v Value) Value {
 	}
 }
 
-func (l ListType) insert(t, tt *Thunk) Value {
-	v := t.Eval()
+func (l ListType) insert(v Value, t *Thunk) Value {
 	n, err := checkIndex(v)
 
 	if err != nil {
 		return err
 	} else if n == 1 {
-		return PApp(Prepend, tt, Normal(l))
+		return cons(t, Normal(l))
 	}
 
-	return PApp(Prepend, l.first, PApp(Insert, l.rest, Normal(n-1), tt))
+	return cons(l.first, PApp(Insert, l.rest, Normal(n-1), t))
 }
 
 func (l ListType) merge(ts ...*Thunk) Value {

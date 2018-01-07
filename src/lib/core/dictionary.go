@@ -59,20 +59,18 @@ func (d DictionaryType) index(v Value) (result Value) {
 	return keyNotFoundError(k)
 }
 
-func (d DictionaryType) insert(t, tt *Thunk) (result Value) {
+func (d DictionaryType) insert(v Value, t *Thunk) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = r
 		}
 	}()
 
-	v := t.Eval()
-
 	if _, ok := v.(comparable); !ok {
 		return notComparableError(v)
 	}
 
-	return d.Insert(v, tt)
+	return d.Insert(v, t)
 }
 
 func (d DictionaryType) toList() (result Value) {

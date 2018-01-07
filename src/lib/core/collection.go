@@ -5,7 +5,7 @@ type collection interface {
 
 	include(Value) Value
 	index(Value) Value
-	insert(*Thunk, *Thunk) Value
+	insert(Value, *Thunk) Value
 	merge(...*Thunk) Value
 	delete(Value) Value
 	toList() Value
@@ -83,7 +83,7 @@ var Insert = NewLazyFunction(
 				return err
 			}
 
-			v = ensureNormal(c.insert(k, l.First()))
+			v = ensureNormal(c.insert(k.Eval(), l.First()))
 			c, ok = v.(collection)
 
 			if !ok {

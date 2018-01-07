@@ -128,7 +128,7 @@ func (args *Arguments) restKeywords() *Thunk {
 	d := emptyDictionary
 
 	for _, k := range ks {
-		v := d.insert(NewString(k.name), k.value)
+		v := d.insert(StringType(k.name), k.value)
 		var ok bool
 		d, ok = v.(DictionaryType)
 

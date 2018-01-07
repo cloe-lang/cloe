@@ -12,8 +12,14 @@ func (f RawFunctionType) call(args Arguments) Value {
 var Partial = Normal(RawFunctionType(func(vars Arguments) Value {
 	return Normal(RawFunctionType(func(args Arguments) Value {
 		vars := vars
-		t := vars.nextPositional()
-		return App(t, vars.Merge(args))
+		v := vars.nextPositional().Eval()
+		f, ok := v.(callable)
+
+		if !ok {
+			return TypeError(v, "callable")
+		}
+
+		return f.call(vars.Merge(args))
 	}))
 }))
 

@@ -53,7 +53,7 @@ func mergePositionalArguments(ps []PositionalArgument) *Thunk {
 		if p.expanded {
 			t = PApp(Merge, p.value, t)
 		} else {
-			t = PApp(Prepend, p.value, t)
+			t = Normal(cons(p.value, t))
 		}
 	}
 
@@ -157,9 +157,13 @@ func (args Arguments) Merge(old Arguments) Arguments {
 		l = old.expandedList
 	}
 
+	for i := len(old.positionals) - 1; i >= 0; i-- {
+		l = Normal(cons(old.positionals[i], l))
+	}
+
 	return Arguments{
 		args.positionals,
-		PApp(Merge, args.expandedList, PApp(Prepend, append(old.positionals, l)...)),
+		PApp(Merge, args.expandedList, l),
 		ks,
 		ds,
 	}

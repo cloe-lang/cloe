@@ -125,13 +125,19 @@ func (args *Arguments) restKeywords() *Thunk {
 	args.keywords = nil
 	args.expandedDicts = nil
 
-	t := EmptyDictionary
+	d := emptyDictionary
 
 	for _, k := range ks {
-		t = PApp(Insert, t, NewString(k.name), k.value)
+		v := d.insert(NewString(k.name), k.value)
+		var ok bool
+		d, ok = v.(DictionaryType)
+
+		if !ok {
+			return NotDictionaryError(v)
+		}
 	}
 
-	return PApp(Merge, append([]*Thunk{t}, ds...)...)
+	return PApp(Merge, append([]*Thunk{Normal(d)}, ds...)...)
 }
 
 // Merge merges 2 sets of arguments into one.

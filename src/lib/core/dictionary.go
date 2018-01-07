@@ -11,8 +11,12 @@ type DictionaryType struct {
 	rbt.Dictionary
 }
 
-// EmptyDictionary is a thunk of an empty dictionary.
-var EmptyDictionary = Normal(DictionaryType{rbt.NewDictionary(compare)})
+var (
+	emptyDictionary = DictionaryType{rbt.NewDictionary(compare)}
+
+	// EmptyDictionary is a thunk of an empty dictionary.
+	EmptyDictionary = Normal(emptyDictionary)
+)
 
 // KeyValue is a pair of a key and value inserted into dictionaries.
 type KeyValue struct {

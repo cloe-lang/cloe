@@ -88,7 +88,7 @@ func (args *Arguments) restPositionals() *Thunk {
 		return l
 	}
 
-	return PApp(Prepend, append(ts, l)...)
+	return StrictPrepend(ts, l)
 }
 
 func (args *Arguments) searchKeyword(s string) *Thunk {
@@ -157,13 +157,9 @@ func (args Arguments) Merge(old Arguments) Arguments {
 		l = old.expandedList
 	}
 
-	for i := len(old.positionals) - 1; i >= 0; i-- {
-		l = Normal(cons(old.positionals[i], l))
-	}
-
 	return Arguments{
 		args.positionals,
-		PApp(Merge, args.expandedList, l),
+		PApp(Merge, args.expandedList, StrictPrepend(old.positionals, l)),
 		ks,
 		ds,
 	}

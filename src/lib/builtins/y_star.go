@@ -35,8 +35,8 @@ func createNewFuncs(olds, applyF *core.Thunk) *core.Thunk {
 		return core.Normal(v)
 	}
 
-	return core.PApp(core.Prepend,
-		core.PApp(core.Partial, applyF, core.PApp(core.First, olds)),
+	return core.StrictPrepend(
+		[]*core.Thunk{core.PApp(core.Partial, applyF, core.PApp(core.First, olds))},
 		createNewFuncs(core.PApp(core.Rest, olds), applyF))
 }
 

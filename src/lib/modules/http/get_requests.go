@@ -36,7 +36,7 @@ var getRequests = core.NewLazyFunction(
 			func(ts ...*core.Thunk) core.Value {
 				select {
 				case t := <-h.Requests:
-					return core.PApp(core.Prepend, t, core.PApp(ts[0]))
+					return core.StrictPrepend([]*core.Thunk{t}, core.PApp(ts[0]))
 				case err := <-ec:
 					return httpError(err)
 				}

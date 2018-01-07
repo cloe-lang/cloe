@@ -59,6 +59,6 @@ var Rally = core.NewLazyFunction(
 					return err
 				}
 
-				return core.PApp(core.Prepend, core.Normal(v), core.PApp(ts[0]))
+				return core.StrictPrepend([]*core.Thunk{core.Normal(v)}, core.PApp(ts[0]))
 			})))
 	})

@@ -20,13 +20,7 @@ var (
 
 // NewList creates a list from its elements.
 func NewList(ts ...*Thunk) *Thunk {
-	l := EmptyList
-
-	for i := len(ts) - 1; i >= 0; i-- {
-		l = Normal(cons(ts[i], l))
-	}
-
-	return l
+	return StrictPrepend(ts, EmptyList)
 }
 
 // Prepend prepends multiple elements to a list of the last argument.
@@ -48,6 +42,15 @@ func prepend(ts ...*Thunk) Value {
 	}
 
 	return cons(l.First(), Normal(prepend(l.Rest())))
+}
+
+// StrictPrepend is a strict version of the Prepend function.
+func StrictPrepend(ts []*Thunk, l *Thunk) *Thunk {
+	for i := len(ts) - 1; i >= 0; i-- {
+		l = Normal(cons(ts[i], l))
+	}
+
+	return l
 }
 
 func cons(t1, t2 *Thunk) ListType {

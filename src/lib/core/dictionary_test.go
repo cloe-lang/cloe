@@ -218,6 +218,7 @@ func TestDictionaryStringFail(t *testing.T) {
 	for _, th := range []*Thunk{
 		NewDictionary([]KeyValue{{Nil, OutOfRangeError()}}),
 		NewDictionary([]KeyValue{{Nil, NewList(OutOfRangeError())}}),
+		NewDictionary([]KeyValue{{NewList(OutOfRangeError()), Nil}}),
 	} {
 		v := PApp(ToString, th).Eval()
 		t.Logf("%#v", v)

@@ -39,17 +39,11 @@ func (s Signature) Bind(args Arguments) ([]*Thunk, *Thunk) {
 		return nil, err
 	}
 
-	ts := append(ps, ks...)
-
-	if len(ts) != s.arity() {
-		return nil, argumentError("Number of arguments bound to names is different from signature's arity.")
-	}
-
 	if err := args.empty(); err != nil {
 		return nil, err
 	}
 
-	return ts, nil
+	return append(ps, ks...), nil
 }
 
 func (s Signature) arity() int {

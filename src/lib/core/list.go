@@ -179,11 +179,7 @@ func checkIndex(v Value) (NumberType, Value) {
 		return 0, NotNumberError(v)
 	}
 
-	b, err := PApp(isInt, Normal(n)).EvalBool()
-
-	if err != nil {
-		return 0, err
-	} else if !b {
+	if !IsInt(n) {
 		return 0, NotIntError(n)
 	} else if n < 1 {
 		return 0, OutOfRangeError()

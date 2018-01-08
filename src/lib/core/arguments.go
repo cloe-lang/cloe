@@ -130,13 +130,9 @@ func (args *Arguments) restKeywords() *Thunk {
 	d := emptyDictionary
 
 	for _, k := range ks {
-		v := d.insert(StringType(k.name), k.value)
-		var ok bool
-		d, ok = v.(DictionaryType)
-
-		if !ok {
-			return NotDictionaryError(v)
-		}
+		// Using DictionaryType.Insert method is safe here
+		// because the key is always StringType.
+		d = d.Insert(StringType(k.name), k.value)
 	}
 
 	return PApp(Merge, append([]*Thunk{Normal(d)}, ds...)...)

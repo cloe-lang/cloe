@@ -123,17 +123,10 @@ func newBinaryOperator(f func(n, m float64) float64) *Thunk {
 		})
 }
 
-var isInt = NewLazyFunction(
-	NewSignature([]string{"number"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		n, err := ts[0].EvalNumber()
-
-		if err != nil {
-			return err
-		}
-
-		return NewBool(math.Mod(float64(n), 1) == 0)
-	})
+// IsInt checks if a number value is an integer or not.
+func IsInt(n NumberType) bool {
+	return math.Mod(float64(n), 1) == 0
+}
 
 func (n NumberType) compare(c comparable) int {
 	if n < c.(NumberType) {

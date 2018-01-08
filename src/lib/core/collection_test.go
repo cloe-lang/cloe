@@ -16,7 +16,49 @@ func TestCollectionFunctionsError(t *testing.T) {
 	for _, th := range []*Thunk{
 		PApp(Index, Nil, Nil),
 		PApp(Include, Nil, Nil),
+		App(
+			Insert,
+			NewArguments(
+				[]PositionalArgument{
+					NewPositionalArgument(EmptyDictionary, false),
+					NewPositionalArgument(Nil, true),
+				}, nil, nil)),
+		App(
+			Insert,
+			NewArguments(
+				[]PositionalArgument{
+					NewPositionalArgument(EmptyDictionary, false),
+					NewPositionalArgument(StrictPrepend([]*Thunk{Nil}, EmptyDictionary), true),
+				}, nil, nil)),
+		App(
+			Insert,
+			NewArguments(
+				[]PositionalArgument{
+					NewPositionalArgument(EmptyDictionary, false),
+					NewPositionalArgument(StrictPrepend([]*Thunk{Nil, Nil}, EmptyDictionary), true),
+				}, nil, nil)),
+		App(
+			Insert,
+			NewArguments(
+				[]PositionalArgument{
+					NewPositionalArgument(EmptyDictionary, false),
+					NewPositionalArgument(StrictPrepend([]*Thunk{Nil, Nil, Nil}, EmptyDictionary), true),
+				}, nil, nil)),
 		PApp(Merge, Nil),
+		App(
+			Merge,
+			NewArguments(
+				[]PositionalArgument{
+					NewPositionalArgument(EmptyList, false),
+					NewPositionalArgument(Nil, true),
+				}, nil, nil)),
+		App(
+			Merge,
+			NewArguments(
+				[]PositionalArgument{
+					NewPositionalArgument(EmptyList, false),
+					NewPositionalArgument(StrictPrepend([]*Thunk{Nil}, EmptyDictionary), true),
+				}, nil, nil)),
 		PApp(Size, Nil),
 		PApp(ToList, Nil),
 	} {

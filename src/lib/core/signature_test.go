@@ -6,78 +6,73 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSignatureBindWithEmtpyArguments(t *testing.T) {
-	s := NewSignature([]string{"x"}, nil, "", nil, nil, "")
-	args := NewArguments(nil, nil, nil)
-	_, err := s.Bind(args)
-	assert.NotEqual(t, (*Thunk)(nil), err)
-}
-
-func TestSignatureBindWithOptionalPositionalArguments(t *testing.T) {
-	s := NewSignature(nil, []OptionalArgument{NewOptionalArgument("x", Nil)}, "", nil, nil, "")
-
-	for _, args := range []Arguments{
-		NewArguments(nil, nil, nil),
-		NewArguments([]PositionalArgument{NewPositionalArgument(True, false)}, nil, nil),
+func TestSignatureBind(t *testing.T) {
+	for _, c := range []struct {
+		signature Signature
+		arguments Arguments
+	}{
+		{
+			NewSignature(nil, nil, "", nil, nil, ""),
+			NewArguments(nil, nil, nil),
+		},
+		{
+			NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+			NewArguments([]PositionalArgument{NewPositionalArgument(NewList(Nil), true)}, nil, nil),
+		},
+		{
+			NewSignature(nil, []OptionalArgument{NewOptionalArgument("x", Nil)}, "", nil, nil, ""),
+			NewArguments(nil, nil, nil),
+		},
+		{
+			NewSignature(nil, []OptionalArgument{NewOptionalArgument("x", Nil)}, "", nil, nil, ""),
+			NewArguments([]PositionalArgument{NewPositionalArgument(True, false)}, nil, nil),
+		},
+		{
+			NewSignature(nil, nil, "", []string{"foo"}, nil, ""),
+			NewArguments(nil, nil, []*Thunk{NewDictionary([]KeyValue{{NewString("foo"), Nil}})}),
+		},
+		{
+			NewSignature(nil, nil, "", nil, nil, "foo"),
+			NewArguments(
+				nil,
+				[]KeywordArgument{NewKeywordArgument("foo", Nil)},
+				[]*Thunk{NewDictionary([]KeyValue{{NewString("bar"), Nil}})})},
 	} {
-		_, err := s.Bind(args)
+		ts, err := c.signature.Bind(c.arguments)
+		assert.Equal(t, c.signature.arity(), len(ts))
 		assert.Equal(t, (*Thunk)(nil), err)
 	}
 }
 
-func TestSignatureBindExpandedPositionalArgument(t *testing.T) {
-	s := NewSignature([]string{"x"}, nil, "", nil, nil, "")
-	args := NewArguments([]PositionalArgument{NewPositionalArgument(NewList(Nil), true)}, nil, nil)
-	_, err := s.Bind(args)
-	assert.Equal(t, (*Thunk)(nil), err)
-}
-
-func TestSignatureBindExpandedDictionary(t *testing.T) {
-	s := NewSignature(nil, nil, "", []string{"foo"}, nil, "")
-	args := NewArguments(
-		nil,
-		nil,
-		[]*Thunk{NewDictionary([]KeyValue{{NewString("foo"), Nil}})})
-	_, err := s.Bind(args)
-	assert.Equal(t, (*Thunk)(nil), err)
-}
-
-func TestSignatureBindExpandedDictionaryFail(t *testing.T) {
-	s := NewSignature(nil, nil, "", []string{"foo"}, nil, "")
-	args := NewArguments(nil, nil, []*Thunk{Nil})
-	_, err := s.Bind(args)
-	assert.NotEqual(t, (*Thunk)(nil), err)
-}
-
-func TestSignatureBindRestKeywordArguments(t *testing.T) {
-	s := NewSignature(nil, nil, "", nil, nil, "foo")
-	args := NewArguments(
-		nil,
-		[]KeywordArgument{NewKeywordArgument("foo", Nil)},
-		[]*Thunk{NewDictionary([]KeyValue{{NewString("bar"), Nil}})})
-	_, err := s.Bind(args)
-	assert.Equal(t, (*Thunk)(nil), err)
-}
-
-func TestSignatureBindNoArgumentFail(t *testing.T) {
-	s := NewSignature(nil, nil, "", nil, nil, "")
-	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil)
-	_, err := s.Bind(args)
-	assert.NotEqual(t, (*Thunk)(nil), err)
-}
-
-func TestSignatureBindRequiredKeywordArgumentFail(t *testing.T) {
-	s := NewSignature(nil, nil, "", []string{"arg"}, nil, "")
-	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil)
-	_, err := s.Bind(args)
-	assert.NotEqual(t, (*Thunk)(nil), err)
-}
-
-func TestSignatureBindOptionalKeywordArgumentFail(t *testing.T) {
-	s := NewSignature(nil, nil, "", nil, []OptionalArgument{NewOptionalArgument("arg", Nil)}, "")
-	args := NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil)
-	_, err := s.Bind(args)
-	assert.NotEqual(t, (*Thunk)(nil), err)
+func TestSignatureBindError(t *testing.T) {
+	for _, c := range []struct {
+		signature Signature
+		arguments Arguments
+	}{
+		{
+			NewSignature(nil, nil, "", []string{"foo"}, nil, ""),
+			NewArguments(nil, nil, []*Thunk{Nil}),
+		},
+		{
+			NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+			NewArguments(nil, nil, nil),
+		},
+		{
+			NewSignature(nil, nil, "", nil, nil, ""),
+			NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil),
+		},
+		{
+			NewSignature(nil, nil, "", []string{"arg"}, nil, ""),
+			NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil),
+		},
+		{
+			NewSignature(nil, nil, "", nil, []OptionalArgument{NewOptionalArgument("arg", Nil)}, ""),
+			NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil),
+		},
+	} {
+		_, err := c.signature.Bind(c.arguments)
+		assert.NotEqual(t, (*Thunk)(nil), err)
+	}
 }
 
 func TestSignatureBindExpandedDictionaries(t *testing.T) {

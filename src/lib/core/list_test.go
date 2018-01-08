@@ -58,10 +58,17 @@ func TestListPrependToMergedLists(t *testing.T) {
 }
 
 func TestListRestWithNonListValues(t *testing.T) {
-	for _, th := range []*Thunk{Nil, EmptyDictionary, NewNumber(100)} {
+	for _, th := range []*Thunk{
+		Nil,
+		EmptyDictionary,
+		NewNumber(100),
+		PApp(Prepend, Nil, EmptyDictionary),
+	} {
 		assert.Equal(t, "TypeError", PApp(Rest, th).Eval().(ErrorType).Name())
 	}
+}
 
+func TestListRestErrorPropagation(t *testing.T) {
 	assert.Equal(t, "ValueError", PApp(Rest, ValueError("No way!")).Eval().(ErrorType).Name())
 }
 
@@ -128,7 +135,7 @@ func TestListIndex(t *testing.T) {
 	}
 }
 
-func TestListIndexFail(t *testing.T) {
+func TestListIndexError(t *testing.T) {
 	for _, li := range []struct {
 		list  *Thunk
 		index float64

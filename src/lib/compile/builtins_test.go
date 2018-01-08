@@ -29,11 +29,12 @@ func TestCompileBuiltinModuleWithInvalidSyntax(t *testing.T) {
 }
 
 func TestCompileBuiltinModuleWithInvalidSource(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	compileBuiltinModule(newEnvironment(testFallback), "", `(def (foo x) y)`)
+	for _, f := range []func(){
+		func() { compileBuiltinModule(newEnvironment(testFallback), "", `(def (foo x) y)`) },
+		func() { compileBuiltinModule(newEnvironment(testFallback), "", `(import "foo")`) },
+	} {
+		assert.Panics(t, f)
+	}
 }
 
 func TestReduce(t *testing.T) {

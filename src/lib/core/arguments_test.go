@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewArgumentsMerging(t *testing.T) {
+func TestNewArguments(t *testing.T) {
 	NewArguments([]PositionalArgument{
 		NewPositionalArgument(Nil, false),
 		NewPositionalArgument(EmptyList, true),
@@ -33,4 +33,9 @@ func TestArgumentsMerge(t *testing.T) {
 	a := NewArguments([]PositionalArgument{NewPositionalArgument(NewList(Nil), true)}, nil, nil)
 	a = a.Merge(a)
 	assert.Equal(t, NumberType(2), PApp(Size, a.restPositionals()).Eval().(NumberType))
+}
+
+func TestArgumentsRestKeywords(t *testing.T) {
+	a := NewArguments(nil, nil, []*Thunk{NewError("MyError", "")})
+	assert.Equal(t, a.restKeywords().Eval().(ErrorType).Name(), "MyError")
 }

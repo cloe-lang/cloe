@@ -62,10 +62,6 @@ func (hs halfSignature) bindPositionals(args *Arguments) ([]*Thunk, *Thunk) {
 		ts = append(ts, args.restPositionals())
 	}
 
-	if len(ts) != hs.arity() {
-		return nil, argumentError("Number of arguments bound to names is different from an arity of a positional half signature.")
-	}
-
 	return ts, nil
 }
 
@@ -94,10 +90,6 @@ func (hs halfSignature) bindKeywords(args *Arguments) ([]*Thunk, *Thunk) {
 
 	if hs.rest != "" {
 		ts = append(ts, args.restKeywords())
-	}
-
-	if len(ts) != hs.arity() {
-		return nil, argumentError("Number of arguments bound to names is different from an arity of a keyword half signature.")
 	}
 
 	return ts, nil

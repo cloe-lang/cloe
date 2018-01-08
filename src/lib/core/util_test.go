@@ -6,9 +6,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDumpFail(t *testing.T) {
+func TestDump(t *testing.T) {
+	for _, c := range []struct {
+		argument *Thunk
+		answer   StringType
+	}{
+		{NewString("foo"), `"foo"`},
+		{NewList(NewString("foo")), `["foo"]`},
+		{NewDictionary([]KeyValue{{NewString("foo"), NewString("bar")}}), `{"foo" "bar"}`},
+	} {
+		assert.Equal(t, c.answer, PApp(Dump, c.argument).Eval().(StringType))
+	}
+}
+
+func TestDumpError(t *testing.T) {
 	for _, th := range []*Thunk{
 		OutOfRangeError(),
+		NewList(OutOfRangeError()),
 	} {
 		v := PApp(Dump, th).Eval()
 		t.Log(v)

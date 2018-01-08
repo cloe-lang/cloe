@@ -85,6 +85,8 @@ func TestEncodeWithInvalidArguments(t *testing.T) {
 		core.PApp(core.Prepend, core.Nil, core.ValueError("Not a list")),
 		core.NewList(core.ValueError("")),
 		core.PApp(core.Insert, core.EmptyDictionary, core.NewString("foo"), core.ValueError("")),
+		core.NewDictionary([]core.KeyValue{{core.NewList(core.NewError("", "")), core.Nil}}),
+		core.NewDictionary([]core.KeyValue{{core.Nil, core.NewError("", "")}}),
 	} {
 		_, ok := core.PApp(encode, th).Eval().(core.ErrorType)
 		assert.True(t, ok)

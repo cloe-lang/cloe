@@ -49,6 +49,12 @@ func TestWriteError(t *testing.T) {
 			[]core.PositionalArgument{core.NewPositionalArgument(core.NewError("", ""), true)},
 			nil,
 			nil),
+		core.NewArguments(
+			[]core.PositionalArgument{
+				core.NewPositionalArgument(core.StrictPrepend([]*core.Thunk{core.Nil}, core.NewError("", "")), true),
+			},
+			nil,
+			nil),
 		core.NewPositionalArguments(core.PApp(core.Prepend, core.Nil, core.NewError("", ""))),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},

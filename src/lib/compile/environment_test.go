@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func testFallback(s string) (*core.Thunk, error) {
+func testFallback(s string) (core.Value, error) {
 	return nil, errors.New("name not found")
 }
 

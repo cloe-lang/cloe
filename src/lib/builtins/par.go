@@ -8,7 +8,7 @@ import (
 // Par evaluates arguments in parallel and returns the last one.
 var Par = core.NewLazyFunction(
 	core.NewSignature(nil, nil, "args", nil, nil, ""),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		l := ts[0]
 
 		for {

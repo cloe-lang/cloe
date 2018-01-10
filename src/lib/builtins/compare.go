@@ -2,10 +2,10 @@ package builtins
 
 import "github.com/coel-lang/coel/src/lib/core"
 
-func createCompareFunction(checkOrder func(core.NumberType) bool) *core.Thunk {
+func createCompareFunction(checkOrder func(core.NumberType) bool) core.Value {
 	return core.NewLazyFunction(
 		core.NewSignature(nil, nil, "args", nil, nil, ""),
-		func(ts ...*core.Thunk) core.Value {
+		func(ts ...core.Value) core.Value {
 			l := ts[0]
 
 			if v := core.ReturnIfEmptyList(l, core.True); v != nil {

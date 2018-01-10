@@ -10,7 +10,7 @@ import (
 )
 
 // Modules is a set of built-in modules
-var Modules = map[string]map[string]*core.Thunk{
+var Modules = map[string]map[string]core.Value{
 	"fs":   fs.Module,
 	"http": http.Module,
 	"json": json.Module,

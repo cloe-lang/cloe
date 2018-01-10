@@ -11,5 +11,5 @@ func TestNewKeywordArgument(t *testing.T) {
 }
 
 func TestKeywordArgumentInterpret(t *testing.T) {
-	NewKeywordArgument("foo", 0).interpret([]*core.Thunk{core.NewNumber(123)})
+	NewKeywordArgument("foo", 0).interpret([]core.Value{core.NewNumber(123)})
 }

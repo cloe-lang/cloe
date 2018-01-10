@@ -8,21 +8,21 @@ import (
 
 type environment struct {
 	me       module
-	fallback func(string) (*core.Thunk, error)
+	fallback func(string) (core.Value, error)
 }
 
-func newEnvironment(fallback func(string) (*core.Thunk, error)) environment {
+func newEnvironment(fallback func(string) (core.Value, error)) environment {
 	return environment{
 		me:       module{},
 		fallback: fallback,
 	}
 }
 
-func (e *environment) set(s string, t *core.Thunk) {
+func (e *environment) set(s string, t core.Value) {
 	e.me[s] = t
 }
 
-func (e environment) get(s string) *core.Thunk {
+func (e environment) get(s string) core.Value {
 	if t, ok := e.me[s]; ok {
 		return t
 	}

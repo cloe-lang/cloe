@@ -6,17 +6,22 @@ package core
 // can be extracted by a special function named "out" and passed to a pure
 // function.
 type effectType struct {
-	value *Thunk
+	value Value
+}
+
+// Eval evaluates a value into a WHNF.
+func (e effectType) eval() Value {
+	return e
 }
 
 // newEffect creates an effect value.
-func newEffect(value *Thunk) *Thunk {
-	return Normal(effectType{value})
+func newEffect(value Value) Value {
+	return effectType{value}
 }
 
 // Pure extracts a result value in an effect value.
 var Pure = NewLazyFunction(
 	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		return ts[0].EvalEffect()
+	func(vs ...Value) Value {
+		return EvalImpure(vs[0])
 	})

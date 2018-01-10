@@ -7,37 +7,37 @@ import (
 )
 
 func TestError(t *testing.T) {
-	err := PApp(Error, NewString("MyError"), NewString("This is my message.")).Eval().(ErrorType)
-	assert.Equal(t, "MyError", err.name)
+	assert.Equal(t,
+		"MyError",
+		EvalPure(PApp(Error, NewString("MyError"), NewString("This is my message."))).(ErrorType).Name())
 }
 
 func TestErrorInvalidName(t *testing.T) {
-	err := PApp(Error, Nil, NewString("This is my message.")).Eval().(ErrorType)
-	assert.Equal(t, "TypeError", err.name)
+	assert.Equal(t,
+		"TypeError",
+		EvalPure(PApp(Error, Nil, NewString("This is my message."))).(ErrorType).Name())
 }
 
 func TestErrorInvalidMessage(t *testing.T) {
-	err := PApp(Error, NewString("MyError"), Nil).Eval().(ErrorType)
-	assert.Equal(t, "TypeError", err.name)
+	assert.Equal(t,
+		"TypeError",
+		EvalPure(PApp(Error, NewString("MyError"), Nil)).(ErrorType).Name())
 }
 
 func TestErrorName(t *testing.T) {
-	e, ok := NewError("foo", "bar").Eval().(ErrorType)
-
-	assert.True(t, ok)
-	assert.Equal(t, "foo", e.Name())
+	assert.Equal(t, "DummyError", DummyError.Name())
 }
 
 func TestErrorCatch(t *testing.T) {
-	_, ok := PApp(Catch, NewError("foo", "bar")).Eval().(DictionaryType)
+	_, ok := EvalPure(PApp(Catch, DummyError)).(DictionaryType)
 	assert.True(t, ok)
 
-	_, ok = PApp(Catch, Nil).Eval().(NilType)
+	_, ok = EvalPure(PApp(Catch, Nil)).(NilType)
 	assert.True(t, ok)
 }
 
 func TestKeyNotFoundErrorFail(t *testing.T) {
 	assert.NotEqual(t,
 		"KeyNotFoundError",
-		keyNotFoundError(NewError("", "")).Eval().(ErrorType).Name())
+		keyNotFoundError(DummyError).Name())
 }

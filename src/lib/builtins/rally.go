@@ -14,7 +14,7 @@ const channelCloseDuration = 100 * time.Millisecond
 // Rally sorts arguments by time.
 var Rally = core.NewLazyFunction(
 	core.NewSignature(nil, nil, "args", nil, nil, ""),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		vs := make(chan core.Value, valueChannelCapacity)
 
 		systemt.Daemonize(func() {
@@ -29,7 +29,7 @@ var Rally = core.NewLazyFunction(
 
 			for !l.Empty() {
 				sem <- true
-				go func(t *core.Thunk) {
+				go func(t core.Value) {
 					vs <- t.Eval()
 					<-sem
 				}(l.First())
@@ -50,7 +50,7 @@ var Rally = core.NewLazyFunction(
 
 		return core.PApp(core.PApp(Y, core.NewLazyFunction(
 			core.NewSignature([]string{"me"}, nil, "", nil, nil, ""),
-			func(ts ...*core.Thunk) core.Value {
+			func(ts ...core.Value) core.Value {
 				v := <-vs
 
 				if v == nil {
@@ -59,6 +59,6 @@ var Rally = core.NewLazyFunction(
 					return err
 				}
 
-				return core.StrictPrepend([]*core.Thunk{core.Normal(v)}, core.PApp(ts[0]))
+				return core.StrictPrepend([]core.Value{v}, core.PApp(ts[0]))
 			})))
 	})

@@ -29,7 +29,7 @@ func TestMatch(t *testing.T) {
 }
 
 func TestMatchError(t *testing.T) {
-	for _, th := range []*core.Thunk{
+	for _, th := range []core.Value{
 		core.PApp(match),
 		core.PApp(match, core.NewString("foo")),
 		core.PApp(match, core.NewString("foo"), core.Nil),

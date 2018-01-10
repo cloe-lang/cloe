@@ -162,7 +162,7 @@ func (s *state) signature() comb.Parser {
 		kas, ok := xs[1].([3]interface{})
 
 		if !ok {
-			kas = [3]interface{}{([]string)(nil), ([]ast.OptionalArgument)(nil), ""}
+			kas = [3]interface{}{[]string(nil), []ast.OptionalArgument(nil), ""}
 		}
 
 		return ast.NewSignature(
@@ -297,7 +297,7 @@ func (s *state) arguments() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 
-		ks := ([]ast.KeywordArgument)(nil)
+		ks := []ast.KeywordArgument(nil)
 		dicts := []interface{}{}
 
 		if xs, ok := xs[1].([2]interface{}); ok {

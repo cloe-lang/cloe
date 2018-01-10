@@ -7,37 +7,37 @@ import (
 )
 
 func TestListEqual(t *testing.T) {
-	for _, tss := range [][2][]*Thunk{
+	for _, vss := range [][2][]Value{
 		{{}, {}},
 		{{True}, {True}},
 		{{True, False}, {True, False}},
 	} {
-		assert.True(t, testEqual(NewList(tss[0]...), NewList(tss[1]...)))
+		assert.True(t, testEqual(NewList(vss[0]...), NewList(vss[1]...)))
 	}
 
-	for _, tss := range [][2][]*Thunk{
+	for _, vss := range [][2][]Value{
 		{{}, {True}},
 		{{True}, {False}},
 		{{True, True}, {True, True, True}},
 	} {
-		assert.True(t, !testEqual(NewList(tss[0]...), NewList(tss[1]...)))
+		assert.True(t, !testEqual(NewList(vss[0]...), NewList(vss[1]...)))
 	}
 }
 
 func TestListComparable(t *testing.T) {
-	for _, tss := range [][2][]*Thunk{
+	for _, vss := range [][2][]Value{
 		{{}, {True}},
 		{{False}, {True}},
 		{{True, False}, {True, True}},
 		{{NewNumber(123), NewNumber(456)}, {NewNumber(123), NewNumber(2049)}},
 		{{NewNumber(123), EmptyList}, {NewNumber(123), Nil}},
 	} {
-		assert.True(t, testLess(NewList(tss[0]...), NewList(tss[1]...)))
+		assert.True(t, testLess(NewList(vss[0]...), NewList(vss[1]...)))
 	}
 }
 
 func TestListPrepend(t *testing.T) {
-	for _, tss := range [][2][]*Thunk{
+	for _, vss := range [][2][]Value{
 		{{}, {}},
 		{{}, {True}},
 		{{False}, {True}},
@@ -45,55 +45,55 @@ func TestListPrepend(t *testing.T) {
 		{{NewNumber(123), NewNumber(456)}, {NewNumber(123), NewNumber(2049)}},
 		{{NewNumber(123), EmptyList}, {NewNumber(123), Nil}},
 	} {
-		l := PApp(Prepend, append(tss[0], NewList(tss[1]...))...)
-		assert.True(t, testEqual(NewList(append(tss[0], tss[1]...)...), l))
+		l := PApp(Prepend, append(vss[0], NewList(vss[1]...))...)
+		assert.True(t, testEqual(NewList(append(vss[0], vss[1]...)...), l))
 	}
 }
 
 func TestListPrependToMergedLists(t *testing.T) {
 	l := NewList(Nil)
 	assert.Equal(t,
-		NumberType(2),
-		PApp(Size, PApp(Prepend, PApp(Merge, l, PApp(Prepend, l)))).Eval().(NumberType))
+		NewNumber(2),
+		EvalPure(PApp(Size, PApp(Prepend, PApp(Merge, l, PApp(Prepend, l))))).(NumberType))
 }
 
 func TestListRestWithNonListValues(t *testing.T) {
-	for _, th := range []*Thunk{
+	for _, v := range []Value{
 		Nil,
 		EmptyDictionary,
 		NewNumber(100),
 		PApp(Prepend, Nil, EmptyDictionary),
 	} {
-		assert.Equal(t, "TypeError", PApp(Rest, th).Eval().(ErrorType).Name())
+		assert.Equal(t, "TypeError", EvalPure(PApp(Rest, v)).(ErrorType).Name())
 	}
 }
 
 func TestListRestErrorPropagation(t *testing.T) {
-	assert.Equal(t, "ValueError", PApp(Rest, ValueError("No way!")).Eval().(ErrorType).Name())
+	assert.Equal(t, "ValueError", EvalPure(PApp(Rest, ValueError("No way!"))).(ErrorType).Name())
 }
 
 func TestListMerge(t *testing.T) {
-	for _, tss := range [][][]*Thunk{
+	for _, vss := range [][][]Value{
 		{{}, {True}},
 		{{False}, {True}, {True, True}},
 		{{True, False}, {True, False, False, True}},
 		{{NewNumber(123), NewNumber(456)}, {NewNumber(123), NewNumber(2049)}},
 		{{NewNumber(123), EmptyList}, {NewNumber(123), Nil}, {True, False, True}},
 	} {
-		all := make([]*Thunk, 0)
-		for _, ts := range tss {
-			all = append(all, ts...)
+		all := make([]Value, 0)
+		for _, vs := range vss {
+			all = append(all, vs...)
 		}
 		l1 := NewList(all...)
 
-		l2 := NewList(tss[0]...)
-		for _, ts := range tss[1:] {
-			l2 = PApp(Merge, l2, NewList(ts...))
+		l2 := NewList(vss[0]...)
+		for _, vs := range vss[1:] {
+			l2 = PApp(Merge, l2, NewList(vs...))
 		}
 
-		ls := make([]*Thunk, 0)
-		for _, ts := range tss {
-			ls = append(ls, NewList(ts...))
+		ls := make([]Value, 0)
+		for _, vs := range vss {
+			ls = append(ls, NewList(vs...))
 		}
 		l3 := PApp(Merge, ls...)
 
@@ -105,7 +105,7 @@ func TestListMerge(t *testing.T) {
 func TestListToString(t *testing.T) {
 	for _, xs := range []struct {
 		expected string
-		thunk    *Thunk
+		thunk    Value
 	}{
 		{"[]", EmptyList},
 		{"[123]", NewList(NewNumber(123))},
@@ -113,15 +113,15 @@ func TestListToString(t *testing.T) {
 		{"[[123]]", NewList(NewList(NewNumber(123)))},
 		{"[nil [123]]", NewList(Nil, NewList(NewNumber(123)))},
 	} {
-		assert.Equal(t, StringType(xs.expected), PApp(ToString, xs.thunk).Eval())
+		assert.Equal(t, NewString(xs.expected), EvalPure(PApp(ToString, xs.thunk)))
 	}
 }
 
 func TestListIndex(t *testing.T) {
 	a := NewString("I'm the answer.")
 
-	for _, li := range []struct {
-		list  *Thunk
+	for _, c := range []struct {
+		list  Value
 		index float64
 	}{
 		{NewList(a), 1},
@@ -131,13 +131,13 @@ func TestListIndex(t *testing.T) {
 		{NewList(Nil, Nil, Nil, Nil, a), 5},
 		{NewList(Nil, Nil, Nil, a, Nil), 4},
 	} {
-		assert.True(t, testEqual(a, PApp(li.list, NewNumber(li.index))))
+		assert.True(t, testEqual(a, PApp(c.list, NewNumber(c.index))))
 	}
 }
 
 func TestListIndexError(t *testing.T) {
-	for _, li := range []struct {
-		list  *Thunk
+	for _, c := range []struct {
+		list  Value
 		index float64
 	}{
 		{EmptyList, 0},
@@ -145,7 +145,7 @@ func TestListIndexError(t *testing.T) {
 		{NewList(Nil), 2},
 		{NewList(Nil, Nil), 1.5},
 	} {
-		v := PApp(li.list, NewNumber(li.index)).Eval()
+		v := EvalPure(PApp(c.list, NewNumber(c.index)))
 		_, ok := v.(ErrorType)
 		t.Log(v)
 		assert.True(t, ok)
@@ -153,27 +153,27 @@ func TestListIndexError(t *testing.T) {
 }
 
 func TestListToList(t *testing.T) {
-	_, ok := PApp(ToList, EmptyList).Eval().(ListType)
+	_, ok := EvalPure(PApp(ToList, EmptyList)).(ListType)
 	assert.True(t, ok)
 }
 
 func TestListDelete(t *testing.T) {
-	for _, test := range []struct {
-		list   *Thunk
+	for _, c := range []struct {
+		list   Value
 		index  float64
-		answer *Thunk
+		answer Value
 	}{
 		{NewList(Nil), 1, EmptyList},
 		{NewList(Nil, True), 2, NewList(Nil)},
 		{NewList(Nil, True, False), 3, NewList(Nil, True)},
 	} {
-		assert.True(t, testEqual(PApp(Delete, test.list, NewNumber(test.index)), test.answer))
+		assert.True(t, testEqual(PApp(Delete, c.list, NewNumber(c.index)), c.answer))
 	}
 }
 
 func TestListSize(t *testing.T) {
-	for _, test := range []struct {
-		list *Thunk
+	for _, c := range []struct {
+		list Value
 		size NumberType
 	}{
 		{EmptyList, 0},
@@ -181,14 +181,14 @@ func TestListSize(t *testing.T) {
 		{NewList(Nil, True), 2},
 		{NewList(Nil, True, False), 3},
 	} {
-		assert.Equal(t, test.size, PApp(Size, test.list).Eval().(NumberType))
+		assert.Equal(t, c.size, EvalPure(PApp(Size, c.list)).(NumberType))
 	}
 }
 
 func TestListInclude(t *testing.T) {
-	for _, test := range []struct {
-		list   *Thunk
-		elem   *Thunk
+	for _, c := range []struct {
+		list   Value
+		elem   Value
 		answer BoolType
 	}{
 		{EmptyList, Nil, false},
@@ -197,16 +197,16 @@ func TestListInclude(t *testing.T) {
 		{NewList(Nil, False), True, false},
 		{NewList(Nil, True, NewNumber(42.1), NewNumber(42), False), NewNumber(42), true},
 	} {
-		assert.Equal(t, test.answer, PApp(Include, test.list, test.elem).Eval().(BoolType))
+		assert.Equal(t, c.answer, EvalPure(PApp(Include, c.list, c.elem)).(BoolType))
 	}
 }
 
 func TestListInsert(t *testing.T) {
-	for _, test := range []struct {
-		list     *Thunk
+	for _, c := range []struct {
+		list     Value
 		index    NumberType
-		elem     *Thunk
-		expected *Thunk
+		elem     Value
+		expected Value
 	}{
 		{EmptyList, 1, Nil, NewList(Nil)},
 		{NewList(True), 1, False, NewList(False, True)},
@@ -215,52 +215,57 @@ func TestListInsert(t *testing.T) {
 		{NewList(True, False), 2, Nil, NewList(True, Nil, False)},
 		{NewList(True, False), 3, Nil, NewList(True, False, Nil)},
 	} {
-		assert.True(t, testEqual(test.expected, PApp(Insert, test.list, Normal(test.index), test.elem)))
+		assert.True(t, testEqual(c.expected, PApp(Insert, c.list, c.index, c.elem)))
 	}
 }
 
 func TestListInsertFailure(t *testing.T) {
-	_, ok := PApp(Insert, EmptyList, NewNumber(0), Nil).Eval().(ErrorType)
+	_, ok := EvalPure(PApp(Insert, EmptyList, NewNumber(0), Nil)).(ErrorType)
 	assert.True(t, ok)
 }
 
 func TestListCompare(t *testing.T) {
-	assert.True(t, testCompare(EmptyList, EmptyList) == 0)
-	assert.True(t, testCompare(NewList(NewNumber(42)), EmptyList) == 1)
-	assert.True(t, testCompare(EmptyList, NewList(NewNumber(42))) == -1)
-	assert.True(t, testCompare(NewList(NewNumber(42)), NewList(NewNumber(42))) == 0)
-	assert.True(t, testCompare(NewList(NewNumber(42)), NewList(NewNumber(2049))) == -1)
-	assert.True(t, testCompare(NewList(NewNumber(2049)), NewList(NewNumber(42))) == 1)
-	assert.True(t, testCompare(NewList(NewNumber(2049)), NewList(NewNumber(42), NewNumber(1))) == 1)
-	assert.True(t, testCompare(
-		NewList(NewNumber(42), NewNumber(2049)),
-		NewList(NewNumber(42), NewNumber(1))) == 1)
+	for _, c := range []struct {
+		answer      int
+		left, right Value
+	}{
+		{0, EmptyList, EmptyList},
+		{0, NewList(NewNumber(42)), NewList(NewNumber(42))},
+		{1, NewList(NewNumber(42)), EmptyList},
+		{1, NewList(NewNumber(2049)), NewList(NewNumber(42))},
+		{1, NewList(NewNumber(2049)), NewList(NewNumber(42), NewNumber(1))},
+		{1, NewList(NewNumber(42), NewNumber(2049)), NewList(NewNumber(42), NewNumber(1))},
+		{-1, EmptyList, NewList(NewNumber(42))},
+		{-1, NewList(NewNumber(42)), NewList(NewNumber(2049))},
+	} {
+		assert.True(t, testCompare(c.left, c.right) == c.answer)
+	}
 }
 
 func TestListFunctionsError(t *testing.T) {
-	for _, th := range []*Thunk{
+	for _, v := range []Value{
 		App(Prepend, NewArguments([]PositionalArgument{
-			NewPositionalArgument(emptyListError(), true),
+			NewPositionalArgument(DummyError, true),
 		}, nil, nil)),
 		App(Prepend, NewArguments([]PositionalArgument{
-			NewPositionalArgument(PApp(Prepend, Nil, emptyListError()), true),
+			NewPositionalArgument(PApp(Prepend, Nil, DummyError), true),
 		}, nil, nil)),
 		PApp(Prepend),
-		PApp(PApp(Prepend, Nil, emptyListError()), NewNumber(2)),
+		PApp(PApp(Prepend, Nil, DummyError), NewNumber(2)),
 		PApp(First, EmptyList),
 		PApp(Rest, EmptyList),
 		PApp(Delete, EmptyList, NewNumber(1)),
-		PApp(Delete, PApp(Prepend, Nil, emptyListError()), NewNumber(2)),
-		PApp(Delete, NewList(Nil), emptyListError()),
-		PApp(NewList(Nil), emptyListError()),
+		PApp(Delete, PApp(Prepend, Nil, DummyError), NewNumber(2)),
+		PApp(Delete, NewList(Nil), DummyError),
+		PApp(NewList(Nil), DummyError),
 		PApp(NewList(Nil), NewNumber(0)),
 		PApp(NewList(Nil), NewNumber(0.5)),
 		PApp(Compare, NewList(Nil), NewList(Nil)),
-		PApp(ToString, PApp(Prepend, Nil, emptyListError())),
-		PApp(Size, PApp(Prepend, Nil, emptyListError())),
-		PApp(Include, NewList(emptyListError()), Nil),
+		PApp(ToString, PApp(Prepend, Nil, DummyError)),
+		PApp(Size, PApp(Prepend, Nil, DummyError)),
+		PApp(Include, NewList(DummyError), Nil),
 	} {
-		_, ok := th.Eval().(ErrorType)
+		_, ok := EvalPure(v).(ErrorType)
 		assert.True(t, ok)
 	}
 }

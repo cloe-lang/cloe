@@ -40,7 +40,7 @@ func TestCompileBuiltinModuleWithInvalidSource(t *testing.T) {
 func TestReduce(t *testing.T) {
 	f := builtinsEnvironment().get("$reduce")
 
-	for _, ts := range [][2]*core.Thunk{
+	for _, ts := range [][2]core.Value{
 		{
 			core.PApp(f, core.Add, core.NewList(core.NewNumber(1), core.NewNumber(2), core.NewNumber(3))),
 			core.NewNumber(6),
@@ -58,7 +58,7 @@ func TestReduce(t *testing.T) {
 func TestReduceError(t *testing.T) {
 	f := builtinsEnvironment().get("$reduce")
 
-	for _, th := range []*core.Thunk{
+	for _, th := range []core.Value{
 		core.PApp(f, core.Add, core.EmptyList),
 		core.PApp(f, core.IsOrdered, core.EmptyList),
 	} {
@@ -70,7 +70,7 @@ func TestReduceError(t *testing.T) {
 func TestFilter(t *testing.T) {
 	f := builtinsEnvironment().get("$filter")
 
-	for _, ts := range [][2]*core.Thunk{
+	for _, ts := range [][2]core.Value{
 		{
 			core.PApp(f, core.IsOrdered, core.EmptyList),
 			core.EmptyList,
@@ -109,7 +109,7 @@ func BenchmarkFilterBare(b *testing.B) {
 
 	f := core.PApp(builtins.Y, core.NewLazyFunction(
 		core.NewSignature([]string{"me", "func", "list"}, nil, "", nil, nil, ""),
-		func(ts ...*core.Thunk) core.Value {
+		func(ts ...core.Value) core.Value {
 			f := ts[1]
 			l := ts[2]
 
@@ -133,7 +133,7 @@ func BenchmarkFilterBare(b *testing.B) {
 func TestSort(t *testing.T) {
 	go systemt.RunDaemons()
 
-	for _, ts := range [][2]*core.Thunk{
+	for _, ts := range [][2]core.Value{
 		{
 			core.EmptyList,
 			core.EmptyList,
@@ -261,21 +261,21 @@ func BenchmarkGoMap(b *testing.B) {
 
 var identity = core.NewLazyFunction(
 	core.NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		return ts[0]
 	})
 
-func many42() *core.Thunk {
+func many42() core.Value {
 	return core.PApp(core.PApp(builtins.Y, core.NewLazyFunction(
 		core.NewSignature([]string{"me"}, nil, "", nil, nil, ""),
-		func(ts ...*core.Thunk) core.Value {
+		func(ts ...core.Value) core.Value {
 			return core.PApp(core.Prepend, core.NewNumber(42), core.PApp(ts[0]))
 		})))
 }
 
-func randomNumberList(n int) *core.Thunk {
+func randomNumberList(n int) core.Value {
 	r := rand.New(rand.NewSource(42))
-	ts := make([]*core.Thunk, n)
+	ts := make([]core.Value, n)
 
 	for i := range ts {
 		ts[i] = core.NewNumber(r.Float64())

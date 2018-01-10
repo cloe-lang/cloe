@@ -7,5 +7,5 @@ import (
 )
 
 func TestPure(t *testing.T) {
-	assert.Equal(t, True.Eval(), PApp(Pure, PApp(impureFunction, True)).Eval())
+	assert.Equal(t, True, EvalPure(PApp(Pure, PApp(impureFunction, True))))
 }

@@ -8,8 +8,8 @@ import (
 	"github.com/coel-lang/coel/src/lib/core"
 )
 
-var predefined = func() map[string]*core.Thunk {
-	m := map[string]*core.Thunk{
+var predefined = func() map[string]core.Value {
+	m := map[string]core.Value{
 		"true":  core.True,
 		"false": core.False,
 		"nil":   core.Nil,
@@ -28,7 +28,7 @@ var predefined = func() map[string]*core.Thunk {
 
 // Convert converts a string into a scalar value of a number, string, bool, or
 // nil.
-func Convert(name string) (*core.Thunk, error) {
+func Convert(name string) (core.Value, error) {
 	if t, ok := predefined[name]; ok {
 		return t, nil
 	}

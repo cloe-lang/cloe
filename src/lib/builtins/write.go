@@ -19,7 +19,7 @@ var Write = core.NewEffectFunction(
 			core.NewOptionalArgument("mode", core.NewNumber(0664)),
 		}, "",
 	),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		sep, err := evalGoString(ts[1])
 
 		if err != nil {
@@ -69,7 +69,7 @@ var Write = core.NewEffectFunction(
 		return core.Nil
 	})
 
-func evalGoString(t *core.Thunk) (string, core.Value) {
+func evalGoString(t core.Value) (string, core.Value) {
 	s, err := t.EvalString()
 
 	if err != nil {
@@ -79,7 +79,7 @@ func evalGoString(t *core.Thunk) (string, core.Value) {
 	return string(s), nil
 }
 
-func evalFileArguments(f, m *core.Thunk) (*os.File, core.Value) {
+func evalFileArguments(f, m core.Value) (*os.File, core.Value) {
 	switch x := f.Eval().(type) {
 	case core.StringType:
 		m, e := m.EvalNumber()

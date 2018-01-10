@@ -10,23 +10,12 @@ type Signature struct {
 func NewSignature(
 	pr []string, po []OptionalArgument, pp string,
 	kr []string, ko []OptionalArgument, kk string) Signature {
-	return Signature{
-		positionals: halfSignature{
-			requireds: pr,
-			optionals: po,
-			rest:      pp,
-		},
-		keywords: halfSignature{
-			requireds: kr,
-			optionals: ko,
-			rest:      kk,
-		},
-	}
+	return Signature{halfSignature{pr, po, pp}, halfSignature{kr, ko, kk}}
 }
 
 // Bind binds Arguments to names defined in Signature and returns full
 // arguments to be passed to a function.
-func (s Signature) Bind(args Arguments) ([]*Thunk, *Thunk) {
+func (s Signature) Bind(args Arguments) ([]Value, Value) {
 	ps, err := s.positionals.bindPositionals(&args)
 
 	if err != nil {

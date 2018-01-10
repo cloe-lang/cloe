@@ -15,7 +15,7 @@ const responseChannelSize = 1024
 
 var getRequests = core.NewLazyFunction(
 	core.NewSignature([]string{"address"}, nil, "", nil, nil, ""),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		s, err := ts[0].EvalString()
 
 		if err != nil {
@@ -33,10 +33,10 @@ var getRequests = core.NewLazyFunction(
 
 		return core.PApp(core.PApp(builtins.Y, core.NewLazyFunction(
 			core.NewSignature([]string{"me"}, nil, "", nil, nil, ""),
-			func(ts ...*core.Thunk) core.Value {
+			func(ts ...core.Value) core.Value {
 				select {
 				case t := <-h.Requests:
-					return core.StrictPrepend([]*core.Thunk{t}, core.PApp(ts[0]))
+					return core.StrictPrepend([]core.Value{t}, core.PApp(ts[0]))
 				case err := <-ec:
 					return httpError(err)
 				}
@@ -44,13 +44,13 @@ var getRequests = core.NewLazyFunction(
 	})
 
 type handler struct {
-	Requests  chan *core.Thunk
+	Requests  chan core.Value
 	responses <-chan string
 }
 
 func newHandler() handler {
 	return handler{
-		make(chan *core.Thunk, requestChannelSize),
+		make(chan core.Value, requestChannelSize),
 		make(chan string, responseChannelSize),
 	}
 }
@@ -86,7 +86,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						},
 						"",
 					),
-					func(ts ...*core.Thunk) core.Value {
+					func(ts ...core.Value) core.Value {
 						defer wg.Done()
 
 						n, err := ts[1].EvalNumber()
@@ -107,7 +107,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							return err
 						}
 
-						if _, err := w.Write(([]byte)(s)); err != nil {
+						if _, err := w.Write([]byte(s)); err != nil {
 							return httpError(err)
 						}
 

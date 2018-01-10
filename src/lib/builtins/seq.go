@@ -4,10 +4,10 @@ import (
 	"github.com/coel-lang/coel/src/lib/core"
 )
 
-func createSeqFunction(f func(t *core.Thunk) core.Value) *core.Thunk {
+func createSeqFunction(f func(t core.Value) core.Value) core.Value {
 	return core.NewLazyFunction(
 		core.NewSignature(nil, nil, "args", nil, nil, ""),
-		func(ts ...*core.Thunk) core.Value {
+		func(ts ...core.Value) core.Value {
 			l := ts[0]
 
 			for {
@@ -26,7 +26,7 @@ func createSeqFunction(f func(t *core.Thunk) core.Value) *core.Thunk {
 }
 
 // Seq runs arguments of pure values sequentially and returns the last one.
-var Seq = createSeqFunction(func(t *core.Thunk) core.Value { return t.Eval() })
+var Seq = createSeqFunction(func(t core.Value) core.Value { return t.Eval() })
 
 // EffectSeq runs arguments of effects sequentially and returns the last one.
-var EffectSeq = createSeqFunction(func(t *core.Thunk) core.Value { return t.EvalEffect() })
+var EffectSeq = createSeqFunction(func(t core.Value) core.Value { return t.EvalEffect() })

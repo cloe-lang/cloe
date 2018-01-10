@@ -44,18 +44,18 @@ func TestWriteError(t *testing.T) {
 	defer os.Remove(d)
 
 	for _, a := range []core.Arguments{
-		core.NewPositionalArguments(core.NewError("", "")),
+		core.NewPositionalArguments(core.DummyError),
 		core.NewArguments(
-			[]core.PositionalArgument{core.NewPositionalArgument(core.NewError("", ""), true)},
+			[]core.PositionalArgument{core.NewPositionalArgument(core.DummyError, true)},
 			nil,
 			nil),
 		core.NewArguments(
 			[]core.PositionalArgument{
-				core.NewPositionalArgument(core.StrictPrepend([]*core.Thunk{core.Nil}, core.NewError("", "")), true),
+				core.NewPositionalArgument(core.StrictPrepend([]core.Value{core.Nil}, core.DummyError), true),
 			},
 			nil,
 			nil),
-		core.NewPositionalArguments(core.PApp(core.Prepend, core.Nil, core.NewError("", ""))),
+		core.NewPositionalArguments(core.PApp(core.Prepend, core.Nil, core.DummyError)),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},
 			[]core.KeywordArgument{core.NewKeywordArgument("sep", core.Nil)},
@@ -74,7 +74,7 @@ func TestWriteError(t *testing.T) {
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},
 			[]core.KeywordArgument{
-				core.NewKeywordArgument("file", core.NewError("", "")),
+				core.NewKeywordArgument("file", core.DummyError),
 			},
 			nil),
 		core.NewArguments(

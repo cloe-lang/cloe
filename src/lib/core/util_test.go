@@ -8,23 +8,23 @@ import (
 
 func TestDump(t *testing.T) {
 	for _, c := range []struct {
-		argument *Thunk
+		argument Value
 		answer   StringType
 	}{
 		{NewString("foo"), `"foo"`},
 		{NewList(NewString("foo")), `["foo"]`},
 		{NewDictionary([]KeyValue{{NewString("foo"), NewString("bar")}}), `{"foo" "bar"}`},
 	} {
-		assert.Equal(t, c.answer, PApp(Dump, c.argument).Eval().(StringType))
+		assert.Equal(t, c.answer, EvalPure(PApp(Dump, c.argument)).(StringType))
 	}
 }
 
 func TestDumpError(t *testing.T) {
-	for _, th := range []*Thunk{
-		OutOfRangeError(),
-		NewList(OutOfRangeError()),
+	for _, v := range []Value{
+		DummyError,
+		NewList(DummyError),
 	} {
-		v := PApp(Dump, th).Eval()
+		v := EvalPure(PApp(Dump, v))
 		t.Log(v)
 
 		_, ok := v.(ErrorType)
@@ -32,7 +32,7 @@ func TestDumpError(t *testing.T) {
 	}
 }
 
-func TestInternalStrictDumpPanic(t *testing.T) {
+func TestStrictDumpPanic(t *testing.T) {
 	defer func() {
 		assert.NotNil(t, recover())
 	}()
@@ -40,26 +40,18 @@ func TestInternalStrictDumpPanic(t *testing.T) {
 	StrictDump(nil)
 }
 
-func TestInternalStrictDumpPanicWithEffect(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	StrictDump(effectType{Nil})
-}
-
 func TestInternalStrictDumpFail(t *testing.T) {
-	for _, th := range []*Thunk{
-		NewList(OutOfRangeError()),
-		NewDictionary([]KeyValue{{Nil, OutOfRangeError()}}),
+	for _, v := range []Value{
+		NewList(DummyError),
+		NewDictionary([]KeyValue{{Nil, DummyError}}),
 	} {
-		_, err := StrictDump(th.Eval())
+		_, err := StrictDump(EvalPure(v))
 		assert.NotNil(t, err)
 	}
 }
 
 func TestStrictDump(t *testing.T) {
-	for _, th := range []*Thunk{
+	for _, v := range []Value{
 		Nil,
 		True,
 		False,
@@ -68,22 +60,22 @@ func TestStrictDump(t *testing.T) {
 		NewNumber(42),
 		NewString("foo"),
 	} {
-		s, err := StrictDump(th.Eval())
+		s, err := StrictDump(EvalPure(v))
 		assert.NotEqual(t, "", s)
 		assert.Nil(t, err)
 	}
 }
 
 func TestIdentity(t *testing.T) {
-	for _, th := range []*Thunk{Nil, NewNumber(42), True, False, NewString("foo")} {
-		assert.True(t, testEqual(PApp(identity, th), th))
+	for _, v := range []Value{Nil, NewNumber(42), True, False, NewString("foo")} {
+		assert.True(t, testEqual(PApp(identity, v), v))
 	}
 }
 
 func TestTypeOf(t *testing.T) {
 	for _, test := range []struct {
 		typ   string
-		thunk *Thunk
+		thunk Value
 	}{
 		{"nil", Nil},
 		{"list", EmptyList},
@@ -95,28 +87,20 @@ func TestTypeOf(t *testing.T) {
 		{"function", identity},
 		{"function", PApp(Partial, identity)},
 	} {
-		v := PApp(TypeOf, test.thunk).Eval()
+		v := EvalPure(PApp(TypeOf, test.thunk))
 		t.Log(v)
 		assert.Equal(t, test.typ, string(v.(StringType)))
 	}
 }
 
 func TestTypeOfError(t *testing.T) {
-	for _, th := range []*Thunk{
+	for _, v := range []Value{
 		NewError("MyError", "This is error."),
 		PApp(impureFunction, NewNumber(42)),
 	} {
-		v := PApp(TypeOf, th).Eval()
+		v = EvalPure(PApp(TypeOf, v))
 		_, ok := v.(ErrorType)
-		t.Log(v)
+		t.Logf("%#v\n", v)
 		assert.True(t, ok)
 	}
-}
-
-func TestTypeOfFail(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	PApp(TypeOf, Normal("foo")).Eval()
 }

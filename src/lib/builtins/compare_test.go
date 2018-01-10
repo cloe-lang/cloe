@@ -8,7 +8,7 @@ import (
 )
 
 func TestLessTrue(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{},
 		{core.NewNumber(42)},
 		{core.NewString("foo")},
@@ -27,7 +27,7 @@ func TestLessTrue(t *testing.T) {
 }
 
 func TestLessFalse(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{core.NewNumber(42), core.NewNumber(0)},
 		{core.NewNumber(0), core.NewNumber(42), core.NewNumber(42)},
 		{core.NewNumber(0), core.NewNumber(0), core.NewNumber(42)},
@@ -45,7 +45,7 @@ func TestLessFalse(t *testing.T) {
 }
 
 func TestLessError(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{core.Nil},
 		{core.True},
 		{core.False},
@@ -64,7 +64,7 @@ func TestLessNoPanic(t *testing.T) {
 	assert.NotPanics(t, func() {
 		core.App(Less, core.NewArguments(
 			[]core.PositionalArgument{
-				core.NewPositionalArgument(core.NewList(core.NewError("", ""), core.NewNumber(42)), true),
+				core.NewPositionalArgument(core.NewList(core.DummyError, core.NewNumber(42)), true),
 			},
 			nil,
 			nil)).Eval()
@@ -72,7 +72,7 @@ func TestLessNoPanic(t *testing.T) {
 }
 
 func TestLessEqTrue(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{},
 		{core.NewNumber(42)},
 		{core.NewString("foo")},
@@ -101,7 +101,7 @@ func TestLessEqTrue(t *testing.T) {
 }
 
 func TestLessEqFalse(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{core.NewNumber(42), core.NewNumber(0)},
 		{core.NewString("foo"), core.NewString("bar"), core.NewString("baz")},
 	} {
@@ -110,7 +110,7 @@ func TestLessEqFalse(t *testing.T) {
 }
 
 func TestGreaterTrue(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{},
 		{core.NewNumber(42)},
 		{core.NewString("foo")},
@@ -123,7 +123,7 @@ func TestGreaterTrue(t *testing.T) {
 }
 
 func TestGreaterFalse(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{core.NewNumber(42), core.NewNumber(2049)},
 		{core.NewString("bar"), core.NewString("baz")},
 		{core.NewNumber(42), core.NewNumber(42)},
@@ -134,7 +134,7 @@ func TestGreaterFalse(t *testing.T) {
 }
 
 func TestGreaterEqTrue(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{},
 		{core.NewNumber(42)},
 		{core.NewString("foo")},
@@ -150,7 +150,7 @@ func TestGreaterEqTrue(t *testing.T) {
 }
 
 func TestGreaterEqFalse(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{core.NewNumber(42), core.NewNumber(2049)},
 		{core.NewString("bar"), core.NewString("baz")},
 	} {

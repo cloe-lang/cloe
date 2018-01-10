@@ -13,7 +13,7 @@ const builtinsFilename = "<builtins>"
 var goBuiltins = func() environment {
 	e := newEnvironment(scalar.Convert)
 
-	for s, t := range map[string]*core.Thunk{
+	for s, t := range map[string]core.Value{
 		"if": core.If,
 
 		"partial": core.Partial,
@@ -65,7 +65,7 @@ var goBuiltins = func() environment {
 		e.set("$"+s, t)
 	}
 
-	for s, t := range map[string]*core.Thunk{
+	for s, t := range map[string]core.Value{
 		"matchError": core.NewError("MatchError", "A value didn't match with any pattern."),
 		"y":          builtins.Y,
 		"ys":         builtins.Ys,

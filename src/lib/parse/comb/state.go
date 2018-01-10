@@ -10,7 +10,7 @@ type State struct {
 
 // NewState creates a parser state.
 func NewState(source string) *State {
-	return &State{source: ([]rune)(source)}
+	return &State{source: []rune(source)}
 }
 
 func (s State) exhausted() bool {

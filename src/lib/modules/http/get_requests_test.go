@@ -49,7 +49,7 @@ func TestGetRequests(t *testing.T) {
 	assert.Equal(t, "Hello, world!", <-rc)
 }
 
-func testRequest(t *testing.T, th *core.Thunk) {
+func testRequest(t *testing.T, th core.Value) {
 	assert.Equal(t, core.NewString("").Eval(), core.PApp(th, core.NewString("body")).Eval())
 	assert.Equal(t, core.NewString("GET").Eval(), core.PApp(th, core.NewString("method")).Eval())
 	assert.Equal(t,

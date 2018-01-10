@@ -17,13 +17,13 @@ func TestNewArguments(t *testing.T) {
 
 func TestArgumentsEmpty(t *testing.T) {
 	for _, a := range []Arguments{
-		NewArguments(nil, nil, []*Thunk{Nil}),
-		NewArguments(nil, nil, []*Thunk{NewDictionary([]KeyValue{{Nil, Nil}})}),
+		NewArguments(nil, nil, []Value{Nil}),
+		NewArguments(nil, nil, []Value{NewDictionary([]KeyValue{{Nil, Nil}})}),
 	} {
-		th := a.empty()
-		assert.NotEqual(t, (*Thunk)(nil), th)
-		v := th.Eval()
-		t.Log(v)
+		v := a.empty()
+		assert.NotNil(t, v)
+		v = EvalPure(v)
+		t.Logf("%#v\n", v)
 		_, ok := v.(ErrorType)
 		assert.True(t, ok)
 	}
@@ -32,10 +32,10 @@ func TestArgumentsEmpty(t *testing.T) {
 func TestArgumentsMerge(t *testing.T) {
 	a := NewArguments([]PositionalArgument{NewPositionalArgument(NewList(Nil), true)}, nil, nil)
 	a = a.Merge(a)
-	assert.Equal(t, NumberType(2), PApp(Size, a.restPositionals()).Eval().(NumberType))
+	assert.Equal(t, NewNumber(2), EvalPure(PApp(Size, a.restPositionals())))
 }
 
 func TestArgumentsRestKeywords(t *testing.T) {
-	a := NewArguments(nil, nil, []*Thunk{NewError("MyError", "")})
-	assert.Equal(t, a.restKeywords().Eval().(ErrorType).Name(), "MyError")
+	a := NewArguments(nil, nil, []Value{NewError("MyError", "")})
+	assert.Equal(t, "MyError", EvalPure(a.restKeywords()).(ErrorType).Name())
 }

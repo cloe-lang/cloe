@@ -10,7 +10,7 @@ import (
 func TestFind(t *testing.T) {
 	for _, c := range []struct {
 		pattern, src string
-		answer       *core.Thunk
+		answer       core.Value
 	}{
 		{"foo", "f", core.Nil},
 		{"foo", "foo", core.NewList(core.NewString("foo"))},
@@ -33,7 +33,7 @@ func TestFind(t *testing.T) {
 }
 
 func TestFindError(t *testing.T) {
-	for _, th := range []*core.Thunk{
+	for _, th := range []core.Value{
 		core.PApp(find),
 		core.PApp(find, core.NewString("foo")),
 		core.PApp(find, core.NewString("foo"), core.Nil),

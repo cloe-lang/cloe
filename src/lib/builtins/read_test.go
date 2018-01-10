@@ -14,10 +14,10 @@ func TestReadWithStdin(t *testing.T) {
 }
 
 func TestReadError(t *testing.T) {
-	for _, th := range []*core.Thunk{
+	for _, th := range []core.Value{
 		core.True,
 		core.NewString("nonExistentFile"),
-		core.NewError("", ""),
+		core.DummyError,
 	} {
 		_, ok := core.PApp(Read, th).Eval().(core.ErrorType)
 		assert.True(t, ok)

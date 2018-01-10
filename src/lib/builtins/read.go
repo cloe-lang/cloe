@@ -11,13 +11,13 @@ import (
 // Read reads a string from stdin or a file.
 var Read = createReadFunction(os.Stdin)
 
-func createReadFunction(stdin io.Reader) *core.Thunk {
+func createReadFunction(stdin io.Reader) core.Value {
 	return core.NewLazyFunction(
 		core.NewSignature(
 			nil, []core.OptionalArgument{core.NewOptionalArgument("file", core.Nil)}, "",
 			nil, nil, "",
 		),
-		func(ts ...*core.Thunk) core.Value {
+		func(ts ...core.Value) core.Value {
 			file := stdin
 
 			switch x := ts[0].Eval().(type) {

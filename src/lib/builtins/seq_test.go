@@ -8,7 +8,7 @@ import (
 )
 
 func TestSeq(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{core.Nil},
 		{core.Nil, core.Nil},
 	} {
@@ -22,7 +22,7 @@ func TestSeq(t *testing.T) {
 func TestSeqWithEffects(t *testing.T) {
 	w := core.PApp(Write, core.Nil)
 
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{w},
 		{w, w},
 	} {
@@ -42,7 +42,7 @@ func TestEffectSeq(t *testing.T) {
 }
 
 func TestEffectSeqWithPureValues(t *testing.T) {
-	for _, ts := range [][]*core.Thunk{
+	for _, ts := range [][]core.Value{
 		{core.Nil},
 		{core.Nil, core.Nil},
 	} {

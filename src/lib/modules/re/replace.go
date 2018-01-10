@@ -8,7 +8,7 @@ import (
 
 var replace = core.NewLazyFunction(
 	core.NewSignature([]string{"pattern", "repl", "src"}, nil, "", nil, nil, ""),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		ss, e := evaluateStringArguments(ts)
 
 		if e != nil {

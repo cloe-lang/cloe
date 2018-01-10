@@ -13,6 +13,6 @@ func NewKeywordArgument(n string, v interface{}) KeywordArgument {
 	return KeywordArgument{n, v}
 }
 
-func (k KeywordArgument) interpret(args []*core.Thunk) core.KeywordArgument {
+func (k KeywordArgument) interpret(args []core.Value) core.KeywordArgument {
 	return core.NewKeywordArgument(k.name, interpretExpression(args, k.value))
 }

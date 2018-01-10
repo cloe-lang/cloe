@@ -4,19 +4,15 @@ import (
 	"fmt"
 )
 
-func sprint(x interface{}) StringType {
-	return StringType(fmt.Sprint(x))
-}
-
-type dumpable interface {
-	dump() Value
+func sprint(s stringable) StringType {
+	return NewString(fmt.Sprint(s))
 }
 
 // Dump dumps a value into a string type value.
 var Dump = NewLazyFunction(
 	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		s, err := StrictDump(ts[0].Eval())
+	func(vs ...Value) Value {
+		s, err := StrictDump(vs[0])
 
 		if err != nil {
 			return err
@@ -27,47 +23,36 @@ var Dump = NewLazyFunction(
 
 // StrictDump is a variant of Dump which evaluates input strictly.
 func StrictDump(v Value) (StringType, Value) {
-	switch x := ensureNormal(v).(type) {
+	switch x := EvalPure(v).(type) {
 	case ErrorType:
 		return "", x
-	case dumpable:
-		v = x.dump()
+	case StringType:
+		v = x.quoted()
 	case stringable:
 		v = x.string()
 	default:
 		panic(fmt.Errorf("Invalid value: %#v", x))
 	}
 
-	s, ok := ensureNormal(v).(StringType)
+	s, err := EvalString(v)
 
-	if !ok {
-		return "", NotStringError(v).Eval()
+	if err != nil {
+		return "", err
 	}
 
 	return s, nil
 }
 
-// ensureNormal evaluates nested thunks into WHNF values.
-// This function must be used with care because it prevents tail call
-// elimination.
-func ensureNormal(v Value) Value {
-	if t, ok := v.(*Thunk); ok {
-		return t.Eval()
-	}
-
-	return v
-}
-
 var identity = NewLazyFunction(
 	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value { return ts[0] })
+	func(vs ...Value) Value { return vs[0] })
 
 // TypeOf returns a type name of an argument as a string.
 var TypeOf = NewLazyFunction(
 	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value {
+	func(vs ...Value) Value {
 		// No case of effectType should be here.
-		switch v := ts[0].Eval().(type) {
+		switch v := EvalPure(vs[0]).(type) {
 		case BoolType:
 			return NewString("bool")
 		case DictionaryType:
@@ -80,12 +65,8 @@ var TypeOf = NewLazyFunction(
 			return NewString("number")
 		case StringType:
 			return NewString("string")
-
-		case functionType:
+		case FunctionType:
 			return NewString("function")
-		case RawFunctionType:
-			return NewString("function")
-
 		case ErrorType:
 			return v
 		}

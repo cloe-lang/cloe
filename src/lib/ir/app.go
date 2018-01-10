@@ -17,7 +17,7 @@ func NewApp(f interface{}, args Arguments, info *debug.Info) App {
 	return App{f, args, info}
 }
 
-func (app App) interpret(args []*core.Thunk) *core.Thunk {
+func (app App) interpret(args []core.Value) core.Value {
 	ps := make([]core.PositionalArgument, 0, len(app.args.positionals))
 
 	for _, p := range app.args.positionals {
@@ -30,7 +30,7 @@ func (app App) interpret(args []*core.Thunk) *core.Thunk {
 		ks = append(ks, k.interpret(args))
 	}
 
-	ds := make([]*core.Thunk, 0, len(app.args.expandedDicts))
+	ds := make([]core.Value, 0, len(app.args.expandedDicts))
 
 	for _, d := range app.args.expandedDicts {
 		ds = append(ds, interpretExpression(args, d))

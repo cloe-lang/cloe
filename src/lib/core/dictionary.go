@@ -11,22 +11,23 @@ type DictionaryType struct {
 	rbt.Dictionary
 }
 
-var (
-	emptyDictionary = DictionaryType{rbt.NewDictionary(compare)}
+// Eval evaluates a value into a WHNF.
+func (d DictionaryType) eval() Value {
+	return d
+}
 
-	// EmptyDictionary is a thunk of an empty dictionary.
-	EmptyDictionary = Normal(emptyDictionary)
-)
+// EmptyDictionary is a thunk of an empty dictionary.
+var EmptyDictionary = DictionaryType{rbt.NewDictionary(compare)}
 
 // KeyValue is a pair of a key and value inserted into dictionaries.
 type KeyValue struct {
-	Key, Value *Thunk
+	Key, Value Value
 }
 
 // NewDictionary creates a dictionary from keys of values and their
 // corresponding values of thunks.
-func NewDictionary(kvs []KeyValue) *Thunk {
-	d := EmptyDictionary
+func NewDictionary(kvs []KeyValue) Value {
+	d := Value(EmptyDictionary)
 
 	for _, kv := range kvs {
 		d = PApp(Insert, d, kv.Key, kv.Value)
@@ -36,13 +37,13 @@ func NewDictionary(kvs []KeyValue) *Thunk {
 }
 
 func (d DictionaryType) call(args Arguments) Value {
-	return Index.Eval().(callable).call(NewPositionalArguments(Normal(d)).Merge(args))
+	return Index.call(NewPositionalArguments(d).Merge(args))
 }
 
 func (d DictionaryType) index(v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
-			result = r
+			result = r.(Value)
 		}
 	}()
 
@@ -59,51 +60,50 @@ func (d DictionaryType) index(v Value) (result Value) {
 	return keyNotFoundError(k)
 }
 
-func (d DictionaryType) insert(v Value, t *Thunk) (result Value) {
+func (d DictionaryType) insert(k Value, v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
-			result = r
+			result = r.(Value)
 		}
 	}()
 
-	if _, ok := v.(comparable); !ok {
-		return notComparableError(v)
+	if _, ok := k.(comparable); !ok {
+		return notComparableError(k)
 	}
 
-	return d.Insert(v, t)
+	return d.Insert(k, v)
 }
 
 func (d DictionaryType) toList() (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
-			result = r
+			result = r.(Value)
 		}
 	}()
 
 	k, v, rest := d.FirstRest()
 
 	if k == nil {
-		return emptyList
+		return EmptyList
 	}
 
 	return cons(
-		NewList(Normal(k), v),
-		PApp(ToList, Normal(rest)))
+		NewList(k, v),
+		PApp(ToList, rest))
 }
 
-func (d DictionaryType) merge(ts ...*Thunk) (result Value) {
+func (d DictionaryType) merge(vs ...Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
-			result = r
+			result = r.(Value)
 		}
 	}()
 
-	for _, t := range ts {
-		v := t.Eval()
-		dd, ok := v.(DictionaryType)
+	for _, v := range vs {
+		dd, err := EvalDictionary(v)
 
-		if !ok {
-			return NotDictionaryError(v)
+		if err != nil {
+			return err
 		}
 
 		d = d.Merge(dd)
@@ -115,7 +115,7 @@ func (d DictionaryType) merge(ts ...*Thunk) (result Value) {
 func (d DictionaryType) delete(v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
-			result = r
+			result = r.(Value)
 		}
 	}()
 
@@ -129,18 +129,14 @@ func (d DictionaryType) compare(c comparable) int {
 func (d DictionaryType) string() (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
-			result = r
+			result = r.(Value)
 		}
 	}()
 
 	ss := []string{}
 
 	for !d.Empty() {
-		var (
-			k Value
-			v *Thunk
-		)
-
+		var k, v Value
 		k, v, d = d.FirstRest()
 
 		sk, err := StrictDump(k)
@@ -149,7 +145,7 @@ func (d DictionaryType) string() (result Value) {
 			return err
 		}
 
-		sv, err := StrictDump(v.Eval())
+		sv, err := StrictDump(EvalPure(v))
 
 		if err != nil {
 			return err
@@ -158,17 +154,17 @@ func (d DictionaryType) string() (result Value) {
 		ss = append(ss, string(sk), string(sv))
 	}
 
-	return StringType("{" + strings.Join(ss, " ") + "}")
+	return NewString("{" + strings.Join(ss, " ") + "}")
 }
 
 func (d DictionaryType) size() Value {
-	return NumberType(d.Size())
+	return NewNumber(float64(d.Size()))
 }
 
 func (d DictionaryType) include(v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
-			result = r
+			result = r.(Value)
 		}
 	}()
 
@@ -177,19 +173,19 @@ func (d DictionaryType) include(v Value) (result Value) {
 }
 
 // Insert wraps rbt.Dictionary.Insert().
-func (d DictionaryType) Insert(k Value, v *Thunk) DictionaryType {
+func (d DictionaryType) Insert(k Value, v Value) DictionaryType {
 	return DictionaryType{d.Dictionary.Insert(k, v)}
 }
 
 // Search wraps rbt.Dictionary.Search().
-func (d DictionaryType) Search(k Value) (*Thunk, bool) {
+func (d DictionaryType) Search(k Value) (Value, bool) {
 	v, ok := d.Dictionary.Search(k)
 
 	if !ok {
 		return nil, false
 	}
 
-	return v.(*Thunk), true
+	return v.(Value), true
 }
 
 // Remove wraps rbt.Dictionary.Remove().
@@ -198,7 +194,7 @@ func (d DictionaryType) Remove(k Value) DictionaryType {
 }
 
 // FirstRest wraps rbt.Dictionary.FirstRest().
-func (d DictionaryType) FirstRest() (Value, *Thunk, DictionaryType) {
+func (d DictionaryType) FirstRest() (Value, Value, DictionaryType) {
 	k, v, rest := d.Dictionary.FirstRest()
 	d = DictionaryType{rest}
 
@@ -206,7 +202,7 @@ func (d DictionaryType) FirstRest() (Value, *Thunk, DictionaryType) {
 		return nil, nil, d
 	}
 
-	return k.(Value), v.(*Thunk), d
+	return k.(Value), v.(Value), d
 }
 
 // Merge wraps rbt.Dictionary.Merge().

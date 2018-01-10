@@ -9,7 +9,7 @@ import (
 
 func TestEncode(t *testing.T) {
 	for _, c := range []struct {
-		value  *core.Thunk
+		value  core.Value
 		answer string
 	}{
 		{core.True, `true`},
@@ -47,7 +47,7 @@ func TestEncode(t *testing.T) {
 }
 
 func TestEncodeAndDecode(t *testing.T) {
-	for _, th := range []*core.Thunk{
+	for _, th := range []core.Value{
 		core.True,
 		core.False,
 		core.NewNumber(123),
@@ -71,7 +71,7 @@ func TestEncodeAndDecode(t *testing.T) {
 
 		assert.True(t, ok)
 
-		b, ok := core.PApp(core.Equal, th, core.PApp(decode, core.Normal(s))).Eval().(core.BoolType)
+		b, ok := core.PApp(core.Equal, th, core.PApp(decode, s)).Eval().(core.BoolType)
 
 		assert.True(t, ok)
 		assert.True(t, bool(b))
@@ -79,14 +79,14 @@ func TestEncodeAndDecode(t *testing.T) {
 }
 
 func TestEncodeWithInvalidArguments(t *testing.T) {
-	for _, th := range []*core.Thunk{
+	for _, th := range []core.Value{
 		core.If,
 		core.ValueError("It's wrong."),
 		core.PApp(core.Prepend, core.Nil, core.ValueError("Not a list")),
 		core.NewList(core.ValueError("")),
 		core.PApp(core.Insert, core.EmptyDictionary, core.NewString("foo"), core.ValueError("")),
-		core.NewDictionary([]core.KeyValue{{core.NewList(core.NewError("", "")), core.Nil}}),
-		core.NewDictionary([]core.KeyValue{{core.Nil, core.NewError("", "")}}),
+		core.NewDictionary([]core.KeyValue{{core.NewList(core.DummyError), core.Nil}}),
+		core.NewDictionary([]core.KeyValue{{core.Nil, core.DummyError}}),
 	} {
 		_, ok := core.PApp(encode, th).Eval().(core.ErrorType)
 		assert.True(t, ok)

@@ -277,8 +277,8 @@ func (n *node) checkColors() bool {
 	}
 
 	if n.color == red &&
-		((n.left != nil && n.left.color == red) ||
-			(n.right != nil && n.right.color == red)) {
+		(n.left != nil && n.left.color == red ||
+			n.right != nil && n.right.color == red) {
 		return false
 	}
 

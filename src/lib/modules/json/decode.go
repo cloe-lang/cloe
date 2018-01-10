@@ -7,7 +7,7 @@ import (
 
 var decode = core.NewLazyFunction(
 	core.NewSignature([]string{"encoded"}, nil, "", nil, nil, ""),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		s, err := ts[0].EvalString()
 
 		if err != nil {
@@ -17,7 +17,7 @@ var decode = core.NewLazyFunction(
 		return decodeString(string(s))
 	})
 
-func decodeString(s string) *core.Thunk {
+func decodeString(s string) core.Value {
 	j, err := gabs.ParseJSON([]byte(s))
 
 	if err != nil {
@@ -27,14 +27,14 @@ func decodeString(s string) *core.Thunk {
 	return convertToValue(j.Data())
 }
 
-func convertToValue(x interface{}) *core.Thunk {
+func convertToValue(x interface{}) core.Value {
 	if x == nil {
 		return core.Nil
 	}
 
 	switch x := x.(type) {
 	case []interface{}:
-		ts := []*core.Thunk{}
+		ts := []core.Value{}
 
 		for _, y := range x {
 			ts = append(ts, convertToValue(y))

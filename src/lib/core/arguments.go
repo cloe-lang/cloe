@@ -5,19 +5,19 @@ package core
 // guaranteed by Thunks that arguments objects are never reused as a function
 // call creates a Thunk.
 type Arguments struct {
-	positionals   []*Thunk
-	expandedList  *Thunk
+	positionals   []Value
+	expandedList  Value
 	keywords      []KeywordArgument
-	expandedDicts []*Thunk
+	expandedDicts []Value
 }
 
 // NewArguments creates a new Arguments.
 func NewArguments(
 	ps []PositionalArgument,
 	ks []KeywordArgument,
-	ds []*Thunk) Arguments {
-	ts := make([]*Thunk, 0, len(ps))
-	l := (*Thunk)(nil)
+	ds []Value) Arguments {
+	vs := make([]Value, 0, len(ps))
+	l := Value(nil)
 
 	for i, p := range ps {
 		if p.expanded {
@@ -25,25 +25,25 @@ func NewArguments(
 			break
 		}
 
-		ts = append(ts, p.value)
+		vs = append(vs, p.value)
 	}
 
-	return Arguments{ts, l, ks, ds}
+	return Arguments{vs, l, ks, ds}
 }
 
 // NewPositionalArguments creates an Arguments which consists of unexpanded
 // positional arguments.
-func NewPositionalArguments(ts ...*Thunk) Arguments {
-	return Arguments{ts, nil, nil, nil}
+func NewPositionalArguments(vs ...Value) Arguments {
+	return Arguments{vs, nil, nil, nil}
 }
 
-func mergePositionalArguments(ps []PositionalArgument) *Thunk {
-	t := EmptyList
+func mergePositionalArguments(ps []PositionalArgument) Value {
+	v := Value(EmptyList)
 
 	// Optimization for a common pattern of (func a b c ... ..xs).
 	// Note that Merge is O(n) but Prepend is O(1).
 	if last := len(ps) - 1; ps[last].expanded {
-		t = ps[last].value
+		v = ps[last].value
 		ps = ps[:last]
 	}
 
@@ -51,20 +51,20 @@ func mergePositionalArguments(ps []PositionalArgument) *Thunk {
 		p := ps[i]
 
 		if p.expanded {
-			t = PApp(Merge, p.value, t)
+			v = PApp(Merge, p.value, v)
 		} else {
-			t = Normal(cons(p.value, t))
+			v = cons(p.value, v)
 		}
 	}
 
-	return t
+	return v
 }
 
-func (args *Arguments) nextPositional() *Thunk {
+func (args *Arguments) nextPositional() Value {
 	if len(args.positionals) != 0 {
-		t := args.positionals[0]
+		v := args.positionals[0]
 		args.positionals = args.positionals[1:]
-		return t
+		return v
 	}
 
 	if args.expandedList == nil {
@@ -76,22 +76,22 @@ func (args *Arguments) nextPositional() *Thunk {
 	return PApp(First, l)
 }
 
-func (args *Arguments) restPositionals() *Thunk {
-	ts := args.positionals
+func (args *Arguments) restPositionals() Value {
+	vs := args.positionals
 	l := args.expandedList
 	args.positionals = nil
 	args.expandedList = nil
 
 	if l == nil {
-		return NewList(ts...)
-	} else if len(ts) == 0 {
+		return NewList(vs...)
+	} else if len(vs) == 0 {
 		return l
 	}
 
-	return StrictPrepend(ts, l)
+	return StrictPrepend(vs, l)
 }
 
-func (args *Arguments) searchKeyword(s string) *Thunk {
+func (args *Arguments) searchKeyword(s string) Value {
 	for i, k := range args.keywords {
 		if s == k.name {
 			args.keywords = append(args.keywords[:i], args.keywords[i+1:]...)
@@ -99,21 +99,20 @@ func (args *Arguments) searchKeyword(s string) *Thunk {
 		}
 	}
 
-	for i, t := range args.expandedDicts {
-		v := t.Eval()
-		d, ok := v.(DictionaryType)
+	for i, v := range args.expandedDicts {
+		d, ok := EvalPure(v).(DictionaryType)
 
 		if !ok {
 			return NotDictionaryError(v)
 		}
 
-		k := StringType(s)
+		k := NewString(s)
 
 		// Using DictionaryType.{Search,Remove} methods is safe here
 		// because the key is always StringType.
 		if v, ok := d.Search(k); ok {
-			args.expandedDicts = append([]*Thunk{}, args.expandedDicts...)
-			args.expandedDicts[i] = Normal(d.Remove(k))
+			args.expandedDicts = append([]Value{}, args.expandedDicts...)
+			args.expandedDicts[i] = d.Remove(k)
 			return v
 		}
 	}
@@ -121,21 +120,21 @@ func (args *Arguments) searchKeyword(s string) *Thunk {
 	return nil
 }
 
-func (args *Arguments) restKeywords() *Thunk {
+func (args *Arguments) restKeywords() Value {
 	ks := args.keywords
 	ds := args.expandedDicts
 	args.keywords = nil
 	args.expandedDicts = nil
 
-	d := emptyDictionary
+	d := EmptyDictionary
 
 	for _, k := range ks {
 		// Using DictionaryType.Insert method is safe here
 		// because the key is always StringType.
-		d = d.Insert(StringType(k.name), k.value)
+		d = d.Insert(NewString(k.name), k.value)
 	}
 
-	return PApp(Merge, append([]*Thunk{Normal(d)}, ds...)...)
+	return PApp(Merge, append([]Value{d}, ds...)...)
 }
 
 // Merge merges 2 sets of arguments into one.
@@ -147,7 +146,7 @@ func (args Arguments) Merge(old Arguments) Arguments {
 		return Arguments{append(args.positionals, old.positionals...), old.expandedList, ks, ds}
 	}
 
-	l := EmptyList
+	l := Value(EmptyList)
 
 	if old.expandedList != nil {
 		l = old.expandedList
@@ -161,7 +160,7 @@ func (args Arguments) Merge(old Arguments) Arguments {
 	}
 }
 
-func (args Arguments) empty() *Thunk {
+func (args Arguments) empty() Value {
 	if len(args.positionals) > 0 {
 		return argumentError("%d positional arguments are left", len(args.positionals))
 	}
@@ -172,7 +171,7 @@ func (args Arguments) empty() *Thunk {
 	n := 0
 
 	for _, t := range args.expandedDicts {
-		v := t.Eval()
+		v := EvalPure(t)
 		d, ok := v.(DictionaryType)
 
 		if !ok {
@@ -182,7 +181,7 @@ func (args Arguments) empty() *Thunk {
 		n += d.Size()
 	}
 
-	if n != 0 || args.keywords != nil && len(args.keywords) > 0 {
+	if n != 0 || len(args.keywords) > 0 {
 		return argumentError("%d keyword arguments are left", len(args.keywords)+n)
 	}
 

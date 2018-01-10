@@ -29,18 +29,18 @@ func TestSignatureBind(t *testing.T) {
 		},
 		{
 			NewSignature(nil, nil, "", []string{"foo"}, nil, ""),
-			NewArguments(nil, nil, []*Thunk{NewDictionary([]KeyValue{{NewString("foo"), Nil}})}),
+			NewArguments(nil, nil, []Value{NewDictionary([]KeyValue{{NewString("foo"), Nil}})}),
 		},
 		{
 			NewSignature(nil, nil, "", nil, nil, "foo"),
 			NewArguments(
 				nil,
 				[]KeywordArgument{NewKeywordArgument("foo", Nil)},
-				[]*Thunk{NewDictionary([]KeyValue{{NewString("bar"), Nil}})})},
+				[]Value{NewDictionary([]KeyValue{{NewString("bar"), Nil}})})},
 	} {
-		ts, err := c.signature.Bind(c.arguments)
-		assert.Equal(t, c.signature.arity(), len(ts))
-		assert.Equal(t, (*Thunk)(nil), err)
+		vs, err := c.signature.Bind(c.arguments)
+		assert.Equal(t, c.signature.arity(), len(vs))
+		assert.Equal(t, Value(nil), err)
 	}
 }
 
@@ -51,7 +51,7 @@ func TestSignatureBindError(t *testing.T) {
 	}{
 		{
 			NewSignature(nil, nil, "", []string{"foo"}, nil, ""),
-			NewArguments(nil, nil, []*Thunk{Nil}),
+			NewArguments(nil, nil, []Value{Nil}),
 		},
 		{
 			NewSignature([]string{"x"}, nil, "", nil, nil, ""),
@@ -71,7 +71,7 @@ func TestSignatureBindError(t *testing.T) {
 		},
 	} {
 		_, err := c.signature.Bind(c.arguments)
-		assert.NotEqual(t, (*Thunk)(nil), err)
+		assert.NotEqual(t, Value(nil), err)
 	}
 }
 
@@ -81,8 +81,8 @@ func TestSignatureBindExpandedDictionaries(t *testing.T) {
 			[]string{"collection", "key", "value"}, nil, "",
 			nil, nil, "",
 		),
-		func(ts ...*Thunk) (result Value) {
-			return PApp(Insert, ts...)
+		func(vs ...Value) (result Value) {
+			return PApp(Insert, vs...)
 		})
 
 	f := App(Partial, NewArguments(
@@ -91,16 +91,16 @@ func TestSignatureBindExpandedDictionaries(t *testing.T) {
 			NewPositionalArgument(EmptyDictionary, false),
 		},
 		nil,
-		[]*Thunk{NewDictionary([]KeyValue{{NewString("key"), True}})}))
+		[]Value{NewDictionary([]KeyValue{{NewString("key"), True}})}))
 
-	v := App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("value", NewNumber(42))}, nil)).Eval()
+	v := EvalPure(App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("value", NewNumber(42))}, nil)))
 
 	_, ok := v.(DictionaryType)
 	assert.True(t, ok)
 
 	// Check if the Arguments passed to Partial is persistent.
 
-	v = App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("value", NewNumber(42))}, nil)).Eval()
+	v = EvalPure(App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("value", NewNumber(42))}, nil)))
 
 	_, ok = v.(DictionaryType)
 	assert.True(t, ok)

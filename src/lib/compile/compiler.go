@@ -114,7 +114,7 @@ func (c *compiler) compileSubModule(path string) (module, error) {
 	return c.env.toMap(), nil
 }
 
-func (c *compiler) exprToThunk(expr interface{}) *core.Thunk {
+func (c *compiler) exprToThunk(expr interface{}) core.Value {
 	return core.PApp(ir.CompileFunction(
 		core.NewSignature(nil, nil, "", nil, nil, ""),
 		nil,

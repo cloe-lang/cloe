@@ -66,7 +66,7 @@ end
 task :format do
   sh 'go fix ./...'
   sh 'go fmt ./...'
-  sh 'gofmt -s -w .'
+  sh 'gofmt -r "(a) -> a" -s -w .'
   sh 'goimports -w .'
 
   sh 'rubocop -a'

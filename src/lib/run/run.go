@@ -34,7 +34,7 @@ func Run(os []compile.Effect) {
 	wg.Wait()
 }
 
-func evalEffectList(t *core.Thunk, parent *sync.WaitGroup, fail func(error)) {
+func evalEffectList(t core.Value, parent *sync.WaitGroup, fail func(error)) {
 	wg := sync.WaitGroup{}
 	defer func() {
 		wg.Wait()
@@ -58,7 +58,7 @@ func evalEffectList(t *core.Thunk, parent *sync.WaitGroup, fail func(error)) {
 	}
 }
 
-func runEffect(t *core.Thunk, wg *sync.WaitGroup, fail func(error)) {
+func runEffect(t core.Value, wg *sync.WaitGroup, fail func(error)) {
 	defer func() {
 		<-sem
 		wg.Done()

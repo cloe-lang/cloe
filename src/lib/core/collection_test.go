@@ -7,13 +7,13 @@ import (
 )
 
 func TestCollectionIncludeWithErrorElement(t *testing.T) {
-	v := PApp(Include, NewList(Nil), OutOfRangeError()).Eval()
-	_, ok := v.(ErrorType)
+	_, ok := EvalPure(PApp(Include, NewList(Nil), DummyError)).(ErrorType)
 	assert.True(t, ok)
 }
 
 func TestCollectionFunctionsError(t *testing.T) {
-	for _, th := range []*Thunk{
+	for _, v := range []Value{
+		PApp(Index, Nil, Nil),
 		PApp(Index, Nil, Nil),
 		PApp(Include, Nil, Nil),
 		App(
@@ -28,21 +28,21 @@ func TestCollectionFunctionsError(t *testing.T) {
 			NewArguments(
 				[]PositionalArgument{
 					NewPositionalArgument(EmptyDictionary, false),
-					NewPositionalArgument(StrictPrepend([]*Thunk{Nil}, EmptyDictionary), true),
+					NewPositionalArgument(StrictPrepend([]Value{Nil}, EmptyDictionary), true),
 				}, nil, nil)),
 		App(
 			Insert,
 			NewArguments(
 				[]PositionalArgument{
 					NewPositionalArgument(EmptyDictionary, false),
-					NewPositionalArgument(StrictPrepend([]*Thunk{Nil, Nil}, EmptyDictionary), true),
+					NewPositionalArgument(StrictPrepend([]Value{Nil, Nil}, EmptyDictionary), true),
 				}, nil, nil)),
 		App(
 			Insert,
 			NewArguments(
 				[]PositionalArgument{
 					NewPositionalArgument(EmptyDictionary, false),
-					NewPositionalArgument(StrictPrepend([]*Thunk{Nil, Nil, Nil}, EmptyDictionary), true),
+					NewPositionalArgument(StrictPrepend([]Value{Nil, Nil, Nil}, EmptyDictionary), true),
 				}, nil, nil)),
 		PApp(Merge, Nil),
 		App(
@@ -57,21 +57,23 @@ func TestCollectionFunctionsError(t *testing.T) {
 			NewArguments(
 				[]PositionalArgument{
 					NewPositionalArgument(EmptyList, false),
-					NewPositionalArgument(StrictPrepend([]*Thunk{Nil}, EmptyDictionary), true),
+					NewPositionalArgument(StrictPrepend([]Value{Nil}, EmptyDictionary), true),
 				}, nil, nil)),
 		PApp(Size, Nil),
 		PApp(ToList, Nil),
 	} {
-		v := th.Eval()
-		err, ok := v.(ErrorType)
+		err, ok := EvalPure(v).(ErrorType)
 		assert.True(t, ok)
 		assert.Equal(t, "TypeError", err.name)
 	}
 }
 
 func TestIndexChain(t *testing.T) {
-	for _, ths := range [][2]*Thunk{
-		{PApp(NewList(NewList(Nil)), NewNumber(1), NewNumber(1)), Nil},
+	for _, vs := range [][2]Value{
+		{
+			PApp(NewList(NewList(Nil)), NewNumber(1), NewNumber(1)),
+			Nil,
+		},
 		{
 			PApp(
 				NewDictionary([]KeyValue{{Nil, NewDictionary([]KeyValue{{True, False}})}}),
@@ -80,22 +82,22 @@ func TestIndexChain(t *testing.T) {
 			False,
 		},
 	} {
-		assert.Equal(t, ths[1].Eval(), ths[0].Eval())
+		assert.Equal(t, EvalPure(vs[1]), EvalPure(vs[0]))
 	}
 }
 
 func TestIndexWithInvalidRestArguments(t *testing.T) {
-	e, ok := App(
+	e, ok := EvalPure(App(
 		NewList(Nil),
 		NewArguments(
 			[]PositionalArgument{NewPositionalArgument(NewError("FooError", "Hi!"), true)},
 			nil,
-			nil)).Eval().(ErrorType)
+			nil))).(ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "FooError", e.Name())
 
-	e, ok = App(
+	e, ok = EvalPure(App(
 		NewList(Nil),
 		NewArguments(
 			[]PositionalArgument{
@@ -103,17 +105,17 @@ func TestIndexWithInvalidRestArguments(t *testing.T) {
 				NewPositionalArgument(NewError("FooError", "Hi!"), true),
 			},
 			nil,
-			nil)).Eval().(ErrorType)
+			nil))).(ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "FooError", e.Name())
 }
 
 func TestInsertChain(t *testing.T) {
-	for _, ts := range [][2]*Thunk{
+	for _, vs := range [][2]Value{
 		{NewList(True, False), PApp(Insert, EmptyList, NewNumber(1), True, NewNumber(2), False)},
 		{NewList(True, False), PApp(Insert, EmptyList, NewNumber(1), False, NewNumber(1), True)},
 	} {
-		assert.True(t, testEqual(ts[0], ts[1]))
+		assert.True(t, testEqual(vs[0], vs[1]))
 	}
 }

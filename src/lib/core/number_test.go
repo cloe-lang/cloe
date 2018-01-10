@@ -17,51 +17,51 @@ func TestNumberEqual(t *testing.T) {
 }
 
 func TestNumberAdd(t *testing.T) {
-	assert.Equal(t, NumberType(0), PApp(Add).Eval().(NumberType))
+	assert.Equal(t, NewNumber(0), EvalPure(PApp(Add)).(NumberType))
 	assert.Equal(t,
-		NumberType(n1+n2),
-		PApp(Add, NewNumber(n1), NewNumber(n2)).Eval().(NumberType))
+		NewNumber(n1+n2),
+		EvalPure(PApp(Add, NewNumber(n1), NewNumber(n2))).(NumberType))
 }
 
 func TestNumberSub(t *testing.T) {
 	assert.Equal(t,
-		NumberType(n1-n2),
-		PApp(Sub, NewNumber(n1), NewNumber(n2)).Eval().(NumberType))
+		NewNumber(n1-n2),
+		EvalPure(PApp(Sub, NewNumber(n1), NewNumber(n2))).(NumberType))
 }
 
 func TestNumberMul(t *testing.T) {
-	assert.Equal(t, NumberType(1), PApp(Mul).Eval().(NumberType))
+	assert.Equal(t, NewNumber(1), EvalPure(PApp(Mul)).(NumberType))
 	assert.Equal(t,
-		NumberType(n1*n2),
-		PApp(Mul, NewNumber(n1), NewNumber(n2)).Eval().(NumberType))
+		NewNumber(n1*n2),
+		EvalPure(PApp(Mul, NewNumber(n1), NewNumber(n2))).(NumberType))
 }
 
 func TestNumberDiv(t *testing.T) {
 	assert.Equal(t,
-		NumberType(n1/n2),
-		PApp(Div, NewNumber(n1), NewNumber(n2)).Eval().(NumberType))
+		NewNumber(n1/n2),
+		EvalPure(PApp(Div, NewNumber(n1), NewNumber(n2))).(NumberType))
 }
 
 func TestNumberFloorDiv(t *testing.T) {
 	assert.Equal(t,
-		NumberType(math.Floor(n1/n2)),
-		PApp(FloorDiv, NewNumber(n1), NewNumber(n2)).Eval().(NumberType))
+		NewNumber(math.Floor(n1/n2)),
+		EvalPure(PApp(FloorDiv, NewNumber(n1), NewNumber(n2))).(NumberType))
 }
 
 func TestNumberMod(t *testing.T) {
 	assert.Equal(t,
-		NumberType(math.Mod(float64(n1), float64(n2))),
-		PApp(Mod, NewNumber(n1), NewNumber(n2)).Eval().(NumberType))
+		NewNumber(math.Mod(float64(n1), float64(n2))),
+		EvalPure(PApp(Mod, NewNumber(n1), NewNumber(n2))).(NumberType))
 }
 
 func TestNumberPow(t *testing.T) {
 	assert.Equal(t,
-		NumberType(math.Pow(float64(n1), float64(n2))),
-		PApp(Pow, NewNumber(n1), NewNumber(n2)).Eval().(NumberType))
+		NewNumber(math.Pow(float64(n1), float64(n2))),
+		EvalPure(PApp(Pow, NewNumber(n1), NewNumber(n2))).(NumberType))
 }
 
 func TestNumberFunctionsError(t *testing.T) {
-	for _, th := range []*Thunk{
+	for _, v := range []Value{
 		PApp(Add, Nil),
 		App(Add, NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil, nil)),
 		App(Add, NewArguments([]PositionalArgument{
@@ -87,7 +87,7 @@ func TestNumberFunctionsError(t *testing.T) {
 		PApp(Mod, Nil, NewNumber(42)),
 		PApp(Mod, NewNumber(42), Nil),
 	} {
-		_, ok := th.Eval().(ErrorType)
+		_, ok := EvalPure(v).(ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -100,14 +100,21 @@ func TestNumberToString(t *testing.T) {
 		{"1", 1},
 		{"1.1", 1.1},
 	} {
-		assert.Equal(t, StringType(c.expected), PApp(ToString, NewNumber(c.number)).Eval())
+		assert.Equal(t, NewString(c.expected), EvalPure(PApp(ToString, NewNumber(c.number))))
 	}
 }
 
 func TestNumberCompare(t *testing.T) {
-	assert.True(t, testCompare(NewNumber(42), NewNumber(42)) == 0)
-	assert.True(t, testCompare(NewNumber(0), NewNumber(1)) == -1)
-	assert.True(t, testCompare(NewNumber(1), NewNumber(0)) == 1)
-	assert.True(t, testCompare(NewNumber(-1), NewNumber(0)) == -1)
-	assert.True(t, testCompare(NewNumber(0), NewNumber(-1)) == 1)
+	for _, c := range []struct {
+		answer      int
+		left, right Value
+	}{
+		{0, NewNumber(42), NewNumber(42)},
+		{1, NewNumber(1), NewNumber(0)},
+		{1, NewNumber(0), NewNumber(-1)},
+		{-1, NewNumber(0), NewNumber(1)},
+		{-1, NewNumber(-1), NewNumber(0)},
+	} {
+		assert.Equal(t, c.answer, testCompare(c.left, c.right))
+	}
 }

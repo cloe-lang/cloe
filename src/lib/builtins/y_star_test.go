@@ -13,7 +13,7 @@ func TestYsMultipleFs(t *testing.T) {
 			[]string{"fs", "dummyArg", "num"}, nil, "",
 			nil, nil, "",
 		),
-		func(ts ...*core.Thunk) core.Value {
+		func(ts ...core.Value) core.Value {
 			n := ts[2]
 
 			return core.PApp(core.If,
@@ -27,7 +27,7 @@ func TestYsMultipleFs(t *testing.T) {
 			[]string{"fs", "num"}, nil, "",
 			nil, nil, "",
 		),
-		func(ts ...*core.Thunk) core.Value {
+		func(ts ...core.Value) core.Value {
 			n := ts[1]
 
 			return core.PApp(core.If,

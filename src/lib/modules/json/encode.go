@@ -12,7 +12,7 @@ var jsonEncodeError = jsonError(errors.New("Cannot be encoded as JSON"))
 
 var encode = core.NewLazyFunction(
 	core.NewSignature([]string{"decoded"}, nil, "", nil, nil, ""),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		s, err := encodeValue(ts[0].Eval())
 
 		if err != nil {
@@ -61,7 +61,7 @@ func encodeValue(v core.Value) (string, core.Value) {
 
 		return "[" + strings.Join(ss, ",") + "]", nil
 	case core.DictionaryType:
-		l, err := core.PApp(core.ToList, core.Normal(v)).EvalList()
+		l, err := core.PApp(core.ToList, v).EvalList()
 
 		if err != nil {
 			return "", err

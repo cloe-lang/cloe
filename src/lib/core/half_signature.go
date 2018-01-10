@@ -16,81 +16,70 @@ func (hs halfSignature) arity() int {
 	return n
 }
 
-func (hs halfSignature) bindPositionals(args *Arguments) ([]*Thunk, *Thunk) {
-	ts := make([]*Thunk, 0, hs.arity())
-	restAreKeywords := false
+func (hs halfSignature) bindPositionals(args *Arguments) ([]Value, Value) {
+	vs := make([]Value, 0, hs.arity())
 
-	for _, name := range hs.requireds {
-		t := (*Thunk)(nil)
+	for _, s := range hs.requireds {
+		v := args.nextPositional()
 
-		if !restAreKeywords {
-			t = args.nextPositional()
+		if v == nil {
+			v = args.searchKeyword(s)
 		}
 
-		if t == nil {
-			t = args.searchKeyword(name)
-			restAreKeywords = true
-		}
-
-		if t == nil {
+		if v == nil {
 			return nil, argumentError("Could not bind a required positional argument.")
 		}
 
-		ts = append(ts, t)
+		vs = append(vs, v)
 	}
 
 	for _, o := range hs.optionals {
-		t := (*Thunk)(nil)
+		v := args.nextPositional()
 
-		if !restAreKeywords {
-			t = args.nextPositional()
+		if v == nil {
+			v = args.searchKeyword(o.name)
 		}
 
-		if t == nil {
-			t = args.searchKeyword(o.name)
-			restAreKeywords = true
+		if v == nil {
+			v = o.defaultValue
 		}
 
-		if t == nil {
-			t = o.defaultValue
-		}
-
-		ts = append(ts, t)
+		vs = append(vs, v)
 	}
 
 	if hs.rest != "" {
-		ts = append(ts, args.restPositionals())
+		vs = append(vs, args.restPositionals())
 	}
 
-	return ts, nil
+	return vs, nil
 }
 
-func (hs halfSignature) bindKeywords(args *Arguments) ([]*Thunk, *Thunk) {
-	ts := make([]*Thunk, 0, hs.arity())
+func (hs halfSignature) bindKeywords(args *Arguments) ([]Value, Value) {
+	vs := make([]Value, 0, hs.arity())
 
-	for _, name := range hs.requireds {
-		t := args.searchKeyword(name)
+	for _, s := range hs.requireds {
+		v := args.searchKeyword(s)
 
-		if t == nil {
+		if v == nil {
 			return nil, argumentError("Could not bind a required keyword argument.")
 		}
 
-		ts = append(ts, t)
+		vs = append(vs, v)
 	}
 
-	for _, opt := range hs.optionals {
-		t := args.searchKeyword(opt.name)
+	for _, o := range hs.optionals {
+		v := args.searchKeyword(o.name)
 
-		if t == nil {
-			t = opt.defaultValue
+		if v == nil {
+			v = o.defaultValue
 		}
 
-		ts = append(ts, t)
+		vs = append(vs, v)
 	}
 
 	if hs.rest != "" {
-		ts = append(ts, args.restKeywords())
+		vs = append(vs, args.restKeywords())
 	}
 
-	return ts, nil
+	return vs, nil
 }

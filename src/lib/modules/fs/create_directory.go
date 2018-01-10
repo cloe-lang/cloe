@@ -11,7 +11,7 @@ var createDirectory = core.NewEffectFunction(
 		[]string{"name"}, nil, "", nil,
 		[]core.OptionalArgument{core.NewOptionalArgument("existOk", core.False)}, "",
 	),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		s, e := ts[0].EvalString()
 
 		if e != nil {

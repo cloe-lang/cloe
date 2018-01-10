@@ -9,7 +9,7 @@ type Switch struct {
 	matchedValue interface{}
 	caseValues   []interface{}
 	defaultCase  interface{}
-	dict         *core.Thunk
+	dict         core.Value
 }
 
 // NewSwitch creates a switch expression.
@@ -27,12 +27,12 @@ func NewSwitch(m interface{}, cs []Case, d interface{}) Switch {
 	return Switch{m, vs, d, compileCasesToDict(cs)}
 }
 
-func compileCasesToDict(cs []Case) *core.Thunk {
+func compileCasesToDict(cs []Case) core.Value {
 	kvs := make([]core.KeyValue, 0, len(cs))
 
 	for i, c := range cs {
 		kvs = append(kvs, core.KeyValue{c.pattern, core.NewNumber(float64(i))})
 	}
 
-	return core.Normal(core.NewDictionary(kvs).Eval())
+	return core.NewDictionary(kvs).Eval()
 }

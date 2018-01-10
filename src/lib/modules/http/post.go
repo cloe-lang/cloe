@@ -17,7 +17,7 @@ var post = core.NewLazyFunction(
 		},
 		"",
 	),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		ss := make([]string, 0, 3)
 
 		for i := 0; i < cap(ss); i++ {

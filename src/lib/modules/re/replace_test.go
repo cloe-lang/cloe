@@ -26,7 +26,7 @@ func TestReplace(t *testing.T) {
 }
 
 func TestReplaceError(t *testing.T) {
-	for _, th := range []*core.Thunk{
+	for _, th := range []core.Value{
 		core.PApp(replace),
 		core.PApp(replace, core.NewString("foo")),
 		core.PApp(replace, core.NewString("foo"), core.Nil, core.NewString("bar")),

@@ -7,24 +7,24 @@ import (
 )
 
 func TestBoolEqual(t *testing.T) {
-	for _, ts := range [][2]*Thunk{
+	for _, vs := range [][2]Value{
 		{True, True},
 		{False, False},
 	} {
-		assert.True(t, testEqual(ts[0], ts[1]))
+		assert.True(t, testEqual(vs[0], vs[1]))
 	}
 
-	for _, ts := range [][2]*Thunk{
+	for _, vs := range [][2]Value{
 		{True, False},
 		{False, True},
 	} {
-		assert.True(t, !testEqual(ts[0], ts[1]))
+		assert.True(t, !testEqual(vs[0], vs[1]))
 	}
 }
 
 func TestBoolToString(t *testing.T) {
 	test := func(s string, b bool) {
-		assert.Equal(t, StringType(s), PApp(ToString, NewBool(b)).Eval())
+		assert.Equal(t, NewString(s), EvalPure(PApp(ToString, NewBool(b))))
 	}
 
 	test("true", true)
@@ -32,27 +32,21 @@ func TestBoolToString(t *testing.T) {
 }
 
 func TestIf(t *testing.T) {
-	assert.Equal(t, Nil.Eval(), PApp(If, True, Nil, False).Eval())
-	assert.Equal(t, Nil.Eval(), PApp(If, False, False, Nil).Eval())
-}
-
-func TestIfWithMultipleConditions(t *testing.T) {
-	assert.Equal(t, Nil.Eval(), PApp(If, False, False, True, Nil, False, True, False).Eval())
-}
-
-func TestIfWithInvalidArguments(t *testing.T) {
-	for _, th := range []*Thunk{
-		PApp(If),
-		PApp(If, Nil, Nil, Nil),
-		PApp(If, False, Nil),
+	for _, vs := range [][]Value{
+		{Nil},
+		{True, Nil, False},
+		{False, False, Nil},
+		{False, False, True, Nil, False, True, False},
 	} {
-		_, ok := th.Eval().(ErrorType)
-		assert.True(t, ok)
+		assert.Equal(t, Nil, EvalPure(PApp(If, vs...)))
 	}
 }
 
-func TestIfWithInvalidRestArgument(t *testing.T) {
+func TestIfWithInvalidArguments(t *testing.T) {
 	for _, a := range []Arguments{
+		NewPositionalArguments(),
+		NewPositionalArguments(Nil, Nil, Nil),
+		NewPositionalArguments(False, Nil),
 		NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil, nil),
 		NewArguments(
 			[]PositionalArgument{
@@ -61,13 +55,13 @@ func TestIfWithInvalidRestArgument(t *testing.T) {
 			nil,
 			nil),
 	} {
-		_, ok := App(If, a).Eval().(ErrorType)
+		_, ok := EvalPure(App(If, a)).(ErrorType)
 		assert.True(t, ok)
 	}
 }
 
 func BenchmarkIf(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		PApp(If, False, False, False, False, False, False, False, False, True).Eval()
+		EvalPure(PApp(If, False, False, False, False, False, False, False, False, True))
 	}
 }

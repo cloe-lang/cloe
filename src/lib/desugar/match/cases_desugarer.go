@@ -155,7 +155,7 @@ func (d *casesDesugarer) desugarListCases(list interface{}, cs []ast.MatchCase, 
 	gs := []group{}
 	first := d.matchedApp("$first", list)
 	rest := d.matchedApp("$rest", list)
-	emptyCase := (interface{})(nil)
+	emptyCase := interface{}(nil)
 
 	for i, c := range cs {
 		ps := c.Pattern().(ast.App).Arguments().Positionals()

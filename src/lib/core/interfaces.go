@@ -5,26 +5,23 @@ import (
 	"strings"
 )
 
-// Value represents a value in the language.
-// Hackingly, it can be *Thunk so that tail calls are eliminated.
-// See also Thunk.Eval().
-type Value interface{}
-
 type callable interface {
+	Value
 	call(Arguments) Value // index as function calls
 }
 
 // stringable is an interface for something convertable into StringType.
 // This should be implemented for all types including error type.
 type stringable interface {
+	Value
 	string() Value
 }
 
 // ToString converts some value into one of StringType.
 var ToString = NewLazyFunction(
 	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		v := ts[0].Eval()
+	func(vs ...Value) Value {
+		v := EvalPure(vs[0])
 		s, ok := v.(stringable)
 
 		if !ok {
@@ -38,20 +35,22 @@ var ToString = NewLazyFunction(
 // This interface should not be used in exported functions and exists only to
 // make keys for collections in rbt package.
 type comparable interface {
+	Value
 	compare(comparable) int // can panic
 }
 
 func compare(x1, x2 interface{}) int {
-	o1, ok := x1.(comparable)
+	v1, v2 := x1.(Value), x2.(Value)
+	o1, ok := v1.(comparable)
 
 	if !ok {
-		panic(notComparableError(x1))
+		panic(notComparableError(v1))
 	}
 
-	o2, ok := x2.(comparable)
+	o2, ok := v2.(comparable)
 
 	if !ok {
-		panic(notComparableError(x2))
+		panic(notComparableError(v2))
 	}
 
 	if reflect.TypeOf(o1) != reflect.TypeOf(o2) {
@@ -69,15 +68,14 @@ type ordered interface {
 // Equal checks if all arguments are equal or not.
 var Equal = NewLazyFunction(
 	NewSignature(nil, nil, "args", nil, nil, ""),
-	func(ts ...*Thunk) (v Value) {
+	func(vs ...Value) (v Value) {
 		defer func() {
 			if r := recover(); r != nil {
-				v = r
+				v = r.(Value)
 			}
 		}()
 
-		t := ts[0]
-		l, err := t.EvalList()
+		l, err := EvalList(vs[0])
 
 		if err != nil {
 			return err
@@ -85,10 +83,10 @@ var Equal = NewLazyFunction(
 			return True
 		}
 
-		e := l.first.Eval()
+		e := EvalPure(l.First())
 
 		for {
-			l, err = l.rest.EvalList()
+			l, err = EvalList(l.Rest())
 
 			if err != nil {
 				return err
@@ -96,7 +94,7 @@ var Equal = NewLazyFunction(
 				return True
 			}
 
-			if compare(e, l.first.Eval()) != 0 {
+			if compare(e, EvalPure(l.First())) != 0 {
 				return False
 			}
 		}
@@ -107,15 +105,15 @@ var Compare = NewStrictFunction(
 	NewSignature([]string{"left", "right"}, nil, "", nil, nil, ""),
 	compareAsOrdered)
 
-func compareAsOrdered(ts ...*Thunk) Value {
-	v := ts[0].Eval()
+func compareAsOrdered(vs ...Value) Value {
+	v := EvalPure(vs[0])
 	o1, ok := v.(ordered)
 
 	if !ok {
 		return NotOrderedError(v)
 	}
 
-	v = ts[1].Eval()
+	v = EvalPure(vs[1])
 	o2, ok := v.(ordered)
 
 	if !ok {
@@ -123,7 +121,7 @@ func compareAsOrdered(ts ...*Thunk) Value {
 	}
 
 	if reflect.TypeOf(o1) != reflect.TypeOf(o2) {
-		s, err := PApp(TypeOf, ts[1]).EvalString()
+		s, err := EvalString(PApp(TypeOf, vs[1]))
 
 		if err != nil {
 			return err
@@ -139,31 +137,62 @@ func compareAsOrdered(ts ...*Thunk) Value {
 	c := o1.compare(o2)
 
 	if c < 0 {
-		return NumberType(-1)
+		return NewNumber(-1)
 	} else if c > 0 {
-		return NumberType(1)
+		return NewNumber(1)
 	}
 
-	return NumberType(0)
+	return NewNumber(0)
 }
 
 func compareListsAsOrdered(l, ll ListType) Value {
 	if l.Empty() && ll.Empty() {
-		return NumberType(0)
+		return NewNumber(0)
 	} else if l.Empty() {
-		return NumberType(-1)
+		return NewNumber(-1)
 	} else if ll.Empty() {
-		return NumberType(1)
+		return NewNumber(1)
 	}
 
-	v := ensureNormal(compareAsOrdered(l.first, ll.first))
-	n, ok := v.(NumberType)
+	v := compareAsOrdered(l.First(), ll.First())
+	n, err := EvalNumber(v)
 
-	if !ok {
-		return NotNumberError(v)
+	if err != nil {
+		return err
 	} else if n == 0 {
-		return compareAsOrdered(l.rest, ll.rest)
+		return compareAsOrdered(l.Rest(), ll.Rest())
 	}
 
 	return n
+}
+
+// IsOrdered checks if a value is ordered or not.
+var IsOrdered = NewLazyFunction(
+	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
+	isOrdered)
+
+func isOrdered(vs ...Value) Value {
+	switch x := EvalPure(vs[0]).(type) {
+	case ErrorType:
+		return x
+	case ListType:
+		for !x.Empty() {
+			b, err := EvalBool(isOrdered(x.First()))
+
+			if err != nil {
+				return err
+			} else if !b {
+				return False
+			}
+
+			if x, err = EvalList(x.Rest()); err != nil {
+				return err
+			}
+		}
+
+		return True
+	default:
+		_, ok := x.(ordered)
+		return NewBool(ok)
+	}
 }

@@ -25,7 +25,7 @@ func (s *State) NotChar(r rune) Parser {
 
 // String creates a parser parsing a string.
 func (s *State) String(str string) Parser {
-	rs := ([]rune)(str)
+	rs := []rune(str)
 	ps := make([]Parser, 0, len(rs))
 
 	for _, r := range rs {

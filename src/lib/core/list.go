@@ -1,26 +1,25 @@
 package core
 
-import (
-	"strings"
-)
+import "strings"
 
 // ListType represents a list of values in the language.
 // They can have infinite number of elements inside.
 type ListType struct {
-	first *Thunk
-	rest  *Thunk
+	first Value
+	rest  Value
 }
 
-var (
-	emptyList = ListType{nil, nil}
+// Eval evaluates a value into a WHNF.
+func (l ListType) eval() Value {
+	return l
+}
 
-	// EmptyList is a thunk of an empty list.
-	EmptyList = Normal(emptyList)
-)
+// EmptyList is a thunk of an empty list.
+var EmptyList = ListType{nil, nil}
 
 // NewList creates a list from its elements.
-func NewList(ts ...*Thunk) *Thunk {
-	return StrictPrepend(ts, EmptyList)
+func NewList(vs ...Value) Value {
+	return StrictPrepend(vs, EmptyList)
 }
 
 // Prepend prepends multiple elements to a list of the last argument.
@@ -28,78 +27,81 @@ var Prepend = NewLazyFunction(
 	NewSignature(nil, nil, "elemsAndList", nil, nil, ""),
 	prepend)
 
-func prepend(ts ...*Thunk) Value {
-	l, err := ts[0].EvalList()
+func prepend(vs ...Value) Value {
+	l, err := EvalList(vs[0])
 
 	if err != nil {
 		return err
-	} else if l.Empty() {
-		return NumArgsError("prepend", "> 0")
 	}
 
 	if v := ReturnIfEmptyList(l.Rest(), l.First()); v != nil {
 		return v
 	}
 
-	return cons(l.First(), Normal(prepend(l.Rest())))
+	return cons(l.First(), prepend(l.Rest()))
 }
 
 // StrictPrepend is a strict version of the Prepend function.
-func StrictPrepend(ts []*Thunk, l *Thunk) *Thunk {
-	for i := len(ts) - 1; i >= 0; i-- {
-		l = Normal(cons(ts[i], l))
+func StrictPrepend(vs []Value, l Value) Value {
+	for i := len(vs) - 1; i >= 0; i-- {
+		l = cons(vs[i], l)
 	}
 
 	return l
 }
 
-func cons(t1, t2 *Thunk) ListType {
+func cons(t1, t2 Value) ListType {
 	return ListType{t1, t2}
 }
 
 // First takes the first element in a list.
-var First = NewLazyFunction(
-	NewSignature([]string{"list"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		l, err := ts[0].EvalList()
+var First FunctionType
 
-		if err != nil {
-			return err
-		} else if l.Empty() {
-			return emptyListError()
-		}
+func initFirst() FunctionType {
+	return NewLazyFunction(
+		NewSignature([]string{"list"}, nil, "", nil, nil, ""),
+		func(vs ...Value) Value {
+			l, err := EvalList(vs[0])
 
-		return l.first
-	})
+			if err != nil {
+				return err
+			}
+
+			return l.First()
+		})
+}
 
 // Rest returns a list which has the second to last elements of a given list.
-var Rest = NewLazyFunction(
-	NewSignature([]string{"list"}, nil, "", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		l, err := ts[0].EvalList()
+var Rest FunctionType
 
-		if err != nil {
-			return err
-		} else if l.Empty() {
-			return emptyListError()
-		}
+func initRest() FunctionType {
+	return NewLazyFunction(
+		NewSignature([]string{"list"}, nil, "", nil, nil, ""),
+		func(vs ...Value) Value {
+			l, err := EvalList(vs[0])
 
-		return PApp(
-			NewLazyFunction(
-				NewSignature(nil, nil, "", nil, nil, ""),
-				func(...*Thunk) Value {
-					l, err := l.rest.EvalList()
+			if err != nil {
+				return err
+			}
 
-					if err != nil {
-						return err
-					}
+			// TODO: Review this code. Maybe predefine the list check function.
+			return PApp(
+				NewLazyFunction(
+					NewSignature(nil, nil, "", nil, nil, ""),
+					func(...Value) Value {
+						l, err := EvalList(l.Rest())
 
-					return l
-				}))
-	})
+						if err != nil {
+							return err
+						}
+
+						return l
+					}))
+		})
+}
 
 func (l ListType) call(args Arguments) Value {
-	return Index.Eval().(callable).call(NewPositionalArguments(Normal(l)).Merge(args))
+	return Index.call(NewPositionalArguments(l).Merge(args))
 }
 
 func (l ListType) index(v Value) Value {
@@ -109,40 +111,36 @@ func (l ListType) index(v Value) Value {
 		return err
 	}
 
-	for {
-		if l.Empty() {
-			return OutOfRangeError()
-		} else if n == 1 {
-			return l.first
-		}
-
+	for n != 1 {
 		var err Value
-		if l, err = l.rest.EvalList(); err != nil {
+		if l, err = EvalList(l.Rest()); err != nil {
 			return err
 		}
 
 		n--
 	}
+
+	return l.First()
 }
 
-func (l ListType) insert(v Value, t *Thunk) Value {
-	n, err := checkIndex(v)
+func (l ListType) insert(i Value, v Value) Value {
+	n, err := checkIndex(i)
 
 	if err != nil {
 		return err
 	} else if n == 1 {
-		return cons(t, Normal(l))
+		return cons(v, l)
 	}
 
-	return cons(l.first, PApp(Insert, l.rest, Normal(n-1), t))
+	return cons(l.First(), PApp(Insert, l.Rest(), n-1, v))
 }
 
-func (l ListType) merge(ts ...*Thunk) Value {
+func (l ListType) merge(vs ...Value) Value {
 	if l.Empty() {
-		return PApp(Merge, ts...)
+		return PApp(Merge, vs...)
 	}
 
-	return cons(l.first, PApp(Merge, append([]*Thunk{l.rest}, ts...)...))
+	return cons(l.First(), PApp(Merge, append([]Value{l.Rest()}, vs...)...))
 }
 
 func (l ListType) delete(v Value) Value {
@@ -152,24 +150,20 @@ func (l ListType) delete(v Value) Value {
 		return err
 	}
 
-	es := []*Thunk{}
+	es := []Value{}
 
-	for {
-		if l.Empty() {
-			return OutOfRangeError()
-		} else if n == 1 {
-			return PApp(Prepend, append(es, l.rest)...)
-		}
-
-		es = append(es, l.first)
+	for n != 1 {
+		es = append(es, l.First())
 
 		var err Value
-		if l, err = l.rest.EvalList(); err != nil {
+		if l, err = EvalList(l.Rest()); err != nil {
 			return err
 		}
 
 		n--
 	}
+
+	return StrictPrepend(es, l.Rest())
 }
 
 func checkIndex(v Value) (NumberType, Value) {
@@ -203,10 +197,10 @@ func (l ListType) compare(x comparable) int {
 		return 1
 	}
 
-	c := compare(l.first.Eval(), ll.first.Eval())
+	c := compare(EvalPure(l.First()), EvalPure(ll.First()))
 
 	if c == 0 {
-		return compare(l.rest.Eval(), ll.rest.Eval())
+		return compare(EvalPure(l.Rest()), EvalPure(ll.Rest()))
 	}
 
 	return c
@@ -218,7 +212,7 @@ func (l ListType) string() Value {
 	ss := []string{}
 
 	for !l.Empty() {
-		s, err := StrictDump(l.First().Eval())
+		s, err := StrictDump(EvalPure(l.First()))
 
 		if err != nil {
 			return err
@@ -226,26 +220,22 @@ func (l ListType) string() Value {
 
 		ss = append(ss, string(s))
 
-		l, err = l.Rest().EvalList()
-
-		if err != nil {
+		if l, err = EvalList(l.Rest()); err != nil {
 			return err
 		}
 	}
 
-	return StringType("[" + strings.Join(ss, " ") + "]")
+	return NewString("[" + strings.Join(ss, " ") + "]")
 }
 
 func (l ListType) size() Value {
-	n := NumberType(0)
+	n := NewNumber(0)
 
 	for !l.Empty() {
 		n++
 
 		var err Value
-		l, err = l.Rest().EvalList()
-
-		if err != nil {
+		if l, err = EvalList(l.Rest()); err != nil {
 			return err
 		}
 	}
@@ -258,7 +248,7 @@ func (l ListType) include(elem Value) Value {
 		return False
 	}
 
-	b, err := PApp(Equal, l.first, Normal(elem)).EvalBool()
+	b, err := EvalBool(PApp(Equal, l.First(), elem))
 
 	if err != nil {
 		return err
@@ -266,16 +256,24 @@ func (l ListType) include(elem Value) Value {
 		return True
 	}
 
-	return PApp(Include, l.rest, Normal(elem))
+	return PApp(Include, l.Rest(), elem)
 }
 
 // First returns a first element in a list.
-func (l ListType) First() *Thunk {
+func (l ListType) First() Value {
+	if l.Empty() {
+		return emptyListError()
+	}
+
 	return l.first
 }
 
 // Rest returns elements in a list except the first one.
-func (l ListType) Rest() *Thunk {
+func (l ListType) Rest() Value {
+	if l.Empty() {
+		return emptyListError()
+	}
+
 	return l.rest
 }
 
@@ -285,8 +283,8 @@ func (l ListType) Empty() bool {
 }
 
 // ReturnIfEmptyList returns true if a given list is empty, or false otherwise.
-func ReturnIfEmptyList(t *Thunk, v Value) Value {
-	if l, err := t.EvalList(); err != nil {
+func ReturnIfEmptyList(t Value, v Value) Value {
+	if l, err := EvalList(t); err != nil {
 		return err
 	} else if l.Empty() {
 		return v

@@ -13,12 +13,12 @@ import "github.com/coel-lang/coel/src/lib/core"
 // (i.e. closure{f, x} where x will also be evaluated as closure{f, x}.)
 var Y = core.NewLazyFunction(
 	core.NewSignature([]string{"function"}, nil, "", nil, nil, ""),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		return y(ts[0])
 	})
 
-func y(f *core.Thunk) core.Value {
+func y(f core.Value) core.Value {
 	return core.RawFunctionType(func(args core.Arguments) core.Value {
-		return core.App(f, core.NewPositionalArguments(core.Normal(y(f))).Merge(args))
+		return core.App(f, core.NewPositionalArguments(y(f)).Merge(args))
 	})
 }

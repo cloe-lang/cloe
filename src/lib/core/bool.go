@@ -3,54 +3,53 @@ package core
 // BoolType represents a boolean values in the language.
 type BoolType bool
 
+// Eval evaluates a value into a WHNF.
+func (b BoolType) eval() Value {
+	return b
+}
+
 // True is a true value.
-var True = Normal(BoolType(true))
+var True = BoolType(true)
 
 // False is a false value.
-var False = Normal(BoolType(false))
+var False = BoolType(false)
 
 // NewBool converts a Go boolean value into BoolType.
-func NewBool(b bool) *Thunk {
-	if b {
-		return True
-	}
-
-	return False
+func NewBool(b bool) BoolType {
+	return BoolType(b)
 }
 
 // If returns the second argument when the first one is true or the third one
 // otherwise.
 var If = NewLazyFunction(
 	NewSignature(nil, nil, "args", nil, nil, ""),
-	func(ts ...*Thunk) Value {
-		t := ts[0]
+	func(vs ...Value) Value {
+		v := vs[0]
 
 		for {
-			l, err := t.EvalList()
+			l, err := EvalList(v)
 
 			if err != nil {
 				return err
-			} else if l.Empty() {
-				return argumentError("Not enough arguments to if function.")
 			}
 
-			ll, err := l.rest.EvalList()
+			ll, err := EvalList(l.Rest())
 
 			if err != nil {
 				return err
 			} else if ll.Empty() {
-				return l.first
+				return l.First()
 			}
 
-			b, err := l.first.EvalBool()
+			b, err := EvalBool(l.First())
 
 			if err != nil {
 				return err
 			} else if b {
-				return ll.first
+				return ll.First()
 			}
 
-			t = ll.rest
+			v = ll.Rest()
 		}
 	})
 

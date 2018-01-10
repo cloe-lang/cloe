@@ -8,13 +8,18 @@ import (
 // StringType represents a string in the language.
 type StringType string
 
+// Eval evaluates a value into a WHNF.
+func (s StringType) eval() Value {
+	return s
+}
+
 // NewString creates a string in the language from one in Go.
-func NewString(s string) *Thunk {
-	return Normal(StringType(s))
+func NewString(s string) StringType {
+	return StringType(s)
 }
 
 func (s StringType) call(args Arguments) Value {
-	return Index.Eval().(callable).call(NewPositionalArguments(Normal(s)).Merge(args))
+	return Index.call(NewPositionalArguments(s).Merge(args))
 }
 
 func (s StringType) index(v Value) Value {
@@ -25,15 +30,16 @@ func (s StringType) index(v Value) Value {
 	}
 
 	i := int(n)
+	rs := []rune(string(s))
 
-	if i > len(s) {
+	if i > len(rs) {
 		return OutOfRangeError()
 	}
 
-	return s[i-1 : i]
+	return NewString(string(rs[i-1 : i]))
 }
 
-func (s StringType) insert(v Value, t *Thunk) Value {
+func (s StringType) insert(v Value, t Value) Value {
 	n, err := checkIndex(v)
 
 	if err != nil {
@@ -46,7 +52,7 @@ func (s StringType) insert(v Value, t *Thunk) Value {
 		return OutOfRangeError()
 	}
 
-	ss, err := t.EvalString()
+	ss, err := EvalString(t)
 
 	if err != nil {
 		return err
@@ -55,17 +61,17 @@ func (s StringType) insert(v Value, t *Thunk) Value {
 	return s[:i] + ss + s[i:]
 }
 
-func (s StringType) merge(ts ...*Thunk) Value {
-	ts = append([]*Thunk{Normal(s)}, ts...)
+func (s StringType) merge(vs ...Value) Value {
+	vs = append([]Value{s}, vs...)
 
-	for _, t := range ts {
-		go t.Eval()
+	for _, t := range vs {
+		go EvalPure(t)
 	}
 
-	ss := make([]string, 0, len(ts))
+	ss := make([]string, 0, len(vs))
 
-	for _, t := range ts {
-		s, err := t.EvalString()
+	for _, t := range vs {
+		s, err := EvalString(t)
 
 		if err != nil {
 			return err
@@ -74,7 +80,7 @@ func (s StringType) merge(ts ...*Thunk) Value {
 		ss = append(ss, string(s))
 	}
 
-	return StringType(strings.Join(ss, ""))
+	return NewString(strings.Join(ss, ""))
 }
 
 func (s StringType) delete(v Value) Value {
@@ -92,7 +98,7 @@ func (s StringType) delete(v Value) Value {
 
 func (s StringType) toList() Value {
 	if s == "" {
-		return emptyList
+		return EmptyList
 	}
 
 	rs := []rune(string(s))
@@ -112,12 +118,12 @@ func (s StringType) string() Value {
 	return s
 }
 
-func (s StringType) dump() Value {
-	return StringType(fmt.Sprintf("%#v", string(s)))
+func (s StringType) quoted() Value {
+	return NewString(fmt.Sprintf("%#v", string(s)))
 }
 
 func (s StringType) size() Value {
-	return NumberType(len(([]rune)(string(s))))
+	return NewNumber(float64(len([]rune(string(s)))))
 }
 
 func (s StringType) include(v Value) Value {

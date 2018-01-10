@@ -11,7 +11,7 @@ func TestExit(t *testing.T) {
 	s := 0
 	f := createExitFunction(func(i int) { s = i })
 
-	for i, th := range []*core.Thunk{
+	for i, th := range []core.Value{
 		core.PApp(f),
 		core.PApp(f, core.NewNumber(1)),
 		core.PApp(f, core.NewNumber(2)),

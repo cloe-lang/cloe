@@ -8,7 +8,7 @@ import (
 
 var find = core.NewLazyFunction(
 	core.NewSignature([]string{"pattern", "src"}, nil, "", nil, nil, ""),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		ss, e := evaluateStringArguments(ts)
 
 		if e != nil {
@@ -27,7 +27,7 @@ var find = core.NewLazyFunction(
 			return core.Nil
 		}
 
-		ts = make([]*core.Thunk, 0, len(ss))
+		ts = make([]core.Value, 0, len(ss))
 
 		for _, s := range ss {
 			t := core.Nil

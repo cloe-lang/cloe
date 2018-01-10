@@ -11,7 +11,7 @@ import (
 func TestRally(t *testing.T) {
 	go systemt.RunDaemons()
 
-	ts := []*core.Thunk{core.True, core.False, core.Nil}
+	ts := []core.Value{core.True, core.False, core.Nil}
 
 	l1 := core.NewList(ts...)
 	l2 := core.App(Rally, core.NewArguments(
@@ -35,7 +35,7 @@ func TestRally(t *testing.T) {
 func TestRallyError(t *testing.T) {
 	go systemt.RunDaemons()
 
-	ts := []*core.Thunk{
+	ts := []core.Value{
 		core.True,
 		core.False,
 		core.Nil,
@@ -60,7 +60,7 @@ func TestRallyError(t *testing.T) {
 
 var indexOf = core.NewLazyFunction(
 	core.NewSignature([]string{"list", "elem"}, nil, "", nil, nil, ""),
-	func(ts ...*core.Thunk) core.Value {
+	func(ts ...core.Value) core.Value {
 		l, e := ts[0], ts[1]
 
 		for i := 1; ; i++ {

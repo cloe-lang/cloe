@@ -34,7 +34,7 @@ func Run(os []compile.Effect) {
 	wg.Wait()
 }
 
-func evalEffectList(t core.Value, parent *sync.WaitGroup, fail func(error)) {
+func evalEffectList(v core.Value, parent *sync.WaitGroup, fail func(error)) {
 	wg := sync.WaitGroup{}
 	defer func() {
 		wg.Wait()
@@ -42,29 +42,27 @@ func evalEffectList(t core.Value, parent *sync.WaitGroup, fail func(error)) {
 	}()
 
 	for {
-		v := core.PApp(core.Equal, t, core.EmptyList).Eval()
-
-		if b, ok := v.(core.BoolType); !ok {
-			fail(core.NotBoolError(v).Eval().(core.ErrorType))
+		if b, ok := core.EvalPure(core.PApp(core.Equal, v, core.EmptyList)).(core.BoolType); !ok {
+			fail(core.NotBoolError(v))
 		} else if b {
 			break
 		}
 
 		wg.Add(1)
 		sem <- true
-		go runEffect(core.PApp(core.First, t), &wg, fail)
+		go runEffect(core.PApp(core.First, v), &wg, fail)
 
-		t = core.PApp(core.Rest, t)
+		v = core.PApp(core.Rest, v)
 	}
 }
 
-func runEffect(t core.Value, wg *sync.WaitGroup, fail func(error)) {
+func runEffect(v core.Value, wg *sync.WaitGroup, fail func(error)) {
 	defer func() {
 		<-sem
 		wg.Done()
 	}()
 
-	if err, ok := t.EvalEffect().(core.ErrorType); ok {
+	if err, ok := core.EvalImpure(v).(core.ErrorType); ok {
 		fail(err)
 	}
 }

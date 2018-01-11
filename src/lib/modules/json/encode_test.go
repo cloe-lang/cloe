@@ -39,7 +39,7 @@ func TestEncode(t *testing.T) {
 			`{"true":true}`,
 		},
 	} {
-		s, ok := core.PApp(encode, c.value).Eval().(core.StringType)
+		s, ok := core.EvalPure(core.PApp(encode, c.value)).(core.StringType)
 
 		assert.True(t, ok)
 		assert.Equal(t, c.answer, string(s))
@@ -67,11 +67,11 @@ func TestEncodeAndDecode(t *testing.T) {
 			{core.NewString("baz"), core.NewString("blah")},
 		}),
 	} {
-		s, ok := core.PApp(encode, th).Eval().(core.StringType)
+		s, ok := core.EvalPure(core.PApp(encode, th)).(core.StringType)
 
 		assert.True(t, ok)
 
-		b, ok := core.PApp(core.Equal, th, core.PApp(decode, s)).Eval().(core.BoolType)
+		b, ok := core.EvalPure(core.PApp(core.Equal, th, core.PApp(decode, s))).(core.BoolType)
 
 		assert.True(t, ok)
 		assert.True(t, bool(b))
@@ -88,7 +88,7 @@ func TestEncodeWithInvalidArguments(t *testing.T) {
 		core.NewDictionary([]core.KeyValue{{core.NewList(core.DummyError), core.Nil}}),
 		core.NewDictionary([]core.KeyValue{{core.Nil, core.DummyError}}),
 	} {
-		_, ok := core.PApp(encode, th).Eval().(core.ErrorType)
+		_, ok := core.EvalPure(core.PApp(encode, th)).(core.ErrorType)
 		assert.True(t, ok)
 	}
 }

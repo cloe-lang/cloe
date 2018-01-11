@@ -23,9 +23,9 @@ func TestFind(t *testing.T) {
 			core.NewString(c.pattern),
 			core.NewString(c.src))
 
-		t.Log(core.PApp(core.Dump, th).Eval())
+		t.Log(core.EvalPure(core.PApp(core.Dump, th)))
 
-		b, ok := core.PApp(core.Equal, th, c.answer).Eval().(core.BoolType)
+		b, ok := core.EvalPure(core.PApp(core.Equal, th, c.answer)).(core.BoolType)
 
 		assert.True(t, ok)
 		assert.True(t, bool(b))
@@ -33,13 +33,13 @@ func TestFind(t *testing.T) {
 }
 
 func TestFindError(t *testing.T) {
-	for _, th := range []core.Value{
+	for _, v := range []core.Value{
 		core.PApp(find),
 		core.PApp(find, core.NewString("foo")),
 		core.PApp(find, core.NewString("foo"), core.Nil),
 		core.PApp(find, core.NewString("(foo"), core.NewString("foo")),
 	} {
-		_, ok := th.Eval().(core.ErrorType)
+		_, ok := core.EvalPure(v).(core.ErrorType)
 		assert.True(t, ok)
 	}
 }

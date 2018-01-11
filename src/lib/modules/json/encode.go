@@ -12,8 +12,8 @@ var jsonEncodeError = jsonError(errors.New("Cannot be encoded as JSON"))
 
 var encode = core.NewLazyFunction(
 	core.NewSignature([]string{"decoded"}, nil, "", nil, nil, ""),
-	func(ts ...core.Value) core.Value {
-		s, err := encodeValue(ts[0].Eval())
+	func(vs ...core.Value) core.Value {
+		s, err := encodeValue(vs[0])
 
 		if err != nil {
 			return err
@@ -25,7 +25,7 @@ var encode = core.NewLazyFunction(
 	})
 
 func encodeValue(v core.Value) (string, core.Value) {
-	switch v := v.(type) {
+	switch v := core.EvalPure(v).(type) {
 	case core.NilType:
 		return "null", nil
 	case core.NumberType:
@@ -44,7 +44,7 @@ func encodeValue(v core.Value) (string, core.Value) {
 		ss := []string{}
 
 		for !v.Empty() {
-			s, err := encodeValue(v.First().Eval())
+			s, err := encodeValue(v.First())
 
 			if err != nil {
 				return "", err
@@ -52,7 +52,7 @@ func encodeValue(v core.Value) (string, core.Value) {
 				ss = append(ss, s)
 			}
 
-			v, err = v.Rest().EvalList()
+			v, err = core.EvalList(v.Rest())
 
 			if err != nil {
 				return "", err
@@ -61,7 +61,7 @@ func encodeValue(v core.Value) (string, core.Value) {
 
 		return "[" + strings.Join(ss, ",") + "]", nil
 	case core.DictionaryType:
-		l, err := core.PApp(core.ToList, v).EvalList()
+		l, err := core.EvalList(core.PApp(core.ToList, v))
 
 		if err != nil {
 			return "", err
@@ -70,13 +70,13 @@ func encodeValue(v core.Value) (string, core.Value) {
 		ss := []string{}
 
 		for !l.Empty() {
-			ll, err := l.First().EvalList()
+			ll, err := core.EvalList(l.First())
 
 			if err != nil {
 				return "", err
 			}
 
-			kk := ll.First().Eval()
+			kk := core.EvalPure(ll.First())
 
 			switch kk.(type) {
 			case core.BoolType, core.NilType, core.NumberType:
@@ -95,13 +95,13 @@ func encodeValue(v core.Value) (string, core.Value) {
 				return "", err
 			}
 
-			ll, err = ll.Rest().EvalList()
+			ll, err = core.EvalList(ll.Rest())
 
 			if err != nil {
 				return "", err
 			}
 
-			v, err := encodeValue(ll.First().Eval())
+			v, err := encodeValue(ll.First())
 
 			if err != nil {
 				return "", err
@@ -109,7 +109,7 @@ func encodeValue(v core.Value) (string, core.Value) {
 
 			ss = append(ss, k+":"+v)
 
-			l, err = l.Rest().EvalList()
+			l, err = core.EvalList(l.Rest())
 
 			if err != nil {
 				return "", err

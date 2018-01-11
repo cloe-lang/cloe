@@ -14,11 +14,11 @@ func TestReplace(t *testing.T) {
 		{"foo", "bar", "foo", "bar"},
 		{"f(.*)a", "b${1}r", "fooa", "boor"},
 	} {
-		s, ok := core.PApp(
+		s, ok := core.EvalPure(core.PApp(
 			replace,
 			core.NewString(c.pattern),
 			core.NewString(c.repl),
-			core.NewString(c.src)).Eval().(core.StringType)
+			core.NewString(c.src))).(core.StringType)
 
 		assert.True(t, ok)
 		assert.Equal(t, c.dest, string(s))
@@ -26,13 +26,13 @@ func TestReplace(t *testing.T) {
 }
 
 func TestReplaceError(t *testing.T) {
-	for _, th := range []core.Value{
+	for _, v := range []core.Value{
 		core.PApp(replace),
 		core.PApp(replace, core.NewString("foo")),
 		core.PApp(replace, core.NewString("foo"), core.Nil, core.NewString("bar")),
 		core.PApp(replace, core.NewString("(foo"), core.NewString("foo"), core.NewString("foo")),
 	} {
-		_, ok := th.Eval().(core.ErrorType)
+		_, ok := core.EvalPure(v).(core.ErrorType)
 		assert.True(t, ok)
 	}
 }

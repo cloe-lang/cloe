@@ -13,8 +13,8 @@ func createExitFunction(exit func(int)) core.Value {
 		core.NewSignature(
 			nil, []core.OptionalArgument{core.NewOptionalArgument("status", core.NewNumber(0))}, "",
 			nil, nil, ""),
-		func(ts ...core.Value) core.Value {
-			n, err := ts[0].EvalNumber()
+		func(vs ...core.Value) core.Value {
+			n, err := core.EvalNumber(vs[0])
 
 			if err != nil {
 				return err

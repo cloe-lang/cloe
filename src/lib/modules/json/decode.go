@@ -7,8 +7,8 @@ import (
 
 var decode = core.NewLazyFunction(
 	core.NewSignature([]string{"encoded"}, nil, "", nil, nil, ""),
-	func(ts ...core.Value) core.Value {
-		s, err := ts[0].EvalString()
+	func(vs ...core.Value) core.Value {
+		s, err := core.EvalString(vs[0])
 
 		if err != nil {
 			return err

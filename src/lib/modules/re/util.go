@@ -2,11 +2,11 @@ package re
 
 import "github.com/coel-lang/coel/src/lib/core"
 
-func evaluateStringArguments(ts []core.Value) ([]string, core.Value) {
-	ss := make([]string, 0, len(ts))
+func evaluateStringArguments(vs []core.Value) ([]string, core.Value) {
+	ss := make([]string, 0, len(vs))
 
-	for _, t := range ts {
-		s, err := t.EvalString()
+	for _, v := range vs {
+		s, err := core.EvalString(v)
 
 		if err != nil {
 			return nil, err

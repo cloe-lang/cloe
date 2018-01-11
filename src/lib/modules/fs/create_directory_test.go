@@ -17,36 +17,36 @@ func TestCreateDirectory(t *testing.T) {
 
 	d := filepath.Join(root, "foo")
 
-	_, ok := core.PApp(createDirectory, core.NewString(d)).EvalEffect().(core.NilType)
+	_, ok := core.EvalImpure(core.PApp(createDirectory, core.NewString(d))).(core.NilType)
 	assert.True(t, ok)
 
-	e, ok := core.PApp(createDirectory, core.NewString(d)).EvalEffect().(core.ErrorType)
+	e, ok := core.EvalImpure(core.PApp(createDirectory, core.NewString(d))).(core.ErrorType)
 	assert.True(t, ok)
 	assert.Equal(t, "FileSystemError", e.Name())
 
-	_, ok = core.App(
+	_, ok = core.EvalImpure(core.App(
 		createDirectory,
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.NewString(d), false)},
 			[]core.KeywordArgument{core.NewKeywordArgument("existOk", core.True)},
 			nil),
-	).EvalEffect().(core.NilType)
+	)).(core.NilType)
 	assert.True(t, ok)
 
 	os.Remove(root)
 }
 
 func TestCreateDirectoryWithInvalidArguments(t *testing.T) {
-	_, ok := core.PApp(createDirectory, core.Nil).EvalEffect().(core.ErrorType)
+	_, ok := core.EvalImpure(core.PApp(createDirectory, core.Nil)).(core.ErrorType)
 	assert.True(t, ok)
 
-	_, ok = core.App(
+	_, ok = core.EvalImpure(core.App(
 		createDirectory,
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.NewString("foo"), false)},
 			[]core.KeywordArgument{core.NewKeywordArgument("existOk", core.Nil)},
 			nil),
-	).EvalEffect().(core.ErrorType)
+	)).(core.ErrorType)
 	assert.True(t, ok)
 
 }

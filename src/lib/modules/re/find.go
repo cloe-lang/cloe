@@ -8,8 +8,8 @@ import (
 
 var find = core.NewLazyFunction(
 	core.NewSignature([]string{"pattern", "src"}, nil, "", nil, nil, ""),
-	func(ts ...core.Value) core.Value {
-		ss, e := evaluateStringArguments(ts)
+	func(vs ...core.Value) core.Value {
+		ss, e := evaluateStringArguments(vs)
 
 		if e != nil {
 			return e
@@ -27,17 +27,17 @@ var find = core.NewLazyFunction(
 			return core.Nil
 		}
 
-		ts = make([]core.Value, 0, len(ss))
+		vs = make([]core.Value, 0, len(ss))
 
 		for _, s := range ss {
-			t := core.Nil
+			v := core.Value(core.Nil)
 
 			if s != "" {
-				t = core.NewString(s)
+				v = core.NewString(s)
 			}
 
-			ts = append(ts, t)
+			vs = append(vs, v)
 		}
 
-		return core.NewList(ts...)
+		return core.NewList(vs...)
 	})

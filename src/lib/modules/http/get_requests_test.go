@@ -14,9 +14,9 @@ import (
 func TestGetRequests(t *testing.T) {
 	go systemt.RunDaemons()
 
-	th := core.PApp(getRequests, core.NewString(":8080"))
+	v := core.PApp(getRequests, core.NewString(":8080"))
 
-	go th.Eval()
+	go core.EvalPure(v)
 	time.Sleep(100 * time.Millisecond)
 
 	rc := make(chan string)
@@ -32,38 +32,36 @@ func TestGetRequests(t *testing.T) {
 		rc <- string(bs)
 	}()
 
-	_, ok := th.Eval().(core.ListType)
+	_, ok := core.EvalPure(v).(core.ListType)
 
 	assert.True(t, ok)
 
-	r := core.PApp(core.First, th)
+	r := core.PApp(core.First, v)
 
 	testRequest(t, r)
 
-	th = core.PApp(
+	v = core.PApp(
 		core.PApp(r, core.NewString("respond")),
 		core.NewString("Hello, world!"))
 
-	assert.Equal(t, core.Nil.Eval(), core.PApp(core.Pure, th).Eval())
-
+	assert.Equal(t, core.Nil, core.EvalImpure(v))
 	assert.Equal(t, "Hello, world!", <-rc)
 }
 
-func testRequest(t *testing.T, th core.Value) {
-	assert.Equal(t, core.NewString("").Eval(), core.PApp(th, core.NewString("body")).Eval())
-	assert.Equal(t, core.NewString("GET").Eval(), core.PApp(th, core.NewString("method")).Eval())
+func testRequest(t *testing.T, v core.Value) {
+	assert.Equal(t, core.NewString(""), core.EvalPure(core.PApp(v, core.NewString("body"))))
+	assert.Equal(t, core.NewString("GET"), core.EvalPure(core.PApp(v, core.NewString("method"))))
 	assert.Equal(t,
-		core.NewString("/foo/bar?baz=123").Eval(),
-		core.PApp(th, core.NewString("url")).Eval())
+		core.NewString("/foo/bar?baz=123"),
+		core.EvalPure(core.PApp(v, core.NewString("url"))))
 }
 
 func TestGetRequestsWithCustomStatus(t *testing.T) {
 	go systemt.RunDaemons()
 
-	th := core.PApp(getRequests, core.NewString(":8888"))
+	v := core.PApp(getRequests, core.NewString(":8888"))
 
-	go th.Eval()
-	time.Sleep(100 * time.Millisecond)
+	go core.EvalPure(v)
 
 	status := make(chan int)
 	go func() {
@@ -74,8 +72,8 @@ func TestGetRequestsWithCustomStatus(t *testing.T) {
 		status <- r.StatusCode
 	}()
 
-	th = core.App(
-		core.PApp(core.PApp(core.First, th), core.NewString("respond")),
+	v = core.App(
+		core.PApp(core.PApp(core.First, v), core.NewString("respond")),
 		core.NewArguments(
 			nil,
 			[]core.KeywordArgument{
@@ -83,6 +81,6 @@ func TestGetRequestsWithCustomStatus(t *testing.T) {
 			},
 			nil))
 
-	assert.Equal(t, core.Nil.Eval(), core.PApp(core.Pure, th).Eval())
+	assert.Equal(t, core.Nil, core.EvalImpure(v))
 	assert.Equal(t, 404, <-status)
 }

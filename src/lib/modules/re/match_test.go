@@ -18,10 +18,10 @@ func TestMatch(t *testing.T) {
 		{"f(o)*", "f", true},
 		{"f(o)*", "afoo", true},
 	} {
-		b, ok := core.PApp(
+		b, ok := core.EvalPure(core.PApp(
 			match,
 			core.NewString(c.pattern),
-			core.NewString(c.src)).Eval().(core.BoolType)
+			core.NewString(c.src))).(core.BoolType)
 
 		assert.True(t, ok)
 		assert.Equal(t, c.answer, bool(b))
@@ -29,13 +29,13 @@ func TestMatch(t *testing.T) {
 }
 
 func TestMatchError(t *testing.T) {
-	for _, th := range []core.Value{
+	for _, v := range []core.Value{
 		core.PApp(match),
 		core.PApp(match, core.NewString("foo")),
 		core.PApp(match, core.NewString("foo"), core.Nil),
 		core.PApp(match, core.NewString("(foo"), core.NewString("foo")),
 	} {
-		_, ok := th.Eval().(core.ErrorType)
+		_, ok := core.EvalPure(v).(core.ErrorType)
 		assert.True(t, ok)
 	}
 }

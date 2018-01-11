@@ -22,18 +22,18 @@ var jsons = []string{
 
 func TestDecode(t *testing.T) {
 	for _, s := range jsons {
-		t.Log(core.PApp(decode, core.NewString(s)).Eval())
+		t.Log(core.EvalPure(core.PApp(decode, core.NewString(s))))
 	}
 }
 
 func TestDecodeWithNonString(t *testing.T) {
-	_, ok := core.PApp(decode, core.Nil).Eval().(core.ErrorType)
+	_, ok := core.EvalPure(core.PApp(decode, core.Nil)).(core.ErrorType)
 	assert.True(t, ok)
 }
 
 func TestDecodeString(t *testing.T) {
 	for _, s := range jsons {
-		t.Log(core.PApp(core.ToString, decodeString(s)).Eval())
+		t.Log(core.EvalPure(core.PApp(core.ToString, decodeString(s))))
 	}
 }
 
@@ -45,15 +45,13 @@ func TestDecodeStringWithInvalidJSON(t *testing.T) {
 		`nul`,
 		`nil`,
 	} {
-		_, ok := decodeString(s).Eval().(core.ErrorType)
+		_, ok := core.EvalPure(decodeString(s)).(core.ErrorType)
 		assert.True(t, ok)
 	}
 }
 
 func TestConvertToValueWithInvalidType(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	convertToValue(0)
+	assert.Panics(t, func() {
+		convertToValue(0)
+	})
 }

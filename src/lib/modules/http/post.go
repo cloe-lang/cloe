@@ -17,11 +17,11 @@ var post = core.NewLazyFunction(
 		},
 		"",
 	),
-	func(ts ...core.Value) core.Value {
+	func(vs ...core.Value) core.Value {
 		ss := make([]string, 0, 3)
 
 		for i := 0; i < cap(ss); i++ {
-			s, err := ts[i].EvalString()
+			s, err := core.EvalString(vs[i])
 
 			if err != nil {
 				return err
@@ -32,5 +32,5 @@ var post = core.NewLazyFunction(
 
 		r, err := http.Post(ss[0], ss[2], strings.NewReader(ss[1]))
 
-		return handleMethodResult(r, err, ts[3])
+		return handleMethodResult(r, err, vs[3])
 	})

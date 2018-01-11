@@ -40,7 +40,7 @@ func TestCompileBuiltinModuleWithInvalidSource(t *testing.T) {
 func TestReduce(t *testing.T) {
 	f := builtinsEnvironment().get("$reduce")
 
-	for _, ts := range [][2]core.Value{
+	for _, vs := range [][2]core.Value{
 		{
 			core.PApp(f, core.Add, core.NewList(core.NewNumber(1), core.NewNumber(2), core.NewNumber(3))),
 			core.NewNumber(6),
@@ -50,19 +50,19 @@ func TestReduce(t *testing.T) {
 			core.NewNumber(-4),
 		},
 	} {
-		t.Log(core.PApp(core.ToString, ts[0]).Eval())
-		assert.True(t, bool(core.PApp(core.Equal, ts[0], ts[1]).Eval().(core.BoolType)))
+		t.Log(core.EvalPure(core.PApp(core.ToString, vs[0])))
+		assert.True(t, bool(core.EvalPure(core.PApp(core.Equal, vs[0], vs[1])).(core.BoolType)))
 	}
 }
 
 func TestReduceError(t *testing.T) {
 	f := builtinsEnvironment().get("$reduce")
 
-	for _, th := range []core.Value{
+	for _, v := range []core.Value{
 		core.PApp(f, core.Add, core.EmptyList),
 		core.PApp(f, core.IsOrdered, core.EmptyList),
 	} {
-		_, ok := th.Eval().(core.ErrorType)
+		_, ok := core.EvalPure(v).(core.ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -70,7 +70,7 @@ func TestReduceError(t *testing.T) {
 func TestFilter(t *testing.T) {
 	f := builtinsEnvironment().get("$filter")
 
-	for _, ts := range [][2]core.Value{
+	for _, vs := range [][2]core.Value{
 		{
 			core.PApp(f, core.IsOrdered, core.EmptyList),
 			core.EmptyList,
@@ -86,8 +86,8 @@ func TestFilter(t *testing.T) {
 			core.NewList(core.NewNumber(42), core.EmptyList),
 		},
 	} {
-		t.Log(core.PApp(core.ToString, ts[0]).Eval())
-		assert.True(t, bool(core.PApp(core.Equal, ts[0], ts[1]).Eval().(core.BoolType)))
+		t.Log(core.EvalPure(core.PApp(core.ToString, vs[0])))
+		assert.True(t, bool(core.EvalPure(core.PApp(core.Equal, vs[0], vs[1])).(core.BoolType)))
 	}
 }
 
@@ -100,7 +100,7 @@ func BenchmarkFilter(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		core.PApp(core.ToString, core.PApp(f, core.IsOrdered, l)).Eval()
+		core.EvalPure(core.PApp(core.ToString, core.PApp(f, core.IsOrdered, l)))
 	}
 }
 
@@ -109,16 +109,16 @@ func BenchmarkFilterBare(b *testing.B) {
 
 	f := core.PApp(builtins.Y, core.NewLazyFunction(
 		core.NewSignature([]string{"me", "func", "list"}, nil, "", nil, nil, ""),
-		func(ts ...core.Value) core.Value {
-			f := ts[1]
-			l := ts[2]
+		func(vs ...core.Value) core.Value {
+			f := vs[1]
+			l := vs[2]
 
 			return core.PApp(core.If,
 				core.PApp(core.Equal, l, core.EmptyList),
 				core.EmptyList,
 				core.PApp(core.Prepend,
 					core.PApp(f, core.PApp(core.First, l)),
-					core.PApp(ts[0], f, core.PApp(core.Rest, l))))
+					core.PApp(vs[0], f, core.PApp(core.Rest, l))))
 		}))
 
 	l := randomNumberList(10000)
@@ -126,14 +126,14 @@ func BenchmarkFilterBare(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		core.PApp(core.ToString, core.PApp(f, core.IsOrdered, l)).Eval()
+		core.EvalPure(core.PApp(core.ToString, core.PApp(f, core.IsOrdered, l)))
 	}
 }
 
 func TestSort(t *testing.T) {
 	go systemt.RunDaemons()
 
-	for _, ts := range [][2]core.Value{
+	for _, vs := range [][2]core.Value{
 		{
 			core.EmptyList,
 			core.EmptyList,
@@ -159,16 +159,16 @@ func TestSort(t *testing.T) {
 			core.NewList(core.NewNumber(-123), core.NewNumber(1), core.NewNumber(2), core.NewNumber(3)),
 		},
 	} {
-		th := core.PApp(builtinsEnvironment().get("sort"), ts[0])
-		t.Log(core.PApp(core.ToString, th).Eval())
-		assert.True(t, bool(core.PApp(core.Equal, th, ts[1]).Eval().(core.BoolType)))
+		v := core.PApp(builtinsEnvironment().get("sort"), vs[0])
+		t.Log(core.EvalPure(core.PApp(core.ToString, v)))
+		assert.True(t, bool(core.EvalPure(core.PApp(core.Equal, v, vs[1])).(core.BoolType)))
 	}
 }
 
 func TestSortError(t *testing.T) {
 	go systemt.RunDaemons()
 
-	_, ok := core.App(
+	_, ok := core.EvalPure(core.App(
 		builtinsEnvironment().get("$sort"),
 		core.NewArguments(
 			[]core.PositionalArgument{
@@ -177,7 +177,7 @@ func TestSortError(t *testing.T) {
 			[]core.KeywordArgument{
 				core.NewKeywordArgument("less", builtins.LessEq),
 			},
-			nil)).Eval().(core.ErrorType)
+			nil))).(core.ErrorType)
 
 	assert.True(t, ok)
 }
@@ -209,7 +209,7 @@ func benchmarkSort(size, N int, resetTimer func()) {
 	resetTimer()
 
 	for i := 0; i < N; i++ {
-		core.PApp(core.First, core.PApp(f, l)).Eval()
+		core.EvalPure(core.PApp(core.First, core.PApp(f, l)))
 	}
 }
 
@@ -232,56 +232,56 @@ func BenchmarkMap(b *testing.B) {
 func benchmarkMap(N int, startTimer, fail func()) {
 	go systemt.RunDaemons()
 
-	th := core.PApp(builtinsEnvironment().get("$map"), identity, many42())
+	v := core.PApp(builtinsEnvironment().get("$map"), identity, many42())
 
 	startTimer()
 
 	for i := 0; i < N; i++ {
-		if core.NumberType(42) != core.PApp(core.First, th).Eval().(core.NumberType) {
+		if core.NumberType(42) != core.EvalPure(core.PApp(core.First, v)).(core.NumberType) {
 			fail()
 		}
 
-		th = core.PApp(core.Rest, th)
+		v = core.PApp(core.Rest, v)
 	}
 }
 
 func BenchmarkGoMap(b *testing.B) {
-	th := many42()
+	v := many42()
 
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		if core.NumberType(42) != core.PApp(core.First, th).Eval().(core.NumberType) {
+		if core.NumberType(42) != core.EvalPure(core.PApp(core.First, v)).(core.NumberType) {
 			b.Fail()
 		}
 
-		th = core.PApp(core.Rest, th)
+		v = core.PApp(core.Rest, v)
 	}
 }
 
 var identity = core.NewLazyFunction(
 	core.NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
-	func(ts ...core.Value) core.Value {
-		return ts[0]
+	func(vs ...core.Value) core.Value {
+		return vs[0]
 	})
 
 func many42() core.Value {
 	return core.PApp(core.PApp(builtins.Y, core.NewLazyFunction(
 		core.NewSignature([]string{"me"}, nil, "", nil, nil, ""),
-		func(ts ...core.Value) core.Value {
-			return core.PApp(core.Prepend, core.NewNumber(42), core.PApp(ts[0]))
+		func(vs ...core.Value) core.Value {
+			return core.PApp(core.Prepend, core.NewNumber(42), core.PApp(vs[0]))
 		})))
 }
 
 func randomNumberList(n int) core.Value {
 	r := rand.New(rand.NewSource(42))
-	ts := make([]core.Value, n)
+	vs := make([]core.Value, n)
 
-	for i := range ts {
-		ts[i] = core.NewNumber(r.Float64())
+	for i := range vs {
+		vs[i] = core.NewNumber(r.Float64())
 	}
 
-	l := core.NewList(ts...)
-	l.Eval()
+	l := core.NewList(vs...)
+	core.EvalPure(l)
 	return l
 }

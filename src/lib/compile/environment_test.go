@@ -27,6 +27,6 @@ func TestEnvironmentGetFail(t *testing.T) {
 func TestEnvironmentGet(t *testing.T) {
 	e := newEnvironment(testFallback)
 	e.set("foo", core.Nil)
-	th := e.get("foo")
-	assert.Equal(t, core.Nil.Eval(), th.Eval())
+	v := e.get("foo")
+	assert.Equal(t, core.Nil, core.EvalPure(v))
 }

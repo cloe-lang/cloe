@@ -20,10 +20,11 @@ func TestCompileFunction(t *testing.T) {
 		nil,
 		newAppWithDummyInfo(0, newPositionalArguments(1, newAppWithDummyInfo(0, newPositionalArguments(2, 3)))))
 
-	x1 := float64(core.PApp(f, core.Pow, core.NewNumber(n1), core.NewNumber(n2), core.NewNumber(n3)).Eval().(core.NumberType))
-	x2 := math.Pow(n1, math.Pow(n2, n3))
+	x1 := core.NewNumber(math.Pow(n1, math.Pow(n2, n3)))
+	x2, err := core.EvalNumber(core.PApp(f, core.Pow, core.NewNumber(n1), core.NewNumber(n2), core.NewNumber(n3)))
 
-	t.Logf("%f == %f?", x1, x2)
+	assert.Nil(t, err)
+	t.Logf("%v == %v?", x2, x1)
 	assert.Equal(t, x1, x2)
 }
 
@@ -38,10 +39,11 @@ func TestCompileFunctionWithVars(t *testing.T) {
 		[]interface{}{newAppWithDummyInfo(0, newPositionalArguments(2, 3))},
 		newAppWithDummyInfo(0, newPositionalArguments(1, 4)))
 
-	x1 := float64(core.PApp(f, core.Pow, core.NewNumber(n1), core.NewNumber(n2), core.NewNumber(n3)).Eval().(core.NumberType))
-	x2 := math.Pow(n1, math.Pow(n2, n3))
+	x1 := core.NewNumber(math.Pow(n1, math.Pow(n2, n3)))
+	x2, err := core.EvalNumber(core.PApp(f, core.Pow, core.NewNumber(n1), core.NewNumber(n2), core.NewNumber(n3)))
 
-	t.Logf("%f == %f?", x1, x2)
+	assert.Nil(t, err)
+	t.Logf("%v == %v?", x2, x1)
 	assert.Equal(t, x1, x2)
 }
 

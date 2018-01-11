@@ -28,7 +28,7 @@ func interpretExpression(args []core.Value, expr interface{}) core.Value {
 	case App:
 		return x.interpret(args)
 	case Switch:
-		v := core.PApp(x.dict, interpretExpression(args, x.matchedValue)).Eval()
+		v := core.EvalPure(core.PApp(x.dict, interpretExpression(args, x.matchedValue)))
 		n, ok := v.(core.NumberType)
 
 		if !ok {

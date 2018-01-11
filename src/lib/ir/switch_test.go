@@ -28,7 +28,11 @@ func TestSwitchInFunction(t *testing.T) {
 			NewCase(core.True, core.NewNumber(1993)),
 		}, core.NewNumber(2049)))
 
-	assert.Equal(t, 42.0, float64(core.PApp(f, core.NewString("foo")).Eval().(core.NumberType)))
-	assert.Equal(t, 1993.0, float64(core.PApp(f, core.True).Eval().(core.NumberType)))
-	assert.Equal(t, 2049.0, float64(core.PApp(f, core.Nil).Eval().(core.NumberType)))
+	for _, c := range []struct{ answer, argument core.Value }{
+		{core.NewNumber(42), core.NewString("foo")},
+		{core.NewNumber(1993), core.True},
+		{core.NewNumber(2049), core.Nil},
+	} {
+		assert.Equal(t, c.answer, core.EvalPure(core.PApp(f, c.argument)))
+	}
 }

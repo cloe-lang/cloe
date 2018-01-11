@@ -62,6 +62,7 @@ func TestGetRequestsWithCustomStatus(t *testing.T) {
 	v := core.PApp(getRequests, core.NewString(":8888"))
 
 	go core.EvalPure(v)
+	time.Sleep(100 * time.Millisecond)
 
 	status := make(chan int)
 	go func() {

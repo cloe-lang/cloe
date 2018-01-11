@@ -130,8 +130,8 @@ func compareAsOrdered(vs ...Value) Value {
 		return TypeError(o1, string(s))
 	}
 
-	if l1, ok := o1.(ListType); ok {
-		return compareListsAsOrdered(l1, o2.(ListType))
+	if l1, ok := o1.(*ListType); ok {
+		return compareListsAsOrdered(l1, o2.(*ListType))
 	}
 
 	c := o1.compare(o2)
@@ -145,7 +145,7 @@ func compareAsOrdered(vs ...Value) Value {
 	return NewNumber(0)
 }
 
-func compareListsAsOrdered(l, ll ListType) Value {
+func compareListsAsOrdered(l, ll *ListType) Value {
 	if l.Empty() && ll.Empty() {
 		return NewNumber(0)
 	} else if l.Empty() {
@@ -175,13 +175,13 @@ func isOrdered(vs ...Value) Value {
 	switch x := EvalPure(vs[0]).(type) {
 	case ErrorType:
 		return x
-	case ListType:
+	case *ListType:
 		for !x.Empty() {
 			b, err := EvalBool(isOrdered(x.First()))
 
 			if err != nil {
 				return err
-			} else if !b {
+			} else if !*b {
 				return False
 			}
 

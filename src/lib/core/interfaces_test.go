@@ -85,7 +85,7 @@ func TestEqualTrue(t *testing.T) {
 		{NewNumber(42), NewNumber(42)},
 		{NewNumber(42), NewNumber(42), NewNumber(42)},
 	} {
-		assert.True(t, bool(EvalPure(PApp(Equal, vs...)).(BoolType)))
+		assert.True(t, bool(*EvalPure(PApp(Equal, vs...)).(*BoolType)))
 	}
 }
 
@@ -99,7 +99,7 @@ func TestEqualFalse(t *testing.T) {
 		{NewList(NewNumber(42), NewNumber(42)), many42()},
 		{many42(), NewList(NewNumber(42), NewNumber(42))},
 	} {
-		assert.True(t, !bool(EvalPure(PApp(Equal, vs...)).(BoolType)))
+		assert.True(t, !bool(*EvalPure(PApp(Equal, vs...)).(*BoolType)))
 	}
 }
 
@@ -140,7 +140,7 @@ func TestIsOrdered(t *testing.T) {
 		NewList(NewNumber(42), EmptyList),
 		NewList(NewNumber(42), EmptyList, NewList(NewNumber(42), NewString("foo"))),
 	} {
-		assert.True(t, bool(EvalPure(PApp(IsOrdered, v)).(BoolType)))
+		assert.True(t, bool(*EvalPure(PApp(IsOrdered, v)).(*BoolType)))
 	}
 
 	for _, v := range []Value{
@@ -153,7 +153,7 @@ func TestIsOrdered(t *testing.T) {
 		NewList(NewNumber(42), EmptyList, NewList(Nil)),
 		NewList(NewNumber(42), EmptyList, NewList(NewNumber(42), Nil, NewString("foo"))),
 	} {
-		assert.False(t, bool(EvalPure(PApp(IsOrdered, v)).(BoolType)))
+		assert.False(t, bool(*EvalPure(PApp(IsOrdered, v)).(*BoolType)))
 	}
 }
 

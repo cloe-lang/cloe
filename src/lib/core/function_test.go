@@ -49,7 +49,7 @@ func TestNewEffectFunction(t *testing.T) {
 
 func TestPartial(t *testing.T) {
 	ifFunc := func(vs ...Value) bool {
-		return bool(EvalPure(PApp(PApp(Partial, If, False, True), vs...)).(BoolType))
+		return bool(*EvalPure(PApp(PApp(Partial, If, False, True), vs...)).(*BoolType))
 	}
 
 	assert.True(t, ifFunc(True))

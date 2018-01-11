@@ -9,7 +9,7 @@ import (
 
 func TestPost(t *testing.T) {
 	v := core.PApp(post, core.NewString("http://httpbin.org/post"), core.NewString(""))
-	_, ok := core.EvalPure(v).(core.DictionaryType)
+	_, ok := core.EvalPure(v).(*core.DictionaryType)
 
 	t.Log(core.EvalPure(v))
 	assert.True(t, ok)

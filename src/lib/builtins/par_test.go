@@ -13,7 +13,7 @@ func TestPar(t *testing.T) {
 
 	n := core.PApp(Par, core.True, core.False, core.ValueError("I am the error."), core.Nil)
 
-	assert.True(t, bool(core.EvalPure(core.PApp(core.Equal, core.Nil, n)).(core.BoolType)))
+	assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, core.Nil, n)).(*core.BoolType)))
 }
 
 func TestParError(t *testing.T) {

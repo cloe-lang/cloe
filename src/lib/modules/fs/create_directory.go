@@ -22,9 +22,7 @@ var createDirectory = core.NewEffectFunction(
 
 		if e != nil {
 			return e
-		}
-
-		if b {
+		} else if *b {
 			if f, err := os.Stat(string(s)); err == nil && f.IsDir() {
 				return core.Nil
 			}

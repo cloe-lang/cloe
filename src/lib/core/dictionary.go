@@ -12,12 +12,16 @@ type DictionaryType struct {
 }
 
 // Eval evaluates a value into a WHNF.
-func (d DictionaryType) eval() Value {
+func (d *DictionaryType) eval() Value {
 	return d
 }
 
-// EmptyDictionary is a thunk of an empty dictionary.
-var EmptyDictionary = DictionaryType{rbt.NewDictionary(compare)}
+var (
+	emtpyDictionary = DictionaryType{rbt.NewDictionary(compare)}
+
+	// EmptyDictionary is a thunk of an empty dictionary.
+	EmptyDictionary = &emtpyDictionary
+)
 
 // KeyValue is a pair of a key and value inserted into dictionaries.
 type KeyValue struct {
@@ -36,11 +40,11 @@ func NewDictionary(kvs []KeyValue) Value {
 	return d
 }
 
-func (d DictionaryType) call(args Arguments) Value {
+func (d *DictionaryType) call(args Arguments) Value {
 	return Index.call(NewPositionalArguments(d).Merge(args))
 }
 
-func (d DictionaryType) index(v Value) (result Value) {
+func (d *DictionaryType) index(v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = r.(Value)
@@ -60,7 +64,7 @@ func (d DictionaryType) index(v Value) (result Value) {
 	return keyNotFoundError(k)
 }
 
-func (d DictionaryType) insert(k Value, v Value) (result Value) {
+func (d *DictionaryType) insert(k Value, v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = r.(Value)
@@ -74,7 +78,7 @@ func (d DictionaryType) insert(k Value, v Value) (result Value) {
 	return d.Insert(k, v)
 }
 
-func (d DictionaryType) toList() (result Value) {
+func (d *DictionaryType) toList() (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = r.(Value)
@@ -92,7 +96,7 @@ func (d DictionaryType) toList() (result Value) {
 		PApp(ToList, rest))
 }
 
-func (d DictionaryType) merge(vs ...Value) (result Value) {
+func (d *DictionaryType) merge(vs ...Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = r.(Value)
@@ -112,7 +116,7 @@ func (d DictionaryType) merge(vs ...Value) (result Value) {
 	return d
 }
 
-func (d DictionaryType) delete(v Value) (result Value) {
+func (d *DictionaryType) delete(v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = r.(Value)
@@ -122,11 +126,11 @@ func (d DictionaryType) delete(v Value) (result Value) {
 	return d.Remove(v)
 }
 
-func (d DictionaryType) compare(c comparable) int {
-	return compare(d.toList(), c.(DictionaryType).toList())
+func (d *DictionaryType) compare(c comparable) int {
+	return compare(d.toList(), c.(*DictionaryType).toList())
 }
 
-func (d DictionaryType) string() (result Value) {
+func (d *DictionaryType) string() (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = r.(Value)
@@ -157,11 +161,11 @@ func (d DictionaryType) string() (result Value) {
 	return NewString("{" + strings.Join(ss, " ") + "}")
 }
 
-func (d DictionaryType) size() Value {
+func (d *DictionaryType) size() Value {
 	return NewNumber(float64(d.Size()))
 }
 
-func (d DictionaryType) include(v Value) (result Value) {
+func (d *DictionaryType) include(v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {
 			result = r.(Value)
@@ -173,12 +177,12 @@ func (d DictionaryType) include(v Value) (result Value) {
 }
 
 // Insert wraps rbt.Dictionary.Insert().
-func (d DictionaryType) Insert(k Value, v Value) DictionaryType {
-	return DictionaryType{d.Dictionary.Insert(k, v)}
+func (d *DictionaryType) Insert(k Value, v Value) *DictionaryType {
+	return &DictionaryType{d.Dictionary.Insert(k, v)}
 }
 
 // Search wraps rbt.Dictionary.Search().
-func (d DictionaryType) Search(k Value) (Value, bool) {
+func (d *DictionaryType) Search(k Value) (Value, bool) {
 	v, ok := d.Dictionary.Search(k)
 
 	if !ok {
@@ -189,14 +193,14 @@ func (d DictionaryType) Search(k Value) (Value, bool) {
 }
 
 // Remove wraps rbt.Dictionary.Remove().
-func (d DictionaryType) Remove(k Value) DictionaryType {
-	return DictionaryType{d.Dictionary.Remove(k)}
+func (d *DictionaryType) Remove(k Value) *DictionaryType {
+	return &DictionaryType{d.Dictionary.Remove(k)}
 }
 
 // FirstRest wraps rbt.Dictionary.FirstRest().
-func (d DictionaryType) FirstRest() (Value, Value, DictionaryType) {
+func (d *DictionaryType) FirstRest() (Value, Value, *DictionaryType) {
 	k, v, rest := d.Dictionary.FirstRest()
-	d = DictionaryType{rest}
+	d = &DictionaryType{rest}
 
 	if k == nil {
 		return nil, nil, d
@@ -206,6 +210,6 @@ func (d DictionaryType) FirstRest() (Value, Value, DictionaryType) {
 }
 
 // Merge wraps rbt.Dictionary.Merge().
-func (d DictionaryType) Merge(dd DictionaryType) DictionaryType {
-	return DictionaryType{d.Dictionary.Merge(dd.Dictionary)}
+func (d *DictionaryType) Merge(dd *DictionaryType) *DictionaryType {
+	return &DictionaryType{d.Dictionary.Merge(dd.Dictionary)}
 }

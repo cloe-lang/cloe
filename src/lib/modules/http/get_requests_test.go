@@ -32,7 +32,7 @@ func TestGetRequests(t *testing.T) {
 		rc <- string(bs)
 	}()
 
-	_, ok := core.EvalPure(v).(core.ListType)
+	_, ok := core.EvalPure(v).(*core.ListType)
 
 	assert.True(t, ok)
 

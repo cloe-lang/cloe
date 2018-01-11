@@ -4,19 +4,27 @@ package core
 type BoolType bool
 
 // Eval evaluates a value into a WHNF.
-func (b BoolType) eval() Value {
+func (b *BoolType) eval() Value {
 	return b
 }
 
-// True is a true value.
-var True = BoolType(true)
+var (
+	trueStruct, falseStruct = BoolType(true), BoolType(false)
 
-// False is a false value.
-var False = BoolType(false)
+	// True is a true value.
+	True = &trueStruct
+
+	// False is a false value.
+	False = &falseStruct
+)
 
 // NewBool converts a Go boolean value into BoolType.
-func NewBool(b bool) BoolType {
-	return BoolType(b)
+func NewBool(b bool) *BoolType {
+	if b {
+		return True
+	}
+
+	return False
 }
 
 // If returns the second argument when the first one is true or the third one
@@ -45,7 +53,7 @@ var If = NewLazyFunction(
 
 			if err != nil {
 				return err
-			} else if b {
+			} else if *b {
 				return ll.First()
 			}
 
@@ -53,16 +61,16 @@ var If = NewLazyFunction(
 		}
 	})
 
-func (b BoolType) compare(c comparable) int {
-	if b == c.(BoolType) {
+func (b *BoolType) compare(c comparable) int {
+	if *b == *c.(*BoolType) {
 		return 0
-	} else if b {
+	} else if *b {
 		return 1
 	}
 
 	return -1
 }
 
-func (b BoolType) string() Value {
-	return sprint(b)
+func (b *BoolType) string() Value {
+	return sprint(*b)
 }

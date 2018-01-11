@@ -10,12 +10,16 @@ type ListType struct {
 }
 
 // Eval evaluates a value into a WHNF.
-func (l ListType) eval() Value {
+func (l *ListType) eval() Value {
 	return l
 }
 
-// EmptyList is a thunk of an empty list.
-var EmptyList = ListType{nil, nil}
+var (
+	emptyList = ListType{}
+
+	// EmptyList is a thunk of an empty list.
+	EmptyList = &emptyList
+)
 
 // NewList creates a list from its elements.
 func NewList(vs ...Value) Value {
@@ -50,8 +54,8 @@ func StrictPrepend(vs []Value, l Value) Value {
 	return l
 }
 
-func cons(t1, t2 Value) ListType {
-	return ListType{t1, t2}
+func cons(t1, t2 Value) *ListType {
+	return &ListType{t1, t2}
 }
 
 // First takes the first element in a list.
@@ -100,11 +104,11 @@ func initRest() FunctionType {
 		})
 }
 
-func (l ListType) call(args Arguments) Value {
+func (l *ListType) call(args Arguments) Value {
 	return Index.call(NewPositionalArguments(l).Merge(args))
 }
 
-func (l ListType) index(v Value) Value {
+func (l *ListType) index(v Value) Value {
 	n, err := checkIndex(v)
 
 	if err != nil {
@@ -123,7 +127,7 @@ func (l ListType) index(v Value) Value {
 	return l.First()
 }
 
-func (l ListType) insert(i Value, v Value) Value {
+func (l *ListType) insert(i Value, v Value) Value {
 	n, err := checkIndex(i)
 
 	if err != nil {
@@ -135,7 +139,7 @@ func (l ListType) insert(i Value, v Value) Value {
 	return cons(l.First(), PApp(Insert, l.Rest(), n-1, v))
 }
 
-func (l ListType) merge(vs ...Value) Value {
+func (l *ListType) merge(vs ...Value) Value {
 	if l.Empty() {
 		return PApp(Merge, vs...)
 	}
@@ -143,7 +147,7 @@ func (l ListType) merge(vs ...Value) Value {
 	return cons(l.First(), PApp(Merge, append([]Value{l.Rest()}, vs...)...))
 }
 
-func (l ListType) delete(v Value) Value {
+func (l *ListType) delete(v Value) Value {
 	n, err := checkIndex(v)
 
 	if err != nil {
@@ -182,12 +186,12 @@ func checkIndex(v Value) (NumberType, Value) {
 	return n, nil
 }
 
-func (l ListType) toList() Value {
+func (l *ListType) toList() Value {
 	return l
 }
 
-func (l ListType) compare(x comparable) int {
-	ll := x.(ListType)
+func (l *ListType) compare(x comparable) int {
+	ll := x.(*ListType)
 
 	if l.Empty() && ll.Empty() {
 		return 0
@@ -206,9 +210,9 @@ func (l ListType) compare(x comparable) int {
 	return c
 }
 
-func (ListType) ordered() {}
+func (*ListType) ordered() {}
 
-func (l ListType) string() Value {
+func (l *ListType) string() Value {
 	ss := []string{}
 
 	for !l.Empty() {
@@ -228,7 +232,7 @@ func (l ListType) string() Value {
 	return NewString("[" + strings.Join(ss, " ") + "]")
 }
 
-func (l ListType) size() Value {
+func (l *ListType) size() Value {
 	n := NewNumber(0)
 
 	for !l.Empty() {
@@ -243,7 +247,7 @@ func (l ListType) size() Value {
 	return n
 }
 
-func (l ListType) include(elem Value) Value {
+func (l *ListType) include(elem Value) Value {
 	if l.Empty() {
 		return False
 	}
@@ -252,7 +256,7 @@ func (l ListType) include(elem Value) Value {
 
 	if err != nil {
 		return err
-	} else if b {
+	} else if *b {
 		return True
 	}
 
@@ -260,7 +264,7 @@ func (l ListType) include(elem Value) Value {
 }
 
 // First returns a first element in a list.
-func (l ListType) First() Value {
+func (l *ListType) First() Value {
 	if l.Empty() {
 		return emptyListError()
 	}
@@ -269,7 +273,7 @@ func (l ListType) First() Value {
 }
 
 // Rest returns elements in a list except the first one.
-func (l ListType) Rest() Value {
+func (l *ListType) Rest() Value {
 	if l.Empty() {
 		return emptyListError()
 	}
@@ -278,8 +282,8 @@ func (l ListType) Rest() Value {
 }
 
 // Empty returns true if the list is empty.
-func (l ListType) Empty() bool {
-	return l == ListType{}
+func (l *ListType) Empty() bool {
+	return *l == emptyList
 }
 
 // ReturnIfEmptyList returns true if a given list is empty, or false otherwise.

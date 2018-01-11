@@ -100,7 +100,7 @@ func (args *Arguments) searchKeyword(s string) Value {
 	}
 
 	for i, v := range args.expandedDicts {
-		d, ok := EvalPure(v).(DictionaryType)
+		d, ok := EvalPure(v).(*DictionaryType)
 
 		if !ok {
 			return NotDictionaryError(v)
@@ -172,7 +172,7 @@ func (args Arguments) empty() Value {
 
 	for _, t := range args.expandedDicts {
 		v := EvalPure(t)
-		d, ok := v.(DictionaryType)
+		d, ok := v.(*DictionaryType)
 
 		if !ok {
 			return NotDictionaryError(v)

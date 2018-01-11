@@ -29,7 +29,7 @@ func TestErrorName(t *testing.T) {
 }
 
 func TestErrorCatch(t *testing.T) {
-	_, ok := EvalPure(PApp(Catch, DummyError)).(DictionaryType)
+	_, ok := EvalPure(PApp(Catch, DummyError)).(*DictionaryType)
 	assert.True(t, ok)
 
 	_, ok = EvalPure(PApp(Catch, Nil)).(NilType)

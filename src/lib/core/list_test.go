@@ -153,7 +153,7 @@ func TestListIndexError(t *testing.T) {
 }
 
 func TestListToList(t *testing.T) {
-	_, ok := EvalPure(PApp(ToList, EmptyList)).(ListType)
+	_, ok := EvalPure(PApp(ToList, EmptyList)).(*ListType)
 	assert.True(t, ok)
 }
 
@@ -197,7 +197,7 @@ func TestListInclude(t *testing.T) {
 		{NewList(Nil, False), True, false},
 		{NewList(Nil, True, NewNumber(42.1), NewNumber(42), False), NewNumber(42), true},
 	} {
-		assert.Equal(t, c.answer, EvalPure(PApp(Include, c.list, c.elem)).(BoolType))
+		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.list, c.elem)).(*BoolType))
 	}
 }
 

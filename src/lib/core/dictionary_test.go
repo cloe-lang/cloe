@@ -28,7 +28,7 @@ func TestDictionaryInsert(t *testing.T) {
 	for _, k := range []Value{
 		True, False, Nil, NewNumber(42), NewString("coel"),
 	} {
-		_, ok := EvalPure(PApp(Insert, EmptyDictionary, k, Nil)).(DictionaryType)
+		_, ok := EvalPure(PApp(Insert, EmptyDictionary, k, Nil)).(*DictionaryType)
 		assert.True(t, ok)
 	}
 }
@@ -86,7 +86,7 @@ func TestDictionaryIndexFail(t *testing.T) {
 func TestDictionaryDelete(t *testing.T) {
 	k := NewNumber(42)
 	v := EvalPure(PApp(Delete, PApp(Insert, EmptyDictionary, k, Nil), k))
-	d, ok := v.(DictionaryType)
+	d, ok := v.(*DictionaryType)
 	t.Logf("%#v", v)
 	assert.True(t, ok)
 	assert.Zero(t, d.Size())
@@ -129,7 +129,7 @@ func TestDictionaryToList(t *testing.T) {
 			assert.True(t, testEqual(lv, dv))
 		}
 
-		assert.True(t, EvalPure(l).(ListType).Empty())
+		assert.True(t, EvalPure(l).(*ListType).Empty())
 	}
 }
 
@@ -153,7 +153,7 @@ func TestDictionaryWithDuplicateKeys(t *testing.T) {
 }
 
 func dictionarySize(d Value) int {
-	return int(EvalPure(d).(DictionaryType).Size())
+	return int(EvalPure(d).(*DictionaryType).Size())
 }
 
 func TestDictionaryEqual(t *testing.T) {
@@ -243,12 +243,12 @@ func TestDictionaryInclude(t *testing.T) {
 		key        Value
 		answer     BoolType
 	}{
-		{EmptyDictionary, Nil, false},
-		{PApp(Insert, EmptyDictionary, False, Nil), False, true},
-		{PApp(Insert, PApp(Insert, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(42), true},
-		{PApp(Insert, PApp(Insert, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(2049), false},
+		{EmptyDictionary, Nil, (false)},
+		{PApp(Insert, EmptyDictionary, False, Nil), False, (true)},
+		{PApp(Insert, PApp(Insert, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(42), (true)},
+		{PApp(Insert, PApp(Insert, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(2049), (false)},
 	} {
-		assert.Equal(t, c.answer, EvalPure(PApp(Include, c.dictionary, c.key)).(BoolType))
+		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.dictionary, c.key)).(*BoolType))
 	}
 }
 

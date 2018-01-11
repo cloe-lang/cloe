@@ -95,13 +95,13 @@ func TestSignatureBindExpandedDictionaries(t *testing.T) {
 
 	v := EvalPure(App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("value", NewNumber(42))}, nil)))
 
-	_, ok := v.(DictionaryType)
+	_, ok := v.(*DictionaryType)
 	assert.True(t, ok)
 
 	// Check if the Arguments passed to Partial is persistent.
 
 	v = EvalPure(App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("value", NewNumber(42))}, nil)))
 
-	_, ok = v.(DictionaryType)
+	_, ok = v.(*DictionaryType)
 	assert.True(t, ok)
 }

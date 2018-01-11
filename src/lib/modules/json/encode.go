@@ -32,15 +32,15 @@ func encodeValue(v core.Value) (string, core.Value) {
 		return fmt.Sprintf("%v", v), nil
 	case core.StringType:
 		return fmt.Sprintf("%#v", string(v)), nil
-	case core.BoolType:
-		if v {
+	case *core.BoolType:
+		if *v {
 			return "true", nil
 		}
 
 		return "false", nil
 	case core.ErrorType:
 		return "", v
-	case core.ListType:
+	case *core.ListType:
 		ss := []string{}
 
 		for !v.Empty() {
@@ -60,7 +60,7 @@ func encodeValue(v core.Value) (string, core.Value) {
 		}
 
 		return "[" + strings.Join(ss, ",") + "]", nil
-	case core.DictionaryType:
+	case *core.DictionaryType:
 		l, err := core.EvalList(core.PApp(core.ToList, v))
 
 		if err != nil {
@@ -79,7 +79,7 @@ func encodeValue(v core.Value) (string, core.Value) {
 			kk := core.EvalPure(ll.First())
 
 			switch kk.(type) {
-			case core.BoolType, core.NilType, core.NumberType:
+			case *core.BoolType, core.NilType, core.NumberType:
 				s, err := encodeValue(kk)
 
 				if err != nil {

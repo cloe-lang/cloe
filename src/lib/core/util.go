@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func sprint(s stringable) StringType {
+func sprint(s interface{}) StringType {
 	return NewString(fmt.Sprint(s))
 }
 
@@ -53,11 +53,11 @@ var TypeOf = NewLazyFunction(
 	func(vs ...Value) Value {
 		// No case of effectType should be here.
 		switch v := EvalPure(vs[0]).(type) {
-		case BoolType:
+		case *BoolType:
 			return NewString("bool")
-		case DictionaryType:
+		case *DictionaryType:
 			return NewString("dict")
-		case ListType:
+		case *ListType:
 			return NewString("list")
 		case NilType:
 			return NewString("nil")

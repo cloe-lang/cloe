@@ -9,7 +9,7 @@ import (
 
 func TestGet(t *testing.T) {
 	v := core.PApp(get, core.NewString("http://httpbin.org"))
-	_, ok := core.EvalPure(v).(core.DictionaryType)
+	_, ok := core.EvalPure(v).(*core.DictionaryType)
 
 	assert.True(t, ok)
 	assert.Equal(t, core.NewNumber(200), core.EvalPure(core.PApp(v, core.NewString("status"))))
@@ -51,7 +51,7 @@ func TestGetWithInvalidPathButNoError(t *testing.T) {
 				core.NewKeywordArgument("error", core.False)},
 			nil))
 
-	_, ok := core.EvalPure(v).(core.DictionaryType)
+	_, ok := core.EvalPure(v).(*core.DictionaryType)
 	assert.True(t, ok)
 
 	n, ok := core.EvalPure(core.PApp(v, core.NewString("status"))).(core.NumberType)

@@ -32,7 +32,7 @@ var Write = core.NewEffectFunction(
 			return err
 		}
 
-		l, err := ts[0].EvalList()
+		l, err := core.EvalList(ts[0])
 
 		if err != nil {
 			return err
@@ -49,7 +49,7 @@ var Write = core.NewEffectFunction(
 
 			ss = append(ss, s)
 
-			l, err = l.Rest().EvalList()
+			l, err = core.EvalList(l.Rest())
 
 			if err != nil {
 				return err
@@ -70,7 +70,7 @@ var Write = core.NewEffectFunction(
 	})
 
 func evalGoString(t core.Value) (string, core.Value) {
-	s, err := t.EvalString()
+	s, err := core.EvalString(t)
 
 	if err != nil {
 		return "", err
@@ -80,9 +80,9 @@ func evalGoString(t core.Value) (string, core.Value) {
 }
 
 func evalFileArguments(f, m core.Value) (*os.File, core.Value) {
-	switch x := f.Eval().(type) {
+	switch x := core.EvalPure(f).(type) {
 	case core.StringType:
-		m, e := m.EvalNumber()
+		m, e := core.EvalNumber(m)
 
 		if e != nil {
 			return nil, e

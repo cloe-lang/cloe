@@ -34,7 +34,7 @@ func TestWrite(t *testing.T) {
 			[]core.KeywordArgument{core.NewKeywordArgument("mode", core.NewNumber(0775))},
 			nil),
 	} {
-		assert.Equal(t, core.Nil.Eval(), core.App(Write, a).EvalEffect())
+		assert.Equal(t, core.Nil, core.EvalImpure(core.App(Write, a)))
 	}
 }
 
@@ -108,7 +108,7 @@ func TestWriteError(t *testing.T) {
 			},
 			nil),
 	} {
-		_, ok := core.App(Write, a).Eval().(core.ErrorType)
+		_, ok := core.EvalPure(core.App(Write, a)).(core.ErrorType)
 		assert.True(t, ok)
 	}
 }

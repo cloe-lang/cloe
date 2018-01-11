@@ -12,13 +12,13 @@ var Par = core.NewLazyFunction(
 		l := ts[0]
 
 		for {
-			t := core.PApp(core.First, l)
+			v := core.PApp(core.First, l)
 			l = core.PApp(core.Rest, l)
 
-			if v := core.ReturnIfEmptyList(l, t); v != nil {
+			if v := core.ReturnIfEmptyList(l, v); v != nil {
 				return v
 			}
 
-			systemt.Daemonize(func() { t.Eval() })
+			systemt.Daemonize(func() { core.EvalPure(v) })
 		}
 	})

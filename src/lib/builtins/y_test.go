@@ -28,7 +28,7 @@ func strictFactorial(n float64) float64 {
 }
 
 func lazyFactorial(t core.Value) float64 {
-	return float64(core.PApp(core.PApp(Y, lazyFactorialImpl), t).Eval().(core.NumberType))
+	return float64(core.EvalPure(core.PApp(core.PApp(Y, lazyFactorialImpl), t)).(core.NumberType))
 }
 
 var lazyFactorialImpl = core.NewLazyFunction(
@@ -43,7 +43,7 @@ var lazyFactorialImpl = core.NewLazyFunction(
 	})
 
 func BenchmarkYInfiniteRecursion(b *testing.B) {
-	t := core.PApp(Y, core.NewLazyFunction(
+	v := core.PApp(Y, core.NewLazyFunction(
 		core.NewSignature([]string{"me"}, nil, "", nil, nil, ""),
 		func(ts ...core.Value) core.Value {
 			return ts[0]
@@ -52,14 +52,13 @@ func BenchmarkYInfiniteRecursion(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		t.Eval()
-		t = core.PApp(t)
+		v = core.PApp(core.EvalPure(v))
 	}
 }
 
 func BenchmarkY(b *testing.B) {
 	go systemt.RunDaemons()
-	core.PApp(toZero, core.NewNumber(float64(b.N))).Eval()
+	core.EvalPure(core.PApp(toZero, core.NewNumber(float64(b.N))))
 }
 
 func BenchmarkGoY(b *testing.B) {
@@ -76,12 +75,12 @@ var toZero = core.PApp(Y, core.NewLazyFunction(
 	}))
 
 func toZeroGo(f float64) string {
-	t := core.NewNumber(f)
-	n := t.Eval().(core.NumberType)
+	v := core.Value(core.NewNumber(f))
+	n := core.EvalPure(v).(core.NumberType)
 
 	for n > 0 {
-		t = core.PApp(core.Sub, t, core.NewNumber(1))
-		n = t.Eval().(core.NumberType)
+		v = core.PApp(core.Sub, v, core.NewNumber(1))
+		n = core.EvalPure(v).(core.NumberType)
 	}
 
 	return "Benchmark finished!"

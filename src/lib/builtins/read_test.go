@@ -10,7 +10,7 @@ import (
 )
 
 func TestReadWithStdin(t *testing.T) {
-	assert.Equal(t, core.StringType(""), core.PApp(Read).Eval())
+	assert.Equal(t, core.NewString(""), core.EvalPure(core.PApp(Read)))
 }
 
 func TestReadError(t *testing.T) {
@@ -19,7 +19,7 @@ func TestReadError(t *testing.T) {
 		core.NewString("nonExistentFile"),
 		core.DummyError,
 	} {
-		_, ok := core.PApp(Read, th).Eval().(core.ErrorType)
+		_, ok := core.EvalPure(core.PApp(Read, th)).(core.ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -31,6 +31,6 @@ func TestReadWithClosedStdin(t *testing.T) {
 	assert.Nil(t, err)
 	defer os.Remove(f.Name())
 
-	_, ok := core.PApp(createReadFunction(f)).Eval().(core.ErrorType)
+	_, ok := core.EvalPure(core.PApp(createReadFunction(f))).(core.ErrorType)
 	assert.True(t, ok)
 }

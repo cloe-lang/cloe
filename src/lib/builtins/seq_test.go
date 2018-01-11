@@ -14,8 +14,8 @@ func TestSeq(t *testing.T) {
 	} {
 		assert.Equal(
 			t,
-			core.Nil.Eval(),
-			core.PApp(Seq, ts...).Eval())
+			core.Nil,
+			core.EvalPure(core.PApp(Seq, ts...)))
 	}
 }
 
@@ -26,7 +26,7 @@ func TestSeqWithEffects(t *testing.T) {
 		{w},
 		{w, w},
 	} {
-		_, ok := core.PApp(Seq, ts...).Eval().(core.ErrorType)
+		_, ok := core.EvalPure(core.PApp(Seq, ts...)).(core.ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -34,11 +34,11 @@ func TestSeqWithEffects(t *testing.T) {
 func TestEffectSeq(t *testing.T) {
 	assert.Equal(
 		t,
-		core.Nil.Eval(),
-		core.PApp(
+		core.Nil,
+		core.EvalImpure(core.PApp(
 			EffectSeq,
 			core.PApp(Write, core.NewNumber(42)),
-			core.PApp(Write, core.NewString("OK!"))).EvalEffect())
+			core.PApp(Write, core.NewString("OK!")))))
 }
 
 func TestEffectSeqWithPureValues(t *testing.T) {
@@ -46,7 +46,7 @@ func TestEffectSeqWithPureValues(t *testing.T) {
 		{core.Nil},
 		{core.Nil, core.Nil},
 	} {
-		_, ok := core.PApp(EffectSeq, ts...).EvalEffect().(core.ErrorType)
+		_, ok := core.EvalImpure(core.PApp(EffectSeq, ts...)).(core.ErrorType)
 		assert.True(t, ok)
 	}
 }

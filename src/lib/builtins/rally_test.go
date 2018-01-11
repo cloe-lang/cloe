@@ -21,15 +21,15 @@ func TestRally(t *testing.T) {
 
 	for i := 0; i < len(ts); i++ {
 		e := core.PApp(core.First, l2)
-		t.Logf("%#v", e.Eval())
-		assert.True(t, bool(core.PApp(core.Include, l1, e).Eval().(core.BoolType)))
+		t.Logf("%#v", core.EvalPure(e))
+		assert.True(t, bool(core.EvalPure(core.PApp(core.Include, l1, e)).(core.BoolType)))
 
 		l1 = core.PApp(core.Delete, l1, core.PApp(indexOf, l1, e))
 		l2 = core.PApp(core.Rest, l2)
 	}
 
-	assert.True(t, bool(core.PApp(core.Equal, core.EmptyList, l1).Eval().(core.BoolType)))
-	assert.True(t, bool(core.PApp(core.Equal, core.EmptyList, l2).Eval().(core.BoolType)))
+	assert.True(t, bool(core.EvalPure(core.PApp(core.Equal, core.EmptyList, l1)).(core.BoolType)))
+	assert.True(t, bool(core.EvalPure(core.PApp(core.Equal, core.EmptyList, l2)).(core.BoolType)))
 }
 
 func TestRallyError(t *testing.T) {
@@ -50,7 +50,7 @@ func TestRallyError(t *testing.T) {
 	for i := 0; ; i++ {
 		assert.True(t, i < len(ts))
 
-		if _, ok := l.Eval().(core.ErrorType); ok {
+		if _, ok := core.EvalPure(l).(core.ErrorType); ok {
 			break
 		}
 
@@ -68,7 +68,7 @@ var indexOf = core.NewLazyFunction(
 				return v
 			}
 
-			v := core.PApp(core.Equal, core.PApp(core.First, l), e).Eval()
+			v := core.EvalPure(core.PApp(core.Equal, core.PApp(core.First, l), e))
 			if b, ok := v.(core.BoolType); !ok {
 				return core.NotBoolError(v)
 			} else if b {
@@ -90,8 +90,8 @@ func TestRallyWithInvalidExpandedList(t *testing.T) {
 			nil,
 			nil))
 
-	if _, ok := l.Eval().(core.ErrorType); !ok {
-		v := core.PApp(core.Rest, l).Eval()
+	if _, ok := core.EvalPure(l).(core.ErrorType); !ok {
+		v := core.EvalPure(core.PApp(core.Rest, l))
 		_, ok := v.(core.ErrorType)
 		assert.True(t, ok)
 	}

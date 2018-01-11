@@ -13,18 +13,18 @@ func TestPar(t *testing.T) {
 
 	n := core.PApp(Par, core.True, core.False, core.ValueError("I am the error."), core.Nil)
 
-	assert.True(t, bool(core.PApp(core.Equal, core.Nil, n).Eval().(core.BoolType)))
+	assert.True(t, bool(core.EvalPure(core.PApp(core.Equal, core.Nil, n)).(core.BoolType)))
 }
 
 func TestParError(t *testing.T) {
 	go systemt.RunDaemons()
 
-	_, ok := core.PApp(Par,
+	_, ok := core.EvalPure(core.PApp(Par,
 		core.True,
 		core.False,
 		core.Nil,
 		core.ValueError("I am the error."),
-	).Eval().(core.ErrorType)
+	)).(core.ErrorType)
 
 	assert.True(t, ok)
 }
@@ -32,6 +32,6 @@ func TestParError(t *testing.T) {
 func TestParWithNoArgument(t *testing.T) {
 	go systemt.RunDaemons()
 
-	_, ok := core.PApp(Par).Eval().(core.ErrorType)
+	_, ok := core.EvalPure(core.PApp(Par)).(core.ErrorType)
 	assert.True(t, ok)
 }

@@ -17,10 +17,10 @@ func createReadFunction(stdin io.Reader) core.Value {
 			nil, []core.OptionalArgument{core.NewOptionalArgument("file", core.Nil)}, "",
 			nil, nil, "",
 		),
-		func(ts ...core.Value) core.Value {
+		func(vs ...core.Value) core.Value {
 			file := stdin
 
-			switch x := ts[0].Eval().(type) {
+			switch x := core.EvalPure(vs[0]).(type) {
 			case core.StringType:
 				var err error
 				file, err = os.Open(string(x))

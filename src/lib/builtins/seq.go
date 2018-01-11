@@ -26,7 +26,7 @@ func createSeqFunction(f func(t core.Value) core.Value) core.Value {
 }
 
 // Seq runs arguments of pure values sequentially and returns the last one.
-var Seq = createSeqFunction(func(t core.Value) core.Value { return t.Eval() })
+var Seq = createSeqFunction(func(v core.Value) core.Value { return core.EvalPure(v) })
 
 // EffectSeq runs arguments of effects sequentially and returns the last one.
-var EffectSeq = createSeqFunction(func(t core.Value) core.Value { return t.EvalEffect() })
+var EffectSeq = createSeqFunction(func(v core.Value) core.Value { return core.EvalImpure(v) })

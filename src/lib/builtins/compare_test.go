@@ -22,7 +22,7 @@ func TestLessTrue(t *testing.T) {
 			core.NewList(core.NewList(core.NewNumber(42), core.NewNumber(42))),
 			core.NewList(core.NewList(core.NewNumber(42), core.NewNumber(42), core.NewNumber(42)))},
 	} {
-		assert.True(t, bool(core.PApp(Less, ts...).Eval().(core.BoolType)))
+		assert.True(t, bool(core.EvalPure(core.PApp(Less, ts...)).(core.BoolType)))
 	}
 }
 
@@ -40,7 +40,7 @@ func TestLessFalse(t *testing.T) {
 			core.NewList(core.NewList(core.NewNumber(42), core.NewNumber(42))),
 			core.NewList(core.NewList(core.NewNumber(42), core.NewNumber(2049)))},
 	} {
-		assert.True(t, !bool(core.PApp(Less, ts...).Eval().(core.BoolType)))
+		assert.True(t, !bool(core.EvalPure(core.PApp(Less, ts...)).(core.BoolType)))
 	}
 }
 
@@ -53,7 +53,7 @@ func TestLessError(t *testing.T) {
 		{core.NewNumber(42), core.Nil},
 		{core.NewString("foo"), core.Nil},
 	} {
-		v := core.PApp(Less, ts...).Eval()
+		v := core.EvalPure(core.PApp(Less, ts...))
 		t.Log(v)
 		_, ok := v.(core.ErrorType)
 		assert.True(t, ok)
@@ -62,12 +62,12 @@ func TestLessError(t *testing.T) {
 
 func TestLessNoPanic(t *testing.T) {
 	assert.NotPanics(t, func() {
-		core.App(Less, core.NewArguments(
+		core.EvalPure(core.App(Less, core.NewArguments(
 			[]core.PositionalArgument{
 				core.NewPositionalArgument(core.NewList(core.DummyError, core.NewNumber(42)), true),
 			},
 			nil,
-			nil)).Eval()
+			nil)))
 	})
 }
 
@@ -96,7 +96,7 @@ func TestLessEqTrue(t *testing.T) {
 			core.NewList(core.NewList(core.NewNumber(42), core.NewNumber(42))),
 			core.NewList(core.NewList(core.NewNumber(42), core.NewNumber(2049)))},
 	} {
-		assert.True(t, bool(core.PApp(LessEq, ts...).Eval().(core.BoolType)))
+		assert.True(t, bool(core.EvalPure(core.PApp(LessEq, ts...)).(core.BoolType)))
 	}
 }
 
@@ -105,7 +105,7 @@ func TestLessEqFalse(t *testing.T) {
 		{core.NewNumber(42), core.NewNumber(0)},
 		{core.NewString("foo"), core.NewString("bar"), core.NewString("baz")},
 	} {
-		assert.True(t, !bool(core.PApp(LessEq, ts...).Eval().(core.BoolType)))
+		assert.True(t, !bool(core.EvalPure(core.PApp(LessEq, ts...)).(core.BoolType)))
 	}
 }
 
@@ -118,7 +118,7 @@ func TestGreaterTrue(t *testing.T) {
 		{core.NewNumber(0.000001), core.NewNumber(0.0000000000001)},
 		{core.NewString("foo"), core.NewString("baz"), core.NewString("bar")},
 	} {
-		assert.True(t, bool(core.PApp(Greater, ts...).Eval().(core.BoolType)))
+		assert.True(t, bool(core.EvalPure(core.PApp(Greater, ts...)).(core.BoolType)))
 	}
 }
 
@@ -129,7 +129,7 @@ func TestGreaterFalse(t *testing.T) {
 		{core.NewNumber(42), core.NewNumber(42)},
 		{core.NewString("foo"), core.NewString("bar"), core.NewString("bar")},
 	} {
-		assert.True(t, !bool(core.PApp(Greater, ts...).Eval().(core.BoolType)))
+		assert.True(t, !bool(core.EvalPure(core.PApp(Greater, ts...)).(core.BoolType)))
 	}
 }
 
@@ -145,7 +145,7 @@ func TestGreaterEqTrue(t *testing.T) {
 		{core.NewNumber(42), core.NewNumber(42)},
 		{core.NewString("foo"), core.NewString("bar"), core.NewString("bar")},
 	} {
-		assert.True(t, bool(core.PApp(GreaterEq, ts...).Eval().(core.BoolType)))
+		assert.True(t, bool(core.EvalPure(core.PApp(GreaterEq, ts...)).(core.BoolType)))
 	}
 }
 
@@ -154,6 +154,6 @@ func TestGreaterEqFalse(t *testing.T) {
 		{core.NewNumber(42), core.NewNumber(2049)},
 		{core.NewString("bar"), core.NewString("baz")},
 	} {
-		assert.True(t, !bool(core.PApp(GreaterEq, ts...).Eval().(core.BoolType)))
+		assert.True(t, !bool(core.EvalPure(core.PApp(GreaterEq, ts...)).(core.BoolType)))
 	}
 }

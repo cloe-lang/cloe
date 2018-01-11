@@ -39,8 +39,8 @@ func TestYsMultipleFs(t *testing.T) {
 	fs := core.PApp(Ys, evenWithExtraArg, odd)
 
 	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100, 121, 256, 1023} {
-		b1 := bool(core.PApp(core.PApp(core.First, fs), core.NewString("unused"), core.NewNumber(n)).Eval().(core.BoolType))
-		b2 := bool(core.PApp(core.PApp(core.First, core.PApp(core.Rest, fs)), core.NewNumber(n)).Eval().(core.BoolType))
+		b1 := bool(core.EvalPure(core.PApp(core.PApp(core.First, fs), core.NewString("unused"), core.NewNumber(n))).(core.BoolType))
+		b2 := bool(core.EvalPure(core.PApp(core.PApp(core.First, core.PApp(core.Rest, fs)), core.NewNumber(n))).(core.BoolType))
 
 		t.Logf("n = %v, even? %v, odd? %v\n", n, b1, b2)
 
@@ -51,12 +51,12 @@ func TestYsMultipleFs(t *testing.T) {
 }
 
 func TestYsWithErroneousArgument(t *testing.T) {
-	v := core.App(
+	v := core.EvalPure(core.App(
 		Ys,
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.OutOfRangeError(), true)},
 			nil,
-			nil)).Eval()
+			nil)))
 	_, ok := v.(core.ErrorType)
 	assert.True(t, ok)
 }

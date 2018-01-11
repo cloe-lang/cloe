@@ -14,14 +14,14 @@ const channelCloseDuration = 100 * time.Millisecond
 // Rally sorts arguments by time.
 var Rally = core.NewLazyFunction(
 	core.NewSignature(nil, nil, "args", nil, nil, ""),
-	func(ts ...core.Value) core.Value {
-		vs := make(chan core.Value, valueChannelCapacity)
+	func(vs ...core.Value) core.Value {
+		c := make(chan core.Value, valueChannelCapacity)
 
 		systemt.Daemonize(func() {
-			l, err := ts[0].EvalList()
+			l, err := core.EvalList(vs[0])
 
 			if err != nil {
-				vs <- err
+				c <- err
 				return
 			}
 
@@ -29,15 +29,15 @@ var Rally = core.NewLazyFunction(
 
 			for !l.Empty() {
 				sem <- true
-				go func(t core.Value) {
-					vs <- t.Eval()
+				go func(v core.Value) {
+					c <- core.EvalPure(v)
 					<-sem
 				}(l.First())
 
-				l, err = l.Rest().EvalList()
+				l, err = core.EvalList(l.Rest())
 
 				if err != nil {
-					vs <- err
+					c <- err
 					break
 				}
 			}
@@ -45,13 +45,13 @@ var Rally = core.NewLazyFunction(
 			// HACK: Wait for other goroutines to put elements in a value channel
 			// for a while. This is only for unit test.
 			time.Sleep(channelCloseDuration)
-			vs <- nil
+			c <- nil
 		})
 
 		return core.PApp(core.PApp(Y, core.NewLazyFunction(
 			core.NewSignature([]string{"me"}, nil, "", nil, nil, ""),
-			func(ts ...core.Value) core.Value {
-				v := <-vs
+			func(vs ...core.Value) core.Value {
+				v := <-c
 
 				if v == nil {
 					return core.EmptyList
@@ -59,6 +59,6 @@ var Rally = core.NewLazyFunction(
 					return err
 				}
 
-				return core.StrictPrepend([]core.Value{v}, core.PApp(ts[0]))
+				return core.StrictPrepend([]core.Value{v}, core.PApp(vs[0]))
 			})))
 	})

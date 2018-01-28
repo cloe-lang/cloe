@@ -42,7 +42,7 @@ func handleMethodResult(r *http.Response, err error, errorOption core.Value) cor
 		return e
 	}
 
-	if *b && r.StatusCode/100 != 2 {
+	if b && r.StatusCode/100 != 2 {
 		return httpError(errors.New("status code is not 2XX"))
 	}
 

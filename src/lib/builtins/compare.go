@@ -16,7 +16,7 @@ func createCompareFunction(checkOrder func(core.NumberType) bool) core.Value {
 
 			if b, err := core.EvalBool(core.PApp(core.IsOrdered, prev)); err != nil {
 				return err
-			} else if !*b {
+			} else if !b {
 				return core.NotOrderedError(prev)
 			}
 

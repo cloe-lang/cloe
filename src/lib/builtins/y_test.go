@@ -28,7 +28,7 @@ func strictFactorial(n float64) float64 {
 }
 
 func lazyFactorial(t core.Value) float64 {
-	return float64(core.EvalPure(core.PApp(core.PApp(Y, lazyFactorialImpl), t)).(core.NumberType))
+	return float64(*core.EvalPure(core.PApp(core.PApp(Y, lazyFactorialImpl), t)).(*core.NumberType))
 }
 
 var lazyFactorialImpl = core.NewLazyFunction(
@@ -76,11 +76,11 @@ var toZero = core.PApp(Y, core.NewLazyFunction(
 
 func toZeroGo(f float64) string {
 	v := core.Value(core.NewNumber(f))
-	n := core.EvalPure(v).(core.NumberType)
+	n := *core.EvalPure(v).(*core.NumberType)
 
 	for n > 0 {
 		v = core.PApp(core.Sub, v, core.NewNumber(1))
-		n = core.EvalPure(v).(core.NumberType)
+		n = *core.EvalPure(v).(*core.NumberType)
 	}
 
 	return "Benchmark finished!"

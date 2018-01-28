@@ -15,7 +15,11 @@ func testLess(t1, t2 Value) bool {
 }
 
 func testCompare(t1, t2 Value) int {
-	return int(EvalPure(PApp(Compare, t1, t2)).(NumberType))
+	return int(*EvalPure(PApp(Compare, t1, t2)).(*NumberType))
+}
+
+func TestCompareFunction(t *testing.T) {
+	assert.Equal(t, -1, compare(True, NewNumber(42)))
 }
 
 func TestComaprePanic(t *testing.T) {

@@ -29,13 +29,13 @@ func interpretExpression(args []core.Value, expr interface{}) core.Value {
 		return x.interpret(args)
 	case Switch:
 		v := core.EvalPure(core.PApp(x.dict, interpretExpression(args, x.matchedValue)))
-		n, ok := v.(core.NumberType)
+		n, ok := v.(*core.NumberType)
 
 		if !ok {
 			return interpretExpression(args, x.defaultCase)
 		}
 
-		return interpretExpression(args, x.caseValues[int(n)])
+		return interpretExpression(args, x.caseValues[int(*n)])
 	}
 
 	panic("Unreachable")

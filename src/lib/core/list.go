@@ -136,7 +136,7 @@ func (l *ListType) insert(i Value, v Value) Value {
 		return cons(v, l)
 	}
 
-	return cons(l.First(), PApp(Insert, l.Rest(), n-1, v))
+	return cons(l.First(), PApp(Insert, l.Rest(), NewNumber(float64(n-1)), v))
 }
 
 func (l *ListType) merge(vs ...Value) Value {
@@ -171,10 +171,10 @@ func (l *ListType) delete(v Value) Value {
 }
 
 func checkIndex(v Value) (NumberType, Value) {
-	n, ok := v.(NumberType)
+	n, err := EvalNumber(v)
 
-	if !ok {
-		return 0, NotNumberError(v)
+	if err != nil {
+		return 0, err
 	}
 
 	if !IsInt(n) {
@@ -236,7 +236,7 @@ func (l *ListType) size() Value {
 	n := NewNumber(0)
 
 	for !l.Empty() {
-		n++
+		*n++
 
 		var err Value
 		if l, err = EvalList(l.Rest()); err != nil {
@@ -256,7 +256,7 @@ func (l *ListType) include(elem Value) Value {
 
 	if err != nil {
 		return err
-	} else if *b {
+	} else if b {
 		return True
 	}
 

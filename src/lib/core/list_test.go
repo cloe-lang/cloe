@@ -54,7 +54,7 @@ func TestListPrependToMergedLists(t *testing.T) {
 	l := NewList(Nil)
 	assert.Equal(t,
 		NewNumber(2),
-		EvalPure(PApp(Size, PApp(Prepend, PApp(Merge, l, PApp(Prepend, l))))).(NumberType))
+		EvalPure(PApp(Size, PApp(Prepend, PApp(Merge, l, PApp(Prepend, l))))).(*NumberType))
 }
 
 func TestListRestWithNonListValues(t *testing.T) {
@@ -181,7 +181,7 @@ func TestListSize(t *testing.T) {
 		{NewList(Nil, True), 2},
 		{NewList(Nil, True, False), 3},
 	} {
-		assert.Equal(t, c.size, EvalPure(PApp(Size, c.list)).(NumberType))
+		assert.Equal(t, c.size, *EvalPure(PApp(Size, c.list)).(*NumberType))
 	}
 }
 
@@ -215,7 +215,7 @@ func TestListInsert(t *testing.T) {
 		{NewList(True, False), 2, Nil, NewList(True, Nil, False)},
 		{NewList(True, False), 3, Nil, NewList(True, False, Nil)},
 	} {
-		assert.True(t, testEqual(c.expected, PApp(Insert, c.list, c.index, c.elem)))
+		assert.True(t, testEqual(c.expected, PApp(Insert, c.list, &c.index, c.elem)))
 	}
 }
 

@@ -54,9 +54,9 @@ func TestGetWithInvalidPathButNoError(t *testing.T) {
 	_, ok := core.EvalPure(v).(*core.DictionaryType)
 	assert.True(t, ok)
 
-	n, ok := core.EvalPure(core.PApp(v, core.NewString("status"))).(core.NumberType)
+	n, err := core.EvalNumber(core.PApp(v, core.NewString("status")))
 
-	assert.True(t, ok)
+	assert.Equal(t, nil, err)
 	assert.Equal(t, 404.0, float64(n))
 }
 

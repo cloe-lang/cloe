@@ -28,8 +28,21 @@ func TestDictionaryInsert(t *testing.T) {
 	for _, k := range []Value{
 		True, False, Nil, NewNumber(42), NewString("coel"),
 	} {
-		_, ok := EvalPure(PApp(Insert, EmptyDictionary, k, Nil)).(*DictionaryType)
+		d, ok := EvalPure(PApp(Insert, EmptyDictionary, k, Nil)).(*DictionaryType)
 		assert.True(t, ok)
+		assert.Equal(t, 1, d.Size())
+	}
+}
+
+func TestDictionaryInsertMultileKeys(t *testing.T) {
+	d := Value(EmptyDictionary)
+
+	for i, k := range []Value{
+		True, False, Nil, NewNumber(42), NewString("coel"),
+	} {
+		d = EvalPure(PApp(Insert, d, k, Nil))
+		t.Log(EvalPure(PApp(ToString, d)))
+		assert.Equal(t, i+1, d.(*DictionaryType).Size())
 	}
 }
 
@@ -51,13 +64,14 @@ func TestDictionaryIndex(t *testing.T) {
 		}
 
 		assert.Equal(t, len(kvs), dictionarySize(d))
+		t.Log(EvalPure(PApp(ToString, d)))
 
 		for i, kv := range kvs {
 			t.Logf("Getting a %vth value...\n", i)
 
 			k, v := kv[0], kv[1]
 
-			t.Log(EvalPure(k))
+			t.Log(EvalPure(PApp(ToString, k)))
 
 			if e, ok := EvalPure(PApp(d, k)).(ErrorType); ok {
 				t.Log(e.Lines())
@@ -233,7 +247,7 @@ func TestDictionarySize(t *testing.T) {
 		{PApp(Insert, EmptyDictionary, True, Nil), 1},
 		{PApp(Insert, PApp(Insert, EmptyDictionary, True, Nil), False, Nil), 2},
 	} {
-		assert.Equal(t, test.size, EvalPure(PApp(Size, test.dictionary)).(NumberType))
+		assert.Equal(t, test.size, *EvalPure(PApp(Size, test.dictionary)).(*NumberType))
 	}
 }
 

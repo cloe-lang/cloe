@@ -17,47 +17,47 @@ func TestNumberEqual(t *testing.T) {
 }
 
 func TestNumberAdd(t *testing.T) {
-	assert.Equal(t, NewNumber(0), EvalPure(PApp(Add)).(NumberType))
+	assert.Equal(t, NewNumber(0), EvalPure(PApp(Add)).(*NumberType))
 	assert.Equal(t,
 		NewNumber(n1+n2),
-		EvalPure(PApp(Add, NewNumber(n1), NewNumber(n2))).(NumberType))
+		EvalPure(PApp(Add, NewNumber(n1), NewNumber(n2))).(*NumberType))
 }
 
 func TestNumberSub(t *testing.T) {
 	assert.Equal(t,
 		NewNumber(n1-n2),
-		EvalPure(PApp(Sub, NewNumber(n1), NewNumber(n2))).(NumberType))
+		EvalPure(PApp(Sub, NewNumber(n1), NewNumber(n2))).(*NumberType))
 }
 
 func TestNumberMul(t *testing.T) {
-	assert.Equal(t, NewNumber(1), EvalPure(PApp(Mul)).(NumberType))
+	assert.Equal(t, NewNumber(1), EvalPure(PApp(Mul)).(*NumberType))
 	assert.Equal(t,
 		NewNumber(n1*n2),
-		EvalPure(PApp(Mul, NewNumber(n1), NewNumber(n2))).(NumberType))
+		EvalPure(PApp(Mul, NewNumber(n1), NewNumber(n2))).(*NumberType))
 }
 
 func TestNumberDiv(t *testing.T) {
 	assert.Equal(t,
 		NewNumber(n1/n2),
-		EvalPure(PApp(Div, NewNumber(n1), NewNumber(n2))).(NumberType))
+		EvalPure(PApp(Div, NewNumber(n1), NewNumber(n2))).(*NumberType))
 }
 
 func TestNumberFloorDiv(t *testing.T) {
 	assert.Equal(t,
 		NewNumber(math.Floor(n1/n2)),
-		EvalPure(PApp(FloorDiv, NewNumber(n1), NewNumber(n2))).(NumberType))
+		EvalPure(PApp(FloorDiv, NewNumber(n1), NewNumber(n2))).(*NumberType))
 }
 
 func TestNumberMod(t *testing.T) {
 	assert.Equal(t,
 		NewNumber(math.Mod(float64(n1), float64(n2))),
-		EvalPure(PApp(Mod, NewNumber(n1), NewNumber(n2))).(NumberType))
+		EvalPure(PApp(Mod, NewNumber(n1), NewNumber(n2))).(*NumberType))
 }
 
 func TestNumberPow(t *testing.T) {
 	assert.Equal(t,
 		NewNumber(math.Pow(float64(n1), float64(n2))),
-		EvalPure(PApp(Pow, NewNumber(n1), NewNumber(n2))).(NumberType))
+		EvalPure(PApp(Pow, NewNumber(n1), NewNumber(n2))).(*NumberType))
 }
 
 func TestNumberFunctionsError(t *testing.T) {

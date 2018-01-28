@@ -44,7 +44,7 @@ func evalEffectList(v core.Value, parent *sync.WaitGroup, fail func(error)) {
 	for {
 		if b, err := core.EvalBool(core.EvalPure(core.PApp(core.Equal, v, core.EmptyList))); err != nil {
 			fail(err.(core.ErrorType))
-		} else if *b {
+		} else if b {
 			break
 		}
 

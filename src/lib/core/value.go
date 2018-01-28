@@ -7,14 +7,14 @@ type Value interface {
 }
 
 // EvalBool evaluates a thunk which is expected to be a boolean value.
-func EvalBool(v Value) (*BoolType, Value) {
+func EvalBool(v Value) (BoolType, Value) {
 	b, ok := EvalPure(v).(*BoolType)
 
 	if !ok {
-		return False, NotBoolError(v)
+		return *False, NotBoolError(v)
 	}
 
-	return b, nil
+	return *b, nil
 }
 
 // EvalDictionary evaluates a thunk which is expected to be a dictionary value.
@@ -41,13 +41,13 @@ func EvalList(v Value) (*ListType, Value) {
 
 // EvalNumber evaluates a thunk which is expected to be a number value.
 func EvalNumber(v Value) (NumberType, Value) {
-	n, ok := EvalPure(v).(NumberType)
+	n, ok := EvalPure(v).(*NumberType)
 
 	if !ok {
 		return 0, NotNumberError(v)
 	}
 
-	return n, nil
+	return *n, nil
 }
 
 // EvalString evaluates a thunk which is expected to be a string value.

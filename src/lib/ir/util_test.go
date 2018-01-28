@@ -20,7 +20,7 @@ func TestCompileFunction(t *testing.T) {
 		nil,
 		newAppWithDummyInfo(0, newPositionalArguments(1, newAppWithDummyInfo(0, newPositionalArguments(2, 3)))))
 
-	x1 := core.NewNumber(math.Pow(n1, math.Pow(n2, n3)))
+	x1 := *core.NewNumber(math.Pow(n1, math.Pow(n2, n3)))
 	x2, err := core.EvalNumber(core.PApp(f, core.Pow, core.NewNumber(n1), core.NewNumber(n2), core.NewNumber(n3)))
 
 	assert.Nil(t, err)
@@ -39,7 +39,7 @@ func TestCompileFunctionWithVars(t *testing.T) {
 		[]interface{}{newAppWithDummyInfo(0, newPositionalArguments(2, 3))},
 		newAppWithDummyInfo(0, newPositionalArguments(1, 4)))
 
-	x1 := core.NewNumber(math.Pow(n1, math.Pow(n2, n3)))
+	x1 := *core.NewNumber(math.Pow(n1, math.Pow(n2, n3)))
 	x2, err := core.EvalNumber(core.PApp(f, core.Pow, core.NewNumber(n1), core.NewNumber(n2), core.NewNumber(n3)))
 
 	assert.Nil(t, err)

@@ -53,7 +53,7 @@ var If = NewLazyFunction(
 
 			if err != nil {
 				return err
-			} else if *b {
+			} else if b {
 				return ll.First()
 			}
 

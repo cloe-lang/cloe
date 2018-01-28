@@ -224,7 +224,7 @@ func benchmarkMap(N int, startTimer, fail func()) {
 	startTimer()
 
 	for i := 0; i < N; i++ {
-		if core.NumberType(42) != core.EvalPure(core.PApp(core.First, v)).(core.NumberType) {
+		if core.NumberType(42) != *core.EvalPure(core.PApp(core.First, v)).(*core.NumberType) {
 			fail()
 		}
 
@@ -238,7 +238,7 @@ func BenchmarkGoMap(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		if core.NumberType(42) != core.EvalPure(core.PApp(core.First, v)).(core.NumberType) {
+		if core.NumberType(42) != *core.EvalPure(core.PApp(core.First, v)).(*core.NumberType) {
 			b.Fail()
 		}
 

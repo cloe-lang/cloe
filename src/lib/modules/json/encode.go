@@ -28,8 +28,8 @@ func encodeValue(v core.Value) (string, core.Value) {
 	switch v := core.EvalPure(v).(type) {
 	case core.NilType:
 		return "null", nil
-	case core.NumberType:
-		return fmt.Sprintf("%v", v), nil
+	case *core.NumberType:
+		return fmt.Sprintf("%v", *v), nil
 	case core.StringType:
 		return fmt.Sprintf("%#v", string(v)), nil
 	case *core.BoolType:
@@ -79,7 +79,7 @@ func encodeValue(v core.Value) (string, core.Value) {
 			kk := core.EvalPure(ll.First())
 
 			switch kk.(type) {
-			case *core.BoolType, core.NilType, core.NumberType:
+			case *core.BoolType, core.NilType, *core.NumberType:
 				s, err := encodeValue(kk)
 
 				if err != nil {

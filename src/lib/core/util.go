@@ -50,26 +50,28 @@ var identity = NewLazyFunction(
 // TypeOf returns a type name of an argument as a string.
 var TypeOf = NewLazyFunction(
 	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
-	func(vs ...Value) Value {
-		// No case of effectType should be here.
-		switch v := EvalPure(vs[0]).(type) {
-		case *BoolType:
-			return NewString("bool")
-		case *DictionaryType:
-			return NewString("dict")
-		case *ListType:
-			return NewString("list")
-		case NilType:
-			return NewString("nil")
-		case NumberType:
-			return NewString("number")
-		case StringType:
-			return NewString("string")
-		case FunctionType:
-			return NewString("function")
-		case ErrorType:
-			return v
-		}
+	typeOf)
 
-		panic("Unreachable")
-	})
+func typeOf(vs ...Value) Value {
+	// No case of effectType should be here.
+	switch v := EvalPure(vs[0]).(type) {
+	case *BoolType:
+		return NewString("bool")
+	case *DictionaryType:
+		return NewString("dict")
+	case *ListType:
+		return NewString("list")
+	case NilType:
+		return NewString("nil")
+	case *NumberType:
+		return NewString("number")
+	case StringType:
+		return NewString("string")
+	case FunctionType:
+		return NewString("function")
+	case ErrorType:
+		return v
+	}
+
+	panic("Unreachable")
+}

@@ -82,7 +82,7 @@ func TestStringSize(t *testing.T) {
 		{"ab", 2},
 		{"abc", 3},
 	} {
-		assert.Equal(t, c.size, EvalPure(PApp(Size, c.string)))
+		assert.Equal(t, c.size, *EvalPure(PApp(Size, c.string)).(*NumberType))
 	}
 }
 
@@ -124,7 +124,7 @@ func TestStringInsert(t *testing.T) {
 		{"ab", 2, "c", "acb"},
 		{"ab", 3, "c", "abc"},
 	} {
-		assert.True(t, testEqual(c.expected, PApp(Insert, c.string, c.index, c.elem)))
+		assert.True(t, testEqual(c.expected, PApp(Insert, c.string, &c.index, c.elem)))
 	}
 }
 

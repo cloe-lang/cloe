@@ -7,13 +7,14 @@ import "math"
 type NumberType float64
 
 // Eval evaluates a value into a WHNF.
-func (n NumberType) eval() Value {
+func (n *NumberType) eval() Value {
 	return n
 }
 
 // NewNumber creates a thunk containing a number value.
-func NewNumber(n float64) NumberType {
-	return NumberType(n)
+func NewNumber(n float64) *NumberType {
+	m := NumberType(n)
+	return &m
 }
 
 // Add sums up numbers of arguments.
@@ -30,7 +31,7 @@ var Div = newInverseOperator(func(n, m NumberType) NumberType { return n / m })
 
 // FloorDiv divides the first argument by arguments of the second to the last one by one.
 var FloorDiv = newInverseOperator(func(n, m NumberType) NumberType {
-	return NewNumber(math.Floor(float64(n / m)))
+	return NumberType(math.Floor(float64(n / m)))
 })
 
 // Mod calculate a remainder of a division of the first argument by the second one.
@@ -68,7 +69,7 @@ func newCommutativeOperator(i NumberType, f func(n, m NumberType) NumberType) Va
 				}
 			}
 
-			return a
+			return &a
 		})
 }
 
@@ -104,7 +105,7 @@ func newInverseOperator(f func(n, m NumberType) NumberType) Value {
 				}
 			}
 
-			return a
+			return &a
 		})
 }
 
@@ -133,18 +134,18 @@ func IsInt(n NumberType) bool {
 	return math.Mod(float64(n), 1) == 0
 }
 
-func (n NumberType) compare(c comparable) int {
-	if n < c.(NumberType) {
+func (n *NumberType) compare(c comparable) int {
+	if *n < *c.(*NumberType) {
 		return -1
-	} else if n > c.(NumberType) {
+	} else if *n > *c.(*NumberType) {
 		return 1
 	}
 
 	return 0
 }
 
-func (NumberType) ordered() {}
+func (*NumberType) ordered() {}
 
-func (n NumberType) string() Value {
-	return sprint(n)
+func (n *NumberType) string() Value {
+	return sprint(*n)
 }

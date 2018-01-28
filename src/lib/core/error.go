@@ -120,7 +120,7 @@ func NotNumberError(v Value) ErrorType {
 // NotIntError creates an error value for a number value which is not an
 // integer.
 func NotIntError(n NumberType) ErrorType {
-	return TypeError(n, "integer")
+	return TypeError(&n, "integer")
 }
 
 // NotStringError creates an error value for an invalid value which is not a

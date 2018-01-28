@@ -2,7 +2,6 @@ package core
 
 import (
 	"reflect"
-	"strings"
 )
 
 type callable interface {
@@ -53,11 +52,35 @@ func compare(x1, x2 interface{}) int {
 		panic(notComparableError(v2))
 	}
 
-	if reflect.TypeOf(o1) != reflect.TypeOf(o2) {
-		return strings.Compare(reflect.TypeOf(o1).Name(), reflect.TypeOf(o2).Name())
+	i1 := comparableID(v1)
+	i2 := comparableID(v2)
+
+	if i1 == i2 {
+		return o1.compare(o2)
+	} else if i1 < i2 {
+		return -1
 	}
 
-	return o1.compare(o2)
+	return 1
+}
+
+func comparableID(v Value) byte {
+	switch v.(type) {
+	case *BoolType:
+		return 0
+	case *DictionaryType:
+		return 1
+	case *ListType:
+		return 2
+	case NilType:
+		return 3
+	case *NumberType:
+		return 4
+	case StringType:
+		return 5
+	}
+
+	panic("Unreachable")
 }
 
 type ordered interface {
@@ -163,7 +186,7 @@ func compareListsAsOrdered(l, ll *ListType) Value {
 		return compareAsOrdered(l.Rest(), ll.Rest())
 	}
 
-	return n
+	return &n
 }
 
 // IsOrdered checks if a value is ordered or not.
@@ -181,7 +204,7 @@ func isOrdered(vs ...Value) Value {
 
 			if err != nil {
 				return err
-			} else if !*b {
+			} else if !b {
 				return False
 			}
 

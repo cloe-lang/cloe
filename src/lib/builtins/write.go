@@ -98,8 +98,8 @@ func evalFileArguments(f, m core.Value) (*os.File, core.Value) {
 		}
 
 		return f, nil
-	case core.NumberType:
-		switch x {
+	case *core.NumberType:
+		switch *x {
 		case 1:
 			return os.Stdout, nil
 		case 2:

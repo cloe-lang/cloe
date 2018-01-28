@@ -4,7 +4,6 @@ import (
 	"math"
 	"math/rand"
 	"testing"
-	"time"
 
 	"github.com/coel-lang/coel/src/lib/builtins"
 	"github.com/coel-lang/coel/src/lib/core"
@@ -211,18 +210,6 @@ func benchmarkSort(size, N int, resetTimer func()) {
 	for i := 0; i < N; i++ {
 		core.EvalPure(core.PApp(core.First, core.PApp(f, l)))
 	}
-}
-
-func TestMapOrder(t *testing.T) {
-	b := func(N int) float64 {
-		var start time.Time
-		benchmarkMap(N, func() { start = time.Now() }, t.Fail)
-		return time.Since(start).Seconds()
-	}
-
-	r := b(10000) / b(2000)
-	t.Log(r)
-	assert.True(t, 4 < r && r < 6)
 }
 
 func BenchmarkMap(b *testing.B) {

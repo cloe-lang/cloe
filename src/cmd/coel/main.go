@@ -70,7 +70,7 @@ Options:
   -p, --profile <filename>  Turn on profiling.
   -h, --help  Show this help.`
 
-	args, err := docopt.Parse(usage, nil, true, "Coel 0.0.0", false)
+	args, err := docopt.ParseArgs(usage, os.Args[1:], "0.1.0")
 
 	if err != nil {
 		printToStderr(err.Error())

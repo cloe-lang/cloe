@@ -45,7 +45,14 @@ func AppWithInfo(f Value, args Arguments, i *debug.Info) *Thunk {
 
 // PApp is not PPap.
 func PApp(f Value, ps ...Value) *Thunk {
-	return AppWithInfo(f, NewPositionalArguments(ps...), debug.NewGoInfo(1))
+	if len(ps) > 8 {
+		panic("Too many positional arguments")
+	}
+
+	vs := [8]Value{}
+	copy(vs[:], ps)
+
+	return AppWithInfo(f, NewPositionalArguments(vs), debug.NewGoInfo(1))
 }
 
 // Eval evaluates a thunk and returns a pure or impure (effect) value.
@@ -108,7 +115,7 @@ func (t *Thunk) lock(s thunkState) bool {
 func (t *Thunk) delegateEval(parent *Thunk) bool {
 	if t.lock(spinLock) {
 		parent.function, t.function = t.function, identity
-		parent.args, t.args = t.args, NewPositionalArguments(parent)
+		parent.args, t.args = t.args, NewPositionalArguments([8]Value{parent})
 		parent.info = t.info
 		t.storeState(app)
 		return true

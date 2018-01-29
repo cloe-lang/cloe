@@ -19,7 +19,7 @@ func NewString(s string) StringType {
 }
 
 func (s StringType) call(args Arguments) Value {
-	return Index.call(NewPositionalArguments(s).Merge(args))
+	return Index.call(NewPositionalArguments([8]Value{s}).Merge(args))
 }
 
 func (s StringType) index(v Value) Value {

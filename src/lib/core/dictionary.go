@@ -41,7 +41,7 @@ func NewDictionary(kvs []KeyValue) Value {
 }
 
 func (d *DictionaryType) call(args Arguments) Value {
-	return Index.call(NewPositionalArguments(d).Merge(args))
+	return Index.call(NewPositionalArguments([8]Value{d}).Merge(args))
 }
 
 func (d *DictionaryType) index(v Value) (result Value) {

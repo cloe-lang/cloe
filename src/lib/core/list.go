@@ -105,7 +105,7 @@ func initRest() FunctionType {
 }
 
 func (l *ListType) call(args Arguments) Value {
-	return Index.call(NewPositionalArguments(l).Merge(args))
+	return Index.call(NewPositionalArguments([8]Value{l}).Merge(args))
 }
 
 func (l *ListType) index(v Value) Value {

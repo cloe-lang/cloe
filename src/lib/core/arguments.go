@@ -5,7 +5,7 @@ package core
 // guaranteed by Thunks that arguments objects are never reused as a function
 // call creates a Thunk.
 type Arguments struct {
-	positionals   []Value
+	positionals   ValueArray
 	expandedList  Value
 	keywords      []KeywordArgument
 	expandedDicts []Value
@@ -16,7 +16,7 @@ func NewArguments(
 	ps []PositionalArgument,
 	ks []KeywordArgument,
 	ds []Value) Arguments {
-	vs := make([]Value, 0, len(ps))
+	vs := NewValueArray([8]Value{})
 	l := Value(nil)
 
 	for i, p := range ps {
@@ -25,7 +25,7 @@ func NewArguments(
 			break
 		}
 
-		vs = append(vs, p.value)
+		vs.Append(p.value)
 	}
 
 	return Arguments{vs, l, ks, ds}
@@ -33,8 +33,8 @@ func NewArguments(
 
 // NewPositionalArguments creates an Arguments which consists of unexpanded
 // positional arguments.
-func NewPositionalArguments(vs ...Value) Arguments {
-	return Arguments{vs, nil, nil, nil}
+func NewPositionalArguments(vs [8]Value) Arguments {
+	return Arguments{NewValueArray(vs), nil, nil, nil}
 }
 
 func mergePositionalArguments(ps []PositionalArgument) Value {
@@ -61,9 +61,7 @@ func mergePositionalArguments(ps []PositionalArgument) Value {
 }
 
 func (args *Arguments) nextPositional() Value {
-	if len(args.positionals) != 0 {
-		v := args.positionals[0]
-		args.positionals = args.positionals[1:]
+	if v := args.positionals.Next(); v != nil {
 		return v
 	}
 
@@ -79,16 +77,16 @@ func (args *Arguments) nextPositional() Value {
 func (args *Arguments) restPositionals() Value {
 	vs := args.positionals
 	l := args.expandedList
-	args.positionals = nil
+	args.positionals = ValueArray{}
 	args.expandedList = nil
 
 	if l == nil {
-		return NewList(vs...)
-	} else if len(vs) == 0 {
+		return NewList(vs.Slice()...)
+	} else if vs.Empty() {
 		return l
 	}
 
-	return StrictPrepend(vs, l)
+	return StrictPrepend(vs.Slice(), l)
 }
 
 func (args *Arguments) searchKeyword(s string) Value {
@@ -143,7 +141,8 @@ func (args Arguments) Merge(old Arguments) Arguments {
 	ds := append(args.expandedDicts, old.expandedDicts...)
 
 	if args.expandedList == nil {
-		return Arguments{append(args.positionals, old.positionals...), old.expandedList, ks, ds}
+		ps, vs := args.positionals.Merge(old.positionals)
+		return Arguments{ps, StrictPrepend(vs, old.expandedList), ks, ds}
 	}
 
 	l := Value(EmptyList)
@@ -154,15 +153,15 @@ func (args Arguments) Merge(old Arguments) Arguments {
 
 	return Arguments{
 		args.positionals,
-		PApp(Merge, args.expandedList, StrictPrepend(old.positionals, l)),
+		PApp(Merge, args.expandedList, StrictPrepend(old.positionals.Slice(), l)),
 		ks,
 		ds,
 	}
 }
 
 func (args Arguments) empty() Value {
-	if len(args.positionals) > 0 {
-		return argumentError("%d positional arguments are left", len(args.positionals))
+	if !args.positionals.Empty() {
+		return argumentError("%d positional arguments are left", len(args.positionals.Slice()))
 	}
 
 	// Testing args.expandedList is impossible because we cannot know its length

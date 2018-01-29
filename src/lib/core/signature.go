@@ -2,8 +2,7 @@ package core
 
 // Signature represents function signature.
 type Signature struct {
-	positionals halfSignature
-	keywords    halfSignature
+	positionals, keywords halfSignature
 }
 
 // NewSignature defines a new Signature.

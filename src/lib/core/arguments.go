@@ -170,12 +170,11 @@ func (args Arguments) empty() Value {
 
 	n := 0
 
-	for _, t := range args.expandedDicts {
-		v := EvalPure(t)
-		d, ok := v.(*DictionaryType)
+	for _, v := range args.expandedDicts {
+		d, err := EvalDictionary(v)
 
-		if !ok {
-			return NotDictionaryError(v)
+		if err != nil {
+			return err
 		}
 
 		n += d.Size()

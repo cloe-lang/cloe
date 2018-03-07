@@ -27,8 +27,8 @@ func strictFactorial(n float64) float64 {
 	return n * strictFactorial(n-1)
 }
 
-func lazyFactorial(t core.Value) float64 {
-	return float64(*core.EvalPure(core.PApp(core.PApp(Y, lazyFactorialImpl), t)).(*core.NumberType))
+func lazyFactorial(v core.Value) float64 {
+	return float64(*core.EvalPure(core.PApp(core.PApp(Y, lazyFactorialImpl), v)).(*core.NumberType))
 }
 
 var lazyFactorialImpl = core.NewLazyFunction(
@@ -41,6 +41,12 @@ var lazyFactorialImpl = core.NewLazyFunction(
 				ts[1],
 				core.PApp(ts[0], append([]core.Value{core.PApp(core.Sub, ts[1], core.NewNumber(1))}, ts[2:]...)...)))
 	})
+
+func BenchmarkYFactorial(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		lazyFactorial(core.NewNumber(100))
+	}
+}
 
 func BenchmarkYInfiniteRecursion(b *testing.B) {
 	v := core.PApp(Y, core.NewLazyFunction(

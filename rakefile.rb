@@ -33,7 +33,7 @@ task :unit_test do
 
     verbose false do
       if File.exist? coverage_file
-        sh "cat #{coverage_file} | grep -v mode: >> #{TOTAL_COVERAGE_FILE}"
+        sh "tail -n +2 #{coverage_file} >> #{TOTAL_COVERAGE_FILE}"
         rm coverage_file
       end
     end

@@ -67,11 +67,20 @@ func BenchmarkGoY(b *testing.B) {
 
 var toZero = core.PApp(Y, core.NewLazyFunction(
 	core.NewSignature([]string{"me", "num"}, nil, "", nil, nil, ""),
-	func(ts ...core.Value) core.Value {
-		return core.PApp(core.If,
-			core.PApp(core.Equal, ts[1], core.NewNumber(0)),
-			core.NewString("Benchmark finished!"),
-			core.PApp(ts[0], core.PApp(core.Sub, ts[1], core.NewNumber(1))))
+	func(vs ...core.Value) core.Value {
+		n, err := core.EvalNumber(vs[1])
+
+		if err != nil {
+			return err
+		}
+
+		if n == 0 {
+			return core.Nil
+		}
+
+		n--
+
+		return core.PApp(vs[0], &n)
 	}))
 
 func toZeroGo(f float64) string {

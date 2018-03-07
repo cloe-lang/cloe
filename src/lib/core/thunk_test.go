@@ -54,3 +54,9 @@ func TestThunkEvalImpureWithError(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, "DummyError", err.Name())
 }
+
+func BenchmarkThunkEval(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		EvalPure(PApp(identity, NewNumber(42)))
+	}
+}

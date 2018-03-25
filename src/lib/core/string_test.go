@@ -92,13 +92,13 @@ func TestStringInclude(t *testing.T) {
 		substring StringType
 		answer    BoolType
 	}{
-		{"", "", (true)},
-		{"a", "", (true)},
-		{"a", "a", (true)},
-		{"abc", "ab", (true)},
-		{"abcdef", "cde", (true)},
-		{"", "a", (false)},
-		{"ab", "ac", (false)},
+		{"", "", true},
+		{"a", "", true},
+		{"a", "a", true},
+		{"abc", "ab", true},
+		{"abcdef", "cde", true},
+		{"", "a", false},
+		{"ab", "ac", false},
 	} {
 		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.string, c.substring)).(*BoolType))
 	}

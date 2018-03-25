@@ -14,7 +14,7 @@ var Read = createReadFunction(os.Stdin)
 func createReadFunction(stdin io.Reader) core.Value {
 	return core.NewLazyFunction(
 		core.NewSignature(
-			nil, []core.OptionalArgument{core.NewOptionalArgument("file", core.Nil)}, "",
+			nil, []core.OptionalParameter{core.NewOptionalParameter("file", core.Nil)}, "",
 			nil, nil, "",
 		),
 		func(vs ...core.Value) core.Value {

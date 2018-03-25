@@ -20,11 +20,11 @@ func TestSignatureBind(t *testing.T) {
 			NewArguments([]PositionalArgument{NewPositionalArgument(NewList(Nil), true)}, nil, nil),
 		},
 		{
-			NewSignature(nil, []OptionalArgument{NewOptionalArgument("x", Nil)}, "", nil, nil, ""),
+			NewSignature(nil, []OptionalParameter{NewOptionalParameter("x", Nil)}, "", nil, nil, ""),
 			NewArguments(nil, nil, nil),
 		},
 		{
-			NewSignature(nil, []OptionalArgument{NewOptionalArgument("x", Nil)}, "", nil, nil, ""),
+			NewSignature(nil, []OptionalParameter{NewOptionalParameter("x", Nil)}, "", nil, nil, ""),
 			NewArguments([]PositionalArgument{NewPositionalArgument(True, false)}, nil, nil),
 		},
 		{
@@ -66,7 +66,7 @@ func TestSignatureBindError(t *testing.T) {
 			NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil),
 		},
 		{
-			NewSignature(nil, nil, "", nil, []OptionalArgument{NewOptionalArgument("arg", Nil)}, ""),
+			NewSignature(nil, nil, "", nil, []OptionalParameter{NewOptionalParameter("arg", Nil)}, ""),
 			NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil),
 		},
 	} {

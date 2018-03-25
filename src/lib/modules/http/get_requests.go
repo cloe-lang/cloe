@@ -77,12 +77,12 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				core.NewEffectFunction(
 					core.NewSignature(
 						nil,
-						[]core.OptionalArgument{
-							core.NewOptionalArgument("body", core.NewString("")),
+						[]core.OptionalParameter{
+							core.NewOptionalParameter("body", core.NewString("")),
 						}, "",
 						nil,
-						[]core.OptionalArgument{
-							core.NewOptionalArgument("status", core.NewNumber(200)),
+						[]core.OptionalParameter{
+							core.NewOptionalParameter("status", core.NewNumber(200)),
 						},
 						"",
 					),

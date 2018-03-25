@@ -11,7 +11,7 @@ import (
 var get = core.NewLazyFunction(
 	core.NewSignature(
 		[]string{"url"}, nil, "",
-		nil, []core.OptionalArgument{core.NewOptionalArgument("error", core.True)}, "",
+		nil, []core.OptionalParameter{core.NewOptionalParameter("error", core.True)}, "",
 	),
 	func(vs ...core.Value) core.Value {
 		s, e := core.EvalString(vs[0])

@@ -123,16 +123,16 @@ func (c *compiler) exprToThunk(expr interface{}) core.Value {
 
 func (c *compiler) compileSignature(sig ast.Signature) core.Signature {
 	return core.NewSignature(
-		sig.PosReqs(), c.compileOptionalArguments(sig.PosOpts()), sig.PosRest(),
-		sig.KeyReqs(), c.compileOptionalArguments(sig.KeyOpts()), sig.KeyRest(),
+		sig.PosReqs(), c.compileOptionalParameters(sig.PosOpts()), sig.PosRest(),
+		sig.KeyReqs(), c.compileOptionalParameters(sig.KeyOpts()), sig.KeyRest(),
 	)
 }
 
-func (c *compiler) compileOptionalArguments(os []ast.OptionalArgument) []core.OptionalArgument {
-	ps := make([]core.OptionalArgument, 0, len(os))
+func (c *compiler) compileOptionalParameters(os []ast.OptionalParameter) []core.OptionalParameter {
+	ps := make([]core.OptionalParameter, 0, len(os))
 
 	for _, o := range os {
-		ps = append(ps, core.NewOptionalArgument(o.Name(), c.exprToThunk(o.DefaultValue())))
+		ps = append(ps, core.NewOptionalParameter(o.Name(), c.exprToThunk(o.DefaultValue())))
 	}
 
 	return ps

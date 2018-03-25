@@ -13,7 +13,7 @@ type Signature struct {
 // halfSignature represents a half of a signature.
 type halfSignature struct {
 	requireds []string
-	optionals []OptionalArgument
+	optionals []OptionalParameter
 	rest      string
 }
 
@@ -21,8 +21,8 @@ type halfSignature struct {
 // {required, optional} arguments and a positional rest argument
 // and a keyword rest argument.
 func NewSignature(
-	pr []string, po []OptionalArgument, pp string,
-	kr []string, ko []OptionalArgument, kk string) Signature {
+	pr []string, po []OptionalParameter, pp string,
+	kr []string, ko []OptionalParameter, kk string) Signature {
 	return Signature{
 		positionals: halfSignature{pr, po, pp},
 		keywords:    halfSignature{kr, ko, kk},
@@ -35,7 +35,7 @@ func (s Signature) PosReqs() []string {
 }
 
 // PosOpts returns positional optional arguments of a signature.
-func (s Signature) PosOpts() []OptionalArgument {
+func (s Signature) PosOpts() []OptionalParameter {
 	return s.positionals.optionals
 }
 
@@ -50,7 +50,7 @@ func (s Signature) KeyReqs() []string {
 }
 
 // KeyOpts returns keyword optional arguments of a signature.
-func (s Signature) KeyOpts() []OptionalArgument {
+func (s Signature) KeyOpts() []OptionalParameter {
 	return s.keywords.optionals
 }
 

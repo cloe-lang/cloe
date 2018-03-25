@@ -12,11 +12,11 @@ import (
 var Write = core.NewEffectFunction(
 	core.NewSignature(
 		nil, nil, "args",
-		nil, []core.OptionalArgument{
-			core.NewOptionalArgument("sep", core.NewString(" ")),
-			core.NewOptionalArgument("end", core.NewString("\n")),
-			core.NewOptionalArgument("file", core.NewNumber(1)),
-			core.NewOptionalArgument("mode", core.NewNumber(0664)),
+		nil, []core.OptionalParameter{
+			core.NewOptionalParameter("sep", core.NewString(" ")),
+			core.NewOptionalParameter("end", core.NewString("\n")),
+			core.NewOptionalParameter("file", core.NewNumber(1)),
+			core.NewOptionalParameter("mode", core.NewNumber(0664)),
 		}, "",
 	),
 	func(ts ...core.Value) core.Value {

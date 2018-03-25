@@ -79,23 +79,23 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 		}
 
 		return NewMutualRecursion(fs, x.DebugInfo())
-	case OptionalArgument:
-		return NewOptionalArgument(x.Name(), convert(x.DefaultValue()))
+	case OptionalParameter:
+		return NewOptionalParameter(x.Name(), convert(x.DefaultValue()))
 	case Effect:
 		return NewEffect(convert(x.Expr()), x.Expanded())
 	case PositionalArgument:
 		return NewPositionalArgument(convert(x.Value()), x.Expanded())
 	case Signature:
-		ps := make([]OptionalArgument, 0, len(x.PosOpts()))
+		ps := make([]OptionalParameter, 0, len(x.PosOpts()))
 
 		for _, p := range x.PosOpts() {
-			ps = append(ps, convert(p).(OptionalArgument))
+			ps = append(ps, convert(p).(OptionalParameter))
 		}
 
-		ks := make([]OptionalArgument, 0, len(x.KeyOpts()))
+		ks := make([]OptionalParameter, 0, len(x.KeyOpts()))
 
 		for _, k := range x.KeyOpts() {
-			ks = append(ks, convert(k).(OptionalArgument))
+			ks = append(ks, convert(k).(OptionalParameter))
 		}
 
 		return NewSignature(x.PosReqs(), ps, x.PosRest(), x.KeyReqs(), ks, x.KeyRest())

@@ -9,7 +9,7 @@ import (
 var createDirectory = core.NewEffectFunction(
 	core.NewSignature(
 		[]string{"name"}, nil, "", nil,
-		[]core.OptionalArgument{core.NewOptionalArgument("existOk", core.False)}, "",
+		[]core.OptionalParameter{core.NewOptionalParameter("existOk", core.False)}, "",
 	),
 	func(vs ...core.Value) core.Value {
 		s, e := core.EvalString(vs[0])

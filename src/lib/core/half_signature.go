@@ -2,7 +2,7 @@ package core
 
 type halfSignature struct {
 	requireds []string
-	optionals []OptionalArgument
+	optionals []OptionalParameter
 	rest      string
 }
 

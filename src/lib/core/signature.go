@@ -7,8 +7,8 @@ type Signature struct {
 
 // NewSignature defines a new Signature.
 func NewSignature(
-	pr []string, po []OptionalArgument, pp string,
-	kr []string, ko []OptionalArgument, kk string) Signature {
+	pr []string, po []OptionalParameter, pp string,
+	kr []string, ko []OptionalParameter, kk string) Signature {
 	return Signature{halfSignature{pr, po, pp}, halfSignature{kr, ko, kk}}
 }
 

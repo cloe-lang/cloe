@@ -120,7 +120,7 @@ func (s *state) letFunction() comb.Parser {
 func (s *state) optionalArgument() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
-		return ast.NewOptionalArgument(xs[0].(string), xs[1])
+		return ast.NewOptionalParameter(xs[0].(string), xs[1])
 	}, s.strip(s.list(s.identifier(), s.expression())))
 }
 
@@ -139,9 +139,9 @@ func (s *state) halfSignature() comb.Parser {
 		}
 
 		xs1 := xs[1].([]interface{})
-		optionals := make([]ast.OptionalArgument, 0, len(xs1))
+		optionals := make([]ast.OptionalParameter, 0, len(xs1))
 		for _, o := range xs1 {
-			optionals = append(optionals, o.(ast.OptionalArgument))
+			optionals = append(optionals, o.(ast.OptionalParameter))
 		}
 
 		expanded := ""
@@ -162,12 +162,12 @@ func (s *state) signature() comb.Parser {
 		kas, ok := xs[1].([3]interface{})
 
 		if !ok {
-			kas = [3]interface{}{[]string(nil), []ast.OptionalArgument(nil), ""}
+			kas = [3]interface{}{[]string(nil), []ast.OptionalParameter(nil), ""}
 		}
 
 		return ast.NewSignature(
-			pas[0].([]string), pas[1].([]ast.OptionalArgument), pas[2].(string),
-			kas[0].([]string), kas[1].([]ast.OptionalArgument), kas[2].(string),
+			pas[0].([]string), pas[1].([]ast.OptionalParameter), pas[2].(string),
+			kas[0].([]string), kas[1].([]ast.OptionalParameter), kas[2].(string),
 		)
 	}, s.And(s.halfSignature(), s.Maybe(s.Prefix(s.strippedString("."), s.halfSignature()))))
 }

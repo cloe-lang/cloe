@@ -11,9 +11,9 @@ var post = core.NewLazyFunction(
 	core.NewSignature(
 		[]string{"url", "body"}, nil, "",
 		nil,
-		[]core.OptionalArgument{
-			core.NewOptionalArgument("contentType", core.NewString("text/plain")),
-			core.NewOptionalArgument("error", core.True),
+		[]core.OptionalParameter{
+			core.NewOptionalParameter("contentType", core.NewString("text/plain")),
+			core.NewOptionalParameter("error", core.True),
 		},
 		"",
 	),

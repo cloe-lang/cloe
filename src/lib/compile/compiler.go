@@ -116,15 +116,15 @@ func (c *compiler) compileSubModule(path string) (module, error) {
 
 func (c *compiler) exprToThunk(expr interface{}) core.Value {
 	return core.PApp(ir.CompileFunction(
-		core.NewSignature(nil, nil, "", nil, nil, ""),
+		core.NewSignature(nil, "", nil, ""),
 		nil,
 		c.exprToIR(nil, expr)))
 }
 
-func (c *compiler) compileSignature(sig ast.Signature) core.Signature {
+func (c *compiler) compileSignature(s ast.Signature) core.Signature {
 	return core.NewSignature(
-		sig.PosReqs(), c.compileOptionalParameters(sig.PosOpts()), sig.PosRest(),
-		sig.KeyReqs(), c.compileOptionalParameters(sig.KeyOpts()), sig.KeyRest(),
+		s.Positionals(), s.RestPositionals(),
+		c.compileOptionalParameters(s.Keywords()), s.RestKeywords(),
 	)
 }
 

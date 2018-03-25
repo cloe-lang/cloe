@@ -1,61 +1,38 @@
 package ast
 
-import (
-	"strings"
-)
-
 // Signature represents a signature of a function.
 type Signature struct {
-	positionals halfSignature
-	keywords    halfSignature
-}
-
-// halfSignature represents a half of a signature.
-type halfSignature struct {
-	requireds []string
-	optionals []OptionalParameter
-	rest      string
+	positionals positionalParameters
+	keywords    keywordParameters
 }
 
 // NewSignature creates a Signature from {positional, keyword} x
 // {required, optional} arguments and a positional rest argument
 // and a keyword rest argument.
-func NewSignature(
-	pr []string, po []OptionalParameter, pp string,
-	kr []string, ko []OptionalParameter, kk string) Signature {
+func NewSignature(ps []string, pr string, ks []OptionalParameter, kr string) Signature {
 	return Signature{
-		positionals: halfSignature{pr, po, pp},
-		keywords:    halfSignature{kr, ko, kk},
+		positionals: positionalParameters{ps, pr},
+		keywords:    keywordParameters{ks, kr},
 	}
 }
 
-// PosReqs returns positional required arguments of a signature.
-func (s Signature) PosReqs() []string {
-	return s.positionals.requireds
+// Positionals returns positional required arguments of a signature.
+func (s Signature) Positionals() []string {
+	return s.positionals.parameters
 }
 
-// PosOpts returns positional optional arguments of a signature.
-func (s Signature) PosOpts() []OptionalParameter {
-	return s.positionals.optionals
-}
-
-// PosRest returns a positional rest argument of a signature.
-func (s Signature) PosRest() string {
+// RestPositionals returns a positional rest argument of a signature.
+func (s Signature) RestPositionals() string {
 	return s.positionals.rest
 }
 
-// KeyReqs returns keyword required arguments of a signature.
-func (s Signature) KeyReqs() []string {
-	return s.keywords.requireds
+// Keywords returns keyword optional arguments of a signature.
+func (s Signature) Keywords() []OptionalParameter {
+	return s.keywords.parameters
 }
 
-// KeyOpts returns keyword optional arguments of a signature.
-func (s Signature) KeyOpts() []OptionalParameter {
-	return s.keywords.optionals
-}
-
-// KeyRest returns a keyword rest argument of a signature.
-func (s Signature) KeyRest() string {
+// RestKeywords returns a keyword rest argument of a signature.
+func (s Signature) RestKeywords() string {
 	return s.keywords.rest
 }
 
@@ -68,36 +45,6 @@ func (s Signature) NameToIndex() map[string]int {
 	}
 
 	return m
-}
-
-func (hs halfSignature) names() []string {
-	ns := hs.requireds
-
-	for _, o := range hs.optionals {
-		ns = append(ns, o.name)
-	}
-
-	if hs.rest != "" {
-		ns = append(ns, hs.rest)
-	}
-
-	return ns
-}
-
-func (hs halfSignature) String() string {
-	ss := make([]string, 0, len(hs.requireds)+len(hs.optionals)+1)
-
-	ss = append(ss, hs.requireds...)
-
-	for _, o := range hs.optionals {
-		ss = append(ss, o.String())
-	}
-
-	if hs.rest != "" {
-		ss = append(ss, ".."+hs.rest)
-	}
-
-	return strings.Join(ss, " ")
 }
 
 func (s Signature) String() string {

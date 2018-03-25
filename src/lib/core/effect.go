@@ -21,7 +21,7 @@ func newEffect(value Value) Value {
 
 // Pure extracts a result value in an effect value.
 var Pure = NewLazyFunction(
-	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, "", nil, ""),
 	func(vs ...Value) Value {
 		return EvalImpure(vs[0])
 	})

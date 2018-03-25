@@ -21,7 +21,7 @@ func TestNewSwitchNoDefaultCase(t *testing.T) {
 
 func TestSwitchInFunction(t *testing.T) {
 	f := CompileFunction(
-		core.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+		core.NewSignature([]string{"x"}, "", nil, ""),
 		nil,
 		NewSwitch(0, []Case{
 			NewCase(core.NewString("foo"), core.NewNumber(42)),

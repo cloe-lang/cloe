@@ -101,15 +101,14 @@ Feature: Built-in functions
     """
     (seq!
       (write (slice [1 2 3]))
-      (write (slice [1 2 3] 1))
-      (write (slice [1 2 3] 2 3))
-      (write (slice [1 2 3] 1 2))
-      (write (slice [1 2 3] 2))
+      (write (slice [1 2 3] . start 1))
       (write (slice [1 2 3] . start 2))
       (write (slice [1 2 3] . end 1))
       (write (slice [1 2 3] . start 3))
       (write (slice [1 2 3] . start 4))
-      (write (slice [1 2 3] . start 5)))
+      (write (slice [1 2 3] . start 5))
+      (write (slice [1 2 3] . start 2 end 3))
+      (write (slice [1 2 3] . start 1 end 2)))
     """
     When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
@@ -117,13 +116,12 @@ Feature: Built-in functions
     [1 2 3]
     [1 2 3]
     [2 3]
-    [1 2]
-    [2 3]
-    [2 3]
     [1]
     [3]
     []
     []
+    [2 3]
+    [1 2]
     """
 
   Scenario: Slice an infinite list
@@ -131,7 +129,7 @@ Feature: Built-in functions
     """
     (def (f) [42 ..(f)])
 
-    (write (slice (f) 1 3))
+    (write (slice (f) . start 1 end 3))
     """
     When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
@@ -144,15 +142,14 @@ Feature: Built-in functions
     """
     (seq! ..(map (\ (x) (write (dump x))) [
         (slice "abc")
-        (slice "abc" 1)
-        (slice "abc" 2 3)
-        (slice "abc" 1 2)
-        (slice "abc" 2)
+        (slice "abc" . start 1)
         (slice "abc" . start 2)
         (slice "abc" . end 1)
         (slice "abc" . start 3)
         (slice "abc" . start 4)
         (slice "abc" . start 5)
+        (slice "abc" . start 2 end 3)
+        (slice "abc" . start 1 end 2)
       ]))
     """
     When I successfully run `coel main.coel`
@@ -161,13 +158,12 @@ Feature: Built-in functions
     "abc"
     "abc"
     "bc"
-    "ab"
-    "bc"
-    "bc"
     "a"
     "c"
     ""
     ""
+    "bc"
+    "ab"
     """
 
   Scenario: Calculate maximum and minimum of numbers

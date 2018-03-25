@@ -14,8 +14,8 @@ func TestCompileFunction(t *testing.T) {
 
 	f := CompileFunction(
 		core.NewSignature(
-			[]string{"f", "x1", "x2", "x3"}, nil, "",
-			nil, nil, "",
+			[]string{"f", "x1", "x2", "x3"}, "",
+			nil, "",
 		),
 		nil,
 		newAppWithDummyInfo(0, newPositionalArguments(1, newAppWithDummyInfo(0, newPositionalArguments(2, 3)))))
@@ -33,8 +33,8 @@ func TestCompileFunctionWithVars(t *testing.T) {
 
 	f := CompileFunction(
 		core.NewSignature(
-			[]string{"f", "x1", "x2", "x3"}, nil, "",
-			nil, nil, "",
+			[]string{"f", "x1", "x2", "x3"}, "",
+			nil, "",
 		),
 		[]interface{}{newAppWithDummyInfo(0, newPositionalArguments(2, 3))},
 		newAppWithDummyInfo(0, newPositionalArguments(1, 4)))

@@ -10,11 +10,11 @@ import (
 
 func TestFunctionCallError(t *testing.T) {
 	f := NewLazyFunction(
-		NewSignature([]string{"foo"}, nil, "", []string{"bar"}, nil, ""),
+		NewSignature([]string{"foo"}, "", nil, ""),
 		func(vs ...Value) Value { return vs[0] })
 
 	for _, v := range []Value{
-		PApp(f, Nil),
+		App(f, NewArguments([]PositionalArgument{NewPositionalArgument(EmptyList, true)}, nil, nil)),
 		App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("bar", Nil)}, nil)),
 	} {
 		_, ok := EvalPure(v).(ErrorType)
@@ -30,7 +30,7 @@ func TestStrictFunctionParallelization(t *testing.T) {
 	go systemt.RunDaemons()
 
 	f := NewStrictFunction(
-		NewSignature([]string{"foo"}, nil, "", []string{"bar"}, nil, ""),
+		NewSignature([]string{"foo"}, "", []OptionalParameter{NewOptionalParameter("bar", Nil)}, ""),
 		func(vs ...Value) Value { return vs[0] })
 
 	EvalPure(App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("bar", Nil)}, nil)))
@@ -40,7 +40,7 @@ func TestStrictFunctionParallelization(t *testing.T) {
 
 func TestNewEffectFunction(t *testing.T) {
 	v := PApp(NewEffectFunction(
-		NewSignature(nil, nil, "", nil, nil, ""),
+		NewSignature(nil, "", nil, ""),
 		func(...Value) Value { return Nil }))
 
 	assert.Equal(t, "ImpureFunctionError", EvalPure(v).(ErrorType).Name())

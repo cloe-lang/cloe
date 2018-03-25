@@ -103,7 +103,7 @@ func builtinsEnvironment() environment {
 			(def (number? x) (= (typeOf x) "number"))
 			(def (string? x) (= (typeOf x) "string"))
 
-			(def (indexOf list elem . (index 1))
+			(def (indexOf list elem . index 1)
 				(match list
 					[] (error "ElementNotFoundError" "Could not find an element in a list")
 					[first ..rest] (if (= first elem) index (indexOf rest elem . index (+ index 1)))))
@@ -134,18 +134,18 @@ func builtinsEnvironment() environment {
 			(let max (generateMaxOrMinFunction "max" >))
 			(let min (generateMaxOrMinFunction "min" <))
 
-			(def (slice list (start 1) (end nil))
+			(def (slice list . start 1 end nil)
 				(let end (if (= end nil) (max start (size list)) end))
 				(if
-					(string? list) (merge "" ..(slice (toList list) start end))
+					(string? list) (merge "" ..(slice (toList list) . start start end end))
 					(< end start) (error "ValueError" "start index must be less than end index")
 					(match list
 						[] []
 						[x ..xs]
 							(if
 								(= end 1) [x]
-								(> start 1) (slice xs (- start 1) (- end 1))
-								(= start 1) [x ..(slice xs 1 (- end 1))]
+								(> start 1) (slice xs . start (- start 1) end (- end 1))
+								(= start 1) [x ..(slice xs . start 1 end (- end 1))]
 								[]))))
 
 			(def (generateAndOrOrFunction name operator)
@@ -176,7 +176,7 @@ func builtinsEnvironment() environment {
 						(match (filter func xs)
 							xs (if (func x) [x ..xs] xs))))
 
-			(def (sort list . (less <))
+			(def (sort list . less <)
 				(let sort (partial sort . less less))
 				(let pivot (list (// (size list) 2)))
 				(match list
@@ -189,7 +189,7 @@ func builtinsEnvironment() environment {
 
 			(let sortImpl sort)
 
-			(def (sort list . (less <))
+			(def (sort list . less <)
 				(let x (first list))
 				(match list
 					[] []

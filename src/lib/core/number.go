@@ -43,7 +43,7 @@ var Pow = newBinaryOperator(math.Pow)
 
 func newCommutativeOperator(i NumberType, f func(n, m NumberType) NumberType) Value {
 	return NewLazyFunction(
-		NewSignature(nil, nil, "nums", nil, nil, ""),
+		NewSignature(nil, "nums", nil, ""),
 		func(vs ...Value) Value {
 			l, err := EvalList(vs[0])
 
@@ -75,7 +75,7 @@ func newCommutativeOperator(i NumberType, f func(n, m NumberType) NumberType) Va
 
 func newInverseOperator(f func(n, m NumberType) NumberType) Value {
 	return NewLazyFunction(
-		NewSignature([]string{"initial"}, nil, "nums", nil, nil, ""),
+		NewSignature([]string{"initial"}, "nums", nil, ""),
 		func(vs ...Value) Value {
 			a, err := EvalNumber(vs[0])
 
@@ -111,7 +111,7 @@ func newInverseOperator(f func(n, m NumberType) NumberType) Value {
 
 func newBinaryOperator(f func(n, m float64) float64) Value {
 	return NewStrictFunction(
-		NewSignature([]string{"first", "second"}, nil, "", nil, nil, ""),
+		NewSignature([]string{"first", "second"}, "", nil, ""),
 		func(vs ...Value) Value {
 			ns := [2]NumberType{}
 

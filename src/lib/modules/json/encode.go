@@ -11,7 +11,7 @@ import (
 var jsonEncodeError = jsonError(errors.New("Cannot be encoded as JSON"))
 
 var encode = core.NewLazyFunction(
-	core.NewSignature([]string{"decoded"}, nil, "", nil, nil, ""),
+	core.NewSignature([]string{"decoded"}, "", nil, ""),
 	func(vs ...core.Value) core.Value {
 		s, err := encodeValue(vs[0])
 

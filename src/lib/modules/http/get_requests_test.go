@@ -76,7 +76,7 @@ func TestGetRequestsWithCustomStatus(t *testing.T) {
 	v = core.App(
 		core.PApp(core.PApp(core.First, v), core.NewString("respond")),
 		core.NewArguments(
-			nil,
+			[]core.PositionalArgument{core.NewPositionalArgument(core.NewString(""), false)},
 			[]core.KeywordArgument{
 				core.NewKeywordArgument("status", core.NewNumber(404)),
 			},

@@ -86,19 +86,13 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 	case PositionalArgument:
 		return NewPositionalArgument(convert(x.Value()), x.Expanded())
 	case Signature:
-		ps := make([]OptionalParameter, 0, len(x.PosOpts()))
+		ks := make([]OptionalParameter, 0, len(x.Keywords()))
 
-		for _, p := range x.PosOpts() {
-			ps = append(ps, convert(p).(OptionalParameter))
-		}
-
-		ks := make([]OptionalParameter, 0, len(x.KeyOpts()))
-
-		for _, k := range x.KeyOpts() {
+		for _, k := range x.Keywords() {
 			ks = append(ks, convert(k).(OptionalParameter))
 		}
 
-		return NewSignature(x.PosReqs(), ps, x.PosRest(), x.KeyReqs(), ks, x.KeyRest())
+		return NewSignature(x.Positionals(), x.RestPositionals(), ks, x.RestKeywords())
 	case Switch:
 		cs := make([]SwitchCase, 0, len(x.Cases()))
 

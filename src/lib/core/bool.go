@@ -30,7 +30,7 @@ func NewBool(b bool) *BoolType {
 // If returns the second argument when the first one is true or the third one
 // otherwise.
 var If = NewLazyFunction(
-	NewSignature(nil, nil, "args", nil, nil, ""),
+	NewSignature(nil, "args", nil, ""),
 	func(vs ...Value) Value {
 		v := vs[0]
 

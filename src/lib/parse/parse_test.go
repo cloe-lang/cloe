@@ -93,7 +93,7 @@ func TestDefFunction(t *testing.T) {
 	for _, str := range []string{
 		"(def (foo) 123)",
 		"(def (foo x) (f x y))",
-		"(def (foo x y (z 123) (v 456) ..args . a b (c 123) (d 456) ..kwargs) 123)",
+		"(def (foo x y ..args . c 123 d 456 ..kwargs) 123)",
 	} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.letFunction())()
@@ -114,7 +114,7 @@ func TestMutuallyRecursiveDefFunctions(t *testing.T) {
 }
 
 func TestSignature(t *testing.T) {
-	for _, str := range []string{"", "x", "x y", "(x 123)", "..args", ". x", ". (x 123)", ". ..kwargs", "..args . ..kwargs"} {
+	for _, str := range []string{"", "x", "x y", "..args", ". x 123", ". ..kwargs", "..args . ..kwargs"} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.signature())()
 		assert.Nil(t, err)

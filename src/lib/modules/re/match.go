@@ -7,7 +7,7 @@ import (
 )
 
 var match = core.NewLazyFunction(
-	core.NewSignature([]string{"pattern", "src"}, nil, "", nil, nil, ""),
+	core.NewSignature([]string{"pattern", "src"}, "", nil, ""),
 	func(ts ...core.Value) core.Value {
 		ss, e := evaluateStringArguments(ts)
 

@@ -107,7 +107,7 @@ func BenchmarkFilterBare(b *testing.B) {
 	go systemt.RunDaemons()
 
 	f := core.PApp(builtins.Y, core.NewLazyFunction(
-		core.NewSignature([]string{"me", "func", "list"}, nil, "", nil, nil, ""),
+		core.NewSignature([]string{"me", "func", "list"}, "", nil, ""),
 		func(vs ...core.Value) core.Value {
 			f := vs[1]
 			l := vs[2]
@@ -247,14 +247,14 @@ func BenchmarkGoMap(b *testing.B) {
 }
 
 var identity = core.NewLazyFunction(
-	core.NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
+	core.NewSignature([]string{"arg"}, "", nil, ""),
 	func(vs ...core.Value) core.Value {
 		return vs[0]
 	})
 
 func many42() core.Value {
 	return core.PApp(core.PApp(builtins.Y, core.NewLazyFunction(
-		core.NewSignature([]string{"me"}, nil, "", nil, nil, ""),
+		core.NewSignature([]string{"me"}, "", nil, ""),
 		func(vs ...core.Value) core.Value {
 			return core.PApp(core.Prepend, core.NewNumber(42), core.PApp(vs[0]))
 		})))

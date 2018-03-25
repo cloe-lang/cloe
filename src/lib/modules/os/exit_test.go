@@ -13,8 +13,8 @@ func TestExit(t *testing.T) {
 
 	for i, v := range []core.Value{
 		core.PApp(f),
-		core.PApp(f, core.NewNumber(1)),
-		core.PApp(f, core.NewNumber(2)),
+		core.App(f, core.NewArguments(nil, []core.KeywordArgument{core.NewKeywordArgument("status", core.NewNumber(1))}, nil)),
+		core.App(f, core.NewArguments(nil, []core.KeywordArgument{core.NewKeywordArgument("status", core.NewNumber(2))}, nil)),
 	} {
 		assert.Equal(t, core.Nil, core.EvalImpure(v))
 		assert.Equal(t, i, s)

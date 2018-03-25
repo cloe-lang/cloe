@@ -32,7 +32,7 @@ func lazyFactorial(v core.Value) float64 {
 }
 
 var lazyFactorialImpl = core.NewLazyFunction(
-	core.NewSignature([]string{"me", "num"}, nil, "", nil, nil, ""),
+	core.NewSignature([]string{"me", "num"}, "", nil, ""),
 	func(ts ...core.Value) core.Value {
 		return core.PApp(core.If,
 			core.PApp(core.Equal, ts[1], core.NewNumber(0)),
@@ -50,7 +50,7 @@ func BenchmarkYFactorial(b *testing.B) {
 
 func BenchmarkYInfiniteRecursion(b *testing.B) {
 	v := core.PApp(Y, core.NewLazyFunction(
-		core.NewSignature([]string{"me"}, nil, "", nil, nil, ""),
+		core.NewSignature([]string{"me"}, "", nil, ""),
 		func(ts ...core.Value) core.Value {
 			return ts[0]
 		}))
@@ -72,7 +72,7 @@ func BenchmarkGoY(b *testing.B) {
 }
 
 var toZero = core.PApp(Y, core.NewLazyFunction(
-	core.NewSignature([]string{"me", "num"}, nil, "", nil, nil, ""),
+	core.NewSignature([]string{"me", "num"}, "", nil, ""),
 	func(vs ...core.Value) core.Value {
 		n, err := core.EvalNumber(vs[1])
 

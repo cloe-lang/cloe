@@ -5,17 +5,17 @@ import "github.com/coel-lang/coel/src/lib/core"
 // Ys is Y* combinator which takes functions whose first arguments are a list
 // of themselves applied to the combinator.
 var Ys = core.NewLazyFunction(
-	core.NewSignature(nil, nil, "functions", nil, nil, ""),
+	core.NewSignature(nil, "functions", nil, ""),
 	func(ts ...core.Value) core.Value {
 		t := ts[0]
 
 		return core.PApp(xx, core.NewLazyFunction(
-			core.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+			core.NewSignature([]string{"x"}, "", nil, ""),
 			func(ts ...core.Value) core.Value {
 				s := ts[0]
 
 				applyF := core.NewLazyFunction(
-					core.NewSignature([]string{"f"}, nil, "args", nil, nil, "kwargs"),
+					core.NewSignature([]string{"f"}, "args", nil, "kwargs"),
 					func(ts ...core.Value) core.Value {
 						return core.App(ts[0], core.NewArguments(
 							[]core.PositionalArgument{
@@ -41,7 +41,7 @@ func createNewFuncs(olds, applyF core.Value) core.Value {
 }
 
 var xx = core.NewLazyFunction(
-	core.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	core.NewSignature([]string{"x"}, "", nil, ""),
 	func(ts ...core.Value) core.Value {
 		return core.PApp(ts[0], ts[0])
 	})

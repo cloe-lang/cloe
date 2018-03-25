@@ -11,8 +11,8 @@ import (
 // Write writes string representation of arguments to stdout.
 var Write = core.NewEffectFunction(
 	core.NewSignature(
-		nil, nil, "args",
-		nil, []core.OptionalParameter{
+		nil, "args",
+		[]core.OptionalParameter{
 			core.NewOptionalParameter("sep", core.NewString(" ")),
 			core.NewOptionalParameter("end", core.NewString("\n")),
 			core.NewOptionalParameter("file", core.NewNumber(1)),

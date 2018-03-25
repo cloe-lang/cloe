@@ -26,11 +26,11 @@ Feature: Function application
   Scenario: Apply a function to complex arguments
     Given a file named "main.coel" with:
     """
-    (def (f x (y 2) ..args . foo (bar 4) ..kwargs) (+ x y foo bar))
-    (write (f 1 . foo 3))
+    (def (f x ..args . foo 4 ..kwargs) (+ x ..args foo))
+    (write (f 1 2 . foo 3))
     """
     When I successfully run `coel main.coel`
     Then the stdout should contain exactly:
     """
-    10
+    6
     """

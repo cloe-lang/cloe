@@ -23,7 +23,7 @@ func TestNamesFindInDefFunction(t *testing.T) {
 		{
 			ast.NewDefFunction(
 				n,
-				ast.NewSignature(nil, nil, "", nil, nil, ""),
+				ast.NewSignature(nil, "", nil, ""),
 				nil,
 				n,
 				debug.NewGoInfo(0)),
@@ -32,7 +32,7 @@ func TestNamesFindInDefFunction(t *testing.T) {
 		{
 			ast.NewDefFunction(
 				n,
-				ast.NewSignature(nil, nil, "", nil, nil, ""),
+				ast.NewSignature(nil, "", nil, ""),
 				[]interface{}{ast.NewLetVar(n, "y")},
 				n,
 				debug.NewGoInfo(0)),
@@ -41,7 +41,7 @@ func TestNamesFindInDefFunction(t *testing.T) {
 		{
 			ast.NewDefFunction(
 				n,
-				ast.NewSignature(nil, nil, "", nil, nil, ""),
+				ast.NewSignature(nil, "", nil, ""),
 				[]interface{}{ast.NewLetVar(n, "x")},
 				"42",
 				debug.NewGoInfo(0)),
@@ -59,7 +59,7 @@ func TestNamesFindInDefFunctionPanic(t *testing.T) {
 
 	newNames().findInDefFunction(ast.NewDefFunction(
 		"func",
-		ast.NewSignature(nil, nil, "", nil, nil, ""),
+		ast.NewSignature(nil, "", nil, ""),
 		[]interface{}{nil},
 		"x",
 		debug.NewGoInfo(0)))
@@ -91,7 +91,7 @@ func TestNamesFindInExpression(t *testing.T) {
 			true,
 		},
 		{
-			ast.NewAnonymousFunction(ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""), "x"),
+			ast.NewAnonymousFunction(ast.NewSignature([]string{"x"}, "", nil, ""), "x"),
 			false,
 		},
 	} {

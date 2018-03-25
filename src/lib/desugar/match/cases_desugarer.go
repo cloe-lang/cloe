@@ -24,7 +24,7 @@ func (d *casesDesugarer) Desugar(cs []ast.MatchCase) ast.DefFunction {
 
 	return ast.NewDefFunction(
 		gensym.GenSym(),
-		ast.NewSignature([]string{arg}, nil, "", nil, nil, ""),
+		ast.NewSignature([]string{arg}, "", nil, ""),
 		d.takeLets(),
 		app("$if", app("$=", app("$catch", arg), "$nil"), body, arg),
 		debug.NewGoInfo(0))

@@ -14,7 +14,7 @@ const requestChannelSize = 1024
 const responseChannelSize = 1024
 
 var getRequests = core.NewLazyFunction(
-	core.NewSignature([]string{"address"}, nil, "", nil, nil, ""),
+	core.NewSignature([]string{"address"}, "", nil, ""),
 	func(vs ...core.Value) core.Value {
 		s, err := core.EvalString(vs[0])
 
@@ -32,7 +32,7 @@ var getRequests = core.NewLazyFunction(
 		})
 
 		return core.PApp(core.PApp(builtins.Y, core.NewLazyFunction(
-			core.NewSignature([]string{"me"}, nil, "", nil, nil, ""),
+			core.NewSignature([]string{"me"}, "", nil, ""),
 			func(ts ...core.Value) core.Value {
 				select {
 				case t := <-h.Requests:
@@ -76,11 +76,8 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				core.NewString("respond"),
 				core.NewEffectFunction(
 					core.NewSignature(
-						nil,
-						[]core.OptionalParameter{
-							core.NewOptionalParameter("body", core.NewString("")),
-						}, "",
-						nil,
+						[]string{"body"},
+						"",
 						[]core.OptionalParameter{
 							core.NewOptionalParameter("status", core.NewNumber(200)),
 						},

@@ -28,7 +28,7 @@ func NewList(vs ...Value) Value {
 
 // Prepend prepends multiple elements to a list of the last argument.
 var Prepend = NewLazyFunction(
-	NewSignature(nil, nil, "elemsAndList", nil, nil, ""),
+	NewSignature(nil, "elemsAndList", nil, ""),
 	prepend)
 
 func prepend(vs ...Value) Value {
@@ -63,7 +63,7 @@ var First FunctionType
 
 func initFirst() FunctionType {
 	return NewLazyFunction(
-		NewSignature([]string{"list"}, nil, "", nil, nil, ""),
+		NewSignature([]string{"list"}, "", nil, ""),
 		func(vs ...Value) Value {
 			l, err := EvalList(vs[0])
 
@@ -80,7 +80,7 @@ var Rest FunctionType
 
 func initRest() FunctionType {
 	return NewLazyFunction(
-		NewSignature([]string{"list"}, nil, "", nil, nil, ""),
+		NewSignature([]string{"list"}, "", nil, ""),
 		func(vs ...Value) Value {
 			l, err := EvalList(vs[0])
 
@@ -91,7 +91,7 @@ func initRest() FunctionType {
 			// TODO: Review this code. Maybe predefine the list check function.
 			return PApp(
 				NewLazyFunction(
-					NewSignature(nil, nil, "", nil, nil, ""),
+					NewSignature(nil, "", nil, ""),
 					func(...Value) Value {
 						l, err := EvalList(l.Rest())
 

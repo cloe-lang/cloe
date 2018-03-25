@@ -175,7 +175,7 @@ func TestIsOrderedError(t *testing.T) {
 
 func many42() Value {
 	return PApp(Prepend, NewNumber(42), PApp(NewLazyFunction(
-		NewSignature(nil, nil, "", nil, nil, ""),
+		NewSignature(nil, "", nil, ""),
 		func(...Value) Value {
 			return many42()
 		})))

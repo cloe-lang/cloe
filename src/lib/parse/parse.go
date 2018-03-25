@@ -117,40 +117,57 @@ func (s *state) letFunction() comb.Parser {
 		})
 }
 
-func (s *state) optionalArgument() comb.Parser {
+func (s *state) optionalParameter() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 		return ast.NewOptionalParameter(xs[0].(string), xs[1])
-	}, s.strip(s.list(s.identifier(), s.expression())))
+	}, s.strip(s.And(s.identifier(), s.expression())))
 }
 
 func (s *state) expandedArgument() comb.Parser {
 	return s.strip(s.expanded(s.identifier()))
 }
 
-func (s *state) halfSignature() comb.Parser {
+func (s *state) positionalParameters() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
+		ys := xs[0].([]interface{})
 
-		xs0 := xs[0].([]interface{})
-		requireds := make([]string, 0, len(xs0))
-		for _, r := range xs0 {
-			requireds = append(requireds, r.(string))
+		ss := make([]string, 0, len(ys))
+
+		for _, y := range ys {
+			ss = append(ss, y.(string))
 		}
 
-		xs1 := xs[1].([]interface{})
-		optionals := make([]ast.OptionalParameter, 0, len(xs1))
-		for _, o := range xs1 {
-			optionals = append(optionals, o.(ast.OptionalParameter))
+		s := ""
+
+		if xs[1] != nil {
+			s = xs[1].(string)
 		}
 
-		expanded := ""
-		if xs[2] != nil {
-			expanded = xs[2].(string)
+		return [2]interface{}{ss, s}
+	}, s.And(s.Many(s.identifier()), s.Maybe(s.expandedArgument())))
+}
+
+func (s *state) keywordParameters() comb.Parser {
+	return s.App(func(x interface{}) interface{} {
+		xs := x.([]interface{})
+		ys := xs[0].([]interface{})
+
+		os := make([]ast.OptionalParameter, 0, len(ys))
+
+		for _, y := range ys {
+			os = append(os, y.(ast.OptionalParameter))
 		}
 
-		return [3]interface{}{requireds, optionals, expanded}
-	}, s.And(s.Many(s.identifier()), s.Many(s.optionalArgument()), s.Maybe(s.expandedArgument())))
+		s := ""
+
+		if xs[1] != nil {
+			s = xs[1].(string)
+		}
+
+		return [2]interface{}{os, s}
+	}, s.And(s.Many(s.optionalParameter()), s.Maybe(s.expandedArgument())))
 }
 
 func (s *state) signature() comb.Parser {
@@ -158,18 +175,18 @@ func (s *state) signature() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
 
-		pas := xs[0].([3]interface{})
-		kas, ok := xs[1].([3]interface{})
+		pas := xs[0].([2]interface{})
+		kas, ok := xs[1].([2]interface{})
 
 		if !ok {
-			kas = [3]interface{}{[]string(nil), []ast.OptionalParameter(nil), ""}
+			kas = [2]interface{}{[]ast.OptionalParameter(nil), ""}
 		}
 
 		return ast.NewSignature(
-			pas[0].([]string), pas[1].([]ast.OptionalParameter), pas[2].(string),
-			kas[0].([]string), kas[1].([]ast.OptionalParameter), kas[2].(string),
+			pas[0].([]string), pas[1].(string),
+			kas[0].([]ast.OptionalParameter), kas[1].(string),
 		)
-	}, s.And(s.halfSignature(), s.Maybe(s.Prefix(s.strippedString("."), s.halfSignature()))))
+	}, s.And(s.positionalParameters(), s.Maybe(s.Prefix(s.strippedString("."), s.keywordParameters()))))
 }
 
 func (s *state) effect() comb.Parser {

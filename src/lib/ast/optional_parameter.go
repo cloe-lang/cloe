@@ -24,5 +24,5 @@ func (o OptionalParameter) DefaultValue() interface{} {
 }
 
 func (o OptionalParameter) String() string {
-	return fmt.Sprintf("(%v %v)", o.name, o.defaultValue)
+	return fmt.Sprintf("%v %v", o.name, o.defaultValue)
 }

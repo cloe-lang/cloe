@@ -10,7 +10,7 @@ func sprint(s interface{}) StringType {
 
 // Dump dumps a value into a string type value.
 var Dump = NewLazyFunction(
-	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, "", nil, ""),
 	func(vs ...Value) Value {
 		s, err := StrictDump(vs[0])
 
@@ -44,12 +44,12 @@ func StrictDump(v Value) (StringType, Value) {
 }
 
 var identity = NewLazyFunction(
-	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, "", nil, ""),
 	func(vs ...Value) Value { return vs[0] })
 
 // TypeOf returns a type name of an argument as a string.
 var TypeOf = NewLazyFunction(
-	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, "", nil, ""),
 	typeOf)
 
 func typeOf(vs ...Value) Value {

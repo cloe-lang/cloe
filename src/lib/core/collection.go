@@ -14,7 +14,7 @@ type collection interface {
 
 // Include returns true if a collection includes an element, or false otherwise.
 var Include = NewStrictFunction(
-	NewSignature([]string{"collection", "elem"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"collection", "elem"}, "", nil, ""),
 	func(vs ...Value) Value {
 		c, err := evalCollection(vs[0])
 
@@ -27,7 +27,7 @@ var Include = NewStrictFunction(
 
 // Index extracts an element corresponding with a key.
 var Index = NewStrictFunction(
-	NewSignature([]string{"collection", "key"}, nil, "keys", nil, nil, ""),
+	NewSignature([]string{"collection", "key"}, "keys", nil, ""),
 	func(vs ...Value) Value {
 		v := vs[0]
 		l := cons(vs[1], vs[2])
@@ -51,7 +51,7 @@ var Index = NewStrictFunction(
 
 // Insert inserts an element into a collection.
 var Insert = NewLazyFunction(
-	NewSignature([]string{"collection"}, nil, "keyValuePairs", nil, nil, ""),
+	NewSignature([]string{"collection"}, "keyValuePairs", nil, ""),
 	func(vs ...Value) (result Value) {
 		c, err := evalCollection(vs[0])
 
@@ -92,7 +92,7 @@ var Merge FunctionType
 
 func initMerge() FunctionType {
 	return NewLazyFunction(
-		NewSignature([]string{"collection"}, nil, "collections", nil, nil, ""),
+		NewSignature([]string{"collection"}, "collections", nil, ""),
 		func(vs ...Value) Value {
 			c, err := evalCollection(vs[0])
 
@@ -124,7 +124,7 @@ func initMerge() FunctionType {
 
 // Delete deletes an element corresponding with a key.
 var Delete = NewStrictFunction(
-	NewSignature([]string{"collection", "elem"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"collection", "elem"}, "", nil, ""),
 	func(vs ...Value) Value {
 		c, err := evalCollection(vs[0])
 
@@ -143,7 +143,7 @@ var ToList = newUnaryCollectionFunction(func(c collection) Value { return c.toLi
 
 func newUnaryCollectionFunction(f func(c collection) Value) Value {
 	return NewLazyFunction(
-		NewSignature([]string{"collection"}, nil, "", nil, nil, ""),
+		NewSignature([]string{"collection"}, "", nil, ""),
 		func(vs ...Value) Value {
 			c, err := evalCollection(vs[0])
 

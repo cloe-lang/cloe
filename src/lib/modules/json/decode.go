@@ -6,7 +6,7 @@ import (
 )
 
 var decode = core.NewLazyFunction(
-	core.NewSignature([]string{"encoded"}, nil, "", nil, nil, ""),
+	core.NewSignature([]string{"encoded"}, "", nil, ""),
 	func(vs ...core.Value) core.Value {
 		s, err := core.EvalString(vs[0])
 

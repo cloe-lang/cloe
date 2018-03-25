@@ -20,7 +20,7 @@ func desugarSelfRecursiveStatement(x interface{}) []interface{} {
 			return []interface{}{
 				ast.NewDefFunction(
 					unrec,
-					prependPosReqsToSig([]string{x.Name()}, x.Signature()),
+					prependPositionalsToSig([]string{x.Name()}, x.Signature()),
 					x.Lets(),
 					x.Body(),
 					x.DebugInfo()),

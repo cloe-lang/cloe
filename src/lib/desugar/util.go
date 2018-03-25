@@ -12,10 +12,10 @@ func signatureToNames(s ast.Signature) names {
 	return ns
 }
 
-func prependPosReqsToSig(ns []string, s ast.Signature) ast.Signature {
+func prependPositionalsToSig(ns []string, s ast.Signature) ast.Signature {
 	return ast.NewSignature(
-		append(ns, s.PosReqs()...), s.PosOpts(), s.PosRest(),
-		s.KeyReqs(), s.KeyOpts(), s.KeyRest())
+		append(ns, s.Positionals()...), s.RestPositionals(),
+		s.Keywords(), s.RestKeywords())
 }
 
 func renamer(a, b string) func(x interface{}) interface{} {

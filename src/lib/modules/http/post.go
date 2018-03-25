@@ -9,8 +9,7 @@ import (
 
 var post = core.NewLazyFunction(
 	core.NewSignature(
-		[]string{"url", "body"}, nil, "",
-		nil,
+		[]string{"url", "body"}, "",
 		[]core.OptionalParameter{
 			core.NewOptionalParameter("contentType", core.NewString("text/plain")),
 			core.NewOptionalParameter("error", core.True),

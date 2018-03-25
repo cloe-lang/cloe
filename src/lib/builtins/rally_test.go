@@ -59,7 +59,7 @@ func TestRallyError(t *testing.T) {
 }
 
 var indexOf = core.NewLazyFunction(
-	core.NewSignature([]string{"list", "elem"}, nil, "", nil, nil, ""),
+	core.NewSignature([]string{"list", "elem"}, "", nil, ""),
 	func(ts ...core.Value) core.Value {
 		l, e := ts[0], ts[1]
 

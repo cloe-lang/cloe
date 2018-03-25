@@ -12,31 +12,28 @@ func TestSignatureBind(t *testing.T) {
 		arguments Arguments
 	}{
 		{
-			NewSignature(nil, nil, "", nil, nil, ""),
+			NewSignature(nil, "", nil, ""),
 			NewArguments(nil, nil, nil),
 		},
 		{
-			NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+			NewSignature([]string{"x"}, "", nil, ""),
 			NewArguments([]PositionalArgument{NewPositionalArgument(NewList(Nil), true)}, nil, nil),
 		},
 		{
-			NewSignature(nil, []OptionalParameter{NewOptionalParameter("x", Nil)}, "", nil, nil, ""),
+			NewSignature(nil, "", []OptionalParameter{NewOptionalParameter("x", Nil)}, ""),
 			NewArguments(nil, nil, nil),
 		},
 		{
-			NewSignature(nil, []OptionalParameter{NewOptionalParameter("x", Nil)}, "", nil, nil, ""),
-			NewArguments([]PositionalArgument{NewPositionalArgument(True, false)}, nil, nil),
-		},
-		{
-			NewSignature(nil, nil, "", []string{"foo"}, nil, ""),
+			NewSignature(nil, "", []OptionalParameter{NewOptionalParameter("foo", Nil)}, ""),
 			NewArguments(nil, nil, []Value{NewDictionary([]KeyValue{{NewString("foo"), Nil}})}),
 		},
 		{
-			NewSignature(nil, nil, "", nil, nil, "foo"),
+			NewSignature(nil, "", nil, "foo"),
 			NewArguments(
 				nil,
 				[]KeywordArgument{NewKeywordArgument("foo", Nil)},
-				[]Value{NewDictionary([]KeyValue{{NewString("bar"), Nil}})})},
+				[]Value{NewDictionary([]KeyValue{{NewString("bar"), Nil}})}),
+		},
 	} {
 		vs, err := c.signature.Bind(c.arguments)
 		assert.Equal(t, c.signature.arity(), len(vs))
@@ -50,58 +47,23 @@ func TestSignatureBindError(t *testing.T) {
 		arguments Arguments
 	}{
 		{
-			NewSignature(nil, nil, "", []string{"foo"}, nil, ""),
+			NewSignature(nil, "", nil, ""),
 			NewArguments(nil, nil, []Value{Nil}),
 		},
 		{
-			NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+			NewSignature([]string{"x"}, "", nil, ""),
 			NewArguments(nil, nil, nil),
 		},
 		{
-			NewSignature(nil, nil, "", nil, nil, ""),
+			NewSignature(nil, "", nil, ""),
 			NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil),
 		},
 		{
-			NewSignature(nil, nil, "", []string{"arg"}, nil, ""),
-			NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil),
-		},
-		{
-			NewSignature(nil, nil, "", nil, []OptionalParameter{NewOptionalParameter("arg", Nil)}, ""),
+			NewSignature(nil, "", []OptionalParameter{NewOptionalParameter("arg", Nil)}, ""),
 			NewArguments([]PositionalArgument{NewPositionalArgument(Nil, false)}, nil, nil),
 		},
 	} {
 		_, err := c.signature.Bind(c.arguments)
 		assert.NotEqual(t, Value(nil), err)
 	}
-}
-
-func TestSignatureBindExpandedDictionaries(t *testing.T) {
-	insert := NewLazyFunction(
-		NewSignature(
-			[]string{"collection", "key", "value"}, nil, "",
-			nil, nil, "",
-		),
-		func(vs ...Value) (result Value) {
-			return PApp(Insert, vs...)
-		})
-
-	f := App(Partial, NewArguments(
-		[]PositionalArgument{
-			NewPositionalArgument(insert, false),
-			NewPositionalArgument(EmptyDictionary, false),
-		},
-		nil,
-		[]Value{NewDictionary([]KeyValue{{NewString("key"), True}})}))
-
-	v := EvalPure(App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("value", NewNumber(42))}, nil)))
-
-	_, ok := v.(*DictionaryType)
-	assert.True(t, ok)
-
-	// Check if the Arguments passed to Partial is persistent.
-
-	v = EvalPure(App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("value", NewNumber(42))}, nil)))
-
-	_, ok = v.(*DictionaryType)
-	assert.True(t, ok)
 }

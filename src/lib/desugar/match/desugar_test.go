@@ -13,7 +13,7 @@ func TestDesugar(t *testing.T) {
 	for _, s := range []interface{}{
 		ast.NewDefFunction(
 			"factorial",
-			ast.NewSignature([]string{"n"}, nil, "", nil, nil, ""),
+			ast.NewSignature([]string{"n"}, "", nil, ""),
 			nil,
 			ast.NewMatch("n", []ast.MatchCase{
 				ast.NewMatchCase("0", "1"),
@@ -22,7 +22,7 @@ func TestDesugar(t *testing.T) {
 		ast.NewMutualRecursion([]ast.DefFunction{
 			ast.NewDefFunction(
 				"even?",
-				ast.NewSignature([]string{"n"}, nil, "", nil, nil, ""),
+				ast.NewSignature([]string{"n"}, "", nil, ""),
 				nil,
 				ast.NewMatch("n", []ast.MatchCase{
 					ast.NewMatchCase("0", "true"),
@@ -30,7 +30,7 @@ func TestDesugar(t *testing.T) {
 				}), debug.NewGoInfo(0)),
 			ast.NewDefFunction(
 				"odd?",
-				ast.NewSignature([]string{"n"}, nil, "", nil, nil, ""),
+				ast.NewSignature([]string{"n"}, "", nil, ""),
 				nil,
 				ast.NewMatch("n", []ast.MatchCase{
 					ast.NewMatchCase("0", "true"),

@@ -8,7 +8,7 @@ import (
 
 var createDirectory = core.NewEffectFunction(
 	core.NewSignature(
-		[]string{"name"}, nil, "", nil,
+		[]string{"name"}, "",
 		[]core.OptionalParameter{core.NewOptionalParameter("existOk", core.False)}, "",
 	),
 	func(vs ...core.Value) core.Value {

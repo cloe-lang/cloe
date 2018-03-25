@@ -18,24 +18,24 @@ func TestDesugar(t *testing.T) {
 		{
 			ast.NewLetVar(
 				"foo",
-				ast.NewAnonymousFunction(ast.NewSignature(nil, nil, "", nil, nil, ""), "123")),
+				ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), "123")),
 		},
 		{
 			ast.NewDefFunction(
 				"foo",
-				ast.NewSignature(nil, nil, "", nil, nil, ""),
+				ast.NewSignature(nil, "", nil, ""),
 				nil,
-				ast.NewAnonymousFunction(ast.NewSignature(nil, nil, "", nil, nil, ""), "123"),
+				ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), "123"),
 				debug.NewGoInfo(0)),
 		},
 		{
 			ast.NewDefFunction(
 				"foo",
-				ast.NewSignature(nil, nil, "", nil, nil, ""),
+				ast.NewSignature(nil, "", nil, ""),
 				[]interface{}{
 					ast.NewLetVar(
 						"x",
-						ast.NewAnonymousFunction(ast.NewSignature(nil, nil, "", nil, nil, ""), "123")),
+						ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), "123")),
 				},
 				"x",
 				debug.NewGoInfo(0)),
@@ -43,7 +43,7 @@ func TestDesugar(t *testing.T) {
 		{
 			ast.NewDefFunction(
 				"factorial",
-				ast.NewSignature([]string{"n"}, nil, "", nil, nil, ""),
+				ast.NewSignature([]string{"n"}, "", nil, ""),
 				nil,
 				ast.NewMatch("n", []ast.MatchCase{
 					ast.NewMatchCase("0", "1"),
@@ -61,13 +61,13 @@ func TestDesugar(t *testing.T) {
 			ast.NewMutualRecursion([]ast.DefFunction{
 				ast.NewDefFunction(
 					"foo",
-					ast.NewSignature(nil, nil, "", nil, nil, ""),
+					ast.NewSignature(nil, "", nil, ""),
 					nil,
 					"bar",
 					debug.NewGoInfo(0)),
 				ast.NewDefFunction(
 					"bar",
-					ast.NewSignature(nil, nil, "", nil, nil, ""),
+					ast.NewSignature(nil, "", nil, ""),
 					nil,
 					"foo",
 					debug.NewGoInfo(0)),
@@ -91,7 +91,7 @@ func TestDesugar(t *testing.T) {
 		{
 			ast.NewDefFunction(
 				"factorial",
-				ast.NewSignature([]string{"n"}, nil, "", nil, nil, ""),
+				ast.NewSignature([]string{"n"}, "", nil, ""),
 				[]interface{}{
 					ast.NewLetMatch(
 						ast.NewPApp("$list", []interface{}{"123", "nil", "x"}, debug.NewGoInfo(0)),

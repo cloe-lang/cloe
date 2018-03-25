@@ -10,7 +10,7 @@ import (
 
 var letFooFunction = ast.NewDefFunction(
 	"foo",
-	ast.NewSignature(nil, nil, "", nil, nil, ""),
+	ast.NewSignature(nil, "", nil, ""),
 	nil,
 	"nil",
 	debug.NewGoInfo(0))
@@ -21,13 +21,13 @@ func TestDesugarMutualRecursion(t *testing.T) {
 			[]ast.DefFunction{
 				ast.NewDefFunction(
 					"foo",
-					ast.NewSignature(nil, nil, "", nil, nil, ""),
+					ast.NewSignature(nil, "", nil, ""),
 					nil,
 					"nil",
 					debug.NewGoInfo(0)),
 				ast.NewDefFunction(
 					"bar",
-					ast.NewSignature(nil, nil, "", nil, nil, ""),
+					ast.NewSignature(nil, "", nil, ""),
 					nil,
 					"nil",
 					debug.NewGoInfo(0)),
@@ -36,13 +36,13 @@ func TestDesugarMutualRecursion(t *testing.T) {
 			[]ast.DefFunction{
 				ast.NewDefFunction(
 					"foo",
-					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+					ast.NewSignature([]string{"x"}, "", nil, ""),
 					nil,
 					ast.NewPApp("bar", []interface{}{"x"}, debug.NewGoInfo(0)),
 					debug.NewGoInfo(0)),
 				ast.NewDefFunction(
 					"bar",
-					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+					ast.NewSignature([]string{"x"}, "", nil, ""),
 					nil,
 					ast.NewPApp("foo", []interface{}{"x"}, debug.NewGoInfo(0)),
 					debug.NewGoInfo(0)),
@@ -51,11 +51,11 @@ func TestDesugarMutualRecursion(t *testing.T) {
 			[]ast.DefFunction{
 				ast.NewDefFunction(
 					"foo",
-					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+					ast.NewSignature([]string{"x"}, "", nil, ""),
 					[]interface{}{
 						ast.NewDefFunction(
 							"f",
-							ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+							ast.NewSignature([]string{"x"}, "", nil, ""),
 							nil,
 							ast.NewPApp("bar", []interface{}{"x"}, debug.NewGoInfo(0)),
 							debug.NewGoInfo(0)),
@@ -65,7 +65,7 @@ func TestDesugarMutualRecursion(t *testing.T) {
 					debug.NewGoInfo(0)),
 				ast.NewDefFunction(
 					"bar",
-					ast.NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+					ast.NewSignature([]string{"x"}, "", nil, ""),
 					nil,
 					ast.NewPApp("foo", []interface{}{"x"}, debug.NewGoInfo(0)),
 					debug.NewGoInfo(0)),

@@ -69,7 +69,7 @@ func createUnrecursiveFunction(n2i map[string]int, f ast.DefFunction) ast.DefFun
 		n2i,
 		ast.NewDefFunction(
 			gensym.GenSym(),
-			prependPosReqsToSig([]string{arg}, f.Signature()),
+			prependPositionalsToSig([]string{arg}, f.Signature()),
 			f.Lets(),
 			f.Body(),
 			f.DebugInfo()),

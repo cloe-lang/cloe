@@ -18,7 +18,7 @@ type stringable interface {
 
 // ToString converts some value into one of StringType.
 var ToString = NewLazyFunction(
-	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, "", nil, ""),
 	func(vs ...Value) Value {
 		v := EvalPure(vs[0])
 		s, ok := v.(stringable)
@@ -90,7 +90,7 @@ type ordered interface {
 
 // Equal checks if all arguments are equal or not.
 var Equal = NewLazyFunction(
-	NewSignature(nil, nil, "args", nil, nil, ""),
+	NewSignature(nil, "args", nil, ""),
 	func(vs ...Value) (v Value) {
 		defer func() {
 			if r := recover(); r != nil {
@@ -125,7 +125,7 @@ var Equal = NewLazyFunction(
 
 // Compare compares 2 values and returns -1 when x < y, 0 when x = y, and 1 when x > y.
 var Compare = NewStrictFunction(
-	NewSignature([]string{"left", "right"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"left", "right"}, "", nil, ""),
 	compareAsOrdered)
 
 func compareAsOrdered(vs ...Value) Value {
@@ -191,7 +191,7 @@ func compareListsAsOrdered(l, ll *ListType) Value {
 
 // IsOrdered checks if a value is ordered or not.
 var IsOrdered = NewLazyFunction(
-	NewSignature([]string{"arg"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"arg"}, "", nil, ""),
 	isOrdered)
 
 func isOrdered(vs ...Value) Value {

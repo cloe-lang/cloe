@@ -10,8 +10,8 @@ import (
 func TestYsMultipleFs(t *testing.T) {
 	evenWithExtraArg := core.NewLazyFunction(
 		core.NewSignature(
-			[]string{"fs", "dummyArg", "num"}, nil, "",
-			nil, nil, "",
+			[]string{"fs", "dummyArg", "num"}, "",
+			nil, "",
 		),
 		func(ts ...core.Value) core.Value {
 			n := ts[2]
@@ -24,8 +24,8 @@ func TestYsMultipleFs(t *testing.T) {
 
 	odd := core.NewLazyFunction(
 		core.NewSignature(
-			[]string{"fs", "num"}, nil, "",
-			nil, nil, "",
+			[]string{"fs", "num"}, "",
+			nil, "",
 		),
 		func(ts ...core.Value) core.Value {
 			n := ts[1]

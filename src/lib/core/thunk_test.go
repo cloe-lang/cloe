@@ -7,7 +7,7 @@ import (
 )
 
 var impureFunction = NewLazyFunction(
-	NewSignature([]string{"x"}, nil, "", nil, nil, ""),
+	NewSignature([]string{"x"}, "", nil, ""),
 	func(vs ...Value) Value {
 		return newEffect(vs[0])
 	})

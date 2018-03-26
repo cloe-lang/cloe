@@ -60,3 +60,29 @@ func BenchmarkThunkEval(b *testing.B) {
 		EvalPure(PApp(identity, NewNumber(42)))
 	}
 }
+
+func BenchmarkAppWithInfo(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		AppWithInfo(identity, NewPositionalArguments(), nil)
+	}
+}
+
+func BenchmarkPApp(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		PApp(identity, Nil)
+	}
+}
+
+func BenchmarkMultiplePApp(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		f := identity
+		l := EmptyList
+
+		PApp(If,
+			PApp(Equal, l, EmptyList),
+			EmptyList,
+			PApp(Prepend,
+				PApp(f, PApp(First, l)),
+				PApp(f, f, PApp(Rest, l))))
+	}
+}

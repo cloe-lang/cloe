@@ -3,7 +3,6 @@
 [![Circle CI](https://img.shields.io/circleci/project/github/coel-lang/coel.svg?style=flat-square)](https://circleci.com/gh/coel-lang/coel)
 [![Coveralls](https://img.shields.io/coveralls/coel-lang/coel.svg?style=flat-square)](https://coveralls.io/github/coel-lang/coel)
 [![Go Report Card](https://goreportcard.com/badge/github.com/coel-lang/coel?style=flat-square)](https://goreportcard.com/report/github.com/coel-lang/coel)
-[![codeclimate](https://img.shields.io/codeclimate/github/kabisaict/flow.svg?style=flat-square)](https://codeclimate.com/github/coel-lang/coel)
 [![License](https://img.shields.io/github/license/coel-lang/coel.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 <div align="center">

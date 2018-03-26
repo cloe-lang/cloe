@@ -63,27 +63,27 @@ func TestNumberPow(t *testing.T) {
 func TestNumberFunctionsError(t *testing.T) {
 	for _, v := range []Value{
 		PApp(Add, Nil),
-		App(Add, NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil, nil)),
+		App(Add, NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil)),
 		App(Add, NewArguments([]PositionalArgument{
 			NewPositionalArgument(NewNumber(42), false),
 			NewPositionalArgument(Nil, true),
-		}, nil, nil)),
+		}, nil)),
 		PApp(Sub, Nil),
-		App(Sub, NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil, nil)),
+		App(Sub, NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil)),
 		App(Sub, NewArguments([]PositionalArgument{
 			NewPositionalArgument(NewNumber(42), false),
 			NewPositionalArgument(Nil, true),
-		}, nil, nil)),
+		}, nil)),
 		App(Sub, NewArguments([]PositionalArgument{
 			NewPositionalArgument(NewNumber(42), false),
 			NewPositionalArgument(NewNumber(42), false),
 			NewPositionalArgument(Nil, true),
-		}, nil, nil)),
+		}, nil)),
 		App(Sub, NewArguments([]PositionalArgument{
 			NewPositionalArgument(NewNumber(42), false),
 			NewPositionalArgument(NewNumber(42), false),
 			NewPositionalArgument(Nil, false),
-		}, nil, nil)),
+		}, nil)),
 		PApp(Mod, Nil, NewNumber(42)),
 		PApp(Mod, NewNumber(42), Nil),
 	} {

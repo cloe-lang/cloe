@@ -47,12 +47,11 @@ func TestIfWithInvalidArguments(t *testing.T) {
 		NewPositionalArguments(),
 		NewPositionalArguments(Nil, Nil, Nil),
 		NewPositionalArguments(False, Nil),
-		NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil, nil),
+		NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil),
 		NewArguments(
 			[]PositionalArgument{
 				NewPositionalArgument(PApp(Prepend, True, NewError("FooError", "Hi!")), true),
 			},
-			nil,
 			nil),
 	} {
 		_, ok := EvalPure(App(If, a)).(ErrorType)

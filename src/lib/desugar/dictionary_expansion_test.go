@@ -16,6 +16,6 @@ func TestDesugarDictionaryExpansion(t *testing.T) {
 			ast.NewArguments([]ast.PositionalArgument{
 				ast.NewPositionalArgument("foo", false),
 				ast.NewPositionalArgument("bar", true),
-			}, nil, nil),
+			}, nil),
 			debug.NewGoInfo(0))))
 }

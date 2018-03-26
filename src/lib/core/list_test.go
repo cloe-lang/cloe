@@ -246,10 +246,10 @@ func TestListFunctionsError(t *testing.T) {
 	for _, v := range []Value{
 		App(Prepend, NewArguments([]PositionalArgument{
 			NewPositionalArgument(DummyError, true),
-		}, nil, nil)),
+		}, nil)),
 		App(Prepend, NewArguments([]PositionalArgument{
 			NewPositionalArgument(PApp(Prepend, Nil, DummyError), true),
-		}, nil, nil)),
+		}, nil)),
 		PApp(Prepend),
 		PApp(PApp(Prepend, Nil, DummyError), NewNumber(2)),
 		PApp(First, EmptyList),

@@ -113,21 +113,18 @@ func TestEqualFail(t *testing.T) {
 		NewPositionalArguments(Nil, DummyError),
 		NewArguments(
 			[]PositionalArgument{NewPositionalArgument(DummyError, true)},
-			nil,
 			nil),
 		NewArguments(
 			[]PositionalArgument{
 				NewPositionalArgument(Nil, false),
 				NewPositionalArgument(DummyError, true),
 			},
-			nil,
 			nil),
 		NewArguments(
 			[]PositionalArgument{
 				NewPositionalArgument(Nil, false),
 				NewPositionalArgument(NewList(DummyError), true),
 			},
-			nil,
 			nil),
 	} {
 		_, ok := EvalPure(App(Equal, a)).(ErrorType)

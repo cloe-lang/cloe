@@ -79,8 +79,7 @@ func TestGetRequestsWithCustomStatus(t *testing.T) {
 			[]core.PositionalArgument{core.NewPositionalArgument(core.NewString(""), false)},
 			[]core.KeywordArgument{
 				core.NewKeywordArgument("status", core.NewNumber(404)),
-			},
-			nil))
+			}))
 
 	assert.Equal(t, core.Nil, core.EvalImpure(v))
 	assert.Equal(t, 404, <-status)

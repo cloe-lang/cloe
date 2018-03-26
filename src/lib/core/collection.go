@@ -50,42 +50,46 @@ var Index = NewStrictFunction(
 	})
 
 // Insert inserts an element into a collection.
-var Insert = NewLazyFunction(
-	NewSignature([]string{"collection"}, "keyValuePairs", nil, ""),
-	func(vs ...Value) (result Value) {
-		c, err := evalCollection(vs[0])
+var Insert FunctionType
 
-		if err != nil {
-			return err
-		}
-
-		l, err := EvalList(vs[1])
-
-		if err != nil {
-			return err
-		}
-
-		for !l.Empty() {
-			k := l.First()
-			l, err = EvalList(l.Rest())
+func initInsert() FunctionType {
+	return NewLazyFunction(
+		NewSignature([]string{"collection"}, "keyValuePairs", nil, ""),
+		func(vs ...Value) (result Value) {
+			c, err := evalCollection(vs[0])
 
 			if err != nil {
 				return err
 			}
 
-			c, err = evalCollection(c.insert(EvalPure(k), l.First()))
+			l, err := EvalList(vs[1])
 
 			if err != nil {
 				return err
 			}
 
-			if l, err = EvalList(l.Rest()); err != nil {
-				return err
-			}
-		}
+			for !l.Empty() {
+				k := l.First()
+				l, err = EvalList(l.Rest())
 
-		return c
-	})
+				if err != nil {
+					return err
+				}
+
+				c, err = evalCollection(c.insert(EvalPure(k), l.First()))
+
+				if err != nil {
+					return err
+				}
+
+				if l, err = EvalList(l.Rest()); err != nil {
+					return err
+				}
+			}
+
+			return c
+		})
+}
 
 // Merge merges more than 2 collections.
 var Merge FunctionType

@@ -8,8 +8,10 @@ import (
 )
 
 func TestAppInterpret(t *testing.T) {
-	NewApp(core.ToString, NewArguments(
-		[]PositionalArgument{NewPositionalArgument(core.Nil, false)},
-		[]KeywordArgument{NewKeywordArgument("foo", core.Nil)},
-		[]interface{}{core.Nil}), debug.NewGoInfo(0)).interpret(nil)
+	NewApp(
+		core.ToString,
+		NewArguments(
+			[]PositionalArgument{NewPositionalArgument(core.Nil, false)},
+			[]KeywordArgument{NewKeywordArgument("foo", core.Nil), NewKeywordArgument("", core.Nil)}),
+		debug.NewGoInfo(0)).interpret(nil)
 }

@@ -66,7 +66,6 @@ func TestLessNoPanic(t *testing.T) {
 			[]core.PositionalArgument{
 				core.NewPositionalArgument(core.NewList(core.DummyError, core.NewNumber(42)), true),
 			},
-			nil,
 			nil)))
 	})
 }

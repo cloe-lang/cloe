@@ -14,8 +14,8 @@ func TestFunctionCallError(t *testing.T) {
 		func(vs ...Value) Value { return vs[0] })
 
 	for _, v := range []Value{
-		App(f, NewArguments([]PositionalArgument{NewPositionalArgument(EmptyList, true)}, nil, nil)),
-		App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("bar", Nil)}, nil)),
+		App(f, NewArguments([]PositionalArgument{NewPositionalArgument(EmptyList, true)}, nil)),
+		App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("bar", Nil)})),
 	} {
 		_, ok := EvalPure(v).(ErrorType)
 		assert.True(t, ok)
@@ -33,7 +33,7 @@ func TestStrictFunctionParallelization(t *testing.T) {
 		NewSignature([]string{"foo"}, "", []OptionalParameter{NewOptionalParameter("bar", Nil)}, ""),
 		func(vs ...Value) Value { return vs[0] })
 
-	EvalPure(App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("bar", Nil)}, nil)))
+	EvalPure(App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("bar", Nil)})))
 
 	time.Sleep(100 * time.Millisecond)
 }

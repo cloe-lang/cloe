@@ -42,7 +42,7 @@ func (r *patternRenamer) renameNames(p interface{}) interface{} {
 				ps = append(ps, ast.NewPositionalArgument(r.renameNames(p.Value()), p.Expanded()))
 			}
 
-			return ast.NewApp(x.Function(), ast.NewArguments(ps, nil, nil), x.DebugInfo())
+			return ast.NewApp(x.Function(), ast.NewArguments(ps, nil), x.DebugInfo())
 		}
 	}
 

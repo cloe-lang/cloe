@@ -5,17 +5,13 @@ package core
 // guaranteed by Thunks that arguments objects are never reused as a function
 // call creates a Thunk.
 type Arguments struct {
-	positionals   []Value
-	expandedList  Value
-	keywords      []KeywordArgument
-	expandedDicts []Value
+	positionals  []Value
+	expandedList Value
+	keywords     []KeywordArgument
 }
 
 // NewArguments creates a new Arguments.
-func NewArguments(
-	ps []PositionalArgument,
-	ks []KeywordArgument,
-	ds []Value) Arguments {
+func NewArguments(ps []PositionalArgument, ks []KeywordArgument) Arguments {
 	vs := make([]Value, 0, len(ps))
 	l := Value(nil)
 
@@ -28,13 +24,13 @@ func NewArguments(
 		vs = append(vs, p.value)
 	}
 
-	return Arguments{vs, l, ks, ds}
+	return Arguments{vs, l, ks}
 }
 
 // NewPositionalArguments creates an Arguments which consists of unexpanded
 // positional arguments.
 func NewPositionalArguments(vs ...Value) Arguments {
-	return Arguments{vs, nil, nil, nil}
+	return Arguments{vs, nil, nil}
 }
 
 func mergePositionalArguments(ps []PositionalArgument) Value {
@@ -92,28 +88,31 @@ func (args *Arguments) restPositionals() Value {
 }
 
 func (args *Arguments) searchKeyword(s string) Value {
-	for i, k := range args.keywords {
-		if s == k.name {
+	for i := len(args.keywords) - 1; i >= 0; i-- {
+		k := args.keywords[i]
+
+		if k.name == s {
 			args.keywords = append(args.keywords[:i], args.keywords[i+1:]...)
 			return k.value
-		}
-	}
+		} else if k.name == "" {
+			d, err := EvalDictionary(k.value)
 
-	for i, v := range args.expandedDicts {
-		d, ok := EvalPure(v).(*DictionaryType)
+			if err != nil {
+				return err
+			}
 
-		if !ok {
-			return NotDictionaryError(v)
-		}
+			k := NewString(s)
 
-		k := NewString(s)
-
-		// Using DictionaryType.{Search,Remove} methods is safe here
-		// because the key is always StringType.
-		if v, ok := d.Search(k); ok {
-			args.expandedDicts = append([]Value{}, args.expandedDicts...)
-			args.expandedDicts[i] = d.Remove(k)
-			return v
+			// Using DictionaryType.{Search,Remove} methods is safe here
+			// because the key is always StringType.
+			if v, ok := d.Search(k); ok {
+				args.keywords = append(
+					args.keywords[:i],
+					append(
+						[]KeywordArgument{NewKeywordArgument("", d.Remove(k))},
+						args.keywords[i+1:]...)...)
+				return v
+			}
 		}
 	}
 
@@ -122,28 +121,29 @@ func (args *Arguments) searchKeyword(s string) Value {
 
 func (args *Arguments) restKeywords() Value {
 	ks := args.keywords
-	ds := args.expandedDicts
 	args.keywords = nil
-	args.expandedDicts = nil
 
-	d := EmptyDictionary
+	d := Value(EmptyDictionary)
 
 	for _, k := range ks {
 		// Using DictionaryType.Insert method is safe here
 		// because the key is always StringType.
-		d = d.Insert(NewString(k.name), k.value)
+		if k.name == "" {
+			d = PApp(Merge, d, k.value)
+		} else {
+			d = PApp(Insert, d, NewString(k.name), k.value)
+		}
 	}
 
-	return PApp(Merge, append([]Value{d}, ds...)...)
+	return d
 }
 
 // Merge merges 2 sets of arguments into one.
 func (args Arguments) Merge(old Arguments) Arguments {
 	ks := append(args.keywords, old.keywords...)
-	ds := append(args.expandedDicts, old.expandedDicts...)
 
 	if args.expandedList == nil {
-		return Arguments{append(args.positionals, old.positionals...), old.expandedList, ks, ds}
+		return Arguments{append(args.positionals, old.positionals...), old.expandedList, ks}
 	}
 
 	l := Value(EmptyList)
@@ -156,11 +156,10 @@ func (args Arguments) Merge(old Arguments) Arguments {
 		args.positionals,
 		PApp(Merge, args.expandedList, StrictPrepend(old.positionals, l)),
 		ks,
-		ds,
 	}
 }
 
-func (args Arguments) empty() Value {
+func (args Arguments) checkEmptyness() Value {
 	if len(args.positionals) > 0 {
 		return argumentError("%d positional arguments are left", len(args.positionals))
 	}
@@ -168,21 +167,8 @@ func (args Arguments) empty() Value {
 	// Testing args.expandedList is impossible because we cannot know its length
 	// without evaluating it.
 
-	n := 0
-
-	for _, v := range args.expandedDicts {
-		d, err := EvalDictionary(v)
-
-		if err != nil {
-			return err
-		}
-
-		n += d.Size()
-	}
-
-	if n != 0 || len(args.keywords) > 0 {
-		return argumentError("%d keyword arguments are left", len(args.keywords)+n)
-	}
+	// Keyword arguments are not checked in the current implementation as
+	// expanded dictionaries can contain extra arguments.
 
 	return nil
 }

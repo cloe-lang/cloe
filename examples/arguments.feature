@@ -13,3 +13,21 @@ Feature: Arguments
     """
     8
     """
+
+  Scenario: Override keyword arguments
+    Given a file named "main.coel" with:
+    """
+    (def (func . x nil) x)
+
+    (seq!
+      (write (func . x nil ..{"x" 42}))
+      (write (func . ..{"x" nil} x 42))
+      (write (func . ..{"x" 42} ..{"x" nil} x 42)))
+    """
+    When I successfully run `coel main.coel`
+    Then the stdout should contain exactly:
+    """
+    42
+    42
+    42
+    """

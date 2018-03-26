@@ -81,13 +81,17 @@ func TestNamesFindInExpression(t *testing.T) {
 			true,
 		},
 		{
-			ast.NewApp("f", ast.NewArguments(nil, []ast.KeywordArgument{
-				ast.NewKeywordArgument("foo", "x"),
-			}, nil), debug.NewGoInfo(0)),
+			ast.NewApp(
+				"f",
+				ast.NewArguments(nil, []ast.KeywordArgument{ast.NewKeywordArgument("foo", "x")}),
+				debug.NewGoInfo(0)),
 			true,
 		},
 		{
-			ast.NewApp("f", ast.NewArguments(nil, nil, []interface{}{"x"}), debug.NewGoInfo(0)),
+			ast.NewApp(
+				"f",
+				ast.NewArguments(nil, []ast.KeywordArgument{ast.NewKeywordArgument("", "x")}),
+				debug.NewGoInfo(0)),
 			true,
 		},
 		{

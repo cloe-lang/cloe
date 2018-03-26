@@ -28,8 +28,7 @@ func TestCreateDirectory(t *testing.T) {
 		createDirectory,
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.NewString(d), false)},
-			[]core.KeywordArgument{core.NewKeywordArgument("existOk", core.True)},
-			nil),
+			[]core.KeywordArgument{core.NewKeywordArgument("existOk", core.True)}),
 	)).(core.NilType)
 	assert.True(t, ok)
 
@@ -44,8 +43,7 @@ func TestCreateDirectoryWithInvalidArguments(t *testing.T) {
 		createDirectory,
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.NewString("foo"), false)},
-			[]core.KeywordArgument{core.NewKeywordArgument("existOk", core.Nil)},
-			nil),
+			[]core.KeywordArgument{core.NewKeywordArgument("existOk", core.Nil)}),
 	)).(core.ErrorType)
 	assert.True(t, ok)
 

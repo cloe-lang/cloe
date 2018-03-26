@@ -16,7 +16,6 @@ func TestRally(t *testing.T) {
 	l1 := core.NewList(ts...)
 	l2 := core.App(Rally, core.NewArguments(
 		[]core.PositionalArgument{core.NewPositionalArgument(l1, true)},
-		nil,
 		nil))
 
 	for i := 0; i < len(ts); i++ {
@@ -44,7 +43,6 @@ func TestRallyError(t *testing.T) {
 
 	l := core.App(Rally, core.NewArguments(
 		[]core.PositionalArgument{core.NewPositionalArgument(core.NewList(ts...), true)},
-		nil,
 		nil))
 
 	for i := 0; ; i++ {
@@ -87,7 +85,6 @@ func TestRallyWithInvalidExpandedList(t *testing.T) {
 				core.NewPositionalArgument(core.Nil, false),
 				core.NewPositionalArgument(core.OutOfRangeError(), true),
 			},
-			nil,
 			nil))
 
 	if _, ok := core.EvalPure(l).(core.ErrorType); !ok {

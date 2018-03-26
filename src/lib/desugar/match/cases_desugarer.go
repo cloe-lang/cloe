@@ -176,7 +176,7 @@ func (d *casesDesugarer) desugarListCases(list interface{}, cs []ast.MatchCase, 
 		c = ast.NewMatchCase(
 			ast.NewApp(
 				consts.Names.ListFunction,
-				ast.NewArguments(ps[1:], nil, nil),
+				ast.NewArguments(ps[1:], nil),
 				debug.NewGoInfo(0)),
 			c.Value())
 
@@ -284,7 +284,7 @@ func (d *casesDesugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.Ma
 		c = ast.NewMatchCase(
 			ast.NewApp(
 				consts.Names.DictionaryFunction,
-				ast.NewArguments(ps[2:], nil, nil),
+				ast.NewArguments(ps[2:], nil),
 				debug.NewGoInfo(0)),
 			c.Value())
 

@@ -159,14 +159,9 @@ func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interfa
 			ks = append(ks, ir.NewKeywordArgument(k.Name(), c.exprToIR(varToIndex, k.Value())))
 		}
 
-		ds := make([]interface{}, 0, len(args.ExpandedDicts()))
-		for _, d := range args.ExpandedDicts() {
-			ds = append(ds, c.exprToIR(varToIndex, d))
-		}
-
 		return ir.NewApp(
 			c.exprToIR(varToIndex, x.Function()),
-			ir.NewArguments(ps, ks, ds),
+			ir.NewArguments(ps, ks),
 			x.DebugInfo())
 	case ast.Switch:
 		cs := make([]ir.Case, 0, len(x.Cases()))

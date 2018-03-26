@@ -22,28 +22,28 @@ func TestCollectionFunctionsError(t *testing.T) {
 				[]PositionalArgument{
 					NewPositionalArgument(EmptyDictionary, false),
 					NewPositionalArgument(Nil, true),
-				}, nil, nil)),
+				}, nil)),
 		App(
 			Insert,
 			NewArguments(
 				[]PositionalArgument{
 					NewPositionalArgument(EmptyDictionary, false),
 					NewPositionalArgument(StrictPrepend([]Value{Nil}, EmptyDictionary), true),
-				}, nil, nil)),
+				}, nil)),
 		App(
 			Insert,
 			NewArguments(
 				[]PositionalArgument{
 					NewPositionalArgument(EmptyDictionary, false),
 					NewPositionalArgument(StrictPrepend([]Value{Nil, Nil}, EmptyDictionary), true),
-				}, nil, nil)),
+				}, nil)),
 		App(
 			Insert,
 			NewArguments(
 				[]PositionalArgument{
 					NewPositionalArgument(EmptyDictionary, false),
 					NewPositionalArgument(StrictPrepend([]Value{Nil, Nil, Nil}, EmptyDictionary), true),
-				}, nil, nil)),
+				}, nil)),
 		PApp(Merge, Nil),
 		App(
 			Merge,
@@ -51,14 +51,14 @@ func TestCollectionFunctionsError(t *testing.T) {
 				[]PositionalArgument{
 					NewPositionalArgument(EmptyList, false),
 					NewPositionalArgument(Nil, true),
-				}, nil, nil)),
+				}, nil)),
 		App(
 			Merge,
 			NewArguments(
 				[]PositionalArgument{
 					NewPositionalArgument(EmptyList, false),
 					NewPositionalArgument(StrictPrepend([]Value{Nil}, EmptyDictionary), true),
-				}, nil, nil)),
+				}, nil)),
 		PApp(Size, Nil),
 		PApp(ToList, Nil),
 	} {
@@ -91,7 +91,6 @@ func TestIndexWithInvalidRestArguments(t *testing.T) {
 		NewList(Nil),
 		NewArguments(
 			[]PositionalArgument{NewPositionalArgument(NewError("FooError", "Hi!"), true)},
-			nil,
 			nil))).(ErrorType)
 
 	assert.True(t, ok)
@@ -104,7 +103,6 @@ func TestIndexWithInvalidRestArguments(t *testing.T) {
 				NewPositionalArgument(Nil, false),
 				NewPositionalArgument(NewError("FooError", "Hi!"), true),
 			},
-			nil,
 			nil))).(ErrorType)
 
 	assert.True(t, ok)

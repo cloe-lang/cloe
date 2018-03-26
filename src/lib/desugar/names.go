@@ -117,10 +117,6 @@ func (ns names) findInExpression(x interface{}) names {
 			ms.merge(ns.findInExpression(k.Value()))
 		}
 
-		for _, d := range x.ExpandedDicts() {
-			ms.merge(ns.findInExpression(d))
-		}
-
 		return ms
 	case ast.Switch:
 		ms := ns.findInExpression(x.Value())

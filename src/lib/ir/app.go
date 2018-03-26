@@ -30,11 +30,5 @@ func (app App) interpret(args []core.Value) core.Value {
 		ks = append(ks, k.interpret(args))
 	}
 
-	ds := make([]core.Value, 0, len(app.args.expandedDicts))
-
-	for _, d := range app.args.expandedDicts {
-		ds = append(ds, interpretExpression(args, d))
-	}
-
-	return core.AppWithInfo(interpretExpression(args, app.function), core.NewArguments(ps, ks, ds), app.info)
+	return core.AppWithInfo(interpretExpression(args, app.function), core.NewArguments(ps, ks), app.info)
 }

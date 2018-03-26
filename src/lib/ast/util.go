@@ -35,13 +35,7 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 			ks = append(ks, convert(k).(KeywordArgument))
 		}
 
-		ds := make([]interface{}, 0, len(x.ExpandedDicts()))
-
-		for _, dict := range x.ExpandedDicts() {
-			ds = append(ds, convert(dict))
-		}
-
-		return NewArguments(ps, ks, ds)
+		return NewArguments(ps, ks)
 	case Import:
 		return x
 	case KeywordArgument:

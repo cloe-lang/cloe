@@ -175,8 +175,7 @@ func TestSortError(t *testing.T) {
 			},
 			[]core.KeywordArgument{
 				core.NewKeywordArgument("less", builtins.LessEq),
-			},
-			nil))).(core.ErrorType)
+			}))).(core.ErrorType)
 
 	assert.True(t, ok)
 }

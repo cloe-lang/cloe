@@ -12,7 +12,7 @@ func TestNewEffect(t *testing.T) {
 }
 
 func TestEffectValue(t *testing.T) {
-	assert.NotEqual(t, core.Value(nil), NewEffect(core.Nil, false).Value())
+	assert.NotEqual(t, nil, NewEffect(core.Nil, false).Value())
 }
 
 func TestEffectExpanded(t *testing.T) {

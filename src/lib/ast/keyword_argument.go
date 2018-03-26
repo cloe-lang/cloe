@@ -24,5 +24,9 @@ func (k KeywordArgument) Value() interface{} {
 }
 
 func (k KeywordArgument) String() string {
+	if k.name == "" {
+		return fmt.Sprintf("..%v", k.value)
+	}
+
 	return fmt.Sprintf("%v %v", k.name, k.value)
 }

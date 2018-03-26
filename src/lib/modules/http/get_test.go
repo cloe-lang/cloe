@@ -48,8 +48,7 @@ func TestGetWithInvalidPathButNoError(t *testing.T) {
 				core.NewPositionalArgument(core.NewString("http://httpbin.org/invalid-path"), false),
 			},
 			[]core.KeywordArgument{
-				core.NewKeywordArgument("error", core.False)},
-			nil))
+				core.NewKeywordArgument("error", core.False)}))
 
 	_, ok := core.EvalPure(v).(*core.DictionaryType)
 	assert.True(t, ok)
@@ -68,8 +67,7 @@ func TestGetWithInvalidErrorArgument(t *testing.T) {
 				core.NewPositionalArgument(core.NewString("http://httpbin.org/invalid-path"), false),
 			},
 			[]core.KeywordArgument{
-				core.NewKeywordArgument("error", core.Nil)},
-			nil))).(core.ErrorType)
+				core.NewKeywordArgument("error", core.Nil)}))).(core.ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "TypeError", e.Name())

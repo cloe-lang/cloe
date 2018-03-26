@@ -36,13 +36,7 @@ func (r valueRenamer) rename(v interface{}) interface{} {
 			ks = append(ks, ast.NewKeywordArgument(k.Name(), r.rename(k.Value())))
 		}
 
-		ds := make([]interface{}, 0, len(args.ExpandedDicts()))
-
-		for _, d := range args.ExpandedDicts() {
-			ds = append(ds, r.rename(d))
-		}
-
-		return ast.NewApp(r.rename(x.Function()), ast.NewArguments(ps, ks, ds), x.DebugInfo())
+		return ast.NewApp(r.rename(x.Function()), ast.NewArguments(ps, ks), x.DebugInfo())
 	case ast.Match:
 		cs := make([]ast.MatchCase, 0, len(x.Cases()))
 

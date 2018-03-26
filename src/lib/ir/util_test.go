@@ -54,7 +54,7 @@ func newPositionalArguments(xs ...interface{}) Arguments {
 		ps = append(ps, NewPositionalArgument(x, false))
 	}
 
-	return NewArguments(ps, nil, nil)
+	return NewArguments(ps, nil)
 }
 
 func newAppWithDummyInfo(f interface{}, args Arguments) App {

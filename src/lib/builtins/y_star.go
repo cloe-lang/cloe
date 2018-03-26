@@ -22,8 +22,7 @@ var Ys = core.NewLazyFunction(
 								core.NewPositionalArgument(core.PApp(s, s), false),
 								core.NewPositionalArgument(ts[1], true),
 							},
-							nil,
-							[]core.Value{ts[2]}))
+							[]core.KeywordArgument{core.NewKeywordArgument("", ts[2])}))
 					})
 
 				return createNewFuncs(t, applyF)

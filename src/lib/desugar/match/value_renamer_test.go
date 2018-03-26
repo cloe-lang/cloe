@@ -22,8 +22,10 @@ func TestValueRenamerRename(t *testing.T) {
 			"foo",
 			ast.NewArguments(
 				[]ast.PositionalArgument{ast.NewPositionalArgument("123", false)},
-				[]ast.KeywordArgument{ast.NewKeywordArgument("key", `"value"`)},
-				[]interface{}{"bar"}),
+				[]ast.KeywordArgument{
+					ast.NewKeywordArgument("key", `"value"`),
+					ast.NewKeywordArgument("", "bar"),
+				}),
 			debug.NewGoInfo(0)),
 	} {
 		r.rename(x)

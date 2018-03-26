@@ -22,7 +22,7 @@ func (s Signature) Bind(args Arguments) ([]Value, Value) {
 
 	ks := s.keywords.bind(&args)
 
-	if err := args.empty(); err != nil {
+	if err := args.checkEmptyness(); err != nil {
 		return nil, err
 	}
 

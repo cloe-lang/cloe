@@ -68,7 +68,7 @@ func letClosure(f ast.DefFunction, n string, args []string) ast.LetVar {
 		f.Name(),
 		ast.NewApp(
 			"$partial",
-			ast.NewArguments(namesToPosArgs(append([]string{n}, args...)), nil, nil),
+			ast.NewArguments(namesToPosArgs(append([]string{n}, args...)), nil),
 			f.DebugInfo()))
 }
 

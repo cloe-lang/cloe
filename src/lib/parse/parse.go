@@ -315,14 +315,12 @@ func (s *state) arguments() comb.Parser {
 		xs := x.([]interface{})
 
 		ks := []ast.KeywordArgument(nil)
-		dicts := []interface{}{}
 
-		if xs, ok := xs[1].([2]interface{}); ok {
-			ks = xs[0].([]ast.KeywordArgument)
-			dicts = xs[1].([]interface{})
+		if xs[1] != nil {
+			ks = xs[1].([]ast.KeywordArgument)
 		}
 
-		return ast.NewArguments(xs[0].([]ast.PositionalArgument), ks, dicts)
+		return ast.NewArguments(xs[0].([]ast.PositionalArgument), ks)
 	}, s.And(
 		s.positionalArguments(),
 		s.Maybe(s.Prefix(s.strippedString("."), s.keywordArguments()))))
@@ -356,15 +354,19 @@ func (s *state) positionalArgument() comb.Parser {
 func (s *state) keywordArguments() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
+		ks := make([]ast.KeywordArgument, 0, len(xs))
 
-		ys := xs[0].([]interface{})
-		ks := make([]ast.KeywordArgument, 0, len(ys))
-		for _, y := range ys {
-			ks = append(ks, y.(ast.KeywordArgument))
+		for _, x := range xs {
+			switch x := x.(type) {
+			case ast.KeywordArgument:
+				ks = append(ks, x)
+			default:
+				ks = append(ks, ast.NewKeywordArgument("", x))
+			}
 		}
 
-		return [2]interface{}{ks, xs[1].([]interface{})}
-	}, s.And(s.Many(s.keywordArgument()), s.Many(s.expanded(s.expression()))))
+		return ks
+	}, s.Many(s.Or(s.keywordArgument(), s.expanded(s.expression()))))
 }
 
 func (s *state) keywordArgument() comb.Parser {
@@ -414,7 +416,7 @@ func (s *state) list(ps ...comb.Parser) comb.Parser {
 
 func (s *state) sequence(l, r string) comb.Parser {
 	return s.App(func(x interface{}) interface{} {
-		return ast.NewArguments(x.([]ast.PositionalArgument), nil, nil)
+		return ast.NewArguments(x.([]ast.PositionalArgument), nil)
 	}, s.stringWrap(l, s.positionalArguments(), r))
 }
 

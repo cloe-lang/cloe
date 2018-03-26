@@ -55,7 +55,6 @@ func TestYsWithErroneousArgument(t *testing.T) {
 		Ys,
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.OutOfRangeError(), true)},
-			nil,
 			nil)))
 	_, ok := v.(core.ErrorType)
 	assert.True(t, ok)

@@ -155,7 +155,7 @@ func (d *DictionaryType) string() (result Value) {
 			return err
 		}
 
-		ss = append(ss, string(sk), string(sv))
+		ss = append(ss, string(*sk), string(*sv))
 	}
 
 	return NewString("{" + strings.Join(ss, " ") + "}")

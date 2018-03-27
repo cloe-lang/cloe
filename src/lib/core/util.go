@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func sprint(s interface{}) StringType {
+func sprint(s interface{}) *StringType {
 	return NewString(fmt.Sprint(s))
 }
 
@@ -22,11 +22,11 @@ var Dump = NewLazyFunction(
 	})
 
 // StrictDump is a variant of Dump which evaluates input strictly.
-func StrictDump(v Value) (StringType, Value) {
+func StrictDump(v Value) (*StringType, Value) {
 	switch x := EvalPure(v).(type) {
 	case *ErrorType:
-		return "", x
-	case StringType:
+		return NewString(""), x
+	case *StringType:
 		v = x.quoted()
 	case stringable:
 		v = x.string()
@@ -37,7 +37,7 @@ func StrictDump(v Value) (StringType, Value) {
 	s, err := EvalString(v)
 
 	if err != nil {
-		return "", err
+		return NewString(""), err
 	}
 
 	return s, nil
@@ -65,7 +65,7 @@ func typeOf(vs ...Value) Value {
 		return NewString("nil")
 	case *NumberType:
 		return NewString("number")
-	case StringType:
+	case *StringType:
 		return NewString("string")
 	case FunctionType:
 		return NewString("function")

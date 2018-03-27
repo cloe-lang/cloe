@@ -104,7 +104,7 @@ func (args *Arguments) searchKeyword(s string) Value {
 			k := NewString(s)
 
 			// Using DictionaryType.{Search,Remove} methods is safe here
-			// because the key is always StringType.
+			// because the key is always *StringType.
 			if v, ok := d.Search(k); ok {
 				args.keywords = append(
 					args.keywords[:i],
@@ -127,7 +127,7 @@ func (args *Arguments) restKeywords() Value {
 
 	for _, k := range ks {
 		// Using DictionaryType.Insert method is safe here
-		// because the key is always StringType.
+		// because the key is always *StringType.
 		if k.name == "" {
 			d = PApp(Merge, d, k.value)
 		} else {

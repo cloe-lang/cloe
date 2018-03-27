@@ -9,13 +9,13 @@ import (
 func TestDump(t *testing.T) {
 	for _, c := range []struct {
 		argument Value
-		answer   StringType
+		answer   string
 	}{
 		{NewString("foo"), `"foo"`},
 		{NewList(NewString("foo")), `["foo"]`},
 		{NewDictionary([]KeyValue{{NewString("foo"), NewString("bar")}}), `{"foo" "bar"}`},
 	} {
-		assert.Equal(t, c.answer, EvalPure(PApp(Dump, c.argument)).(StringType))
+		assert.Equal(t, NewString(c.answer), EvalPure(PApp(Dump, c.argument)))
 	}
 }
 
@@ -87,9 +87,10 @@ func TestTypeOf(t *testing.T) {
 		{"function", identity},
 		{"function", PApp(Partial, identity)},
 	} {
-		v := EvalPure(PApp(TypeOf, test.thunk))
-		t.Log(v)
-		assert.Equal(t, test.typ, string(v.(StringType)))
+		s, err := EvalString(PApp(TypeOf, test.thunk))
+		t.Log(s)
+		assert.Nil(t, err)
+		assert.Equal(t, test.typ, string(*s))
 	}
 }
 

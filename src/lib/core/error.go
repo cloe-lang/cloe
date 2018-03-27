@@ -198,5 +198,5 @@ var Error = NewLazyFunction(
 			return err
 		}
 
-		return &ErrorType{string(n), string(m), []*debug.Info{debug.NewGoInfo(1)}}
+		return &ErrorType{string(*n), string(*m), []*debug.Info{debug.NewGoInfo(1)}}
 	})

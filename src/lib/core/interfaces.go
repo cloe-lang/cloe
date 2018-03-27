@@ -76,7 +76,7 @@ func comparableID(v Value) byte {
 		return 3
 	case *NumberType:
 		return 4
-	case StringType:
+	case *StringType:
 		return 5
 	}
 
@@ -150,7 +150,7 @@ func compareAsOrdered(vs ...Value) Value {
 			return err
 		}
 
-		return TypeError(o1, string(s))
+		return TypeError(o1, string(*s))
 	}
 
 	if l1, ok := o1.(*ListType); ok {

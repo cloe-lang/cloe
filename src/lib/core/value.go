@@ -51,11 +51,11 @@ func EvalNumber(v Value) (NumberType, Value) {
 }
 
 // EvalString evaluates a thunk which is expected to be a string value.
-func EvalString(v Value) (StringType, Value) {
-	s, ok := EvalPure(v).(StringType)
+func EvalString(v Value) (*StringType, Value) {
+	s, ok := EvalPure(v).(*StringType)
 
 	if !ok {
-		return "", NotStringError(v)
+		return NewString(""), NotStringError(v)
 	}
 
 	return s, nil

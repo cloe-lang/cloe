@@ -26,7 +26,7 @@ var post = core.NewLazyFunction(
 				return err
 			}
 
-			ss = append(ss, string(s))
+			ss = append(ss, string(*s))
 		}
 
 		r, err := http.Post(ss[0], ss[2], strings.NewReader(ss[1]))

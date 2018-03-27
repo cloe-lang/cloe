@@ -39,10 +39,10 @@ func TestEncode(t *testing.T) {
 			`{"true":true}`,
 		},
 	} {
-		s, ok := core.EvalPure(core.PApp(encode, c.value)).(core.StringType)
+		s, err := core.EvalString(core.PApp(encode, c.value))
 
-		assert.True(t, ok)
-		assert.Equal(t, c.answer, string(s))
+		assert.Nil(t, err)
+		assert.Equal(t, core.NewString(c.answer), s)
 	}
 }
 
@@ -67,7 +67,7 @@ func TestEncodeAndDecode(t *testing.T) {
 			{core.NewString("baz"), core.NewString("blah")},
 		}),
 	} {
-		s, ok := core.EvalPure(core.PApp(encode, th)).(core.StringType)
+		s, ok := core.EvalPure(core.PApp(encode, th)).(*core.StringType)
 
 		assert.True(t, ok)
 

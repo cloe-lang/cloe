@@ -76,12 +76,12 @@ func evalGoString(t core.Value) (string, core.Value) {
 		return "", err
 	}
 
-	return string(s), nil
+	return string(*s), nil
 }
 
 func evalFileArguments(f, m core.Value) (*os.File, core.Value) {
 	switch x := core.EvalPure(f).(type) {
-	case core.StringType:
+	case *core.StringType:
 		m, e := core.EvalNumber(m)
 
 		if e != nil {
@@ -89,7 +89,7 @@ func evalFileArguments(f, m core.Value) (*os.File, core.Value) {
 		}
 
 		f, err := os.OpenFile(
-			string(x),
+			string(*x),
 			os.O_CREATE|os.O_TRUNC|os.O_WRONLY,
 			os.FileMode(m))
 

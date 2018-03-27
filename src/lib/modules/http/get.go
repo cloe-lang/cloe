@@ -20,7 +20,7 @@ var get = core.NewLazyFunction(
 			return e
 		}
 
-		r, err := http.Get(string(s))
+		r, err := http.Get(string(*s))
 
 		return handleMethodResult(r, err, vs[1])
 	})

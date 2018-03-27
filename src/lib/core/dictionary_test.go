@@ -221,7 +221,7 @@ func TestDictionaryToString(t *testing.T) {
 		{"{false nil true nil}", PApp(Insert, PApp(Insert, EmptyDictionary, True, Nil), False, Nil)},
 		{`{"foo" "bar"}`, NewDictionary([]KeyValue{{NewString("foo"), NewString("bar")}})},
 	} {
-		assert.Equal(t, StringType(c.expected), EvalPure(PApp(ToString, c.value)))
+		assert.Equal(t, NewString(c.expected), EvalPure(PApp(ToString, c.value)))
 	}
 }
 

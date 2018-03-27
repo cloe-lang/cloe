@@ -14,14 +14,14 @@ func TestReplace(t *testing.T) {
 		{"foo", "bar", "foo", "bar"},
 		{"f(.*)a", "b${1}r", "fooa", "boor"},
 	} {
-		s, ok := core.EvalPure(core.PApp(
+		s, err := core.EvalString(core.PApp(
 			replace,
 			core.NewString(c.pattern),
 			core.NewString(c.repl),
-			core.NewString(c.src))).(core.StringType)
+			core.NewString(c.src)))
 
-		assert.True(t, ok)
-		assert.Equal(t, c.dest, string(s))
+		assert.Nil(t, err)
+		assert.Equal(t, core.NewString(c.dest), s)
 	}
 }
 

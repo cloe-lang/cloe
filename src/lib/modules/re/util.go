@@ -12,7 +12,7 @@ func evaluateStringArguments(vs []core.Value) ([]string, core.Value) {
 			return nil, err
 		}
 
-		ss = append(ss, string(s))
+		ss = append(ss, string(*s))
 	}
 
 	return ss, nil

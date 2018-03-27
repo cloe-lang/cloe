@@ -222,7 +222,7 @@ func (l *ListType) string() Value {
 			return err
 		}
 
-		ss = append(ss, string(s))
+		ss = append(ss, string(*s))
 
 		if l, err = EvalList(l.Rest()); err != nil {
 			return err

@@ -9,20 +9,21 @@ import (
 type StringType string
 
 // Eval evaluates a value into a WHNF.
-func (s StringType) eval() Value {
+func (s *StringType) eval() Value {
 	return s
 }
 
 // NewString creates a string in the language from one in Go.
-func NewString(s string) StringType {
-	return StringType(s)
+func NewString(s string) *StringType {
+	ss := StringType(s)
+	return &ss
 }
 
-func (s StringType) call(args Arguments) Value {
+func (s *StringType) call(args Arguments) Value {
 	return Index.call(NewPositionalArguments(s).Merge(args))
 }
 
-func (s StringType) index(v Value) Value {
+func (s *StringType) index(v Value) Value {
 	n, err := checkIndex(v)
 
 	if err != nil {
@@ -30,7 +31,7 @@ func (s StringType) index(v Value) Value {
 	}
 
 	i := int(n)
-	rs := []rune(string(s))
+	rs := []rune(string(*s))
 
 	if i > len(rs) {
 		return OutOfRangeError()
@@ -39,7 +40,7 @@ func (s StringType) index(v Value) Value {
 	return NewString(string(rs[i-1 : i]))
 }
 
-func (s StringType) insert(v Value, t Value) Value {
+func (s *StringType) insert(v Value, t Value) Value {
 	n, err := checkIndex(v)
 
 	if err != nil {
@@ -48,7 +49,7 @@ func (s StringType) insert(v Value, t Value) Value {
 
 	i := int(n) - 1
 
-	if i > len(s) {
+	if i > len(*s) {
 		return OutOfRangeError()
 	}
 
@@ -58,10 +59,11 @@ func (s StringType) insert(v Value, t Value) Value {
 		return err
 	}
 
-	return s[:i] + ss + s[i:]
+	*ss = (*s)[:i] + *ss + (*s)[i:]
+	return ss
 }
 
-func (s StringType) merge(vs ...Value) Value {
+func (s *StringType) merge(vs ...Value) Value {
 	vs = append([]Value{s}, vs...)
 
 	for _, t := range vs {
@@ -77,61 +79,66 @@ func (s StringType) merge(vs ...Value) Value {
 			return err
 		}
 
-		ss = append(ss, string(s))
+		ss = append(ss, string(*s))
 	}
 
 	return NewString(strings.Join(ss, ""))
 }
 
-func (s StringType) delete(v Value) Value {
+func (s *StringType) delete(v Value) Value {
 	n, err := checkIndex(v)
 	i := int(n) - 1
 
 	if err != nil {
 		return err
-	} else if i >= len(s) {
+	} else if i >= len(*s) {
 		return OutOfRangeError()
 	}
 
-	return s[:i] + s[i+1:]
+	ss := (*s)[:i] + (*s)[i+1:]
+	return &ss
 }
 
-func (s StringType) toList() Value {
-	if s == "" {
+func (s *StringType) toList() Value {
+	if *s == "" {
 		return EmptyList
 	}
 
-	rs := []rune(string(s))
+	rs := []rune(string(*s))
 
 	return cons(
 		NewString(string(rs[0])),
 		PApp(ToList, NewString(string(rs[1:]))))
 }
 
-func (s StringType) compare(c comparable) int {
-	return strings.Compare(string(s), string(c.(StringType)))
+func (s *StringType) compare(c comparable) int {
+	return strings.Compare(string(*s), string(*c.(*StringType)))
 }
 
-func (StringType) ordered() {}
+func (*StringType) ordered() {}
 
-func (s StringType) string() Value {
+func (s *StringType) string() Value {
 	return s
 }
 
-func (s StringType) quoted() Value {
-	return NewString(fmt.Sprintf("%#v", string(s)))
+func (s *StringType) quoted() Value {
+	return NewString(fmt.Sprintf("%#v", string(*s)))
 }
 
-func (s StringType) size() Value {
-	return NewNumber(float64(len([]rune(string(s)))))
+func (s *StringType) size() Value {
+	return NewNumber(float64(len([]rune(string(*s)))))
 }
 
-func (s StringType) include(v Value) Value {
-	ss, ok := v.(StringType)
+func (s *StringType) include(v Value) Value {
+	ss, ok := v.(*StringType)
 
 	if !ok {
 		return NotStringError(v)
 	}
 
-	return NewBool(strings.Contains(string(s), string(ss)))
+	return NewBool(strings.Contains(string(*s), string(*ss)))
+}
+
+func (s *StringType) String() string {
+	return string(*s)
 }

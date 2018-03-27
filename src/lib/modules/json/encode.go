@@ -30,8 +30,8 @@ func encodeValue(v core.Value) (string, core.Value) {
 		return "null", nil
 	case *core.NumberType:
 		return fmt.Sprintf("%v", *v), nil
-	case core.StringType:
-		return fmt.Sprintf("%#v", string(v)), nil
+	case *core.StringType:
+		return fmt.Sprintf("%#v", string(*v)), nil
 	case *core.BoolType:
 		if *v {
 			return "true", nil
@@ -86,7 +86,7 @@ func encodeValue(v core.Value) (string, core.Value) {
 					return "", err
 				}
 
-				kk = core.StringType(s)
+				kk = core.NewString(s)
 			}
 
 			k, err := encodeValue(kk)

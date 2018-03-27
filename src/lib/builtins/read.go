@@ -21,9 +21,9 @@ func createReadFunction(stdin io.Reader) core.Value {
 			file := stdin
 
 			switch x := core.EvalPure(vs[0]).(type) {
-			case core.StringType:
+			case *core.StringType:
 				var err error
-				file, err = os.Open(string(x))
+				file, err = os.Open(string(*x))
 
 				if err != nil {
 					return fileError(err)

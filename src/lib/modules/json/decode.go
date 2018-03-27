@@ -14,7 +14,7 @@ var decode = core.NewLazyFunction(
 			return err
 		}
 
-		return decodeString(string(s))
+		return decodeString(string(*s))
 	})
 
 func decodeString(s string) core.Value {

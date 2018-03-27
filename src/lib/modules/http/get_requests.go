@@ -26,7 +26,7 @@ var getRequests = core.NewLazyFunction(
 		h := newHandler()
 
 		systemt.Daemonize(func() {
-			if err := http.ListenAndServe(string(s), h); err != nil {
+			if err := http.ListenAndServe(string(*s), h); err != nil {
 				ec <- err
 			}
 		})
@@ -104,7 +104,7 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 							return err
 						}
 
-						if _, err := w.Write([]byte(s)); err != nil {
+						if _, err := w.Write([]byte(*s)); err != nil {
 							return httpError(err)
 						}
 

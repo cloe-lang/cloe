@@ -15,7 +15,7 @@ func TestStringEqual(t *testing.T) {
 
 func TestStringMerge(t *testing.T) {
 	v := NewString("foo")
-	assert.Equal(t, v+v, EvalPure(PApp(Merge, v, v)))
+	assert.Equal(t, NewString(string(*v+*v)), EvalPure(PApp(Merge, v, v)))
 }
 
 func TestStringMergeWithNonString(t *testing.T) {
@@ -53,15 +53,17 @@ func TestStringIndexWithInvalidIndexNumber(t *testing.T) {
 
 func TestStringDelete(t *testing.T) {
 	for _, c := range []struct {
-		string   StringType
+		string   string
 		index    float64
-		expected StringType
+		expected string
 	}{
 		{"a", 1, ""},
 		{"abc", 2, "ac"},
 		{"abc", 3, "ab"},
 	} {
-		assert.Equal(t, c.expected, EvalPure(PApp(Delete, c.string, NewNumber(c.index))))
+		assert.Equal(t,
+			NewString(c.expected),
+			EvalPure(PApp(Delete, NewString(c.string), NewNumber(c.index))))
 	}
 }
 
@@ -74,7 +76,7 @@ func TestStringDeleteWithInvalidIndex(t *testing.T) {
 
 func TestStringSize(t *testing.T) {
 	for _, c := range []struct {
-		string StringType
+		string string
 		size   NumberType
 	}{
 		{"", 0},
@@ -82,14 +84,14 @@ func TestStringSize(t *testing.T) {
 		{"ab", 2},
 		{"abc", 3},
 	} {
-		assert.Equal(t, c.size, *EvalPure(PApp(Size, c.string)).(*NumberType))
+		assert.Equal(t, c.size, *EvalPure(PApp(Size, NewString(c.string))).(*NumberType))
 	}
 }
 
 func TestStringInclude(t *testing.T) {
 	for _, c := range []struct {
-		string    StringType
-		substring StringType
+		string    string
+		substring string
 		answer    BoolType
 	}{
 		{"", "", true},
@@ -100,7 +102,9 @@ func TestStringInclude(t *testing.T) {
 		{"", "a", false},
 		{"ab", "ac", false},
 	} {
-		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.string, c.substring)).(*BoolType))
+		assert.Equal(t,
+			c.answer,
+			*EvalPure(PApp(Include, NewString(c.string), NewString(c.substring))).(*BoolType))
 	}
 }
 
@@ -111,10 +115,10 @@ func TestStringIncludeWithNonString(t *testing.T) {
 
 func TestStringInsert(t *testing.T) {
 	for _, c := range []struct {
-		string   StringType
+		string   string
 		index    NumberType
-		elem     StringType
-		expected StringType
+		elem     string
+		expected string
 	}{
 		{"", 1, "", ""},
 		{"", 1, "a", "a"},
@@ -124,7 +128,9 @@ func TestStringInsert(t *testing.T) {
 		{"ab", 2, "c", "acb"},
 		{"ab", 3, "c", "abc"},
 	} {
-		assert.True(t, testEqual(c.expected, PApp(Insert, c.string, &c.index, c.elem)))
+		assert.True(t, testEqual(
+			NewString(c.expected),
+			PApp(Insert, NewString(c.string), &c.index, NewString(c.elem))))
 	}
 }
 

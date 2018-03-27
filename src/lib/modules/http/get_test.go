@@ -14,7 +14,7 @@ func TestGet(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, core.NewNumber(200), core.EvalPure(core.PApp(v, core.NewString("status"))))
 
-	_, ok = core.EvalPure(core.PApp(v, core.NewString("body"))).(core.StringType)
+	_, ok = core.EvalPure(core.PApp(v, core.NewString("body"))).(*core.StringType)
 
 	assert.True(t, ok)
 }

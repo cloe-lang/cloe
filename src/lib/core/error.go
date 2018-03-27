@@ -21,10 +21,7 @@ func (e ErrorType) eval() Value {
 
 // NewError creates an error value from its name and a formatted message.
 func NewError(n, m string, xs ...interface{}) ErrorType {
-	return ErrorType{
-		name:    n,
-		message: fmt.Sprintf(m, xs...),
-	}
+	return ErrorType{n, fmt.Sprintf(m, xs...), nil}
 }
 
 // Catch returns a dictionary containing a name and message of a catched error,

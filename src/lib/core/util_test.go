@@ -27,7 +27,7 @@ func TestDumpError(t *testing.T) {
 		v := EvalPure(PApp(Dump, v))
 		t.Log(v)
 
-		_, ok := v.(ErrorType)
+		_, ok := v.(*ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -99,7 +99,7 @@ func TestTypeOfError(t *testing.T) {
 		PApp(impureFunction, NewNumber(42)),
 	} {
 		v = EvalPure(PApp(TypeOf, v))
-		_, ok := v.(ErrorType)
+		_, ok := v.(*ErrorType)
 		t.Logf("%#v\n", v)
 		assert.True(t, ok)
 	}

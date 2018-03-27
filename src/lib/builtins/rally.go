@@ -55,7 +55,7 @@ var Rally = core.NewLazyFunction(
 
 				if v == nil {
 					return core.EmptyList
-				} else if err, ok := v.(core.ErrorType); ok {
+				} else if err, ok := v.(*core.ErrorType); ok {
 					return err
 				}
 

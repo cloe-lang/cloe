@@ -78,7 +78,7 @@ func (t *Thunk) eval() Value {
 			}
 		}
 
-		if e, ok := t.result.(ErrorType); ok {
+		if e, ok := t.result.(*ErrorType); ok {
 			t.result = e.Chain(t.info)
 		}
 

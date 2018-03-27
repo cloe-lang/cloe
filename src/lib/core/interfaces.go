@@ -196,7 +196,7 @@ var IsOrdered = NewLazyFunction(
 
 func isOrdered(vs ...Value) Value {
 	switch x := EvalPure(vs[0]).(type) {
-	case ErrorType:
+	case *ErrorType:
 		return x
 	case *ListType:
 		for !x.Empty() {

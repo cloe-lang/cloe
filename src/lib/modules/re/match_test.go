@@ -35,7 +35,7 @@ func TestMatchError(t *testing.T) {
 		core.PApp(match, core.NewString("foo"), core.Nil),
 		core.PApp(match, core.NewString("(foo"), core.NewString("foo")),
 	} {
-		_, ok := core.EvalPure(v).(core.ErrorType)
+		_, ok := core.EvalPure(v).(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }

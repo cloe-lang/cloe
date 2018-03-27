@@ -61,7 +61,7 @@ func TestReduceError(t *testing.T) {
 		core.PApp(f, core.Add, core.EmptyList),
 		core.PApp(f, core.IsOrdered, core.EmptyList),
 	} {
-		_, ok := core.EvalPure(v).(core.ErrorType)
+		_, ok := core.EvalPure(v).(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -175,7 +175,7 @@ func TestSortError(t *testing.T) {
 			},
 			[]core.KeywordArgument{
 				core.NewKeywordArgument("less", builtins.LessEq),
-			}))).(core.ErrorType)
+			}))).(*core.ErrorType)
 
 	assert.True(t, ok)
 }

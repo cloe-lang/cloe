@@ -88,7 +88,7 @@ func TestEncodeWithInvalidArguments(t *testing.T) {
 		core.NewDictionary([]core.KeyValue{{core.NewList(core.DummyError), core.Nil}}),
 		core.NewDictionary([]core.KeyValue{{core.Nil, core.DummyError}}),
 	} {
-		_, ok := core.EvalPure(core.PApp(encode, th)).(core.ErrorType)
+		_, ok := core.EvalPure(core.PApp(encode, th)).(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }

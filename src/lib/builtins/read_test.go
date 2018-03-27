@@ -19,7 +19,7 @@ func TestReadError(t *testing.T) {
 		core.NewString("nonExistentFile"),
 		core.DummyError,
 	} {
-		_, ok := core.EvalPure(core.PApp(Read, th)).(core.ErrorType)
+		_, ok := core.EvalPure(core.PApp(Read, th)).(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -31,6 +31,6 @@ func TestReadWithClosedStdin(t *testing.T) {
 	assert.Nil(t, err)
 	defer os.Remove(f.Name())
 
-	_, ok := core.EvalPure(core.PApp(createReadFunction(f))).(core.ErrorType)
+	_, ok := core.EvalPure(core.PApp(createReadFunction(f))).(*core.ErrorType)
 	assert.True(t, ok)
 }

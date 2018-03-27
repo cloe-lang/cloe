@@ -26,7 +26,7 @@ func TestSeqWithEffects(t *testing.T) {
 		{w},
 		{w, w},
 	} {
-		_, ok := core.EvalPure(core.PApp(Seq, ts...)).(core.ErrorType)
+		_, ok := core.EvalPure(core.PApp(Seq, ts...)).(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -46,7 +46,7 @@ func TestEffectSeqWithPureValues(t *testing.T) {
 		{core.Nil},
 		{core.Nil, core.Nil},
 	} {
-		_, ok := core.EvalImpure(core.PApp(EffectSeq, ts...)).(core.ErrorType)
+		_, ok := core.EvalImpure(core.PApp(EffectSeq, ts...)).(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }

@@ -49,7 +49,7 @@ func TestDictionaryInsertMultileKeys(t *testing.T) {
 func TestDictionaryInsertFail(t *testing.T) {
 	l := NewList(NewError("you", "failed."))
 	v := EvalPure(PApp(Insert, PApp(Insert, EmptyDictionary, l, Nil), l, Nil))
-	_, ok := v.(ErrorType)
+	_, ok := v.(*ErrorType)
 	t.Logf("%#v", v)
 	assert.True(t, ok)
 }
@@ -73,7 +73,7 @@ func TestDictionaryIndex(t *testing.T) {
 
 			t.Log(EvalPure(PApp(ToString, k)))
 
-			if e, ok := EvalPure(PApp(d, k)).(ErrorType); ok {
+			if e, ok := EvalPure(PApp(d, k)).(*ErrorType); ok {
 				t.Log(e.Lines())
 			}
 
@@ -92,7 +92,7 @@ func TestDictionaryIndexFail(t *testing.T) {
 	} {
 		v := EvalPure(v)
 		t.Logf("%#v", v)
-		_, ok := v.(ErrorType)
+		_, ok := v.(*ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -111,7 +111,7 @@ func TestDictionaryDeleteFail(t *testing.T) {
 		Delete,
 		PApp(Insert, EmptyDictionary, NewList(DummyError), Nil),
 		NewList(NewNumber(42))))
-	_, ok := v.(ErrorType)
+	_, ok := v.(*ErrorType)
 	t.Logf("%#v", v)
 	assert.True(t, ok)
 }
@@ -233,7 +233,7 @@ func TestDictionaryStringFail(t *testing.T) {
 	} {
 		v := EvalPure(PApp(ToString, v))
 		t.Logf("%#v", v)
-		_, ok := v.(ErrorType)
+		_, ok := v.(*ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -341,7 +341,7 @@ func TestDictionaryError(t *testing.T) {
 	} {
 		v := EvalPure(v)
 		t.Log(v)
-		_, ok := v.(ErrorType)
+		_, ok := v.(*ErrorType)
 		assert.True(t, ok)
 	}
 }

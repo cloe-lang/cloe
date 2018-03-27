@@ -9,19 +9,19 @@ import (
 func TestError(t *testing.T) {
 	assert.Equal(t,
 		"MyError",
-		EvalPure(PApp(Error, NewString("MyError"), NewString("This is my message."))).(ErrorType).Name())
+		EvalPure(PApp(Error, NewString("MyError"), NewString("This is my message."))).(*ErrorType).Name())
 }
 
 func TestErrorInvalidName(t *testing.T) {
 	assert.Equal(t,
 		"TypeError",
-		EvalPure(PApp(Error, Nil, NewString("This is my message."))).(ErrorType).Name())
+		EvalPure(PApp(Error, Nil, NewString("This is my message."))).(*ErrorType).Name())
 }
 
 func TestErrorInvalidMessage(t *testing.T) {
 	assert.Equal(t,
 		"TypeError",
-		EvalPure(PApp(Error, NewString("MyError"), Nil)).(ErrorType).Name())
+		EvalPure(PApp(Error, NewString("MyError"), Nil)).(*ErrorType).Name())
 }
 
 func TestErrorName(t *testing.T) {

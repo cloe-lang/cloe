@@ -43,7 +43,7 @@ func evalEffectList(v core.Value, parent *sync.WaitGroup, fail func(error)) {
 
 	for {
 		if b, err := core.EvalBool(core.EvalPure(core.PApp(core.Equal, v, core.EmptyList))); err != nil {
-			fail(err.(core.ErrorType))
+			fail(err.(*core.ErrorType))
 		} else if b {
 			break
 		}
@@ -62,7 +62,7 @@ func runEffect(v core.Value, wg *sync.WaitGroup, fail func(error)) {
 		wg.Done()
 	}()
 
-	if err, ok := core.EvalImpure(v).(core.ErrorType); ok {
+	if err, ok := core.EvalImpure(v).(*core.ErrorType); ok {
 		fail(err)
 	}
 }

@@ -24,7 +24,7 @@ func TestArgumentsEmpty(t *testing.T) {
 		assert.NotNil(t, v)
 		v = EvalPure(v)
 		t.Logf("%#v\n", v)
-		_, ok := v.(ErrorType)
+		_, ok := v.(*ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -37,5 +37,5 @@ func TestArgumentsMerge(t *testing.T) {
 
 func TestArgumentsRestKeywords(t *testing.T) {
 	a := NewArguments(nil, []KeywordArgument{NewKeywordArgument("", NewError("MyError", ""))})
-	assert.Equal(t, "MyError", EvalPure(a.restKeywords()).(ErrorType).Name())
+	assert.Equal(t, "MyError", EvalPure(a.restKeywords()).(*ErrorType).Name())
 }

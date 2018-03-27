@@ -42,13 +42,13 @@ func TestCompareWithInvalidValues(t *testing.T) {
 
 		t.Log(v)
 
-		_, ok := v.(ErrorType)
+		_, ok := v.(*ErrorType)
 		assert.True(t, ok)
 	}
 }
 
 func TestCompareErrorMessage(t *testing.T) {
-	e, ok := EvalPure(PApp(Compare, EmptyList, NewString("foo"))).(ErrorType)
+	e, ok := EvalPure(PApp(Compare, EmptyList, NewString("foo"))).(*ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "[] is not a string.", e.message)
@@ -127,7 +127,7 @@ func TestEqualFail(t *testing.T) {
 			},
 			nil),
 	} {
-		_, ok := EvalPure(App(Equal, a)).(ErrorType)
+		_, ok := EvalPure(App(Equal, a)).(*ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -165,7 +165,7 @@ func TestIsOrderedError(t *testing.T) {
 		NewList(DummyError),
 		PApp(Prepend, NewNumber(42), DummyError),
 	} {
-		_, ok := EvalPure(PApp(IsOrdered, v)).(ErrorType)
+		_, ok := EvalPure(PApp(IsOrdered, v)).(*ErrorType)
 		assert.True(t, ok)
 	}
 }

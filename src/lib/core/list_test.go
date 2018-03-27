@@ -64,12 +64,12 @@ func TestListRestWithNonListValues(t *testing.T) {
 		NewNumber(100),
 		PApp(Prepend, Nil, EmptyDictionary),
 	} {
-		assert.Equal(t, "TypeError", EvalPure(PApp(Rest, v)).(ErrorType).Name())
+		assert.Equal(t, "TypeError", EvalPure(PApp(Rest, v)).(*ErrorType).Name())
 	}
 }
 
 func TestListRestErrorPropagation(t *testing.T) {
-	assert.Equal(t, "ValueError", EvalPure(PApp(Rest, ValueError("No way!"))).(ErrorType).Name())
+	assert.Equal(t, "ValueError", EvalPure(PApp(Rest, ValueError("No way!"))).(*ErrorType).Name())
 }
 
 func TestListMerge(t *testing.T) {
@@ -146,7 +146,7 @@ func TestListIndexError(t *testing.T) {
 		{NewList(Nil, Nil), 1.5},
 	} {
 		v := EvalPure(PApp(c.list, NewNumber(c.index)))
-		_, ok := v.(ErrorType)
+		_, ok := v.(*ErrorType)
 		t.Log(v)
 		assert.True(t, ok)
 	}
@@ -220,7 +220,7 @@ func TestListInsert(t *testing.T) {
 }
 
 func TestListInsertFailure(t *testing.T) {
-	_, ok := EvalPure(PApp(Insert, EmptyList, NewNumber(0), Nil)).(ErrorType)
+	_, ok := EvalPure(PApp(Insert, EmptyList, NewNumber(0), Nil)).(*ErrorType)
 	assert.True(t, ok)
 }
 
@@ -265,7 +265,7 @@ func TestListFunctionsError(t *testing.T) {
 		PApp(Size, PApp(Prepend, Nil, DummyError)),
 		PApp(Include, NewList(DummyError), Nil),
 	} {
-		_, ok := EvalPure(v).(ErrorType)
+		_, ok := EvalPure(v).(*ErrorType)
 		assert.True(t, ok)
 	}
 }

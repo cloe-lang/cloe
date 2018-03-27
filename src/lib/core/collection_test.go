@@ -7,7 +7,7 @@ import (
 )
 
 func TestCollectionIncludeWithErrorElement(t *testing.T) {
-	_, ok := EvalPure(PApp(Include, NewList(Nil), DummyError)).(ErrorType)
+	_, ok := EvalPure(PApp(Include, NewList(Nil), DummyError)).(*ErrorType)
 	assert.True(t, ok)
 }
 
@@ -62,7 +62,7 @@ func TestCollectionFunctionsError(t *testing.T) {
 		PApp(Size, Nil),
 		PApp(ToList, Nil),
 	} {
-		err, ok := EvalPure(v).(ErrorType)
+		err, ok := EvalPure(v).(*ErrorType)
 		assert.True(t, ok)
 		assert.Equal(t, "TypeError", err.name)
 	}
@@ -91,7 +91,7 @@ func TestIndexWithInvalidRestArguments(t *testing.T) {
 		NewList(Nil),
 		NewArguments(
 			[]PositionalArgument{NewPositionalArgument(NewError("FooError", "Hi!"), true)},
-			nil))).(ErrorType)
+			nil))).(*ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "FooError", e.Name())
@@ -103,7 +103,7 @@ func TestIndexWithInvalidRestArguments(t *testing.T) {
 				NewPositionalArgument(Nil, false),
 				NewPositionalArgument(NewError("FooError", "Hi!"), true),
 			},
-			nil))).(ErrorType)
+			nil))).(*ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "FooError", e.Name())

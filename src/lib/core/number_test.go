@@ -87,7 +87,7 @@ func TestNumberFunctionsError(t *testing.T) {
 		PApp(Mod, Nil, NewNumber(42)),
 		PApp(Mod, NewNumber(42), Nil),
 	} {
-		_, ok := EvalPure(v).(ErrorType)
+		_, ok := EvalPure(v).(*ErrorType)
 		assert.True(t, ok)
 	}
 }

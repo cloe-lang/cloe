@@ -48,7 +48,7 @@ func TestRallyError(t *testing.T) {
 	for i := 0; ; i++ {
 		assert.True(t, i < len(ts))
 
-		if _, ok := core.EvalPure(l).(core.ErrorType); ok {
+		if _, ok := core.EvalPure(l).(*core.ErrorType); ok {
 			break
 		}
 
@@ -87,9 +87,9 @@ func TestRallyWithInvalidExpandedList(t *testing.T) {
 			},
 			nil))
 
-	if _, ok := core.EvalPure(l).(core.ErrorType); !ok {
+	if _, ok := core.EvalPure(l).(*core.ErrorType); !ok {
 		v := core.EvalPure(core.PApp(core.Rest, l))
-		_, ok := v.(core.ErrorType)
+		_, ok := v.(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }

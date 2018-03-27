@@ -54,7 +54,7 @@ func TestIfWithInvalidArguments(t *testing.T) {
 			},
 			nil),
 	} {
-		_, ok := EvalPure(App(If, a)).(ErrorType)
+		_, ok := EvalPure(App(If, a)).(*ErrorType)
 		assert.True(t, ok)
 	}
 }

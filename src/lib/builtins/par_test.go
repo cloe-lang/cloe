@@ -24,7 +24,7 @@ func TestParError(t *testing.T) {
 		core.False,
 		core.Nil,
 		core.ValueError("I am the error."),
-	)).(core.ErrorType)
+	)).(*core.ErrorType)
 
 	assert.True(t, ok)
 }
@@ -32,6 +32,6 @@ func TestParError(t *testing.T) {
 func TestParWithNoArgument(t *testing.T) {
 	go systemt.RunDaemons()
 
-	_, ok := core.EvalPure(core.PApp(Par)).(core.ErrorType)
+	_, ok := core.EvalPure(core.PApp(Par)).(*core.ErrorType)
 	assert.True(t, ok)
 }

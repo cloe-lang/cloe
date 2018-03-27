@@ -15,13 +15,13 @@ type ErrorType struct {
 }
 
 // Eval evaluates a value into a WHNF.
-func (e ErrorType) eval() Value {
+func (e *ErrorType) eval() Value {
 	return e
 }
 
 // NewError creates an error value from its name and a formatted message.
-func NewError(n, m string, xs ...interface{}) ErrorType {
-	return ErrorType{n, fmt.Sprintf(m, xs...), nil}
+func NewError(n, m string, xs ...interface{}) *ErrorType {
+	return &ErrorType{n, fmt.Sprintf(m, xs...), nil}
 }
 
 // Catch returns a dictionary containing a name and message of a catched error,
@@ -29,7 +29,7 @@ func NewError(n, m string, xs ...interface{}) ErrorType {
 var Catch = NewLazyFunction(
 	NewSignature([]string{"error"}, "", nil, ""),
 	func(vs ...Value) Value {
-		err, ok := EvalPure(vs[0]).(ErrorType)
+		err, ok := EvalPure(vs[0]).(*ErrorType)
 
 		if !ok {
 			return Nil
@@ -42,8 +42,8 @@ var Catch = NewLazyFunction(
 	})
 
 // Chain chains 2 errors with debug information.
-func (e ErrorType) Chain(i *debug.Info) ErrorType {
-	return ErrorType{e.name, e.message, append(e.callTrace, i)}
+func (e *ErrorType) Chain(i *debug.Info) *ErrorType {
+	return &ErrorType{e.name, e.message, append(e.callTrace, i)}
 }
 
 // Name returns a name of an error.
@@ -70,21 +70,21 @@ func (e ErrorType) Error() string {
 
 // NumArgsError creates an error value for an invalid number of arguments
 // passed to a function.
-func NumArgsError(f, condition string) ErrorType {
+func NumArgsError(f, condition string) *ErrorType {
 	return argumentError("Number of arguments to %s must be %s.", f, condition)
 }
 
 // ValueError creates an error value for some invalid value detected at runtime.
-func ValueError(m string, xs ...interface{}) ErrorType {
+func ValueError(m string, xs ...interface{}) *ErrorType {
 	return NewError("ValueError", m, xs...)
 }
 
 // TypeError creates an error value for an invalid type.
-func TypeError(v Value, typ string) ErrorType {
+func TypeError(v Value, typ string) *ErrorType {
 	s, err := StrictDump(v)
 
 	if err != nil {
-		return err.(ErrorType)
+		return err.(*ErrorType)
 	}
 
 	return NewError("TypeError", "%s is not a %s.", s, typ)
@@ -92,90 +92,90 @@ func TypeError(v Value, typ string) ErrorType {
 
 // NotBoolError creates an error value for an invalid value which is not a
 // bool.
-func NotBoolError(v Value) ErrorType {
+func NotBoolError(v Value) *ErrorType {
 	return TypeError(v, "bool")
 }
 
 // NotDictionaryError creates an error value for an invalid value which is not
 // a dictionary.
-func NotDictionaryError(v Value) ErrorType {
+func NotDictionaryError(v Value) *ErrorType {
 	return TypeError(v, "dictionary")
 }
 
 // NotListError creates an error value for an invalid value which is not a
 // list.
-func NotListError(v Value) ErrorType {
+func NotListError(v Value) *ErrorType {
 	return TypeError(v, "list")
 }
 
 // NotNumberError creates an error value for an invalid value which is not a
 // number.
-func NotNumberError(v Value) ErrorType {
+func NotNumberError(v Value) *ErrorType {
 	return TypeError(v, "number")
 }
 
 // NotIntError creates an error value for a number value which is not an
 // integer.
-func NotIntError(n NumberType) ErrorType {
+func NotIntError(n NumberType) *ErrorType {
 	return TypeError(&n, "integer")
 }
 
 // NotStringError creates an error value for an invalid value which is not a
 // string.
-func NotStringError(v Value) ErrorType {
+func NotStringError(v Value) *ErrorType {
 	return TypeError(v, "string")
 }
 
 // NotCallableError creates an error value for an invalid value which is not a
 // callable.
-func NotCallableError(v Value) ErrorType {
+func NotCallableError(v Value) *ErrorType {
 	return TypeError(v, "callable value")
 }
 
 // NotCollectionError creates an error value for an invalid value which is not
 // a collection.
-func NotCollectionError(v Value) ErrorType {
+func NotCollectionError(v Value) *ErrorType {
 	return TypeError(v, "collection")
 }
 
 // NotEffectError creates an error value for a pure value which is expected to be an effect value.
-func NotEffectError(v Value) ErrorType {
+func NotEffectError(v Value) *ErrorType {
 	return TypeError(v, "effect")
 }
 
 // OutOfRangeError creates an error value for an out-of-range index to a list.
-func OutOfRangeError() ErrorType {
+func OutOfRangeError() *ErrorType {
 	return NewError("OutOfRangeError", "Index is out of range.")
 }
 
-func notComparableError(v Value) ErrorType {
+func notComparableError(v Value) *ErrorType {
 	return TypeError(v, "comparable value")
 }
 
 // NotOrderedError creates an error value for an invalid value which is not ordered.
-func NotOrderedError(v Value) ErrorType {
+func NotOrderedError(v Value) *ErrorType {
 	return TypeError(v, "ordered value")
 }
 
-func emptyListError() ErrorType {
+func emptyListError() *ErrorType {
 	return ValueError("List is empty.")
 }
 
-func keyNotFoundError(v Value) ErrorType {
+func keyNotFoundError(v Value) *ErrorType {
 	s, err := StrictDump(v)
 
 	if err != nil {
-		return err.(ErrorType)
+		return err.(*ErrorType)
 	}
 
 	return NewError("KeyNotFoundError", "The key %s is not found in a dictionary.", s)
 }
 
-func impureFunctionError() ErrorType {
+func impureFunctionError() *ErrorType {
 	return NewError("ImpureFunctionError", "Impure function is called in pure context.")
 }
 
-func argumentError(m string, xs ...interface{}) ErrorType {
+func argumentError(m string, xs ...interface{}) *ErrorType {
 	return NewError("ArgumentError", m, xs...)
 }
 
@@ -198,5 +198,5 @@ var Error = NewLazyFunction(
 			return err
 		}
 
-		return ErrorType{string(n), string(m), []*debug.Info{debug.NewGoInfo(1)}}
+		return &ErrorType{string(n), string(m), []*debug.Info{debug.NewGoInfo(1)}}
 	})

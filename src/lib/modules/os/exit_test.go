@@ -28,7 +28,7 @@ func TestExitError(t *testing.T) {
 		core.EvalPure(core.PApp(f)),
 		core.EvalImpure(core.PApp(f, core.Nil)),
 	} {
-		_, ok := v.(core.ErrorType)
+		_, ok := v.(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }

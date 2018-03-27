@@ -20,21 +20,21 @@ func TestGet(t *testing.T) {
 }
 
 func TestGetWithInvalidArgument(t *testing.T) {
-	e, ok := core.EvalPure(core.PApp(get, core.Nil)).(core.ErrorType)
+	e, ok := core.EvalPure(core.PApp(get, core.Nil)).(*core.ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "TypeError", e.Name())
 }
 
 func TestGetWithInvalidHost(t *testing.T) {
-	e, ok := core.EvalPure(core.PApp(get, core.NewString("http://hey-hey-i-am-invalid"))).(core.ErrorType)
+	e, ok := core.EvalPure(core.PApp(get, core.NewString("http://hey-hey-i-am-invalid"))).(*core.ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "HTTPError", e.Name())
 }
 
 func TestGetWithInvalidPath(t *testing.T) {
-	e, ok := core.EvalPure(core.PApp(get, core.NewString("http://httpbin.org/invalid-path"))).(core.ErrorType)
+	e, ok := core.EvalPure(core.PApp(get, core.NewString("http://httpbin.org/invalid-path"))).(*core.ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "HTTPError", e.Name())
@@ -67,7 +67,7 @@ func TestGetWithInvalidErrorArgument(t *testing.T) {
 				core.NewPositionalArgument(core.NewString("http://httpbin.org/invalid-path"), false),
 			},
 			[]core.KeywordArgument{
-				core.NewKeywordArgument("error", core.Nil)}))).(core.ErrorType)
+				core.NewKeywordArgument("error", core.Nil)}))).(*core.ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "TypeError", e.Name())

@@ -38,7 +38,7 @@ func encodeValue(v core.Value) (string, core.Value) {
 		}
 
 		return "false", nil
-	case core.ErrorType:
+	case *core.ErrorType:
 		return "", v
 	case *core.ListType:
 		ss := []string{}

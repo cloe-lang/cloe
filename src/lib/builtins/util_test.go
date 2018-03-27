@@ -10,6 +10,6 @@ import (
 func TestCheckEmptyListFail(t *testing.T) {
 	v := core.ReturnIfEmptyList(core.OutOfRangeError(), core.Nil)
 	t.Log(v)
-	_, ok := v.(core.ErrorType)
+	_, ok := v.(*core.ErrorType)
 	assert.True(t, ok)
 }

@@ -13,21 +13,21 @@ var impureFunction = NewLazyFunction(
 	})
 
 func TestThunkEvalWithNotCallable(t *testing.T) {
-	assert.Equal(t, "TypeError", EvalPure(PApp(Nil)).(ErrorType).Name())
+	assert.Equal(t, "TypeError", EvalPure(PApp(Nil)).(*ErrorType).Name())
 }
 
 func TestThunkEvalWithImpureFunctionCall(t *testing.T) {
-	assert.Equal(t, "ImpureFunctionError", EvalPure(PApp(impureFunction, Nil)).(ErrorType).Name())
+	assert.Equal(t, "ImpureFunctionError", EvalPure(PApp(impureFunction, Nil)).(*ErrorType).Name())
 }
 
 func TestThunkEvalByCallingError(t *testing.T) {
-	e := EvalPure(PApp(DummyError)).(ErrorType)
+	e := EvalPure(PApp(DummyError)).(*ErrorType)
 	t.Log(e)
 	assert.Equal(t, 1, len(e.callTrace))
 }
 
 func TestThunkEvalByCallingErrorTwice(t *testing.T) {
-	e := EvalPure(PApp(PApp(DummyError))).(ErrorType)
+	e := EvalPure(PApp(PApp(DummyError))).(*ErrorType)
 	t.Log(e)
 	assert.Equal(t, 2, len(e.callTrace))
 }
@@ -40,7 +40,7 @@ func TestThunkEvalImpure(t *testing.T) {
 func TestThunkEvalImpureWithNonEffect(t *testing.T) {
 	for _, v := range []Value{Nil, PApp(identity, Nil)} {
 		v := EvalImpure(v)
-		err, ok := v.(ErrorType)
+		err, ok := v.(*ErrorType)
 		t.Logf("%#v\n", v)
 		assert.True(t, ok)
 		assert.Equal(t, "TypeError", err.Name())
@@ -49,7 +49,7 @@ func TestThunkEvalImpureWithNonEffect(t *testing.T) {
 
 func TestThunkEvalImpureWithError(t *testing.T) {
 	v := EvalImpure(DummyError)
-	err, ok := v.(ErrorType)
+	err, ok := v.(*ErrorType)
 	t.Logf("%#v\n", v)
 	assert.True(t, ok)
 	assert.Equal(t, "DummyError", err.Name())

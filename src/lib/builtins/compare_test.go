@@ -55,7 +55,7 @@ func TestLessError(t *testing.T) {
 	} {
 		v := core.EvalPure(core.PApp(Less, ts...))
 		t.Log(v)
-		_, ok := v.(core.ErrorType)
+		_, ok := v.(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }

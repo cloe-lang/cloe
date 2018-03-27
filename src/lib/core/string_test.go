@@ -19,7 +19,7 @@ func TestStringMerge(t *testing.T) {
 }
 
 func TestStringMergeWithNonString(t *testing.T) {
-	_, ok := EvalPure(PApp(Merge, NewString("foo"), Nil)).(ErrorType)
+	_, ok := EvalPure(PApp(Merge, NewString("foo"), Nil)).(*ErrorType)
 	assert.True(t, ok)
 }
 
@@ -46,7 +46,7 @@ func TestStringIndex(t *testing.T) {
 
 func TestStringIndexWithInvalidIndexNumber(t *testing.T) {
 	for _, i := range []float64{-1, 1.5, 100} {
-		_, ok := EvalPure(PApp(NewString("foo"), NewNumber(i))).(ErrorType)
+		_, ok := EvalPure(PApp(NewString("foo"), NewNumber(i))).(*ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -67,7 +67,7 @@ func TestStringDelete(t *testing.T) {
 
 func TestStringDeleteWithInvalidIndex(t *testing.T) {
 	for _, i := range []float64{-1, 100} {
-		_, ok := EvalPure(PApp(Delete, NewString("foo"), NewNumber(i))).(ErrorType)
+		_, ok := EvalPure(PApp(Delete, NewString("foo"), NewNumber(i))).(*ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -105,7 +105,7 @@ func TestStringInclude(t *testing.T) {
 }
 
 func TestStringIncludeWithNonString(t *testing.T) {
-	_, ok := EvalPure(PApp(Include, NewString("foo"), Nil)).(ErrorType)
+	_, ok := EvalPure(PApp(Include, NewString("foo"), Nil)).(*ErrorType)
 	assert.True(t, ok)
 }
 
@@ -130,13 +130,13 @@ func TestStringInsert(t *testing.T) {
 
 func TestStringInsertWithInvalidIndex(t *testing.T) {
 	for _, i := range []float64{-1, 0, 5, 100} {
-		_, ok := EvalPure(PApp(Insert, NewString("foo"), NewNumber(i), NewString("bar"))).(ErrorType)
+		_, ok := EvalPure(PApp(Insert, NewString("foo"), NewNumber(i), NewString("bar"))).(*ErrorType)
 		assert.True(t, ok)
 	}
 }
 
 func TestStringInsertWithNonString(t *testing.T) {
-	_, ok := EvalPure(PApp(Insert, NewString("foo"), NewNumber(1), Nil)).(ErrorType)
+	_, ok := EvalPure(PApp(Insert, NewString("foo"), NewNumber(1), Nil)).(*ErrorType)
 	assert.True(t, ok)
 }
 

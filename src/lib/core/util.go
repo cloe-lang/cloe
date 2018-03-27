@@ -24,7 +24,7 @@ var Dump = NewLazyFunction(
 // StrictDump is a variant of Dump which evaluates input strictly.
 func StrictDump(v Value) (StringType, Value) {
 	switch x := EvalPure(v).(type) {
-	case ErrorType:
+	case *ErrorType:
 		return "", x
 	case StringType:
 		v = x.quoted()
@@ -69,7 +69,7 @@ func typeOf(vs ...Value) Value {
 		return NewString("string")
 	case FunctionType:
 		return NewString("function")
-	case ErrorType:
+	case *ErrorType:
 		return v
 	}
 

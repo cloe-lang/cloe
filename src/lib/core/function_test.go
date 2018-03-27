@@ -17,7 +17,7 @@ func TestFunctionCallError(t *testing.T) {
 		App(f, NewArguments([]PositionalArgument{NewPositionalArgument(EmptyList, true)}, nil)),
 		App(f, NewArguments(nil, []KeywordArgument{NewKeywordArgument("bar", Nil)})),
 	} {
-		_, ok := EvalPure(v).(ErrorType)
+		_, ok := EvalPure(v).(*ErrorType)
 		assert.True(t, ok)
 	}
 }
@@ -43,7 +43,7 @@ func TestNewEffectFunction(t *testing.T) {
 		NewSignature(nil, "", nil, ""),
 		func(...Value) Value { return Nil }))
 
-	assert.Equal(t, "ImpureFunctionError", EvalPure(v).(ErrorType).Name())
+	assert.Equal(t, "ImpureFunctionError", EvalPure(v).(*ErrorType).Name())
 	assert.Equal(t, Nil, EvalImpure(v).(NilType))
 }
 
@@ -61,7 +61,7 @@ func TestPartialError(t *testing.T) {
 		NewPositionalArguments(Nil),
 		NewPositionalArguments(Prepend),
 	} {
-		_, ok := EvalPure(PApp(App(Partial, a))).(ErrorType)
+		_, ok := EvalPure(PApp(App(Partial, a))).(*ErrorType)
 		assert.True(t, ok)
 	}
 }

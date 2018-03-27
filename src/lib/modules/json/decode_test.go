@@ -27,7 +27,7 @@ func TestDecode(t *testing.T) {
 }
 
 func TestDecodeWithNonString(t *testing.T) {
-	_, ok := core.EvalPure(core.PApp(decode, core.Nil)).(core.ErrorType)
+	_, ok := core.EvalPure(core.PApp(decode, core.Nil)).(*core.ErrorType)
 	assert.True(t, ok)
 }
 
@@ -45,7 +45,7 @@ func TestDecodeStringWithInvalidJSON(t *testing.T) {
 		`nul`,
 		`nil`,
 	} {
-		_, ok := core.EvalPure(decodeString(s)).(core.ErrorType)
+		_, ok := core.EvalPure(decodeString(s)).(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }

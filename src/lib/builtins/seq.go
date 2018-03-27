@@ -18,7 +18,7 @@ func createSeqFunction(f func(t core.Value) core.Value) core.Value {
 					return v
 				}
 
-				if err, ok := f(t).(core.ErrorType); ok {
+				if err, ok := f(t).(*core.ErrorType); ok {
 					return err
 				}
 			}

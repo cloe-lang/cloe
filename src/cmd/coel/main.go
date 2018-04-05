@@ -17,9 +17,9 @@ import (
 func main() {
 	args := getArgs()
 
-	if !args["--debug"].(bool) {
+	if args["--debug"].(bool) {
 		debug.Debug = true
-
+	} else {
 		defer func() {
 			if r := recover(); r != nil {
 				switch x := r.(type) {

@@ -22,7 +22,7 @@ func (ps positionalParameters) bind(args *Arguments) ([]Value, Value) {
 		v := args.nextPositional()
 
 		if v == nil {
-			return nil, argumentError("positional argument, {} is missing", s)
+			return nil, argumentError("positional argument, %s is missing", s)
 		}
 
 		vs = append(vs, v)

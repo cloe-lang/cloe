@@ -1,16 +1,16 @@
 Feature: Match expression
   Scenario: Match scalars
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (match 42 42 "Matched!"))
     (write (match 42
       2049 "Not matched..."
       42 "Matched!"))
 
-    (write (match "Coel" "Coel" "Matched!"))
-    (write (match "Coel"
-      "coel" "Not matched..."
-      "Coel" "Matched!"))
+    (write (match "Cloe" "Cloe" "Matched!"))
+    (write (match "Cloe"
+      "cloe" "Not matched..."
+      "Cloe" "Matched!"))
 
     (write (match true true "Matched!"))
     (write (match true
@@ -21,7 +21,7 @@ Feature: Match expression
 
     (write (match "Matched!" x x))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     Matched!
@@ -35,7 +35,7 @@ Feature: Match expression
     """
 
   Scenario: Match collections
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (match [] [] "Matched!"))
     (write (match [42]
@@ -51,7 +51,7 @@ Feature: Match expression
       {"bar" 42} "Not matched..."
       {"foo" 42} "Matched!"))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     Matched!
@@ -61,7 +61,7 @@ Feature: Match expression
     """
 
   Scenario: Use wildcards
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (match "Matched!"
       42 "Not matched..."
@@ -83,7 +83,7 @@ Feature: Match expression
       {"bar" bar "foo" 2049} "Not matched..."
       {"foo" foo "bar" bar} bar))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     Matched!
@@ -92,33 +92,33 @@ Feature: Match expression
     """
 
   Scenario: Nest collections
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (match {"foo" 42 "bar" ["The pattern" "is" "Matched!"]}
       {"bar" [foo "is" baz] "foo" 42} baz
       {"foo" foo "bar" bar} "Not matched..."))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     Matched!
     """
 
   Scenario: Use rest pattern of list
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (match [[42 2049] ["This" "is" "Matched!"]]
       [[..foo] ["This" "is" "not" "Matched!"]] "Not matched..."
       [[..foo] ["This" ..bar]] (bar 2)))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     Matched!
     """
 
   Scenario: Use rest pattern of dictionary
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (match {"foo" {42 2049} "bar" {"This" "Matched!"}}
       [[..foo] ["This" "is" "not" "Matched!"]] "Not matched..."
@@ -126,40 +126,40 @@ Feature: Match expression
       {"foo" {..foo} "bar" {"this" bar}} "Not matched..."
       {"foo" {..foo} "bar" {"This" bar}} bar))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     Matched!
     """
 
   Scenario: Match an invalid list with a valid pattern
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (match ["Matched!" ..{}]
       [x ..xs] x))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     Matched!
     """
 
   Scenario: Use match expression with let statements
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (let y (match [123 456 789]
       [x ..xs] xs))
 
     (write y)
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     [456 789]
     """
 
   Scenario: Match collections with patterns in let statements
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (let [x y ..xs] ["foo" "bar" "baz"])
     (let {"foo" value ..rest} {"foo" 42 "bar" 2049})
@@ -168,7 +168,7 @@ Feature: Match expression
       (write y)
       (write value))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     bar
@@ -176,7 +176,7 @@ Feature: Match expression
     """
 
   Scenario: Use let-match statements in function definitions
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (f x y)
       (let [_ x ..xs] x)
@@ -185,27 +185,27 @@ Feature: Match expression
 
     (write (f ["foo" "bar" "baz"] {"foo" 42 "bar" 2049}))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     ["bar" 42]
     """
 
   Scenario: Nest match expressions
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (match [1 2 3]
       [x ..xs] (match xs
         [y ..ys] (+ x y))))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     3
     """
 
   Scenario: Use many match expressions in a function
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (f ..xs)
       (let xs [1 2 3 ..xs])
@@ -215,18 +215,18 @@ Feature: Match expression
 
     (write (f 4 5 6))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     [5 6 7]
     """
 
   Scenario: Use similar match expressions in a expression
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write [(match [1] [x] x) (match [1] [x] x)])
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     [1 1]

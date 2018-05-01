@@ -3,7 +3,7 @@ package os
 import (
 	"os"
 
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
 var exit = createExitFunction(os.Exit)

@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"path"
 
-	"github.com/coel-lang/coel/src/lib/ast"
-	"github.com/coel-lang/coel/src/lib/consts"
-	"github.com/coel-lang/coel/src/lib/core"
-	"github.com/coel-lang/coel/src/lib/desugar"
-	"github.com/coel-lang/coel/src/lib/ir"
-	"github.com/coel-lang/coel/src/lib/modules"
-	"github.com/coel-lang/coel/src/lib/parse"
+	"github.com/cloe-lang/cloe/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/consts"
+	"github.com/cloe-lang/cloe/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/desugar"
+	"github.com/cloe-lang/cloe/src/lib/ir"
+	"github.com/cloe-lang/cloe/src/lib/modules"
+	"github.com/cloe-lang/cloe/src/lib/parse"
 )
 
 type compiler struct {

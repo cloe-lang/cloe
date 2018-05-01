@@ -6,9 +6,9 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/coel-lang/coel/src/lib/builtins"
-	"github.com/coel-lang/coel/src/lib/compile"
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/builtins"
+	"github.com/cloe-lang/cloe/src/lib/compile"
+	"github.com/cloe-lang/cloe/src/lib/core"
 	"github.com/stretchr/testify/assert"
 )
 

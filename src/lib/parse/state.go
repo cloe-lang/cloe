@@ -1,8 +1,8 @@
 package parse
 
 import (
-	"github.com/coel-lang/coel/src/lib/debug"
-	"github.com/coel-lang/coel/src/lib/parse/comb"
+	"github.com/cloe-lang/cloe/src/lib/debug"
+	"github.com/cloe-lang/cloe/src/lib/parse/comb"
 )
 
 type state struct {

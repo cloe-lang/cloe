@@ -1,14 +1,14 @@
 Feature: Regular Expression
   Scenario: Import regular expression module
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (import "re")
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly ""
 
   Scenario: Match pattern with strings
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (import "re")
 
@@ -17,7 +17,7 @@ Feature: Regular Expression
       (write (re.match "ab+c" "ac"))
       (write (re.match "ab*c" "abbbbbc")))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     true
@@ -26,7 +26,7 @@ Feature: Regular Expression
     """
 
   Scenario: Find pattern in strings
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (import "re")
 
@@ -36,7 +36,7 @@ Feature: Regular Expression
       (write (re.find "a(bc+)" "abcccc"))
       (write (re.find "a(b*c)" "abbbbc")))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     nil
@@ -46,7 +46,7 @@ Feature: Regular Expression
     """
 
   Scenario: Replace pattern in strings
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (import "re")
 
@@ -56,7 +56,7 @@ Feature: Regular Expression
       (write (re.replace "a(bc+)" "x${1}z" "abcccc"))
       (write (re.replace "a(b*c)" "x${1}z" "abbbbc")))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     ac

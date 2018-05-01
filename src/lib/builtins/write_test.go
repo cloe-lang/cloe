@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/core"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,7 +21,7 @@ func TestWrite(t *testing.T) {
 			[]core.KeywordArgument{core.NewKeywordArgument("end", core.NewString(""))}),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},
-			[]core.KeywordArgument{core.NewKeywordArgument("file", core.NewString("/tmp/coel.test"))}),
+			[]core.KeywordArgument{core.NewKeywordArgument("file", core.NewString("/tmp/cloe.test"))}),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},
 			[]core.KeywordArgument{core.NewKeywordArgument("file", core.NewNumber(2))}),

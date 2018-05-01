@@ -13,7 +13,7 @@ task :deps do
 end
 
 task :build do
-  sh 'go build -o bin/coel src/cmd/coel/main.go'
+  sh 'go build -o bin/cloe src/cmd/cloe/main.go'
 end
 
 task :fast_unit_test do
@@ -21,7 +21,7 @@ task :fast_unit_test do
 end
 
 task :unit_test do
-  coverage_file = "/tmp/coel-unit-test-#{Process.pid}.coverage"
+  coverage_file = "/tmp/cloe-unit-test-#{Process.pid}.coverage"
 
   sh "echo mode: atomic > #{TOTAL_COVERAGE_FILE}"
 

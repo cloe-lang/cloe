@@ -1,6 +1,6 @@
 package core
 
-import "github.com/coel-lang/coel/src/lib/systemt"
+import "github.com/cloe-lang/cloe/src/lib/systemt"
 
 // FunctionType represents a function.
 type FunctionType func(Arguments) Value

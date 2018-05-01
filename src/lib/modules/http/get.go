@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
 var get = core.NewLazyFunction(

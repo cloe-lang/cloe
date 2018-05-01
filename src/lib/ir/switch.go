@@ -1,7 +1,7 @@
 package ir
 
 import (
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
 // Switch represents a switch expression.

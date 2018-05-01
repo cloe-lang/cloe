@@ -1,8 +1,8 @@
 package desugar
 
 import (
-	"github.com/coel-lang/coel/src/lib/ast"
-	"github.com/coel-lang/coel/src/lib/consts"
+	"github.com/cloe-lang/cloe/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/consts"
 )
 
 func desugarDictionaryExpansion(x interface{}) []interface{} {

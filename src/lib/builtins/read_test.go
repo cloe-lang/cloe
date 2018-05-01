@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/core"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -1,6 +1,6 @@
 Feature: Read function
   Scenario: Read stdin
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (read) . end "")
     """
@@ -12,7 +12,7 @@ Feature: Read function
     """
     When I run the following commands:
     """
-    coel main.coel < test.txt
+    cloe main.cloe < test.txt
     """
     Then the stdout should contain exactly:
     """
@@ -22,7 +22,7 @@ Feature: Read function
     """
 
   Scenario: Read a file
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (read . file "test.txt") . end "")
     """
@@ -32,7 +32,7 @@ Feature: Read function
     bar
     baz
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     foo

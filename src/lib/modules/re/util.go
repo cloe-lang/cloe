@@ -1,6 +1,6 @@
 package re
 
-import "github.com/coel-lang/coel/src/lib/core"
+import "github.com/cloe-lang/cloe/src/lib/core"
 
 func evaluateStringArguments(vs []core.Value) ([]string, core.Value) {
 	ss := make([]string, 0, len(vs))

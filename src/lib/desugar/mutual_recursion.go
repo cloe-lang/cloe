@@ -3,9 +3,9 @@ package desugar
 import (
 	"fmt"
 
-	"github.com/coel-lang/coel/src/lib/ast"
-	"github.com/coel-lang/coel/src/lib/debug"
-	"github.com/coel-lang/coel/src/lib/gensym"
+	"github.com/cloe-lang/cloe/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/debug"
+	"github.com/cloe-lang/cloe/src/lib/gensym"
 )
 
 func desugarMutualRecursionStatement(x interface{}) []interface{} {

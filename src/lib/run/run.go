@@ -5,9 +5,9 @@ import (
 	"os"
 	"sync"
 
-	"github.com/coel-lang/coel/src/lib/compile"
-	"github.com/coel-lang/coel/src/lib/core"
-	"github.com/coel-lang/coel/src/lib/systemt"
+	"github.com/cloe-lang/cloe/src/lib/compile"
+	"github.com/cloe-lang/cloe/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/systemt"
 )
 
 const maxConcurrentEffects = 256

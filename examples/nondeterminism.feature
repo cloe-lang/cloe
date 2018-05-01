@@ -1,6 +1,6 @@
 Feature: Nondeterminism
   Scenario: Apply rally function to a infinite list
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (f) [42 ..(f)])
     (let a (f))
@@ -10,7 +10,7 @@ Feature: Nondeterminism
     (let c (rest b))
     (write (first c))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     42

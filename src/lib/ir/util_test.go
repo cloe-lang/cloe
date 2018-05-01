@@ -4,8 +4,8 @@ import (
 	"math"
 	"testing"
 
-	"github.com/coel-lang/coel/src/lib/core"
-	"github.com/coel-lang/coel/src/lib/debug"
+	"github.com/cloe-lang/cloe/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/debug"
 	"github.com/stretchr/testify/assert"
 )
 

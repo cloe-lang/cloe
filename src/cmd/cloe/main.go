@@ -8,9 +8,9 @@ import (
 	"runtime/pprof"
 	"strings"
 
-	"github.com/coel-lang/coel/src/lib/compile"
-	"github.com/coel-lang/coel/src/lib/debug"
-	"github.com/coel-lang/coel/src/lib/run"
+	"github.com/cloe-lang/cloe/src/lib/compile"
+	"github.com/cloe-lang/cloe/src/lib/debug"
+	"github.com/cloe-lang/cloe/src/lib/run"
 	"github.com/docopt/docopt-go"
 )
 
@@ -60,10 +60,10 @@ func main() {
 }
 
 func getArgs() map[string]interface{} {
-	usage := `Coel interpreter
+	usage := `Cloe interpreter
 
 Usage:
-  coel [-d] [-p <filename>] [<filename>]
+  cloe [-d] [-p <filename>] [<filename>]
 
 Options:
   -d, --debug  Turn on debug mode.

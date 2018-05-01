@@ -1,11 +1,11 @@
 package compile
 
 import (
-	"github.com/coel-lang/coel/src/lib/builtins"
-	"github.com/coel-lang/coel/src/lib/core"
-	"github.com/coel-lang/coel/src/lib/desugar"
-	"github.com/coel-lang/coel/src/lib/parse"
-	"github.com/coel-lang/coel/src/lib/scalar"
+	"github.com/cloe-lang/cloe/src/lib/builtins"
+	"github.com/cloe-lang/cloe/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/desugar"
+	"github.com/cloe-lang/cloe/src/lib/parse"
+	"github.com/cloe-lang/cloe/src/lib/scalar"
 )
 
 const builtinsFilename = "<builtins>"

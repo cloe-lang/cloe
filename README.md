@@ -1,21 +1,21 @@
-# Coel
+# Cloe
 
-[![Circle CI](https://img.shields.io/circleci/project/github/coel-lang/coel.svg?style=flat-square)](https://circleci.com/gh/coel-lang/coel)
-[![Coveralls](https://img.shields.io/coveralls/coel-lang/coel.svg?style=flat-square)](https://coveralls.io/github/coel-lang/coel)
-[![Go Report Card](https://goreportcard.com/badge/github.com/coel-lang/coel?style=flat-square)](https://goreportcard.com/report/github.com/coel-lang/coel)
-[![License](https://img.shields.io/github/license/coel-lang/coel.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Circle CI](https://img.shields.io/circleci/project/github/cloe-lang/cloe.svg?style=flat-square)](https://circleci.com/gh/cloe-lang/cloe)
+[![Coveralls](https://img.shields.io/coveralls/cloe-lang/cloe.svg?style=flat-square)](https://coveralls.io/github/cloe-lang/cloe)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cloe-lang/cloe?style=flat-square)](https://goreportcard.com/report/github.com/cloe-lang/cloe)
+[![License](https://img.shields.io/github/license/cloe-lang/cloe.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/coel-lang/icon/master/spaced.png" alt="logo"/>
+  <img src="https://raw.githubusercontent.com/cloe-lang/icon/master/spaced.png" alt="logo"/>
 </div>
 
-Coel is a functional programming language.
+Cloe is a functional programming language.
 It aims to be simple, canonical, and practical.
 
 ## Installation
 
 ```
-go get github.com/coel-lang/coel/src/cmd/coel
+go get github.com/cloe-lang/cloe/src/cmd/cloe
 ```
 
 Go 1.8+ is required.
@@ -41,7 +41,7 @@ runtime.
 
 ## Documentation
 
-[Here](https://coel-lang.org).
+[Here](https://cloe-lang.org).
 
 ## Examples
 

@@ -4,8 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/coel-lang/coel/src/lib/desugar"
-	"github.com/coel-lang/coel/src/lib/parse"
+	"github.com/cloe-lang/cloe/src/lib/desugar"
+	"github.com/cloe-lang/cloe/src/lib/parse"
 )
 
 // Compile compiles a main module of a path into effects of thunks.

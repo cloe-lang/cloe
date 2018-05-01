@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/coel-lang/coel/src/lib/consts"
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/consts"
+	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
 var predefined = func() map[string]core.Value {

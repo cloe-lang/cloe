@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/coel-lang/coel/src/lib/ast"
-	"github.com/coel-lang/coel/src/lib/consts"
-	"github.com/coel-lang/coel/src/lib/debug"
-	"github.com/coel-lang/coel/src/lib/parse/comb"
+	"github.com/cloe-lang/cloe/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/consts"
+	"github.com/cloe-lang/cloe/src/lib/debug"
+	"github.com/cloe-lang/cloe/src/lib/parse/comb"
 )
 
 const (

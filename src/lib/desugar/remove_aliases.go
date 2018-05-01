@@ -1,7 +1,7 @@
 package desugar
 
 import (
-	"github.com/coel-lang/coel/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/ast"
 )
 
 func removeAliases(x interface{}) []interface{} {

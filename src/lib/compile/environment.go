@@ -3,7 +3,7 @@ package compile
 import (
 	"fmt"
 
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
 type environment struct {

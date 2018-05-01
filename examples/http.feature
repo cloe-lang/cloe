@@ -1,34 +1,34 @@
 Feature: HTTP
   Scenario: Import HTTP module
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (import "http")
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly ""
 
   Scenario: Send GET request
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (import "http")
 
     (write ((http.get "http://httpbin.org") "status"))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "200"
 
   Scenario: Send POST request
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (import "http")
 
     (write ((http.post "https://httpbin.org/post" "Hello, world!") "status"))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "200"
 
   Scenario: Run a server
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (import "http")
 
@@ -36,7 +36,7 @@ Feature: HTTP
     """
     And a file named "main.sh" with:
     """
-    coel main.coel &
+    cloe main.cloe &
     pid=$!
     sleep 1 &&
     curl http://127.0.0.1:8080 &&

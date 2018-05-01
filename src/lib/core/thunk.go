@@ -4,7 +4,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/coel-lang/coel/src/lib/debug"
+	"github.com/cloe-lang/cloe/src/lib/debug"
 )
 
 type thunkState int32

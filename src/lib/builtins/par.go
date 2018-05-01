@@ -1,8 +1,8 @@
 package builtins
 
 import (
-	"github.com/coel-lang/coel/src/lib/core"
-	"github.com/coel-lang/coel/src/lib/systemt"
+	"github.com/cloe-lang/cloe/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/systemt"
 )
 
 // Par evaluates arguments in parallel and returns the last one.

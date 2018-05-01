@@ -3,11 +3,11 @@ package desugar
 import (
 	"fmt"
 
-	"github.com/coel-lang/coel/src/lib/ast"
-	"github.com/coel-lang/coel/src/lib/consts"
-	"github.com/coel-lang/coel/src/lib/debug"
-	"github.com/coel-lang/coel/src/lib/gensym"
-	"github.com/coel-lang/coel/src/lib/scalar"
+	"github.com/cloe-lang/cloe/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/consts"
+	"github.com/cloe-lang/cloe/src/lib/debug"
+	"github.com/cloe-lang/cloe/src/lib/gensym"
+	"github.com/cloe-lang/cloe/src/lib/scalar"
 )
 
 func desugarLetMatch(x interface{}) []interface{} {

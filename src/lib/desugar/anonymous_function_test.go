@@ -3,8 +3,8 @@ package desugar
 import (
 	"testing"
 
-	"github.com/coel-lang/coel/src/lib/ast"
-	"github.com/coel-lang/coel/src/lib/debug"
+	"github.com/cloe-lang/cloe/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/debug"
 	"github.com/stretchr/testify/assert"
 )
 

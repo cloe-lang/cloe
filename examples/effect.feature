@@ -1,12 +1,12 @@
 Feature: Effect
   Scenario: Evaluate multiple effects
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write 123)
     (write 456)
     (write 789)
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain:
     """
     123
@@ -21,11 +21,11 @@ Feature: Effect
     """
 
   Scenario: Evaluate an expanded effect
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     ..[(write 123) (write 456) (write 789)]
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain:
     """
     123
@@ -40,11 +40,11 @@ Feature: Effect
     """
 
   Scenario: Purify an effect value
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (pure (write "Hello, world!")))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     Hello, world!

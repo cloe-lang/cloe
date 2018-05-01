@@ -3,7 +3,7 @@ package match
 import (
 	"fmt"
 
-	"github.com/coel-lang/coel/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/ast"
 )
 
 type valueRenamer struct {

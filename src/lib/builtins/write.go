@@ -5,7 +5,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
 // Write writes string representation of arguments to stdout.

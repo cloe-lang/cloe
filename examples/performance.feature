@@ -1,6 +1,6 @@
 Feature: Performance
   Scenario: Benchmark requests per minute of HTTP server
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (import "http")
 
@@ -42,11 +42,11 @@ Feature: Performance
       kill -9 $pid
     }
 
-    coel=$(bench coel main.coel)
+    cloe=$(bench cloe main.cloe)
     wait
     go=$(bench ./main)
 
-    python -c "if $coel / $go < 0.15: exit(1)"
+    python -c "if $cloe / $go < 0.15: exit(1)"
     """
     When I successfully run `go build main.go`
     And I successfully run `sh main.sh`

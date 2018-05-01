@@ -1,6 +1,6 @@
 Feature: Built-in functions
   Scenario: Get types of values
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (seq!
       (write (typeOf true))
@@ -12,7 +12,7 @@ Feature: Built-in functions
       (write (typeOf +))
       (write (typeOf (partial + 1))))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     bool
@@ -26,18 +26,18 @@ Feature: Built-in functions
     """
 
   Scenario: Map a function to a list
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (map (\ (x) (* x x)) [1 2 3]))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     [1 4 9]
     """
 
   Scenario: Calculate indices of elements in a list
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (let l [1 2 3 42 -3 "foo"])
     (seq!
@@ -45,7 +45,7 @@ Feature: Built-in functions
       (write (indexOf l 2))
       (write (indexOf l "foo")))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     4
@@ -54,20 +54,20 @@ Feature: Built-in functions
     """
 
   Scenario: Use multiple conditions with if function
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (no) (write "No"))
 
     (if false no true (write "Yes") false no no)
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     Yes
     """
 
   Scenario: Use boolean operators
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (seq!
       (write (not true))
@@ -81,7 +81,7 @@ Feature: Built-in functions
       (write (and true false true))
       (write (or true false true)))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     false
@@ -97,7 +97,7 @@ Feature: Built-in functions
     """
 
   Scenario: Slice lists
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (seq!
       (write (slice [1 2 3]))
@@ -110,7 +110,7 @@ Feature: Built-in functions
       (write (slice [1 2 3] . start 2 end 3))
       (write (slice [1 2 3] . start 1 end 2)))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     [1 2 3]
@@ -125,20 +125,20 @@ Feature: Built-in functions
     """
 
   Scenario: Slice an infinite list
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (f) [42 ..(f)])
 
     (write (slice (f) . start 1 end 3))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     [42 42 42]
     """
 
   Scenario: Slice strings
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (seq! ..(map (\ (x) (write (dump x))) [
         (slice "abc")
@@ -152,7 +152,7 @@ Feature: Built-in functions
         (slice "abc" . start 1 end 2)
       ]))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     "abc"
@@ -167,7 +167,7 @@ Feature: Built-in functions
     """
 
   Scenario: Calculate maximum and minimum of numbers
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (seq!
       (write (max 1))
@@ -185,7 +185,7 @@ Feature: Built-in functions
       (write (min 3 2 1))
       (write (min 3 2 4 -3 123 -45 1)))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     1
@@ -205,18 +205,18 @@ Feature: Built-in functions
     """
 
   Scenario: Zip lists
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (write (zip [1 2 3] ["foo" "bar" "baz"]))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     [[1 "foo"] [2 "bar"] [3 "baz"]]
     """
 
   Scenario: Check if values are ordered or not
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (seq!
       ..(map (\ (x) (write (ordered? x))) [
@@ -231,7 +231,7 @@ Feature: Built-in functions
         [123 {}]
       ]))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     true
@@ -246,7 +246,7 @@ Feature: Built-in functions
     """
 
   Scenario: Check if values are ordered or not
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (seq!
       ..(map write [
@@ -266,7 +266,7 @@ Feature: Built-in functions
         (string? nil)
       ]))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     true

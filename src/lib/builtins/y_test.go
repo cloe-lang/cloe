@@ -3,8 +3,8 @@ package builtins
 import (
 	"testing"
 
-	"github.com/coel-lang/coel/src/lib/core"
-	"github.com/coel-lang/coel/src/lib/systemt"
+	"github.com/cloe-lang/cloe/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/systemt"
 	"github.com/stretchr/testify/assert"
 )
 

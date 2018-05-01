@@ -3,7 +3,7 @@ package ast
 import (
 	"fmt"
 
-	"github.com/coel-lang/coel/src/lib/debug"
+	"github.com/cloe-lang/cloe/src/lib/debug"
 )
 
 // App represents an application of a function to arguments.

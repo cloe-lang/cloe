@@ -1,7 +1,7 @@
 package builtins
 
 import (
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
 func createSeqFunction(f func(t core.Value) core.Value) core.Value {

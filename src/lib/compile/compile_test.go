@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/coel-lang/coel/src/lib/consts"
+	"github.com/cloe-lang/cloe/src/lib/consts"
 	"github.com/stretchr/testify/assert"
 )
 

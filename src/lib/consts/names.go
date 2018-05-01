@@ -14,4 +14,4 @@ var Names = struct {
 }
 
 // FileExtension is a file extension of the language.
-const FileExtension = ".coel"
+const FileExtension = ".cloe"

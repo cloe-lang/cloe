@@ -3,7 +3,7 @@ package re
 import (
 	"regexp"
 
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
 var find = core.NewLazyFunction(

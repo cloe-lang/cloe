@@ -3,10 +3,10 @@ package match
 import (
 	"fmt"
 
-	"github.com/coel-lang/coel/src/lib/ast"
-	"github.com/coel-lang/coel/src/lib/consts"
-	"github.com/coel-lang/coel/src/lib/gensym"
-	"github.com/coel-lang/coel/src/lib/scalar"
+	"github.com/cloe-lang/cloe/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/consts"
+	"github.com/cloe-lang/cloe/src/lib/gensym"
+	"github.com/cloe-lang/cloe/src/lib/scalar"
 )
 
 type patternRenamer struct {

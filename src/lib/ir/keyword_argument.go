@@ -1,6 +1,6 @@
 package ir
 
-import "github.com/coel-lang/coel/src/lib/core"
+import "github.com/cloe-lang/cloe/src/lib/core"
 
 // KeywordArgument represents a keyword argument passed to a function.
 type KeywordArgument struct {

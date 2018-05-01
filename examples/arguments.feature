@@ -1,6 +1,6 @@
 Feature: Arguments
   Scenario: Define a recursive function
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (func x1 x2 ..args . y1 0 y2 1 ..kwargs)
          (+ x1 x2 ..args y1 y2))
@@ -8,14 +8,14 @@ Feature: Arguments
 
     (write (func 1 1 1 ..[1 foo foo] . y1 1 foo 100000000 ..{"y2" 1}))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     8
     """
 
   Scenario: Override keyword arguments
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (func . x nil) x)
 
@@ -24,7 +24,7 @@ Feature: Arguments
       (write (func . ..{"x" nil} x 42))
       (write (func . ..{"x" 42} ..{"x" nil} x 42)))
     """
-    When I successfully run `coel main.coel`
+    When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
     42

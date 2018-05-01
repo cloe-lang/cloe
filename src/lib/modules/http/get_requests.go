@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/coel-lang/coel/src/lib/builtins"
-	"github.com/coel-lang/coel/src/lib/core"
-	"github.com/coel-lang/coel/src/lib/systemt"
+	"github.com/cloe-lang/cloe/src/lib/builtins"
+	"github.com/cloe-lang/cloe/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/systemt"
 )
 
 const requestChannelSize = 1024

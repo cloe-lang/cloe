@@ -1,5 +1,5 @@
 package compile
 
-import "github.com/coel-lang/coel/src/lib/core"
+import "github.com/cloe-lang/cloe/src/lib/core"
 
 type module map[string]core.Value

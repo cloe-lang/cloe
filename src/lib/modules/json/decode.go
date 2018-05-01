@@ -2,7 +2,7 @@ package json
 
 import (
 	"github.com/Jeffail/gabs"
-	"github.com/coel-lang/coel/src/lib/core"
+	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
 var decode = core.NewLazyFunction(

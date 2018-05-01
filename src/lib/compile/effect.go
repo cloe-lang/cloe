@@ -1,6 +1,6 @@
 package compile
 
-import "github.com/coel-lang/coel/src/lib/core"
+import "github.com/cloe-lang/cloe/src/lib/core"
 
 // Effect represents an effect of a program.
 type Effect struct {

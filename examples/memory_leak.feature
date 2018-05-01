@@ -6,7 +6,7 @@ Feature: Memory leak
 
     set -e
 
-    coel $1 > /dev/null &
+    cloe $1 > /dev/null &
     pid=$!
 
     sleep 2 # Wait for memory usage to be stable.
@@ -34,16 +34,16 @@ Feature: Memory leak
 
   Scenario: Run infinite effects
     This test succeeds only with Go 1.8 onward because of argument liveness.
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (f) [(write 42) ..(f)])
     ..(f)
     """
-    When I run `sh leak_memory.sh main.coel`
+    When I run `sh leak_memory.sh main.cloe`
     Then the exit status should be 0
 
   Scenario: Evaluate deep recursion
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (f n)
       (match n
@@ -52,35 +52,35 @@ Feature: Memory leak
 
     (write (f 100000000))
     """
-    When I run `sh leak_memory.sh main.coel`
+    When I run `sh leak_memory.sh main.cloe`
     Then the exit status should be 0
 
   Scenario: Apply a map function to an infinite list
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (f) [42 ..(f)])
 
     ..(map write (f))
     """
-    When I run `sh leak_memory.sh main.coel`
+    When I run `sh leak_memory.sh main.cloe`
     Then the exit status should be 0
 
   Scenario: Apply a map function to an infinite list of map functions
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (f) [map ..(f)])
 
     ..(map (\ (x) (write (typeOf x))) (f))
     """
-    When I run `sh leak_memory.sh main.coel`
+    When I run `sh leak_memory.sh main.cloe`
     Then the exit status should be 0
 
   Scenario: Apply max function to an infinite list
-    Given a file named "main.coel" with:
+    Given a file named "main.cloe" with:
     """
     (def (f) [42 ..(f)])
 
     (write (max ..(f)))
     """
-    When I run `sh leak_memory.sh main.coel`
+    When I run `sh leak_memory.sh main.cloe`
     Then the exit status should be 0

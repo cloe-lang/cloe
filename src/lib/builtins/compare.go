@@ -1,6 +1,6 @@
 package builtins
 
-import "github.com/coel-lang/coel/src/lib/core"
+import "github.com/cloe-lang/cloe/src/lib/core"
 
 func createCompareFunction(checkOrder func(core.NumberType) bool) core.Value {
 	return core.NewLazyFunction(

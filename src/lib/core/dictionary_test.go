@@ -26,7 +26,7 @@ var kvss = [][][2]Value{
 
 func TestDictionaryInsert(t *testing.T) {
 	for _, k := range []Value{
-		True, False, Nil, NewNumber(42), NewString("coel"),
+		True, False, Nil, NewNumber(42), NewString("cloe"),
 	} {
 		d, ok := EvalPure(PApp(Insert, EmptyDictionary, k, Nil)).(*DictionaryType)
 		assert.True(t, ok)
@@ -38,7 +38,7 @@ func TestDictionaryInsertMultileKeys(t *testing.T) {
 	d := Value(EmptyDictionary)
 
 	for i, k := range []Value{
-		True, False, Nil, NewNumber(42), NewString("coel"),
+		True, False, Nil, NewNumber(42), NewString("cloe"),
 	} {
 		d = EvalPure(PApp(Insert, d, k, Nil))
 		t.Log(EvalPure(PApp(ToString, d)))

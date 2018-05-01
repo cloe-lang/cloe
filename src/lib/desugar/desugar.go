@@ -1,7 +1,7 @@
 package desugar
 
 import (
-	"github.com/coel-lang/coel/src/lib/desugar/match"
+	"github.com/cloe-lang/cloe/src/lib/desugar/match"
 )
 
 // Desugar desugars a module of statements in AST.

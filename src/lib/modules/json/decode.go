@@ -45,7 +45,7 @@ func convertToValue(x interface{}) core.Value {
 		kvs := make([]core.KeyValue, 0, len(x))
 
 		for k, v := range x {
-			kvs = append(kvs, core.KeyValue{core.NewString(k), convertToValue(v)})
+			kvs = append(kvs, core.KeyValue{Key: core.NewString(k), Value: convertToValue(v)})
 		}
 
 		return core.NewDictionary(kvs)

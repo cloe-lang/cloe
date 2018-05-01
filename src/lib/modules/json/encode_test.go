@@ -27,15 +27,15 @@ func TestEncode(t *testing.T) {
 		), `["foo",42,"bar"]`},
 		{core.EmptyDictionary, "{}"},
 		{
-			core.NewDictionary([]core.KeyValue{{core.Nil, core.Nil}}),
+			core.NewDictionary([]core.KeyValue{{Key: core.Nil, Value: core.Nil}}),
 			`{"null":null}`,
 		},
 		{
-			core.NewDictionary([]core.KeyValue{{core.NewNumber(42), core.NewNumber(42)}}),
+			core.NewDictionary([]core.KeyValue{{Key: core.NewNumber(42), Value: core.NewNumber(42)}}),
 			`{"42":42}`,
 		},
 		{
-			core.NewDictionary([]core.KeyValue{{core.True, core.True}}),
+			core.NewDictionary([]core.KeyValue{{Key: core.True, Value: core.True}}),
 			`{"true":true}`,
 		},
 	} {
@@ -62,9 +62,9 @@ func TestEncodeAndDecode(t *testing.T) {
 		),
 		core.EmptyDictionary,
 		core.NewDictionary([]core.KeyValue{
-			{core.NewString("foo"), core.NewNumber(42)},
-			{core.NewString("bar"), core.True},
-			{core.NewString("baz"), core.NewString("blah")},
+			{Key: core.NewString("foo"), Value: core.NewNumber(42)},
+			{Key: core.NewString("bar"), Value: core.True},
+			{Key: core.NewString("baz"), Value: core.NewString("blah")},
 		}),
 	} {
 		s, ok := core.EvalPure(core.PApp(encode, th)).(core.StringType)
@@ -85,8 +85,8 @@ func TestEncodeWithInvalidArguments(t *testing.T) {
 		core.PApp(core.Prepend, core.Nil, core.ValueError("Not a list")),
 		core.NewList(core.ValueError("")),
 		core.PApp(core.Insert, core.EmptyDictionary, core.NewString("foo"), core.ValueError("")),
-		core.NewDictionary([]core.KeyValue{{core.NewList(core.DummyError), core.Nil}}),
-		core.NewDictionary([]core.KeyValue{{core.Nil, core.DummyError}}),
+		core.NewDictionary([]core.KeyValue{{Key: core.NewList(core.DummyError), Value: core.Nil}}),
+		core.NewDictionary([]core.KeyValue{{Key: core.Nil, Value: core.DummyError}}),
 	} {
 		_, ok := core.EvalPure(core.PApp(encode, th)).(*core.ErrorType)
 		assert.True(t, ok)

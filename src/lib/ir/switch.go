@@ -31,7 +31,7 @@ func compileCasesToDict(cs []Case) core.Value {
 	kvs := make([]core.KeyValue, 0, len(cs))
 
 	for i, c := range cs {
-		kvs = append(kvs, core.KeyValue{c.pattern, core.NewNumber(float64(i))})
+		kvs = append(kvs, core.KeyValue{Key: c.pattern, Value: core.NewNumber(float64(i))})
 	}
 
 	return core.EvalPure(core.NewDictionary(kvs))

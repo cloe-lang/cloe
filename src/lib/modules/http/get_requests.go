@@ -69,12 +69,12 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	h.Requests <- core.NewDictionary(
 		[]core.KeyValue{
-			{core.NewString("body"), core.NewString(string(b))},
-			{core.NewString("method"), core.NewString(r.Method)},
-			{core.NewString("url"), core.NewString(r.URL.String())},
+			{Key: core.NewString("body"), Value: core.NewString(string(b))},
+			{Key: core.NewString("method"), Value: core.NewString(r.Method)},
+			{Key: core.NewString("url"), Value: core.NewString(r.URL.String())},
 			{
-				core.NewString("respond"),
-				core.NewEffectFunction(
+				Key: core.NewString("respond"),
+				Value: core.NewEffectFunction(
 					core.NewSignature(
 						[]string{"body"},
 						"",
@@ -109,7 +109,8 @@ func (h handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						}
 
 						return core.Nil
-					})},
+					}),
+			},
 		})
 
 	wg.Wait()

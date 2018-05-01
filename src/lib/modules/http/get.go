@@ -51,7 +51,7 @@ func handleMethodResult(r *http.Response, err error, errorOption core.Value) cor
 	}
 
 	return core.NewDictionary([]core.KeyValue{
-		{core.NewString("status"), core.NewNumber(float64(r.StatusCode))},
-		{core.NewString("body"), core.NewString(string(bs))},
+		{Key: core.NewString("status"), Value: core.NewNumber(float64(r.StatusCode))},
+		{Key: core.NewString("body"), Value: core.NewString(string(bs))},
 	})
 }

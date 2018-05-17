@@ -16,3 +16,15 @@ Feature: File System
     """
     When I successfully run `cloe main.cloe`
     Then I successfully run `rmdir foo`
+
+  Scenario: Remove an entry
+    Given a file named "main.cloe" with:
+    """
+    (import "fs")
+
+    (fs.remove "foo.txt")
+    """
+    And a file named "foo.txt" with ""
+    When I successfully run `cloe main.cloe`
+    Then I run `ls foo.txt`
+    And the exit status should not be 0

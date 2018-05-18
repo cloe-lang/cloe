@@ -47,7 +47,7 @@ func TestDictionaryInsertMultileKeys(t *testing.T) {
 }
 
 func TestDictionaryInsertFail(t *testing.T) {
-	l := NewList(NewError("you", "failed."))
+	l := NewList(DummyError)
 	v := EvalPure(PApp(Insert, PApp(Insert, EmptyDictionary, l, Nil), l, Nil))
 	_, ok := v.(*ErrorType)
 	t.Logf("%#v", v)

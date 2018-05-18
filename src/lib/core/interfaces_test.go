@@ -24,7 +24,7 @@ func TestCompareFunction(t *testing.T) {
 
 func TestComaprePanic(t *testing.T) {
 	assert.Panics(t, func() {
-		compare(NewNumber(42), NewError("you", "failed."))
+		compare(NewNumber(42), DummyError)
 	})
 }
 

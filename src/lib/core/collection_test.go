@@ -90,23 +90,23 @@ func TestIndexWithInvalidRestArguments(t *testing.T) {
 	e, ok := EvalPure(App(
 		NewList(Nil),
 		NewArguments(
-			[]PositionalArgument{NewPositionalArgument(NewError("FooError", "Hi!"), true)},
+			[]PositionalArgument{NewPositionalArgument(DummyError, true)},
 			nil))).(*ErrorType)
 
 	assert.True(t, ok)
-	assert.Equal(t, "FooError", e.Name())
+	assert.Equal(t, "DummyError", e.Name())
 
 	e, ok = EvalPure(App(
 		NewList(Nil),
 		NewArguments(
 			[]PositionalArgument{
 				NewPositionalArgument(Nil, false),
-				NewPositionalArgument(NewError("FooError", "Hi!"), true),
+				NewPositionalArgument(DummyError, true),
 			},
 			nil))).(*ErrorType)
 
 	assert.True(t, ok)
-	assert.Equal(t, "FooError", e.Name())
+	assert.Equal(t, "DummyError", e.Name())
 }
 
 func TestInsertChain(t *testing.T) {

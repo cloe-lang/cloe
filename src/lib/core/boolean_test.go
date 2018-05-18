@@ -50,7 +50,7 @@ func TestIfWithInvalidArguments(t *testing.T) {
 		NewArguments([]PositionalArgument{NewPositionalArgument(Nil, true)}, nil),
 		NewArguments(
 			[]PositionalArgument{
-				NewPositionalArgument(PApp(Prepend, True, NewError("FooError", "Hi!")), true),
+				NewPositionalArgument(PApp(Prepend, True, DummyError), true),
 			},
 			nil),
 	} {

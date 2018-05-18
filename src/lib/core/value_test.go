@@ -31,7 +31,7 @@ func BenchmarkValueCopyString(b *testing.B) {
 }
 
 func BenchmarkValueCopyError(b *testing.B) {
-	generateCopyBenchmark(NewError("MyError", "No way!"))(b)
+	generateCopyBenchmark(DummyError)(b)
 }
 
 type UnboxedNumberType float64

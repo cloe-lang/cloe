@@ -95,7 +95,7 @@ func TestTypeOf(t *testing.T) {
 
 func TestTypeOfError(t *testing.T) {
 	for _, v := range []Value{
-		NewError("MyError", "This is error."),
+		DummyError,
 		PApp(impureFunction, NewNumber(42)),
 	} {
 		v = EvalPure(PApp(TypeOf, v))

@@ -36,6 +36,6 @@ func TestArgumentsMerge(t *testing.T) {
 }
 
 func TestArgumentsRestKeywords(t *testing.T) {
-	a := NewArguments(nil, []KeywordArgument{NewKeywordArgument("", NewError("MyError", ""))})
-	assert.Equal(t, "MyError", EvalPure(a.restKeywords()).(*ErrorType).Name())
+	a := NewArguments(nil, []KeywordArgument{NewKeywordArgument("", DummyError)})
+	assert.Equal(t, "DummyError", EvalPure(a.restKeywords()).(*ErrorType).Name())
 }

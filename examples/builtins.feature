@@ -41,9 +41,9 @@ Feature: Built-in functions
     """
     (let l [1 2 3 42 -3 "foo"])
     (seq!
-      (write (indexOf l 42))
-      (write (indexOf l 2))
-      (write (indexOf l "foo")))
+      (write (index l 42))
+      (write (index l 2))
+      (write (index l "foo")))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:

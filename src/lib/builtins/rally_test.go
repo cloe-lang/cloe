@@ -23,7 +23,7 @@ func TestRally(t *testing.T) {
 		t.Logf("%#v", core.EvalPure(e))
 		assert.True(t, bool(*core.EvalPure(core.PApp(core.Include, l1, e)).(*core.BooleanType)))
 
-		l1 = core.PApp(core.Delete, l1, core.PApp(indexOf, l1, e))
+		l1 = core.PApp(core.Delete, l1, core.PApp(index, l1, e))
 		l2 = core.PApp(core.Rest, l2)
 	}
 
@@ -56,7 +56,7 @@ func TestRallyError(t *testing.T) {
 	}
 }
 
-var indexOf = core.NewLazyFunction(
+var index = core.NewLazyFunction(
 	core.NewSignature([]string{"list", "elem"}, "", nil, ""),
 	func(ts ...core.Value) core.Value {
 		l, e := ts[0], ts[1]

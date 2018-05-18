@@ -103,10 +103,10 @@ func builtinsEnvironment() environment {
 			(def (number? x) (= (typeOf x) "number"))
 			(def (string? x) (= (typeOf x) "string"))
 
-			(def (indexOf list elem . index 1)
+			(def (index list elem . i 1)
 				(match list
 					[] (error "ElementNotFoundError" "Could not find an element in a list")
-					[first ..rest] (if (= first elem) index (indexOf rest elem . index (+ index 1)))))
+					[first ..rest] (if (= first elem) i (index rest elem . i (+ i 1)))))
 
 			(def (map func list)
 				(match list

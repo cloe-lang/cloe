@@ -55,10 +55,10 @@ var TypeOf = NewLazyFunction(
 func typeOf(vs ...Value) Value {
 	// No case of effectType should be here.
 	switch v := EvalPure(vs[0]).(type) {
-	case *BoolType:
-		return NewString("bool")
+	case *BooleanType:
+		return NewString("boolean")
 	case *DictionaryType:
-		return NewString("dict")
+		return NewString("dictionary")
 	case *ListType:
 		return NewString("list")
 	case NilType:

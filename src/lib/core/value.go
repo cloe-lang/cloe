@@ -6,12 +6,12 @@ type Value interface {
 	eval() Value
 }
 
-// EvalBool evaluates a thunk which is expected to be a boolean value.
-func EvalBool(v Value) (BoolType, Value) {
-	b, ok := EvalPure(v).(*BoolType)
+// EvalBoolean evaluates a thunk which is expected to be a boolean value.
+func EvalBoolean(v Value) (BooleanType, Value) {
+	b, ok := EvalPure(v).(*BooleanType)
 
 	if !ok {
-		return *False, NotBoolError(v)
+		return *False, NotBooleanError(v)
 	}
 
 	return *b, nil

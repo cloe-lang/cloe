@@ -80,10 +80,10 @@ func TestTypeOf(t *testing.T) {
 		{"nil", Nil},
 		{"list", EmptyList},
 		{"list", EmptyList},
-		{"bool", True},
+		{"boolean", True},
 		{"number", NewNumber(123)},
 		{"string", NewString("foo")},
-		{"dict", EmptyDictionary},
+		{"dictionary", EmptyDictionary},
 		{"function", identity},
 		{"function", PApp(Partial, identity)},
 	} {

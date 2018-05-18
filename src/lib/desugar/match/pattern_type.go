@@ -4,7 +4,7 @@ type patternType int
 
 const (
 	listPattern patternType = iota
-	dictPattern
+	dictionaryPattern
 	scalarPattern
 	namePattern
 )

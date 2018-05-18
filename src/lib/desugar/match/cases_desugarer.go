@@ -76,8 +76,8 @@ func (d *casesDesugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc inte
 		ks = append(ks, ast.NewSwitchCase("\"list\"", d.desugarListCases(v, cs, dc)))
 	}
 
-	if cs, ok := css[dictPattern]; ok {
-		ks = append(ks, ast.NewSwitchCase("\"dict\"", d.desugarDictCases(v, cs, dc)))
+	if cs, ok := css[dictionaryPattern]; ok {
+		ks = append(ks, ast.NewSwitchCase("\"dictionary\"", d.desugarDictionaryCases(v, cs, dc)))
 	}
 
 	if cs, ok := css[scalarPattern]; ok {
@@ -116,7 +116,7 @@ func getPatternType(p interface{}) patternType {
 		case consts.Names.ListFunction:
 			return listPattern
 		case consts.Names.DictionaryFunction:
-			return dictPattern
+			return dictionaryPattern
 		}
 	}
 
@@ -220,7 +220,7 @@ func (d *casesDesugarer) ifType(v interface{}, t string, then, els interface{}) 
 	return d.resultApp("$if", app("$=", app("$typeOf", v), "\""+t+"\""), then, els)
 }
 
-func (d *casesDesugarer) desugarDictCases(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarDictionaryCases(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	type group struct {
 		key   interface{}
 		cases []ast.MatchCase
@@ -259,14 +259,14 @@ func (d *casesDesugarer) desugarDictCases(dict interface{}, cs []ast.MatchCase, 
 		g := gs[i]
 		dc = d.resultApp("$if",
 			app("$include", dict, g.key),
-			d.desugarDictCasesOfSameKey(dict, g.cases, dc),
+			d.desugarDictionaryCasesOfSameKey(dict, g.cases, dc),
 			dc)
 	}
 
 	return dc
 }
 
-func (d *casesDesugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarDictionaryCasesOfSameKey(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
 	type group struct {
 		value interface{}
 		cases []ast.MatchCase
@@ -290,7 +290,7 @@ func (d *casesDesugarer) desugarDictCasesOfSameKey(dict interface{}, cs []ast.Ma
 
 		var ok bool
 		if dc, ok = d.handleGeneralNamePattern(
-			v, value, cs, c, i, dc, dict, rest, d.desugarDictCasesOfSameKey, d.desugarDictCases); ok {
+			v, value, cs, c, i, dc, dict, rest, d.desugarDictionaryCasesOfSameKey, d.desugarDictionaryCases); ok {
 			break
 		}
 
@@ -348,8 +348,8 @@ func (d *casesDesugarer) defaultCaseOfGeneralNamePattern(v, p, body, dc interfac
 		return body
 	case listPattern:
 		return d.ifType(v, "list", body, dc)
-	case dictPattern:
-		return d.ifType(v, "dict", body, dc)
+	case dictionaryPattern:
+		return d.ifType(v, "dictionary", body, dc)
 	}
 
 	panic("Unreachable")

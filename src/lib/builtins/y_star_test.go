@@ -39,8 +39,8 @@ func TestYsMultipleFs(t *testing.T) {
 	fs := core.PApp(Ys, evenWithExtraArg, odd)
 
 	for _, n := range []float64{0, 1, 2, 3, 4, 5, 6, 42, 100, 121, 256, 1023} {
-		b1 := bool(*core.EvalPure(core.PApp(core.PApp(core.First, fs), core.NewString("unused"), core.NewNumber(n))).(*core.BoolType))
-		b2 := bool(*core.EvalPure(core.PApp(core.PApp(core.First, core.PApp(core.Rest, fs)), core.NewNumber(n))).(*core.BoolType))
+		b1 := bool(*core.EvalPure(core.PApp(core.PApp(core.First, fs), core.NewString("unused"), core.NewNumber(n))).(*core.BooleanType))
+		b2 := bool(*core.EvalPure(core.PApp(core.PApp(core.First, core.PApp(core.Rest, fs)), core.NewNumber(n))).(*core.BooleanType))
 
 		t.Logf("n = %v, even? %v, odd? %v\n", n, b1, b2)
 

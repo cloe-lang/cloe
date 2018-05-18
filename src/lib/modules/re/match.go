@@ -21,5 +21,5 @@ var match = core.NewLazyFunction(
 			return regexError(err)
 		}
 
-		return core.NewBool(b)
+		return core.NewBoolean(b)
 	})

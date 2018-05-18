@@ -255,14 +255,14 @@ func TestDictionaryInclude(t *testing.T) {
 	for _, c := range []struct {
 		dictionary Value
 		key        Value
-		answer     BoolType
+		answer     BooleanType
 	}{
 		{EmptyDictionary, Nil, false},
 		{PApp(Insert, EmptyDictionary, False, Nil), False, true},
 		{PApp(Insert, PApp(Insert, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(42), true},
 		{PApp(Insert, PApp(Insert, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(2049), false},
 	} {
-		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.dictionary, c.key)).(*BoolType))
+		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.dictionary, c.key)).(*BooleanType))
 	}
 }
 

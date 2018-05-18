@@ -90,10 +90,10 @@ func TypeError(v Value, typ string) *ErrorType {
 	return NewError("TypeError", "%s is not a %s.", s, typ)
 }
 
-// NotBoolError creates an error value for an invalid value which is not a
+// NotBooleanError creates an error value for an invalid value which is not a
 // bool.
-func NotBoolError(v Value) *ErrorType {
-	return TypeError(v, "bool")
+func NotBooleanError(v Value) *ErrorType {
+	return TypeError(v, "boolean")
 }
 
 // NotDictionaryError creates an error value for an invalid value which is not

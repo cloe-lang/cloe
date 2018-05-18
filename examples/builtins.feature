@@ -15,8 +15,8 @@ Feature: Built-in functions
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
-    bool
-    dict
+    boolean
+    dictionary
     list
     nil
     number
@@ -250,10 +250,10 @@ Feature: Built-in functions
     """
     (seq!
       ..(map write [
-        (bool? true)
-        (bool? 42)
-        (dict? {"foo" 42})
-        (dict? "foo")
+        (boolean? true)
+        (boolean? 42)
+        (dictionary? {"foo" 42})
+        (dictionary? "foo")
         (function? (\ (x) x))
         (function? [])
         (list? [42 "foo"])

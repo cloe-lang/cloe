@@ -7,8 +7,8 @@ var Names = struct {
 	EmptyList          string
 	ListFunction       string
 }{
-	DictionaryFunction: "$dict",
-	EmptyDictionary:    "$emptyDict",
+	DictionaryFunction: "$dictionary",
+	EmptyDictionary:    "$emptyDictionary",
 	EmptyList:          "$emptyList",
 	ListFunction:       "$list",
 }

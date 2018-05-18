@@ -66,7 +66,7 @@ func compare(x1, x2 interface{}) int {
 
 func comparableID(v Value) byte {
 	switch v.(type) {
-	case *BoolType:
+	case *BooleanType:
 		return 0
 	case *DictionaryType:
 		return 1
@@ -200,7 +200,7 @@ func isOrdered(vs ...Value) Value {
 		return x
 	case *ListType:
 		for !x.Empty() {
-			b, err := EvalBool(isOrdered(x.First()))
+			b, err := EvalBoolean(isOrdered(x.First()))
 
 			if err != nil {
 				return err
@@ -216,6 +216,6 @@ func isOrdered(vs ...Value) Value {
 		return True
 	default:
 		_, ok := x.(ordered)
-		return NewBool(ok)
+		return NewBoolean(ok)
 	}
 }

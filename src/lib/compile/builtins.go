@@ -83,11 +83,11 @@ func builtinsEnvironment() environment {
 			(def (list ..args)
 				args)
 
-			(def (dict ..args)
+			(def (dictionary ..args)
 				(if (= args [])
 					{}
 					(insert
-						(dict ..(rest (rest args)))
+						(dictionary ..(rest (rest args)))
 						(first args)
 						(first (rest args)))))
 		`) {
@@ -95,8 +95,8 @@ func builtinsEnvironment() environment {
 	}
 
 	for n, t := range compileBuiltinModule(e.copy(), builtinsFilename, `
-			(def (bool? x) (= (typeOf x) "bool"))
-			(def (dict? x) (= (typeOf x) "dict"))
+			(def (boolean? x) (= (typeOf x) "boolean"))
+			(def (dictionary? x) (= (typeOf x) "dictionary"))
 			(def (function? x) (= (typeOf x) "function"))
 			(def (list? x) (= (typeOf x) "list"))
 			(def (nil? x) (= (typeOf x) "nil"))
@@ -149,8 +149,8 @@ func builtinsEnvironment() environment {
 								[]))))
 
 			(def (generateAndOrOrFunction name operator)
-				(def (f ..bools)
-					(match bools
+				(def (f ..bs)
+					(match bs
 						[] (error
 							"ValueError"
 							(merge "Number of arguments to " name " function must be greater than 1"))

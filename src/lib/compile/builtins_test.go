@@ -50,7 +50,7 @@ func TestReduce(t *testing.T) {
 		},
 	} {
 		t.Log(core.EvalPure(core.PApp(core.ToString, vs[0])))
-		assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, vs[0], vs[1])).(*core.BoolType)))
+		assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, vs[0], vs[1])).(*core.BooleanType)))
 	}
 }
 
@@ -86,7 +86,7 @@ func TestFilter(t *testing.T) {
 		},
 	} {
 		t.Log(core.EvalPure(core.PApp(core.ToString, vs[0])))
-		assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, vs[0], vs[1])).(*core.BoolType)))
+		assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, vs[0], vs[1])).(*core.BooleanType)))
 	}
 }
 
@@ -160,7 +160,7 @@ func TestSort(t *testing.T) {
 	} {
 		v := core.PApp(builtinsEnvironment().get("sort"), vs[0])
 		t.Log(core.EvalPure(core.PApp(core.ToString, v)))
-		assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, v, vs[1])).(*core.BoolType)))
+		assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, v, vs[1])).(*core.BooleanType)))
 	}
 }
 

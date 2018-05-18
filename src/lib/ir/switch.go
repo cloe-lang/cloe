@@ -24,10 +24,10 @@ func NewSwitch(m interface{}, cs []Case, d interface{}) Switch {
 		vs = append(vs, c.value)
 	}
 
-	return Switch{m, vs, d, compileCasesToDict(cs)}
+	return Switch{m, vs, d, compileCasesToDictionary(cs)}
 }
 
-func compileCasesToDict(cs []Case) core.Value {
+func compileCasesToDictionary(cs []Case) core.Value {
 	kvs := make([]core.KeyValue, 0, len(cs))
 
 	for i, c := range cs {

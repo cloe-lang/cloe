@@ -1,15 +1,15 @@
 package core
 
-// BoolType represents a boolean values in the language.
-type BoolType bool
+// BooleanType represents a boolean values in the language.
+type BooleanType bool
 
 // Eval evaluates a value into a WHNF.
-func (b *BoolType) eval() Value {
+func (b *BooleanType) eval() Value {
 	return b
 }
 
 var (
-	trueStruct, falseStruct = BoolType(true), BoolType(false)
+	trueStruct, falseStruct = BooleanType(true), BooleanType(false)
 
 	// True is a true value.
 	True = &trueStruct
@@ -18,8 +18,8 @@ var (
 	False = &falseStruct
 )
 
-// NewBool converts a Go boolean value into BoolType.
-func NewBool(b bool) *BoolType {
+// NewBoolean converts a Go boolean value into BooleanType.
+func NewBoolean(b bool) *BooleanType {
 	if b {
 		return True
 	}
@@ -49,7 +49,7 @@ var If = NewLazyFunction(
 				return l.First()
 			}
 
-			b, err := EvalBool(l.First())
+			b, err := EvalBoolean(l.First())
 
 			if err != nil {
 				return err
@@ -61,8 +61,8 @@ var If = NewLazyFunction(
 		}
 	})
 
-func (b *BoolType) compare(c comparable) int {
-	if *b == *c.(*BoolType) {
+func (b *BooleanType) compare(c comparable) int {
+	if *b == *c.(*BooleanType) {
 		return 0
 	} else if *b {
 		return 1
@@ -71,6 +71,6 @@ func (b *BoolType) compare(c comparable) int {
 	return -1
 }
 
-func (b *BoolType) string() Value {
+func (b *BooleanType) string() Value {
 	return sprint(*b)
 }

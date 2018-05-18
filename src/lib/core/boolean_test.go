@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBoolEqual(t *testing.T) {
+func TestBooleanEqual(t *testing.T) {
 	for _, vs := range [][2]Value{
 		{True, True},
 		{False, False},
@@ -22,9 +22,9 @@ func TestBoolEqual(t *testing.T) {
 	}
 }
 
-func TestBoolToString(t *testing.T) {
+func TestBooleanToString(t *testing.T) {
 	test := func(s string, b bool) {
-		assert.Equal(t, NewString(s), EvalPure(PApp(ToString, NewBool(b))))
+		assert.Equal(t, NewString(s), EvalPure(PApp(ToString, NewBoolean(b))))
 	}
 
 	test("true", true)

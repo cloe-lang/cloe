@@ -18,7 +18,7 @@ var createDirectory = core.NewEffectFunction(
 			return e
 		}
 
-		b, e := core.EvalBool(vs[1])
+		b, e := core.EvalBoolean(vs[1])
 
 		if e != nil {
 			return e

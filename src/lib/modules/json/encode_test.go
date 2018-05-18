@@ -71,7 +71,7 @@ func TestEncodeAndDecode(t *testing.T) {
 
 		assert.True(t, ok)
 
-		b, ok := core.EvalPure(core.PApp(core.Equal, th, core.PApp(decode, s))).(*core.BoolType)
+		b, ok := core.EvalPure(core.PApp(core.Equal, th, core.PApp(decode, s))).(*core.BooleanType)
 
 		assert.True(t, ok)
 		assert.True(t, bool(*b))

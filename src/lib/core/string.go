@@ -133,5 +133,5 @@ func (s StringType) include(v Value) Value {
 		return NotStringError(v)
 	}
 
-	return NewBool(strings.Contains(string(s), string(ss)))
+	return NewBoolean(strings.Contains(string(s), string(ss)))
 }

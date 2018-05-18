@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/cloe-lang/cloe/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/consts"
 	"github.com/cloe-lang/cloe/src/lib/debug"
 	"github.com/stretchr/testify/assert"
 )
@@ -80,12 +81,12 @@ func TestDesugar(t *testing.T) {
 		},
 		{
 			ast.NewLetMatch(
-				ast.NewPApp("$list", []interface{}{"123", "nil", "x"}, debug.NewGoInfo(0)),
+				ast.NewPApp(consts.Names.ListFunction, []interface{}{"123", "nil", "x"}, debug.NewGoInfo(0)),
 				"y"),
 		},
 		{
 			ast.NewLetMatch(
-				ast.NewPApp("$dict", []interface{}{"123", "x", "nil", "x"}, debug.NewGoInfo(0)),
+				ast.NewPApp(consts.Names.DictionaryFunction, []interface{}{"123", "x", "nil", "x"}, debug.NewGoInfo(0)),
 				"y"),
 		},
 		{
@@ -94,10 +95,10 @@ func TestDesugar(t *testing.T) {
 				ast.NewSignature([]string{"n"}, "", nil, ""),
 				[]interface{}{
 					ast.NewLetMatch(
-						ast.NewPApp("$list", []interface{}{"123", "nil", "x"}, debug.NewGoInfo(0)),
+						ast.NewPApp(consts.Names.ListFunction, []interface{}{"123", "nil", "x"}, debug.NewGoInfo(0)),
 						"y"),
 					ast.NewLetMatch(
-						ast.NewPApp("$dict", []interface{}{"123", "x", "nil", "x"}, debug.NewGoInfo(0)),
+						ast.NewPApp(consts.Names.DictionaryFunction, []interface{}{"123", "x", "nil", "x"}, debug.NewGoInfo(0)),
 						"y"),
 				},
 				ast.NewMatch("n", []ast.MatchCase{

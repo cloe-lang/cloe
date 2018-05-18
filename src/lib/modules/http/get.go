@@ -36,7 +36,7 @@ func handleMethodResult(r *http.Response, err error, errorOption core.Value) cor
 		return httpError(err)
 	}
 
-	b, e := core.EvalBool(errorOption)
+	b, e := core.EvalBoolean(errorOption)
 
 	if e != nil {
 		return e

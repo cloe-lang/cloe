@@ -21,7 +21,7 @@ func TestMatch(t *testing.T) {
 		b, ok := core.EvalPure(core.PApp(
 			match,
 			core.NewString(c.pattern),
-			core.NewString(c.src))).(*core.BoolType)
+			core.NewString(c.src))).(*core.BooleanType)
 
 		assert.True(t, ok)
 		assert.Equal(t, c.answer, bool(*b))

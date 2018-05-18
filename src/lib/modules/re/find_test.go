@@ -25,7 +25,7 @@ func TestFind(t *testing.T) {
 
 		t.Log(core.EvalPure(core.PApp(core.Dump, th)))
 
-		b, ok := core.EvalPure(core.PApp(core.Equal, th, c.answer)).(*core.BoolType)
+		b, ok := core.EvalPure(core.PApp(core.Equal, th, c.answer)).(*core.BooleanType)
 
 		assert.True(t, ok)
 		assert.True(t, bool(*b))

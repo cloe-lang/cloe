@@ -21,14 +21,14 @@ func TestRally(t *testing.T) {
 	for i := 0; i < len(ts); i++ {
 		e := core.PApp(core.First, l2)
 		t.Logf("%#v", core.EvalPure(e))
-		assert.True(t, bool(*core.EvalPure(core.PApp(core.Include, l1, e)).(*core.BoolType)))
+		assert.True(t, bool(*core.EvalPure(core.PApp(core.Include, l1, e)).(*core.BooleanType)))
 
 		l1 = core.PApp(core.Delete, l1, core.PApp(indexOf, l1, e))
 		l2 = core.PApp(core.Rest, l2)
 	}
 
-	assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, core.EmptyList, l1)).(*core.BoolType)))
-	assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, core.EmptyList, l2)).(*core.BoolType)))
+	assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, core.EmptyList, l1)).(*core.BooleanType)))
+	assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, core.EmptyList, l2)).(*core.BooleanType)))
 }
 
 func TestRallyError(t *testing.T) {
@@ -67,8 +67,8 @@ var indexOf = core.NewLazyFunction(
 			}
 
 			v := core.EvalPure(core.PApp(core.Equal, core.PApp(core.First, l), e))
-			if b, ok := v.(*core.BoolType); !ok {
-				return core.NotBoolError(v)
+			if b, ok := v.(*core.BooleanType); !ok {
+				return core.NotBooleanError(v)
 			} else if *b {
 				return core.NewNumber(float64(i))
 			}

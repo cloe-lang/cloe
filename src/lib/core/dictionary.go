@@ -173,7 +173,7 @@ func (d *DictionaryType) include(v Value) (result Value) {
 	}()
 
 	_, ok := d.Search(v)
-	return NewBool(ok)
+	return NewBoolean(ok)
 }
 
 // Insert wraps rbt.Dictionary.Insert().

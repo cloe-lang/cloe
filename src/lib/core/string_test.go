@@ -90,7 +90,7 @@ func TestStringInclude(t *testing.T) {
 	for _, c := range []struct {
 		string    StringType
 		substring StringType
-		answer    BoolType
+		answer    BooleanType
 	}{
 		{"", "", true},
 		{"a", "", true},
@@ -100,7 +100,7 @@ func TestStringInclude(t *testing.T) {
 		{"", "a", false},
 		{"ab", "ac", false},
 	} {
-		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.string, c.substring)).(*BoolType))
+		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.string, c.substring)).(*BooleanType))
 	}
 }
 

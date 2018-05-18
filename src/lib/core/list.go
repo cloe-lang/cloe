@@ -252,7 +252,7 @@ func (l *ListType) include(elem Value) Value {
 		return False
 	}
 
-	b, err := EvalBool(PApp(Equal, l.First(), elem))
+	b, err := EvalBoolean(PApp(Equal, l.First(), elem))
 
 	if err != nil {
 		return err

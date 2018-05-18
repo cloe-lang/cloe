@@ -54,7 +54,7 @@ func convertToValue(x interface{}) core.Value {
 	case float64:
 		return core.NewNumber(x)
 	case bool:
-		return core.NewBool(x)
+		return core.NewBoolean(x)
 	}
 
 	panic("Unreachable")

@@ -189,7 +189,7 @@ func TestListInclude(t *testing.T) {
 	for _, c := range []struct {
 		list   Value
 		elem   Value
-		answer BoolType
+		answer BooleanType
 	}{
 		{EmptyList, Nil, false},
 		{NewList(Nil), Nil, true},
@@ -197,7 +197,7 @@ func TestListInclude(t *testing.T) {
 		{NewList(Nil, False), True, false},
 		{NewList(Nil, True, NewNumber(42.1), NewNumber(42), False), NewNumber(42), true},
 	} {
-		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.list, c.elem)).(*BoolType))
+		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.list, c.elem)).(*BooleanType))
 	}
 }
 

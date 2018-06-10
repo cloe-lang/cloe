@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"path/filepath"
+	"path"
 	"testing"
 
 	"github.com/cloe-lang/cloe/src/lib/consts"
@@ -62,7 +62,7 @@ func TestCompileWithSubModule(t *testing.T) {
 	f, err := ioutil.TempFile("", "")
 	assert.Nil(t, err)
 
-	f.WriteString(fmt.Sprintf(`(import "%v") (write (%v.hello "John"))`, m, filepath.Base(m)))
+	f.WriteString(fmt.Sprintf(`(import "%v") (write (%v.hello "John"))`, m, path.Base(m)))
 
 	err = f.Close()
 	assert.Nil(t, err)
@@ -74,7 +74,7 @@ func TestCompileWithSubModule(t *testing.T) {
 }
 
 func createModuleScript(t *testing.T) string {
-	f, err := ioutil.TempFile("", "")
+	f, err := ioutil.TempFile("", "module")
 	assert.Nil(t, err)
 
 	f.WriteString(`(def (hello name) (merge "Hello, " name "!"))`)

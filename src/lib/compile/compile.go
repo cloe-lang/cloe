@@ -3,6 +3,7 @@ package compile
 import (
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/cloe-lang/cloe/src/lib/desugar"
@@ -10,21 +11,21 @@ import (
 )
 
 // Compile compiles a main module of a path into effects of thunks.
-func Compile(path string) ([]Effect, error) {
-	p, s, err := readFileOrStdin(path)
+func Compile(p string) ([]Effect, error) {
+	q, s, err := readFileOrStdin(p)
 
 	if err != nil {
 		return nil, err
 	}
 
-	m, err := parse.MainModule(p, s)
+	m, err := parse.MainModule(q, s)
 
 	if err != nil {
 		return nil, err
 	}
 
 	c := newCompiler(builtinsEnvironment(), newModulesCache())
-	return c.compileModule(desugar.Desugar(m), filepath.Dir(path))
+	return c.compileModule(desugar.Desugar(m), filepath.ToSlash(path.Dir(p))) // path.Dir("") == "."
 }
 
 func readFileOrStdin(path string) (string, string, error) {

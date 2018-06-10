@@ -83,7 +83,7 @@ func (c *compiler) compileModule(m []interface{}, d string) ([]Effect, error) {
 }
 
 func (c *compiler) compileSubModule(p string) (module, error) {
-	bs, err := ioutil.ReadFile(p)
+	bs, err := ioutil.ReadFile(filepath.FromSlash(p))
 
 	if err != nil {
 		return nil, err
@@ -97,7 +97,7 @@ func (c *compiler) compileSubModule(p string) (module, error) {
 
 	cc := newCompiler(builtinsEnvironment(), c.cache)
 	c = &cc
-	_, err = c.compileModule(desugar.Desugar(m), filepath.Dir(p))
+	_, err = c.compileModule(desugar.Desugar(m), path.Dir(p))
 
 	if err != nil {
 		return nil, err
@@ -180,7 +180,7 @@ func (c *compiler) importLocalModule(p, d string) (module, error) {
 	var err error
 
 	if p[0] == '.' && (p[:2] == "./" || p[:3] == "../") {
-		p, err = filepath.Abs(filepath.Join(d, p)) // TODO: Make path resolution relative to original modules
+		p, err = filepath.Abs(filepath.FromSlash(path.Join(d, p)))
 
 		if err != nil {
 			return nil, err

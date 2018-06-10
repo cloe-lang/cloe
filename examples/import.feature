@@ -75,3 +75,23 @@ Feature: Import statement
     Hello
     Hello
     """
+
+  Scenario: Import a module via language path
+    Given a file named "main.cloe" with:
+    """
+    (import "foo")
+
+    (foo.hello)
+    """
+    And a directory named "cloe-modules"
+    And a file named "cloe-modules/foo.cloe" with:
+    """
+    (def (hello)
+      (write "Hello, world!"))
+    """
+    And a file named "main.sh" with:
+    """
+    CLOE_PATH=$PWD/cloe-modules cloe main.cloe
+    """
+    When I successfully run `sh main.sh`
+    Then the stdout should contain exactly "Hello, world!"

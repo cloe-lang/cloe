@@ -3,20 +3,12 @@ package compile
 import (
 	"errors"
 	"path"
-
-	"github.com/cloe-lang/cloe/src/lib/modules"
 )
 
 type modulesCache map[string]module
 
 func newModulesCache() modulesCache {
-	c := make(modulesCache, len(modules.Modules))
-
-	for s, m := range modules.Modules {
-		c[s] = m
-	}
-
-	return c
+	return modulesCache{}
 }
 
 func (c modulesCache) Set(p string, m module) error {

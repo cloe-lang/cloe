@@ -3,6 +3,7 @@ package compile
 import (
 	"errors"
 	"fmt"
+	"os"
 	"path"
 	"path/filepath"
 
@@ -11,6 +12,7 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/core"
 	"github.com/cloe-lang/cloe/src/lib/desugar"
 	"github.com/cloe-lang/cloe/src/lib/ir"
+	"github.com/cloe-lang/cloe/src/lib/modules"
 	"github.com/cloe-lang/cloe/src/lib/parse"
 )
 
@@ -57,34 +59,19 @@ func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
 				return nil, errors.New("import statement is unavailable")
 			}
 
-			p := x.Path()
-
-			if p[0] == '.' && (p[:2] == "./" || p[:3] == "../") {
-				var err error
-				p, err = filepath.Abs(p) // TODO: Make path resolution relative to original modules
-
-				if err != nil {
-					return nil, err
-				}
-			}
-
-			m, ok := c.cache.Get(p)
+			m, ok := modules.Modules[x.Path()]
 
 			if !ok {
 				var err error
-				m, err = c.compileSubModule(p + consts.FileExtension)
+				m, err = c.importLocalModule(x.Path())
 
 				if err != nil {
-					return nil, err
-				}
-
-				if err := c.cache.Set(p, m); err != nil {
 					return nil, err
 				}
 			}
 
 			for k, v := range m {
-				c.env.set(path.Base(p)+"."+k, v)
+				c.env.set(path.Base(x.Path())+"."+k, v)
 			}
 		default:
 			panic(fmt.Errorf("Invalid type: %#v", x))
@@ -186,4 +173,42 @@ func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interfa
 	}
 
 	panic(fmt.Errorf("Invalid type: %#v", expr))
+}
+
+func (c *compiler) importLocalModule(p string) (module, error) {
+	var err error
+
+	if p[0] == '.' && (p[:2] == "./" || p[:3] == "../") {
+		p, err = filepath.Abs(p) // TODO: Make path resolution relative to original modules
+
+		if err != nil {
+			return nil, err
+		}
+	} else if !path.IsAbs(p) {
+		q := os.Getenv(consts.PathName)
+
+		if q == "" {
+			return nil, fmt.Errorf("environment variable %s is not set", consts.PathName)
+		} else if !path.IsAbs(q) {
+			return nil, fmt.Errorf("%s is not absolute", consts.PathName)
+		}
+
+		p = path.Join(q, p)
+	}
+
+	if m, ok := c.cache.Get(p); ok {
+		return m, nil
+	}
+
+	m, err := c.compileSubModule(p + consts.FileExtension)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if err := c.cache.Set(p, m); err != nil {
+		return nil, err
+	}
+
+	return m, nil
 }

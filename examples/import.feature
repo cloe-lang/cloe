@@ -26,11 +26,11 @@ Feature: Import statement
     Given a file named "main.cloe" with:
     """
     (import "./modules/mod")
-    (mod.Hello "world")
+    (mod.hello "world")
     """
     And a file named "modules/mod.cloe" with:
     """
-    (def (Hello name) (write (merge "Hello, " name "!")))
+    (def (hello name) (write (merge "Hello, " name "!")))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:

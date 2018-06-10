@@ -56,6 +56,16 @@ func TestRallyError(t *testing.T) {
 	}
 }
 
+func TestRallyInvalidArgument(t *testing.T) {
+	go systemt.RunDaemons()
+
+	_, e := core.EvalList(core.App(Rally, core.NewArguments(
+		[]core.PositionalArgument{core.NewPositionalArgument(core.DummyError, true)},
+		nil)))
+
+	assert.NotNil(t, e)
+}
+
 var index = core.NewLazyFunction(
 	core.NewSignature([]string{"list", "elem"}, "", nil, ""),
 	func(ts ...core.Value) core.Value {

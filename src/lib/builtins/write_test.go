@@ -92,7 +92,7 @@ func TestWriteError(t *testing.T) {
 				core.NewKeywordArgument("file", core.NewString(d)),
 			}),
 	} {
-		_, ok := core.EvalPure(core.App(Write, a)).(*core.ErrorType)
+		_, ok := core.EvalImpure(core.App(Write, a)).(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }

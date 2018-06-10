@@ -19,3 +19,8 @@ func TestRemove(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, "FileSystemError", e.Name())
 }
+
+func TestRemoveError(t *testing.T) {
+	_, ok := core.EvalImpure(core.PApp(remove, core.Nil)).(*core.ErrorType)
+	assert.True(t, ok)
+}

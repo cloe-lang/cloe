@@ -18,8 +18,13 @@ func TestReadError(t *testing.T) {
 		core.True,
 		core.NewString("nonExistentFile"),
 		core.DummyError,
+		core.NewList(core.DummyError),
 	} {
-		_, ok := core.EvalPure(core.PApp(Read, th)).(*core.ErrorType)
+		_, ok := core.EvalPure(core.App(
+			Read,
+			core.NewArguments(nil, []core.KeywordArgument{core.NewKeywordArgument("file", th)}),
+		)).(*core.ErrorType)
+
 		assert.True(t, ok)
 	}
 }

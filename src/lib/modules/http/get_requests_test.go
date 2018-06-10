@@ -84,3 +84,10 @@ func TestGetRequestsWithCustomStatus(t *testing.T) {
 	assert.Equal(t, core.Nil, core.EvalImpure(v))
 	assert.Equal(t, 404, <-status)
 }
+
+func TestGetRequestsError(t *testing.T) {
+	go systemt.RunDaemons()
+
+	_, ok := core.EvalPure(core.PApp(getRequests, core.Nil)).(*core.ErrorType)
+	assert.True(t, ok)
+}

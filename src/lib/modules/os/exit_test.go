@@ -26,7 +26,7 @@ func TestExitError(t *testing.T) {
 
 	for _, v := range []core.Value{
 		core.EvalPure(core.PApp(f)),
-		core.EvalImpure(core.PApp(f, core.Nil)),
+		core.EvalImpure(core.App(f, core.NewArguments(nil, []core.KeywordArgument{core.NewKeywordArgument("status", core.Nil)}))),
 	} {
 		_, ok := v.(*core.ErrorType)
 		assert.True(t, ok)

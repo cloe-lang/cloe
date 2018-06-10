@@ -72,7 +72,7 @@ func (c *compiler) compileModule(m []interface{}, d string) ([]Effect, error) {
 			}
 
 			for k, v := range m {
-				c.env.set(path.Base(x.Path())+"."+k, v)
+				c.env.set(x.Prefix()+"."+k, v)
 			}
 		default:
 			panic(fmt.Errorf("Invalid type: %#v", x))

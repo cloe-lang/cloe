@@ -2,6 +2,7 @@ package parse
 
 import (
 	"fmt"
+	"path"
 	"strconv"
 
 	"github.com/cloe-lang/cloe/src/lib/ast"
@@ -69,15 +70,23 @@ func (s *state) module(ps ...comb.Parser) comb.Parser {
 
 func (s *state) importModule() comb.Parser {
 	return s.withInfo(
-		s.list(s.strippedString(importString), s.stringLiteral()),
+		s.list(s.strippedString(importString), s.Maybe(s.identifier()), s.stringLiteral()),
 		func(x interface{}, i *debug.Info) (interface{}, error) {
-			s, err := strconv.Unquote(x.([]interface{})[1].(string))
+			xs := x.([]interface{})
+
+			p, err := strconv.Unquote(xs[2].(string))
 
 			if err != nil {
 				return nil, err
 			}
 
-			return ast.NewImport(s, i), nil
+			q, ok := xs[1].(string)
+
+			if !ok {
+				q = path.Base(p)
+			}
+
+			return ast.NewImport(p, q, i), nil
 		})
 }
 

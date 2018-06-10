@@ -38,6 +38,30 @@ Feature: Import statement
     Hello, world!
     """
 
+  Scenario: Import nested modules
+    Given a file named "main.cloe" with:
+    """
+    (import "./foo/bar")
+
+    (bar.hello)
+    """
+    And a directory named "foo"
+    And a file named "foo/bar.cloe" with:
+    """
+    (import "./baz")
+
+    (let hello baz.hello)
+    """
+    And a file named "foo/baz.cloe" with:
+    """
+    (def (hello) (write "Hello, world!"))
+    """
+    When I successfully run `cloe main.cloe`
+    Then the stdout should contain exactly:
+    """
+    Hello, world!
+    """
+
   Scenario: Import a module with invalid path
     Given a file named "main.cloe" with:
     """

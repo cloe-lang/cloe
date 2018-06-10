@@ -213,7 +213,7 @@ func compileBuiltinModule(e environment, path, source string) module {
 
 	c := newCompiler(e, nil)
 
-	_, err = c.compileModule(desugar.Desugar(m))
+	_, err = c.compileModule(desugar.Desugar(m), "INVALID")
 
 	if err != nil {
 		panic(err)

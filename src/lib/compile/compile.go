@@ -3,6 +3,7 @@ package compile
 import (
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/cloe-lang/cloe/src/lib/desugar"
 	"github.com/cloe-lang/cloe/src/lib/parse"
@@ -23,7 +24,7 @@ func Compile(path string) ([]Effect, error) {
 	}
 
 	c := newCompiler(builtinsEnvironment(), newModulesCache())
-	return c.compileModule(desugar.Desugar(m))
+	return c.compileModule(desugar.Desugar(m), filepath.Dir(path))
 }
 
 func readFileOrStdin(path string) (string, string, error) {

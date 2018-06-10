@@ -25,7 +25,7 @@ func newCompiler(e environment, c modulesCache) compiler {
 	return compiler{e, c}
 }
 
-func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
+func (c *compiler) compileModule(m []interface{}, d string) ([]Effect, error) {
 	es := []Effect{}
 
 	for _, s := range m {
@@ -63,7 +63,7 @@ func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
 
 			if !ok {
 				var err error
-				m, err = c.importLocalModule(x.Path())
+				m, err = c.importLocalModule(x.Path(), d)
 
 				if err != nil {
 					return nil, err
@@ -96,7 +96,7 @@ func (c *compiler) compileSubModule(path string) (module, error) {
 
 	cc := newCompiler(builtinsEnvironment(), c.cache)
 	c = &cc
-	_, err = c.compileModule(desugar.Desugar(m))
+	_, err = c.compileModule(desugar.Desugar(m), filepath.Dir(path))
 
 	if err != nil {
 		return nil, err
@@ -175,11 +175,11 @@ func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interfa
 	panic(fmt.Errorf("Invalid type: %#v", expr))
 }
 
-func (c *compiler) importLocalModule(p string) (module, error) {
+func (c *compiler) importLocalModule(p, d string) (module, error) {
 	var err error
 
 	if p[0] == '.' && (p[:2] == "./" || p[:3] == "../") {
-		p, err = filepath.Abs(p) // TODO: Make path resolution relative to original modules
+		p, err = filepath.Abs(filepath.Join(d, p)) // TODO: Make path resolution relative to original modules
 
 		if err != nil {
 			return nil, err

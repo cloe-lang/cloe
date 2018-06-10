@@ -70,7 +70,10 @@ func (s *state) module(ps ...comb.Parser) comb.Parser {
 
 func (s *state) importModule() comb.Parser {
 	return s.withInfo(
-		s.list(s.strippedString(importString), s.Maybe(s.identifier()), s.stringLiteral()),
+		s.list(
+			s.strippedString(importString),
+			s.Maybe(s.Or(s.identifier(), s.strippedString("."))),
+			s.stringLiteral()),
 		func(x interface{}, i *debug.Info) (interface{}, error) {
 			xs := x.([]interface{})
 
@@ -84,6 +87,8 @@ func (s *state) importModule() comb.Parser {
 
 			if !ok {
 				q = path.Base(p)
+			} else if q == "." {
+				q = ""
 			}
 
 			return ast.NewImport(p, q, i), nil

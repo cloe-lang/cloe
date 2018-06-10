@@ -71,8 +71,14 @@ func (c *compiler) compileModule(m []interface{}, d string) ([]Effect, error) {
 				}
 			}
 
+			p := x.Prefix()
+
+			if p != "" {
+				p += "."
+			}
+
 			for k, v := range m {
-				c.env.set(x.Prefix()+"."+k, v)
+				c.env.set(p+k, v)
 			}
 		default:
 			panic(fmt.Errorf("Invalid type: %#v", x))

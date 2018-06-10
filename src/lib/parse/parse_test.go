@@ -55,7 +55,12 @@ func checkFailedResult(t *testing.T, x interface{}, err error) {
 }
 
 func TestImportModule(t *testing.T) {
-	for _, str := range []string{`(import "foo")`, `(import "foo/bar")`, `(import bar "foo")`} {
+	for _, str := range []string{
+		`(import "foo")`,
+		`(import "foo/bar")`,
+		`(import bar "foo")`,
+		`(import . "foo")`,
+	} {
 		s := newStateWithoutFile(str)
 		_, err := s.exhaust(s.importModule())()
 		assert.Nil(t, err)

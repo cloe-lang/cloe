@@ -3,6 +3,7 @@ package compile
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -81,14 +82,14 @@ func (c *compiler) compileModule(m []interface{}, d string) ([]Effect, error) {
 	return es, nil
 }
 
-func (c *compiler) compileSubModule(path string) (module, error) {
-	p, s, err := readFileOrStdin(path)
+func (c *compiler) compileSubModule(p string) (module, error) {
+	bs, err := ioutil.ReadFile(p)
 
 	if err != nil {
 		return nil, err
 	}
 
-	m, err := parse.SubModule(p, s)
+	m, err := parse.SubModule(p, string(bs))
 
 	if err != nil {
 		return nil, err
@@ -96,7 +97,7 @@ func (c *compiler) compileSubModule(path string) (module, error) {
 
 	cc := newCompiler(builtinsEnvironment(), c.cache)
 	c = &cc
-	_, err = c.compileModule(desugar.Desugar(m), filepath.Dir(path))
+	_, err = c.compileModule(desugar.Desugar(m), filepath.Dir(p))
 
 	if err != nil {
 		return nil, err

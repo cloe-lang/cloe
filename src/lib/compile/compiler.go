@@ -1,15 +1,16 @@
 package compile
 
 import (
+	"errors"
 	"fmt"
 	"path"
+	"path/filepath"
 
 	"github.com/cloe-lang/cloe/src/lib/ast"
 	"github.com/cloe-lang/cloe/src/lib/consts"
 	"github.com/cloe-lang/cloe/src/lib/core"
 	"github.com/cloe-lang/cloe/src/lib/desugar"
 	"github.com/cloe-lang/cloe/src/lib/ir"
-	"github.com/cloe-lang/cloe/src/lib/modules"
 	"github.com/cloe-lang/cloe/src/lib/parse"
 )
 
@@ -23,7 +24,6 @@ func newCompiler(e environment, c modulesCache) compiler {
 }
 
 func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
-	var err error
 	es := []Effect{}
 
 	for _, s := range m {
@@ -53,34 +53,38 @@ func (c *compiler) compileModule(m []interface{}) ([]Effect, error) {
 		case ast.Effect:
 			es = append(es, NewEffect(c.exprToThunk(x.Expr()), x.Expanded()))
 		case ast.Import:
-			m, ok := modules.Modules[x.Path()]
+			if c.cache == nil {
+				return nil, errors.New("import statement is unavailable")
+			}
 
-			if !ok && c.cache != nil {
-				if x.Path()[:1] != "/" && x.Path()[:2] != "./" && x.Path()[:3] != "../" {
-					return nil, fmt.Errorf(`Module paths must start with "/", "./", or "../": %v`, x.Path())
-				}
+			p := x.Path()
 
-				if cm, cached, err := c.cache.Get(x.Path()); err != nil {
+			if p[0] == '.' && (p[:2] == "./" || p[:3] == "../") {
+				var err error
+				p, err = filepath.Abs(p) // TODO: Make path resolution relative to original modules
+
+				if err != nil {
 					return nil, err
-				} else if cached {
-					m = cm
-				} else {
-					if m, err = c.compileSubModule(x.Path() + consts.FileExtension); err != nil {
-						return nil, err
-					}
-
-					if err := c.cache.Set(x.Path(), m); err != nil {
-						return nil, err
-					}
 				}
-			} else if !ok {
-				if m, err = c.compileSubModule(x.Path() + consts.FileExtension); err != nil {
+			}
+
+			m, ok := c.cache.Get(p)
+
+			if !ok {
+				var err error
+				m, err = c.compileSubModule(p + consts.FileExtension)
+
+				if err != nil {
+					return nil, err
+				}
+
+				if err := c.cache.Set(p, m); err != nil {
 					return nil, err
 				}
 			}
 
 			for k, v := range m {
-				c.env.set(path.Base(x.Path())+"."+k, v)
+				c.env.set(path.Base(p)+"."+k, v)
 			}
 		default:
 			panic(fmt.Errorf("Invalid type: %#v", x))

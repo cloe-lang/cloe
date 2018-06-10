@@ -1,18 +1,27 @@
 package compile
 
-import "path/filepath"
+import (
+	"errors"
+	"path"
+
+	"github.com/cloe-lang/cloe/src/lib/modules"
+)
 
 type modulesCache map[string]module
 
 func newModulesCache() modulesCache {
-	return modulesCache{}
+	c := make(modulesCache, len(modules.Modules))
+
+	for s, m := range modules.Modules {
+		c[s] = m
+	}
+
+	return c
 }
 
 func (c modulesCache) Set(p string, m module) error {
-	p, err := normalizePath(p)
-
-	if err != nil {
-		return err
+	if !path.IsAbs(p) {
+		return errors.New("module path is not absolute")
 	}
 
 	c[p] = m
@@ -20,17 +29,7 @@ func (c modulesCache) Set(p string, m module) error {
 	return nil
 }
 
-func (c modulesCache) Get(p string) (module, bool, error) {
-	p, err := normalizePath(p)
-
-	if err != nil {
-		return nil, false, err
-	}
-
+func (c modulesCache) Get(p string) (module, bool) {
 	m, ok := c[p]
-	return m, ok, nil
-}
-
-func normalizePath(p string) (string, error) {
-	return filepath.Abs(p)
+	return m, ok
 }

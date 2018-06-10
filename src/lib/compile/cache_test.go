@@ -13,7 +13,7 @@ func TestNewModulesCache(t *testing.T) {
 }
 
 func TestModulesSet(t *testing.T) {
-	assert.Nil(t, newModulesCache().Set("foo", nil))
+	assert.Nil(t, newModulesCache().Set("/foo", nil))
 }
 
 func TestModulesSetInNonExsitentDirectory(t *testing.T) {
@@ -26,22 +26,12 @@ func TestModulesSetInNonExsitentDirectory(t *testing.T) {
 func TestModulesGet(t *testing.T) {
 	c := newModulesCache()
 
-	err := c.Set("foo", nil)
-
+	err := c.Set("/foo", nil)
 	assert.Nil(t, err)
 
-	m, ok, err := c.Get("foo")
-
+	m, ok := c.Get("/foo")
 	assert.Equal(t, module(nil), m)
 	assert.True(t, ok)
-	assert.Nil(t, err)
-}
-
-func TestModulesGetInNonExsitentDirectory(t *testing.T) {
-	inNonExistentDirectory(t, func() {
-		_, _, err := newModulesCache().Get("foo")
-		assert.NotNil(t, err)
-	})
 }
 
 func inNonExistentDirectory(t *testing.T, f func()) {

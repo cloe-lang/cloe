@@ -83,7 +83,11 @@ func (c *compiler) compileModule(m []interface{}, d string) ([]Effect, error) {
 }
 
 func (c *compiler) compileSubModule(p string) (module, error) {
-	bs, err := ioutil.ReadFile(filepath.FromSlash(p))
+	if i, err := os.Stat(p); err == nil && i.IsDir() {
+		p = path.Join(p, consts.ModuleFilename)
+	}
+
+	bs, err := ioutil.ReadFile(filepath.FromSlash(p + consts.FileExtension))
 
 	if err != nil {
 		return nil, err
@@ -201,7 +205,7 @@ func (c *compiler) importLocalModule(p, d string) (module, error) {
 		return m, nil
 	}
 
-	m, err := c.compileSubModule(p + consts.FileExtension)
+	m, err := c.compileSubModule(p)
 
 	if err != nil {
 		return nil, err

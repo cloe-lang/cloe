@@ -62,6 +62,23 @@ Feature: Import statement
     Hello, world!
     """
 
+  Scenario: Import a directory as a module
+    Given a file named "main.cloe" with:
+    """
+    (import "./foo")
+
+    (foo.hello)
+    """
+    And a file named "foo/module.cloe" with:
+    """
+    (def (hello) (write "Hello, world!"))
+    """
+    When I successfully run `cloe main.cloe`
+    Then the stdout should contain exactly:
+    """
+    Hello, world!
+    """
+
   Scenario: Import a module with invalid path
     Given a file named "main.cloe" with:
     """

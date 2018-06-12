@@ -3,11 +3,11 @@ package main
 import "os"
 
 func clean() error {
-	p, err := getLanguagePath()
+	d, err := getLanguageDirectory()
 
 	if err != nil {
 		return err
 	}
 
-	return os.RemoveAll(p)
+	return os.RemoveAll(d)
 }

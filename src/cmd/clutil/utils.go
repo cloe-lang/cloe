@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/cloe-lang/cloe/src/lib/consts"
-	"github.com/pkg/errors"
 )
 
 func mkdirp(d string) error {
@@ -26,7 +25,7 @@ func getLanguageDirectory() (string, error) {
 	d := os.Getenv(consts.PathName)
 
 	if d == "" {
-		return "", errors.Errorf("%v environment variable is not set", consts.PathName)
+		return "", fmt.Errorf("%v environment variable is not set", consts.PathName)
 	}
 
 	err := mkdirp(d)

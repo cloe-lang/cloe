@@ -1,13 +1,11 @@
 package main
 
 import (
+	"errors"
 	"io/ioutil"
 	"net/url"
 	"os"
-	"os/exec"
 	"path/filepath"
-
-	"github.com/pkg/errors"
 )
 
 type installer struct {
@@ -44,16 +42,14 @@ func (i installer) InstallModule() error {
 			return errors.New("module directory is not a directory")
 		}
 
-		c := exec.Command("git", "pull")
-		c.Dir = i.moduleDirectory
-		return c.Run()
+		return gitPull(i.moduleDirectory)
 	}
 
 	if !os.IsNotExist(err) {
 		return err
 	}
 
-	return exec.Command("git", "clone", i.url.String(), i.moduleDirectory).Run()
+	return gitClone(i.url.String(), i.moduleDirectory)
 }
 
 func (i installer) InstallCommands() error {

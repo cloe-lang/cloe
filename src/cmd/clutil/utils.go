@@ -9,7 +9,7 @@ import (
 )
 
 func mkdirp(d string) error {
-	if err := os.Mkdir(d, 0755); err != nil && !os.IsExist(err) {
+	if err := os.Mkdir(d, 0700); err != nil && !os.IsExist(err) {
 		return err
 	}
 

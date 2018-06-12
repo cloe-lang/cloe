@@ -1,7 +1,7 @@
 # Cloe
 
-[![Circle CI](https://img.shields.io/circleci/project/github/cloe-lang/cloe.svg?style=flat-square)](https://circleci.com/gh/cloe-lang/cloe)
-[![Coveralls](https://img.shields.io/coveralls/cloe-lang/cloe.svg?style=flat-square)](https://coveralls.io/github/cloe-lang/cloe)
+[![Circle CI](https://img.shields.io/circleci/project/github/cloe-lang/cloe/master.svg?style=flat-square)](https://circleci.com/gh/cloe-lang/cloe)
+[![Coveralls](https://img.shields.io/coveralls/cloe-lang/cloe/master.svg?style=flat-square)](https://coveralls.io/github/cloe-lang/cloe)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cloe-lang/cloe?style=flat-square)](https://goreportcard.com/report/github.com/cloe-lang/cloe)
 [![License](https://img.shields.io/github/license/cloe-lang/cloe.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 

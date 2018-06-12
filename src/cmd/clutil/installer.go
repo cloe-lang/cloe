@@ -44,11 +44,9 @@ func (i installer) InstallModule() error {
 			return errors.New("module directory is not a directory")
 		}
 
-		if err := os.Chdir(i.moduleDirectory); err != nil {
-			return err
-		}
-
-		return exec.Command("git", "pull").Run()
+		c := exec.Command("git", "pull")
+		c.Dir = i.moduleDirectory
+		return c.Run()
 	}
 
 	if !os.IsNotExist(err) {

@@ -66,7 +66,7 @@ func (i installer) InstallCommands() error {
 			return err
 		}
 
-		if i, err := os.Stat(p); err == nil && !i.IsDir() && filepath.Base(p) == "main.cloe" {
+		if !i.IsDir() && filepath.Base(p) == "main.cloe" {
 			ps = append(ps, p)
 		}
 

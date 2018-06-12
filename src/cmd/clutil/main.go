@@ -10,48 +10,46 @@ import (
 )
 
 func main() {
-	args := getArgs()
-
-	i, err := newInstaller(args["<repo>"].(string))
-
-	if err != nil {
-		fail(err)
-	}
-
-	err = i.InstallModule()
-
-	if err != nil {
-		fail(err)
-	}
-
-	err = i.InstallCommands()
-
-	if err != nil {
-		fail(err)
+	if err := command(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 }
 
-func getArgs() map[string]interface{} {
+func command() error {
+	c, args, err := getArgs()
+
+	if err != nil {
+		return err
+	}
+
+	switch c {
+	case "install":
+		return install(args["<repo>"].(string))
+	case "clean":
+		return clean()
+	default:
+		panic("invalid subcommand")
+	}
+}
+
+func getArgs() (string, map[string]interface{}, error) {
 	usage := `Cloe utility
 
 Usage:
-  clutil install <repo>
+	clutil install <repo>
+	clutil clean
 
 Options:
-  -h, --help  Show this help.`
+	-h, --help  Show this help.`
 
 	args, err := docopt.ParseArgs(usage, os.Args[1:], "0.1.0")
 
 	if err != nil {
-		fail(err)
+		return "", nil, err
 	} else if args["<repo>"] == nil {
 		args["<repo>"] = ""
 	}
 
-	return args
-}
-
-func fail(err error) {
-	fmt.Fprintln(os.Stderr, err)
-	os.Exit(1)
+	return os.Args[1], args, nil
 }

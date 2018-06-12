@@ -7,7 +7,6 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/cloe-lang/cloe/src/lib/consts"
 	"github.com/pkg/errors"
 )
 
@@ -18,10 +17,10 @@ type installer struct {
 }
 
 func newInstaller(s string) (installer, error) {
-	p := os.Getenv(consts.PathName)
+	p, err := getLanguagePath()
 
-	if p == "" {
-		return installer{}, errors.Errorf("%v environment variable is not set", consts.PathName)
+	if err != nil {
+		return installer{}, err
 	}
 
 	u, err := url.Parse(s)

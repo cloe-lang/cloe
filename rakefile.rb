@@ -13,7 +13,9 @@ task :deps do
 end
 
 task :build do
-  sh 'go build -o bin/cloe src/cmd/cloe/main.go'
+  %w[cloe clutil].each do |command|
+    sh "go build -o bin/#{command} ./src/cmd/#{command}"
+  end
 end
 
 task :fast_unit_test do

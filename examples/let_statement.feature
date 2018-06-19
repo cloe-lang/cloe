@@ -6,10 +6,7 @@ Feature: Let statement
     (write foo)
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    123
-    """
+    Then the stdout should contain exactly "123"
 
   Scenario: Define a function
     Given a file named "main.cloe" with:
@@ -18,10 +15,7 @@ Feature: Let statement
     (write (f 42))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    42
-    """
+    Then the stdout should contain exactly "42"
 
   Scenario: Define a variable in a function
     Given a file named "main.cloe" with:
@@ -33,10 +27,7 @@ Feature: Let statement
     (write (foo 21))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    42
-    """
+    Then the stdout should contain exactly "42"
 
   Scenario: Define nested functions
     Given a file named "main.cloe" with:
@@ -48,10 +39,7 @@ Feature: Let statement
     (write (f 2007))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    2049
-    """
+    Then the stdout should contain exactly "2049"
 
   Scenario: Define complex nested functions
     Given a file named "main.cloe" with:
@@ -64,10 +52,7 @@ Feature: Let statement
     (write (foo 2 3))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    -20
-    """
+    Then the stdout should contain exactly "-20"
 
   Scenario: Define a function with a nested function definition
     Given a file named "main.cloe" with:
@@ -82,10 +67,7 @@ Feature: Let statement
     (write (f 123))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    1368
-    """
+    Then the stdout should contain exactly "1368"
 
   Scenario: Define a variable shadowing another
     Given a file named "main.cloe" with:
@@ -97,10 +79,7 @@ Feature: Let statement
     (write (f 123456))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    42
-    """
+    Then the stdout should contain exactly "42"
 
   Scenario: Define a recursive variable
     Given a file named "main.cloe" with:
@@ -125,7 +104,4 @@ Feature: Let statement
     (write (f 1))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    3
-    """
+    Then the stdout should contain exactly "3"

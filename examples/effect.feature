@@ -7,18 +7,9 @@ Feature: Effect
     (write 789)
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain:
-    """
-    123
-    """
-    And the stdout should contain:
-    """
-    456
-    """
-    And the stdout should contain:
-    """
-    789
-    """
+    Then the stdout should contain "123"
+    And the stdout should contain "456"
+    And the stdout should contain "789"
 
   Scenario: Evaluate an expanded effect
     Given a file named "main.cloe" with:
@@ -26,18 +17,9 @@ Feature: Effect
     ..[(write 123) (write 456) (write 789)]
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain:
-    """
-    123
-    """
-    And the stdout should contain:
-    """
-    456
-    """
-    And the stdout should contain:
-    """
-    789
-    """
+    Then the stdout should contain "123"
+    And the stdout should contain "456"
+    And the stdout should contain "789"
 
   Scenario: Purify an effect value
     Given a file named "main.cloe" with:

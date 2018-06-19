@@ -15,10 +15,7 @@ Feature: Others
     """
     cloe < main.cloe
     """
-    Then the stdout should contain exactly:
-    """
-    Hello, world!
-    """
+    Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Run Cloe script with shebang
     Given a file named "main.cloe" with mode "0755" and with:
@@ -29,4 +26,3 @@ Feature: Others
     """
     When I successfully run `sh -c ./main.cloe`
     Then the stdout should contain exactly "Hello, world!"
-

@@ -31,10 +31,7 @@ Feature: Built-in functions
     (write (map (\ (x) (* x x)) [1 2 3]))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    [1 4 9]
-    """
+    Then the stdout should contain exactly "[1 4 9]"
 
   Scenario: Calculate indices of elements in a list
     Given a file named "main.cloe" with:
@@ -61,10 +58,7 @@ Feature: Built-in functions
     (if false no true (write "Yes") false no no)
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Yes
-    """
+    Then the stdout should contain exactly "Yes"
 
   Scenario: Use boolean operators
     Given a file named "main.cloe" with:
@@ -132,10 +126,7 @@ Feature: Built-in functions
     (write (slice (f) . start 1 end 3))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    [42 42 42]
-    """
+    Then the stdout should contain exactly "[42 42 42]"
 
   Scenario: Slice strings
     Given a file named "main.cloe" with:

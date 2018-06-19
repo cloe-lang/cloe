@@ -5,10 +5,7 @@ Feature: Parallelism
     (write (par [1 2 3] [4 5 6] [7 8 9]))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    [7 8 9]
-    """
+    Then the stdout should contain exactly "[7 8 9]"
 
   Scenario: Evaluate effects sequentially
     Given a file named "main.cloe" with:

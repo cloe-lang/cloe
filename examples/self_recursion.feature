@@ -8,10 +8,7 @@ Feature: Self recursion
     (write (factorial 5))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    120
-    """
+    Then the stdout should contain exactly "120"
 
   Scenario: Define a recursive function in a function definition
     Given a file named "main.cloe" with:
@@ -24,7 +21,4 @@ Feature: Self recursion
     (write ((createFactorial) 5))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    120
-    """
+    Then the stdout should contain exactly "120"

@@ -27,10 +27,7 @@ Feature: Data types
     (write ({"foo" 123 ..{"bar" 456} ..{42 2049} ..{nil true true false}} 42))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    2049
-    """
+    Then the stdout should contain exactly "2049"
 
   Scenario: Use a newline character in a string
     Given a file named "main.cloe" with:

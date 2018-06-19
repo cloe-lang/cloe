@@ -21,7 +21,4 @@ Feature: Collections
     (write ({"foo" {"bar" 42}} "foo" "bar"))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    42
-    """
+    Then the stdout should contain exactly "42"

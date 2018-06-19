@@ -5,10 +5,7 @@ Feature: Write function
     (write "Hello!")
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Hello!
-    """
+    Then the stdout should contain exactly "Hello!"
 
   Scenario: Write a string with end argument
     Given a file named "main.cloe" with:
@@ -16,10 +13,7 @@ Feature: Write function
     (write "Hello!" . end "!!")
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Hello!!!
-    """
+    Then the stdout should contain exactly "Hello!!!"
 
   Scenario: Write multiple strings
     Given a file named "main.cloe" with:
@@ -27,10 +21,7 @@ Feature: Write function
     (write "Hello," "world!")
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Hello, world!
-    """
+    Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Write a number
     Given a file named "main.cloe" with:
@@ -38,10 +29,7 @@ Feature: Write function
     (write 42)
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    42
-    """
+    Then the stdout should contain exactly "42"
 
   Scenario: Write a nil
     Given a file named "main.cloe" with:
@@ -49,10 +37,7 @@ Feature: Write function
     (write nil)
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    nil
-    """
+    Then the stdout should contain exactly "nil"
 
   Scenario: Write multiple arguments of different types
     Given a file named "main.cloe" with:
@@ -60,10 +45,7 @@ Feature: Write function
     (write "string" 42 nil true)
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    string 42 nil true
-    """
+    Then the stdout should contain exactly "string 42 nil true"
 
   Scenario: Write a string to stderr
     Given a file named "main.cloe" with:
@@ -72,10 +54,7 @@ Feature: Write function
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly ""
-    And the stderr should contain exactly:
-    """
-    This is stderr.
-    """
+    And the stderr should contain exactly "This is stderr."
 
   Scenario: Write a string to a file
     Given a file named "main.cloe" with:

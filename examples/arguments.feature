@@ -9,10 +9,7 @@ Feature: Arguments
     (write (func 1 1 1 ..[1 foo foo] . y1 1 foo 100000000 ..{"y2" 1}))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    8
-    """
+    Then the stdout should contain exactly "8"
 
   Scenario: Override keyword arguments
     Given a file named "main.cloe" with:

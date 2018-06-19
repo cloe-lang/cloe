@@ -33,10 +33,7 @@ Feature: Import statement
     (def (hello name) (write (merge "Hello, " name "!")))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Hello, world!
-    """
+    Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Import nested modules
     Given a file named "main.cloe" with:
@@ -57,10 +54,7 @@ Feature: Import statement
     (def (hello) (write "Hello, world!"))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Hello, world!
-    """
+    Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Import a directory as a module
     Given a file named "main.cloe" with:
@@ -74,10 +68,7 @@ Feature: Import statement
     (def (hello) (write "Hello, world!"))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Hello, world!
-    """
+    Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Import a module with an alternative prefix
     Given a file named "main.cloe" with:
@@ -91,10 +82,7 @@ Feature: Import statement
     (def (hello) (write "Hello, world!"))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Hello, world!
-    """
+    Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Import a module and expand members inside
     Given a file named "main.cloe" with:
@@ -108,10 +96,7 @@ Feature: Import statement
     (def (hello) (write "Hello, world!"))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Hello, world!
-    """
+    Then the stdout should contain exactly "Hello, world!"
 
   Scenario: Import a module with invalid path
     Given a file named "main.cloe" with:

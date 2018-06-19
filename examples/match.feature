@@ -99,10 +99,7 @@ Feature: Match expression
       {"foo" foo "bar" bar} "Not matched..."))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Matched!
-    """
+    Then the stdout should contain exactly "Matched!"
 
   Scenario: Use rest pattern of list
     Given a file named "main.cloe" with:
@@ -112,10 +109,7 @@ Feature: Match expression
       [[..foo] ["This" ..bar]] (bar 2)))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Matched!
-    """
+    Then the stdout should contain exactly "Matched!"
 
   Scenario: Use rest pattern of dictionary
     Given a file named "main.cloe" with:
@@ -127,10 +121,7 @@ Feature: Match expression
       {"foo" {..foo} "bar" {"This" bar}} bar))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Matched!
-    """
+    Then the stdout should contain exactly "Matched!"
 
   Scenario: Match an invalid list with a valid pattern
     Given a file named "main.cloe" with:
@@ -139,10 +130,7 @@ Feature: Match expression
       [x ..xs] x))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    Matched!
-    """
+    Then the stdout should contain exactly "Matched!"
 
   Scenario: Use match expression with let statements
     Given a file named "main.cloe" with:
@@ -153,10 +141,7 @@ Feature: Match expression
     (write y)
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    [456 789]
-    """
+    Then the stdout should contain exactly "[456 789]"
 
   Scenario: Match collections with patterns in let statements
     Given a file named "main.cloe" with:
@@ -199,10 +184,7 @@ Feature: Match expression
         [y ..ys] (+ x y))))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    3
-    """
+    Then the stdout should contain exactly "3"
 
   Scenario: Use many match expressions in a function
     Given a file named "main.cloe" with:
@@ -216,10 +198,7 @@ Feature: Match expression
     (write (f 4 5 6))
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    [5 6 7]
-    """
+    Then the stdout should contain exactly "[5 6 7]"
 
   Scenario: Use similar match expressions in a expression
     Given a file named "main.cloe" with:
@@ -227,7 +206,4 @@ Feature: Match expression
     (write [(match [1] [x] x) (match [1] [x] x)])
     """
     When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly:
-    """
-    [1 1]
-    """
+    Then the stdout should contain exactly "[1 1]"

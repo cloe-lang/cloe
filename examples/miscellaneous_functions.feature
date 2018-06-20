@@ -236,7 +236,7 @@ Feature: Miscellaneous functions
     false
     """
 
-  Scenario: Check if values are ordered or not
+  Scenario: Check value types
     Given a file named "main.cloe" with:
     """
     (seq!

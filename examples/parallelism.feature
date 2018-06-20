@@ -37,7 +37,7 @@ Feature: Parallelism
     9
     """
 
-  Scenario: Apply rally function to a infinite list
+  Scenario: Apply rally function to an infinite list
     Given a file named "main.cloe" with:
     """
     (def (f) [42 ..(f)])

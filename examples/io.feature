@@ -1,4 +1,4 @@
-Feature: IO
+Feature: I/O
   Scenario: Read stdin
     Given a file named "main.cloe" with:
     """

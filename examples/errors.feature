@@ -1,4 +1,4 @@
-Feature: Error
+Feature: Errors
   Scenario: Run an erroneous code
     Given a file named "main.cloe" with:
     """

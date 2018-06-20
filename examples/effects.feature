@@ -1,4 +1,4 @@
-Feature: Effect
+Feature: Effects
   Scenario: Evaluate multiple effects
     Given a file named "main.cloe" with:
     """

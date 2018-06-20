@@ -1,4 +1,4 @@
-Feature: Built-in functions
+Feature: Miscellaneous functions
   Scenario: Get types of values
     Given a file named "main.cloe" with:
     """

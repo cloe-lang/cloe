@@ -8,26 +8,18 @@ import (
 )
 
 func TestSeq(t *testing.T) {
+	w := core.PApp(Write, core.Nil)
+
 	for _, ts := range [][]core.Value{
 		{core.Nil},
 		{core.Nil, core.Nil},
+		{w},
+		{w, w},
 	} {
 		assert.Equal(
 			t,
 			core.Nil,
 			core.EvalPure(core.PApp(Seq, ts...)))
-	}
-}
-
-func TestSeqWithEffects(t *testing.T) {
-	w := core.PApp(Write, core.Nil)
-
-	for _, ts := range [][]core.Value{
-		{w},
-		{w, w},
-	} {
-		_, ok := core.EvalPure(core.PApp(Seq, ts...)).(*core.ErrorType)
-		assert.True(t, ok)
 	}
 }
 

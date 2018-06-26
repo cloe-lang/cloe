@@ -17,7 +17,7 @@ func TestThunkEvalWithNotCallable(t *testing.T) {
 }
 
 func TestThunkEvalWithImpureFunctionCall(t *testing.T) {
-	assert.Equal(t, "ImpureFunctionError", EvalPure(PApp(impureFunction, Nil)).(*ErrorType).Name())
+	assert.Equal(t, Nil, EvalPure(PApp(impureFunction, Nil)))
 }
 
 func TestThunkEvalByCallingError(t *testing.T) {

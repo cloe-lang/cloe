@@ -22,13 +22,11 @@ func TestExit(t *testing.T) {
 }
 
 func TestExitError(t *testing.T) {
-	f := createExitFunction(func(int) {})
+	_, ok := core.EvalImpure(core.App(
+		createExitFunction(func(int) {}),
+		core.NewArguments(
+			nil,
+			[]core.KeywordArgument{core.NewKeywordArgument("status", core.Nil)}))).(*core.ErrorType)
 
-	for _, v := range []core.Value{
-		core.EvalPure(core.PApp(f)),
-		core.EvalImpure(core.App(f, core.NewArguments(nil, []core.KeywordArgument{core.NewKeywordArgument("status", core.Nil)}))),
-	} {
-		_, ok := v.(*core.ErrorType)
-		assert.True(t, ok)
-	}
+	assert.True(t, ok)
 }

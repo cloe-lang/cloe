@@ -74,10 +74,9 @@ func evalCollection(v Value) (collection, Value) {
 // EvalPure evaluates a pure value.
 func EvalPure(v Value) Value {
 	v = v.eval()
-	_, ok := v.(effectType)
 
-	if ok {
-		return impureFunctionError()
+	if e, ok := v.(effectType); ok {
+		return EvalPure(e.value)
 	}
 
 	return v

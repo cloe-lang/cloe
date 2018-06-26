@@ -43,8 +43,8 @@ func TestNewEffectFunction(t *testing.T) {
 		NewSignature(nil, "", nil, ""),
 		func(...Value) Value { return Nil }))
 
-	assert.Equal(t, "ImpureFunctionError", EvalPure(v).(*ErrorType).Name())
-	assert.Equal(t, Nil, EvalImpure(v).(NilType))
+	assert.Equal(t, Nil, EvalPure(v))
+	assert.Equal(t, Nil, EvalImpure(v))
 }
 
 func TestPartial(t *testing.T) {

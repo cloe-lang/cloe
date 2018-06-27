@@ -68,12 +68,6 @@ func (e ErrorType) Error() string {
 	return e.Lines()
 }
 
-// NumArgsError creates an error value for an invalid number of arguments
-// passed to a function.
-func NumArgsError(f, condition string) *ErrorType {
-	return argumentError("Number of arguments to %s must be %s.", f, condition)
-}
-
 // ValueError creates an error value for some invalid value detected at runtime.
 func ValueError(m string, xs ...interface{}) *ErrorType {
 	return NewError("ValueError", m, xs...)

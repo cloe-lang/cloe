@@ -38,7 +38,7 @@ func TestRallyError(t *testing.T) {
 		core.True,
 		core.False,
 		core.Nil,
-		core.ValueError("I am the sentinel."),
+		core.DummyError,
 	}
 
 	l := core.App(Rally, core.NewArguments(
@@ -72,7 +72,7 @@ var index = core.NewLazyFunction(
 		l, e := ts[0], ts[1]
 
 		for i := 1; ; i++ {
-			if v := core.ReturnIfEmptyList(l, core.ValueError("A value is not in a list.")); v != nil {
+			if v := core.ReturnIfEmptyList(l, core.DummyError); v != nil {
 				return v
 			}
 
@@ -93,7 +93,7 @@ func TestRallyWithInvalidExpandedList(t *testing.T) {
 		core.NewArguments(
 			[]core.PositionalArgument{
 				core.NewPositionalArgument(core.Nil, false),
-				core.NewPositionalArgument(core.OutOfRangeError(), true),
+				core.NewPositionalArgument(core.DummyError, true),
 			},
 			nil))
 

@@ -67,7 +67,7 @@ var goBuiltins = func() environment {
 	}
 
 	for s, t := range map[string]core.Value{
-		"matchError": core.NewError("MatchError", "A value didn't match with any pattern."),
+		"matchError": core.NewError("MatchError", "a value didn't match with any pattern"),
 		"y":          builtins.Y,
 		"ys":         builtins.Ys,
 	} {

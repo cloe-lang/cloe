@@ -11,7 +11,7 @@ import (
 func TestPar(t *testing.T) {
 	go systemt.RunDaemons()
 
-	n := core.PApp(Par, core.True, core.False, core.ValueError("I am the error."), core.Nil)
+	n := core.PApp(Par, core.True, core.False, core.DummyError, core.Nil)
 
 	assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, core.Nil, n)).(*core.BooleanType)))
 }
@@ -23,7 +23,7 @@ func TestParError(t *testing.T) {
 		core.True,
 		core.False,
 		core.Nil,
-		core.ValueError("I am the error."),
+		core.DummyError,
 	)).(*core.ErrorType)
 
 	assert.True(t, ok)

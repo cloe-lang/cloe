@@ -8,7 +8,7 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
-var jsonEncodeError = jsonError(errors.New("Cannot be encoded as JSON"))
+var jsonEncodeError = jsonError(errors.New("cannot be encoded as JSON"))
 
 var encode = core.NewLazyFunction(
 	core.NewSignature([]string{"decoded"}, "", nil, ""),

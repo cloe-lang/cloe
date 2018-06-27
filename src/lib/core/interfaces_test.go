@@ -51,7 +51,7 @@ func TestCompareErrorMessage(t *testing.T) {
 	e, ok := EvalPure(PApp(Compare, EmptyList, NewString("foo"))).(*ErrorType)
 
 	assert.True(t, ok)
-	assert.Equal(t, "[] is not a string.", e.message)
+	assert.Equal(t, "TypeError", e.Name())
 }
 
 func TestOrdered(t *testing.T) {
@@ -72,7 +72,7 @@ func TestNotOrdered(t *testing.T) {
 		True,
 		False,
 		EmptyDictionary,
-		ValueError("This is not ordered."),
+		DummyError,
 		Merge,
 	} {
 		_, ok := EvalPure(v).(ordered)

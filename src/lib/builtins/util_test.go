@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCheckEmptyListFail(t *testing.T) {
-	v := core.ReturnIfEmptyList(core.OutOfRangeError(), core.Nil)
+func TestCheckEmptyListError(t *testing.T) {
+	v := core.ReturnIfEmptyList(core.DummyError, core.Nil)
 	t.Log(v)
 	_, ok := v.(*core.ErrorType)
 	assert.True(t, ok)

@@ -81,7 +81,7 @@ func TypeError(v Value, typ string) *ErrorType {
 		return err.(*ErrorType)
 	}
 
-	return NewError("TypeError", "%s is not a %s.", s, typ)
+	return NewError("TypeError", "%s is not a %s", s, typ)
 }
 
 // NotBooleanError creates an error value for an invalid value which is not a
@@ -139,7 +139,7 @@ func NotEffectError(v Value) *ErrorType {
 
 // OutOfRangeError creates an error value for an out-of-range index to a list.
 func OutOfRangeError() *ErrorType {
-	return NewError("OutOfRangeError", "Index is out of range.")
+	return NewError("OutOfRangeError", "index is out of range")
 }
 
 func notComparableError(v Value) *ErrorType {
@@ -152,7 +152,7 @@ func NotOrderedError(v Value) *ErrorType {
 }
 
 func emptyListError() *ErrorType {
-	return ValueError("List is empty.")
+	return ValueError("list is empty")
 }
 
 func keyNotFoundError(v Value) *ErrorType {
@@ -162,11 +162,11 @@ func keyNotFoundError(v Value) *ErrorType {
 		return err.(*ErrorType)
 	}
 
-	return NewError("KeyNotFoundError", "The key %s is not found in a dictionary.", s)
+	return NewError("KeyNotFoundError", "key %s is not found in a dictionary", s)
 }
 
 func impureFunctionError() *ErrorType {
-	return NewError("ImpureFunctionError", "Impure function is called in pure context.")
+	return NewError("ImpureFunctionError", "impure function is called in pure context")
 }
 
 func argumentError(m string, xs ...interface{}) *ErrorType {

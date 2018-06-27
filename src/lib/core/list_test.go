@@ -69,7 +69,7 @@ func TestListRestWithNonListValues(t *testing.T) {
 }
 
 func TestListRestErrorPropagation(t *testing.T) {
-	assert.Equal(t, "ValueError", EvalPure(PApp(Rest, ValueError("No way!"))).(*ErrorType).Name())
+	assert.Equal(t, "DummyError", EvalPure(PApp(Rest, DummyError)).(*ErrorType).Name())
 }
 
 func TestListMerge(t *testing.T) {

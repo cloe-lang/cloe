@@ -81,10 +81,10 @@ func TestEncodeAndDecode(t *testing.T) {
 func TestEncodeWithInvalidArguments(t *testing.T) {
 	for _, th := range []core.Value{
 		core.If,
-		core.ValueError("It's wrong."),
-		core.PApp(core.Prepend, core.Nil, core.ValueError("Not a list")),
-		core.NewList(core.ValueError("")),
-		core.PApp(core.Insert, core.EmptyDictionary, core.NewString("foo"), core.ValueError("")),
+		core.DummyError,
+		core.PApp(core.Prepend, core.Nil, core.DummyError),
+		core.NewList(core.DummyError),
+		core.PApp(core.Insert, core.EmptyDictionary, core.NewString("foo"), core.DummyError),
 		core.NewDictionary([]core.KeyValue{{Key: core.NewList(core.DummyError), Value: core.Nil}}),
 		core.NewDictionary([]core.KeyValue{{Key: core.Nil, Value: core.DummyError}}),
 	} {

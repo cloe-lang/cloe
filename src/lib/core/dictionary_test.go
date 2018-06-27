@@ -227,9 +227,9 @@ func TestDictionaryToString(t *testing.T) {
 
 func TestDictionaryStringFail(t *testing.T) {
 	for _, v := range []Value{
-		NewDictionary([]KeyValue{{Nil, OutOfRangeError()}}),
-		NewDictionary([]KeyValue{{Nil, NewList(OutOfRangeError())}}),
-		NewDictionary([]KeyValue{{NewList(OutOfRangeError()), Nil}}),
+		NewDictionary([]KeyValue{{Nil, DummyError}}),
+		NewDictionary([]KeyValue{{Nil, NewList(DummyError)}}),
+		NewDictionary([]KeyValue{{NewList(DummyError), Nil}}),
 	} {
 		v := EvalPure(PApp(ToString, v))
 		t.Logf("%#v", v)
@@ -293,51 +293,51 @@ func TestDictionaryMerge(t *testing.T) {
 func TestDictionaryError(t *testing.T) {
 	for _, v := range []Value{
 		PApp(
-			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),
+			NewDictionary([]KeyValue{{DummyError, Nil}}),
 			Nil),
 		PApp(
 			NewDictionary([]KeyValue{{Nil, Nil}}),
-			OutOfRangeError()),
+			DummyError),
 		PApp(
 			Insert,
-			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),
+			NewDictionary([]KeyValue{{DummyError, Nil}}),
 			Nil),
 		PApp(
 			Insert,
 			NewDictionary([]KeyValue{{Nil, Nil}}),
-			OutOfRangeError()),
+			DummyError),
 		PApp(
 			Merge,
 			EmptyDictionary,
-			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}})),
+			NewDictionary([]KeyValue{{DummyError, Nil}})),
 		PApp(
 			Merge,
-			NewDictionary([]KeyValue{{NewList(OutOfRangeError()), Nil}}),
-			NewDictionary([]KeyValue{{NewList(OutOfRangeError()), Nil}})),
+			NewDictionary([]KeyValue{{NewList(DummyError), Nil}}),
+			NewDictionary([]KeyValue{{NewList(DummyError), Nil}})),
 		PApp(
 			Include,
-			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),
+			NewDictionary([]KeyValue{{DummyError, Nil}}),
 			Nil),
 		PApp(
 			Include,
 			NewDictionary([]KeyValue{{NewList(Nil), Nil}}),
-			NewList(OutOfRangeError())),
+			NewList(DummyError)),
 		PApp(
 			ToString,
-			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}})),
+			NewDictionary([]KeyValue{{DummyError, Nil}})),
 		PApp(
 			ToString,
-			NewDictionary([]KeyValue{{Nil, OutOfRangeError()}})),
+			NewDictionary([]KeyValue{{Nil, DummyError}})),
 		PApp(
 			ToString,
-			NewDictionary([]KeyValue{{NewList(OutOfRangeError()), OutOfRangeError()}})),
+			NewDictionary([]KeyValue{{NewList(DummyError), DummyError}})),
 		PApp(
 			Delete,
-			NewDictionary([]KeyValue{{OutOfRangeError(), Nil}}),
+			NewDictionary([]KeyValue{{DummyError, Nil}}),
 			Nil),
 		PApp(
 			ToList,
-			NewDictionary([]KeyValue{{NewList(OutOfRangeError()), Nil}})),
+			NewDictionary([]KeyValue{{NewList(DummyError), Nil}})),
 	} {
 		v := EvalPure(v)
 		t.Log(v)

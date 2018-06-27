@@ -38,7 +38,7 @@ func TestEvalEffectListFail(t *testing.T) {
 
 	wg := sync.WaitGroup{}
 	wg.Add(1)
-	evalEffectList(core.ValueError("Not list effect"), &wg, func(err error) { panic(err) })
+	evalEffectList(core.DummyError, &wg, func(err error) { panic(err) })
 }
 
 func TestRunEffectFail(t *testing.T) {

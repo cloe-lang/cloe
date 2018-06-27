@@ -7,7 +7,7 @@ import (
 )
 
 func TestMainModule(t *testing.T) {
-	for _, s := range []string{"", "(let x 42) (def (f x) (+ x 123)) (write 123)"} {
+	for _, s := range []string{"", "(let x 42) (def (f x) (+ x 123)) (print 123)"} {
 		ss, err := MainModule("<test>", s)
 		checkSuccessfulResult(t, ss, err)
 		x, err := newStateWithoutFile(s).mainModule()()
@@ -34,7 +34,7 @@ func TestSubModule(t *testing.T) {
 }
 
 func TestSubModuleFail(t *testing.T) {
-	for _, s := range []string{"(", "(()", "(write 123)"} {
+	for _, s := range []string{"(", "(()", "(print 123)"} {
 		ss, err := SubModule("<test>", s)
 		checkFailedResult(t, ss, err)
 		x, err := newStateWithoutFile(s).subModule()()
@@ -213,8 +213,8 @@ func TestAnonymousFunction(t *testing.T) {
 func TestMatchExpression(t *testing.T) {
 	for _, str := range []string{
 		"(match 123 123 true)",
-		"(match (foo bar) [123 ..elems] (process elems) xs (write xs))",
-		"(match (foo bar) [\"foo\" 123 ..rest] (process rest) xs (write xs))",
+		"(match (foo bar) [123 ..elems] (process elems) xs (print xs))",
+		"(match (foo bar) [\"foo\" 123 ..rest] (process rest) xs (print xs))",
 	} {
 		s := newStateWithoutFile(str)
 		result, err := s.exhaust(s.match())()

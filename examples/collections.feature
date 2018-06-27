@@ -3,9 +3,9 @@ Feature: Collections
     Given a file named "main.cloe" with:
     """
     (seq!
-      (write (@ [123 [456 789] "foo" true nil false] 2))
-      (write (@ {123 [456 789] "foo" "It's me." nil false} "foo"))
-      (write (@ "Hello, world!" 6)))
+      (print (@ [123 [456 789] "foo" true nil false] 2))
+      (print (@ {123 [456 789] "foo" "It's me." nil false} "foo"))
+      (print (@ "Hello, world!" 6)))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -18,7 +18,7 @@ Feature: Collections
   Scenario: Chain indexing
     Given a file named "main.cloe" with:
     """
-    (write (@ {"foo" {"bar" 42}} "foo" "bar"))
+    (print (@ {"foo" {"bar" 42}} "foo" "bar"))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "42"
@@ -26,7 +26,7 @@ Feature: Collections
   Scenario: Convert a dictionary to a list
     Given a file named "main.cloe" with:
     """
-    (write (toList {123 456 "foo" "bar"}))
+    (print (toList {123 456 "foo" "bar"}))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -37,7 +37,7 @@ Feature: Collections
   Scenario: Convert a list to a list
     Given a file named "main.cloe" with:
     """
-    (write (toList [123 nil 456 "foo" true "bar" false]))
+    (print (toList [123 nil 456 "foo" true "bar" false]))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -48,7 +48,7 @@ Feature: Collections
   Scenario: Convert a string to a list
     Given a file named "main.cloe" with:
     """
-    (write (toList "Cloe is good."))
+    (print (toList "Cloe is good."))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:

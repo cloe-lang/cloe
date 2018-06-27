@@ -8,8 +8,8 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/core"
 )
 
-// Write writes string representation of arguments to stdout.
-var Write = core.NewEffectFunction(
+// Print prints string representation of arguments to stdout.
+var Print = core.NewEffectFunction(
 	core.NewSignature(
 		nil, "args",
 		[]core.OptionalParameter{

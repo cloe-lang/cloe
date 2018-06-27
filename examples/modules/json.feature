@@ -12,7 +12,7 @@ Feature: JSON
     """
     (import "json")
 
-    (write (json.decode "{\"foo\": 42}"))
+    (print (json.decode "{\"foo\": 42}"))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -26,9 +26,9 @@ Feature: JSON
     (import "json")
 
     (seq!
-      (write (json.encode {"foo" 42}))
-      (write (json.encode {123 nil}))
-      (write (json.encode {nil "bar"})))
+      (print (json.encode {"foo" 42}))
+      (print (json.encode {123 nil}))
+      (print (json.encode {nil "bar"})))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:

@@ -2,9 +2,9 @@ Feature: Effects
   Scenario: Evaluate multiple effects
     Given a file named "main.cloe" with:
     """
-    (write 123)
-    (write 456)
-    (write 789)
+    (print 123)
+    (print 456)
+    (print 789)
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain "123"
@@ -14,7 +14,7 @@ Feature: Effects
   Scenario: Evaluate an expanded effect
     Given a file named "main.cloe" with:
     """
-    ..[(write 123) (write 456) (write 789)]
+    ..[(print 123) (print 456) (print 789)]
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain "123"
@@ -24,7 +24,7 @@ Feature: Effects
   Scenario: Purify an effect value
     Given a file named "main.cloe" with:
     """
-    (write (pure (write "Hello, world!")))
+    (print (pure (print "Hello, world!")))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:

@@ -13,9 +13,9 @@ Feature: Regular Expression
     (import "re")
 
     (seq!
-      (write (re.match "ab*c" "ac"))
-      (write (re.match "ab+c" "ac"))
-      (write (re.match "ab*c" "abbbbbc")))
+      (print (re.match "ab*c" "ac"))
+      (print (re.match "ab+c" "ac"))
+      (print (re.match "ab*c" "abbbbbc")))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -31,10 +31,10 @@ Feature: Regular Expression
     (import "re")
 
     (seq!
-      (write (re.find "abc" "ac"))
-      (write (re.find "ab*c" "ac"))
-      (write (re.find "a(bc+)" "abcccc"))
-      (write (re.find "a(b*c)" "abbbbc")))
+      (print (re.find "abc" "ac"))
+      (print (re.find "ab*c" "ac"))
+      (print (re.find "a(bc+)" "abcccc"))
+      (print (re.find "a(b*c)" "abbbbc")))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -51,10 +51,10 @@ Feature: Regular Expression
     (import "re")
 
     (seq!
-      (write (re.replace "abc"    "foo"    "ac"))
-      (write (re.replace "ab*c"   "x${0}z" "ac"))
-      (write (re.replace "a(bc+)" "x${1}z" "abcccc"))
-      (write (re.replace "a(b*c)" "x${1}z" "abbbbc")))
+      (print (re.replace "abc"    "foo"    "ac"))
+      (print (re.replace "ab*c"   "x${0}z" "ac"))
+      (print (re.replace "a(bc+)" "x${1}z" "abcccc"))
+      (print (re.replace "a(b*c)" "x${1}z" "abbbbc")))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:

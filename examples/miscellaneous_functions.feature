@@ -3,14 +3,14 @@ Feature: Miscellaneous functions
     Given a file named "main.cloe" with:
     """
     (seq!
-      (write (typeOf true))
-      (write (typeOf {"key" "value"}))
-      (write (typeOf []))
-      (write (typeOf nil))
-      (write (typeOf 42))
-      (write (typeOf "foo"))
-      (write (typeOf +))
-      (write (typeOf (partial + 1))))
+      (print (typeOf true))
+      (print (typeOf {"key" "value"}))
+      (print (typeOf []))
+      (print (typeOf nil))
+      (print (typeOf 42))
+      (print (typeOf "foo"))
+      (print (typeOf +))
+      (print (typeOf (partial + 1))))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -28,7 +28,7 @@ Feature: Miscellaneous functions
   Scenario: Map a function to a list
     Given a file named "main.cloe" with:
     """
-    (write (map (\ (x) (* x x)) [1 2 3]))
+    (print (map (\ (x) (* x x)) [1 2 3]))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "[1 4 9]"
@@ -38,9 +38,9 @@ Feature: Miscellaneous functions
     """
     (let l [1 2 3 42 -3 "foo"])
     (seq!
-      (write (index l 42))
-      (write (index l 2))
-      (write (index l "foo")))
+      (print (index l 42))
+      (print (index l 2))
+      (print (index l "foo")))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -53,9 +53,9 @@ Feature: Miscellaneous functions
   Scenario: Use multiple conditions with if function
     Given a file named "main.cloe" with:
     """
-    (def (no) (write "No"))
+    (def (no) (print "No"))
 
-    (if false no true (write "Yes") false no no)
+    (if false no true (print "Yes") false no no)
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Yes"
@@ -64,16 +64,16 @@ Feature: Miscellaneous functions
     Given a file named "main.cloe" with:
     """
     (seq!
-      (write (not true))
-      (write (not false))
-      (write (and true))
-      (write (or true))
-      (write (and true false))
-      (write (or true false))
-      (write (and true true))
-      (write (or false false))
-      (write (and true false true))
-      (write (or true false true)))
+      (print (not true))
+      (print (not false))
+      (print (and true))
+      (print (or true))
+      (print (and true false))
+      (print (or true false))
+      (print (and true true))
+      (print (or false false))
+      (print (and true false true))
+      (print (or true false true)))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -94,15 +94,15 @@ Feature: Miscellaneous functions
     Given a file named "main.cloe" with:
     """
     (seq!
-      (write (slice [1 2 3]))
-      (write (slice [1 2 3] . start 1))
-      (write (slice [1 2 3] . start 2))
-      (write (slice [1 2 3] . end 1))
-      (write (slice [1 2 3] . start 3))
-      (write (slice [1 2 3] . start 4))
-      (write (slice [1 2 3] . start 5))
-      (write (slice [1 2 3] . start 2 end 3))
-      (write (slice [1 2 3] . start 1 end 2)))
+      (print (slice [1 2 3]))
+      (print (slice [1 2 3] . start 1))
+      (print (slice [1 2 3] . start 2))
+      (print (slice [1 2 3] . end 1))
+      (print (slice [1 2 3] . start 3))
+      (print (slice [1 2 3] . start 4))
+      (print (slice [1 2 3] . start 5))
+      (print (slice [1 2 3] . start 2 end 3))
+      (print (slice [1 2 3] . start 1 end 2)))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -123,7 +123,7 @@ Feature: Miscellaneous functions
     """
     (def (f) [42 ..(f)])
 
-    (write (slice (f) . start 1 end 3))
+    (print (slice (f) . start 1 end 3))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "[42 42 42]"
@@ -131,7 +131,7 @@ Feature: Miscellaneous functions
   Scenario: Slice strings
     Given a file named "main.cloe" with:
     """
-    (seq! ..(map (\ (x) (write (dump x))) [
+    (seq! ..(map (\ (x) (print (dump x))) [
         (slice "abc")
         (slice "abc" . start 1)
         (slice "abc" . start 2)
@@ -161,20 +161,20 @@ Feature: Miscellaneous functions
     Given a file named "main.cloe" with:
     """
     (seq!
-      (write (max 1))
-      (write (max 1 2))
-      (write (max 1 2 3))
-      (write (max 3))
-      (write (max 3 2))
-      (write (max 3 2 1))
-      (write (max 3 2 4 -3 123 -45 1))
-      (write (min 1))
-      (write (min 1 2))
-      (write (min 1 2 3))
-      (write (min 3))
-      (write (min 3 2))
-      (write (min 3 2 1))
-      (write (min 3 2 4 -3 123 -45 1)))
+      (print (max 1))
+      (print (max 1 2))
+      (print (max 1 2 3))
+      (print (max 3))
+      (print (max 3 2))
+      (print (max 3 2 1))
+      (print (max 3 2 4 -3 123 -45 1))
+      (print (min 1))
+      (print (min 1 2))
+      (print (min 1 2 3))
+      (print (min 3))
+      (print (min 3 2))
+      (print (min 3 2 1))
+      (print (min 3 2 4 -3 123 -45 1)))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -198,7 +198,7 @@ Feature: Miscellaneous functions
   Scenario: Zip lists
     Given a file named "main.cloe" with:
     """
-    (write (zip [1 2 3] ["foo" "bar" "baz"]))
+    (print (zip [1 2 3] ["foo" "bar" "baz"]))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -210,7 +210,7 @@ Feature: Miscellaneous functions
     Given a file named "main.cloe" with:
     """
     (seq!
-      ..(map (\ (x) (write (ordered? x))) [
+      ..(map (\ (x) (print (ordered? x))) [
         123
         "foo"
         []
@@ -240,7 +240,7 @@ Feature: Miscellaneous functions
     Given a file named "main.cloe" with:
     """
     (seq!
-      ..(map write [
+      ..(map print [
         (boolean? true)
         (boolean? 42)
         (dictionary? {"foo" 42})

@@ -24,7 +24,7 @@ Feature: Data types
   Scenario: Expand dictionaries into a dictionary
     Given a file named "main.cloe" with:
     """
-    (write (@ {"foo" 123 ..{"bar" 456} ..{42 2049} ..{nil true true false}} 42))
+    (print (@ {"foo" 123 ..{"bar" 456} ..{42 2049} ..{nil true true false}} 42))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "2049"
@@ -32,7 +32,7 @@ Feature: Data types
   Scenario: Use a newline character in a string
     Given a file named "main.cloe" with:
     """
-    (write "Hello,\nworld!")
+    (print "Hello,\nworld!")
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:

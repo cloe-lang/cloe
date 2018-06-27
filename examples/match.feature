@@ -2,24 +2,24 @@ Feature: Match expression
   Scenario: Match scalars
     Given a file named "main.cloe" with:
     """
-    (write (match 42 42 "Matched!"))
-    (write (match 42
+    (print (match 42 42 "Matched!"))
+    (print (match 42
       2049 "Not matched..."
       42 "Matched!"))
 
-    (write (match "Cloe" "Cloe" "Matched!"))
-    (write (match "Cloe"
+    (print (match "Cloe" "Cloe" "Matched!"))
+    (print (match "Cloe"
       "cloe" "Not matched..."
       "Cloe" "Matched!"))
 
-    (write (match true true "Matched!"))
-    (write (match true
+    (print (match true true "Matched!"))
+    (print (match true
       false "Not matched..."
       true "Matched!"))
 
-    (write (match nil nil "Matched!"))
+    (print (match nil nil "Matched!"))
 
-    (write (match "Matched!" x x))
+    (print (match "Matched!" x x))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -37,14 +37,14 @@ Feature: Match expression
   Scenario: Match collections
     Given a file named "main.cloe" with:
     """
-    (write (match [] [] "Matched!"))
-    (write (match [42]
+    (print (match [] [] "Matched!"))
+    (print (match [42]
       [] "Not matched..."
       [42 42] "Not matched..."
       [42] "Matched!"))
 
-    (write (match {} {} "Matched!"))
-    (write (match {"foo" 42}
+    (print (match {} {} "Matched!"))
+    (print (match {"foo" 42}
       {} "Not matched..."
       {"foo" 2049} "Not matched..."
       {"foo" 42 "bar" 2049} "Not matched..."
@@ -63,11 +63,11 @@ Feature: Match expression
   Scenario: Use wildcards
     Given a file named "main.cloe" with:
     """
-    (write (match "Matched!"
+    (print (match "Matched!"
       42 "Not matched..."
       x x))
 
-    (write (match [42 2049]
+    (print (match [42 2049]
       [] "Not matched..."
       [2049] "Not matched..."
       [42 42] "Not matched..."
@@ -75,7 +75,7 @@ Feature: Match expression
       [42 bar 2049] "Not matched..."
       [foo 2049] "Matched!"))
 
-    (write (match {"foo" 42 "bar" "Matched!"}
+    (print (match {"foo" 42 "bar" "Matched!"}
       {} "Not matched..."
       {"foo" 42} "Not matched..."
       {"bar" 42} "Not matched..."
@@ -94,7 +94,7 @@ Feature: Match expression
   Scenario: Nest collections
     Given a file named "main.cloe" with:
     """
-    (write (match {"foo" 42 "bar" ["The pattern" "is" "Matched!"]}
+    (print (match {"foo" 42 "bar" ["The pattern" "is" "Matched!"]}
       {"bar" [foo "is" baz] "foo" 42} baz
       {"foo" foo "bar" bar} "Not matched..."))
     """
@@ -104,7 +104,7 @@ Feature: Match expression
   Scenario: Use rest pattern of list
     Given a file named "main.cloe" with:
     """
-    (write (match [[42 2049] ["This" "is" "Matched!"]]
+    (print (match [[42 2049] ["This" "is" "Matched!"]]
       [[..foo] ["This" "is" "not" "Matched!"]] "Not matched..."
       [[..foo] ["This" ..bar]] (@ bar 2)))
     """
@@ -114,7 +114,7 @@ Feature: Match expression
   Scenario: Use rest pattern of dictionary
     Given a file named "main.cloe" with:
     """
-    (write (match {"foo" {42 2049} "bar" {"This" "Matched!"}}
+    (print (match {"foo" {42 2049} "bar" {"This" "Matched!"}}
       [[..foo] ["This" "is" "not" "Matched!"]] "Not matched..."
       {"foo" {42 2050} "bar" {"This" "Matched!"}} "Not matched..."
       {"foo" {..foo} "bar" {"this" bar}} "Not matched..."
@@ -126,7 +126,7 @@ Feature: Match expression
   Scenario: Match an invalid list with a valid pattern
     Given a file named "main.cloe" with:
     """
-    (write (match ["Matched!" ..{}]
+    (print (match ["Matched!" ..{}]
       [x ..xs] x))
     """
     When I successfully run `cloe main.cloe`
@@ -138,7 +138,7 @@ Feature: Match expression
     (let y (match [123 456 789]
       [x ..xs] xs))
 
-    (write y)
+    (print y)
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "[456 789]"
@@ -150,8 +150,8 @@ Feature: Match expression
     (let {"foo" value ..rest} {"foo" 42 "bar" 2049})
 
     (seq!
-      (write y)
-      (write value))
+      (print y)
+      (print value))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -168,7 +168,7 @@ Feature: Match expression
       (let {"foo" y ..rest} y)
       [x y])
 
-    (write (f ["foo" "bar" "baz"] {"foo" 42 "bar" 2049}))
+    (print (f ["foo" "bar" "baz"] {"foo" 42 "bar" 2049}))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -179,7 +179,7 @@ Feature: Match expression
   Scenario: Nest match expressions
     Given a file named "main.cloe" with:
     """
-    (write (match [1 2 3]
+    (print (match [1 2 3]
       [x ..xs] (match xs
         [y ..ys] (+ x y))))
     """
@@ -195,7 +195,7 @@ Feature: Match expression
         [] (if true (match xs [x] x [..xs] "OOOOK"))
         [x y ..xs] (match xs [] [x y] [x y ..xs] [..xs (+ x y)])))
 
-    (write (f 4 5 6))
+    (print (f 4 5 6))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "[5 6 7]"
@@ -203,7 +203,7 @@ Feature: Match expression
   Scenario: Use similar match expressions in a expression
     Given a file named "main.cloe" with:
     """
-    (write [(match [1] [x] x) (match [1] [x] x)])
+    (print [(match [1] [x] x) (match [1] [x] x)])
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "[1 1]"

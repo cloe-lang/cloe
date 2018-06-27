@@ -5,7 +5,7 @@ Feature: Recursion
     (def (factorial n)
          (if (= n 0) 1 (* n (factorial (- n 1)))))
 
-    (write (factorial 5))
+    (print (factorial 5))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "120"
@@ -18,7 +18,7 @@ Feature: Recursion
               (if (= n 0) 1 (* n (factorial (- n 1)))))
          factorial)
 
-    (write ((createFactorial) 5))
+    (print ((createFactorial) 5))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "120"
@@ -33,18 +33,18 @@ Feature: Recursion
         (if (= n 0) false (even? (- n 1)))))
 
     (seq!
-      (write (even? 0))
-      (write (odd? 0))
-      (write (even? 1))
-      (write (odd? 1))
-      (write (even? 2))
-      (write (odd? 2))
-      (write (even? 3))
-      (write (odd? 3))
-      (write (even? 42))
-      (write (odd? 42))
-      (write (even? 2049))
-      (write (odd? 2049)))
+      (print (even? 0))
+      (print (odd? 0))
+      (print (even? 1))
+      (print (odd? 1))
+      (print (even? 2))
+      (print (odd? 2))
+      (print (even? 3))
+      (print (odd? 3))
+      (print (even? 42))
+      (print (odd? 42))
+      (print (even? 2049))
+      (print (odd? 2049)))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -74,18 +74,18 @@ Feature: Recursion
         (if (= n 0) false (even? (- n 1)))))
 
     (seq!
-      (write (even? 0))
-      (write (odd? 0))
-      (write (even? 1))
-      (write (odd? 1))
-      (write (even? 2))
-      (write (odd? 2))
-      (write (even? 3))
-      (write (odd? 3))
-      (write (even? 42))
-      (write (odd? 42))
-      (write (even? 2049))
-      (write (odd? 2049)))
+      (print (even? 0))
+      (print (odd? 0))
+      (print (even? 1))
+      (print (odd? 1))
+      (print (even? 2))
+      (print (odd? 2))
+      (print (even? 3))
+      (print (odd? 3))
+      (print (even? 42))
+      (print (odd? 42))
+      (print (even? 2049))
+      (print (odd? 2049)))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -115,18 +115,18 @@ Feature: Recursion
         (if (= n 0) false (even? (- n 1)))))
 
     (seq!
-      (write (even? 0))
-      (write (odd? 0))
-      (write (even? 1))
-      (write (odd? 1))
-      (write (even? 2))
-      (write (odd? 2))
-      (write (even? 3))
-      (write (odd? 3))
-      (write (even? 42))
-      (write (odd? 42))
-      (write (even? 2049))
-      (write (odd? 2049)))
+      (print (even? 0))
+      (print (odd? 0))
+      (print (even? 1))
+      (print (odd? 1))
+      (print (even? 2))
+      (print (odd? 2))
+      (print (even? 3))
+      (print (odd? 3))
+      (print (even? 42))
+      (print (odd? 42))
+      (print (even? 2049))
+      (print (odd? 2049)))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -158,18 +158,18 @@ Feature: Recursion
     (let odd? (@ (foo) 2))
 
     (seq!
-      (write (even? 0))
-      (write (odd? 0))
-      (write (even? 1))
-      (write (odd? 1))
-      (write (even? 2))
-      (write (odd? 2))
-      (write (even? 3))
-      (write (odd? 3))
-      (write (even? 42))
-      (write (odd? 42))
-      (write (even? 2049))
-      (write (odd? 2049)))
+      (print (even? 0))
+      (print (odd? 0))
+      (print (even? 1))
+      (print (odd? 1))
+      (print (even? 2))
+      (print (odd? 2))
+      (print (even? 3))
+      (print (odd? 3))
+      (print (even? 42))
+      (print (odd? 42))
+      (print (even? 2049))
+      (print (odd? 2049)))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:

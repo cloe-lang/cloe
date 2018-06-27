@@ -3,7 +3,7 @@ Feature: Import statement
     Given a file named "main.cloe" with:
     """
     (import "./mod")
-    (seq! ..(mod.map write [1 2 3 4 5]))
+    (seq! ..(mod.map print [1 2 3 4 5]))
     """
     And a file named "mod.cloe" with:
     """
@@ -30,7 +30,7 @@ Feature: Import statement
     """
     And a file named "modules/mod.cloe" with:
     """
-    (def (hello name) (write (merge "Hello, " name "!")))
+    (def (hello name) (print (merge "Hello, " name "!")))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello, world!"
@@ -51,7 +51,7 @@ Feature: Import statement
     """
     And a file named "foo/baz.cloe" with:
     """
-    (def (hello) (write "Hello, world!"))
+    (def (hello) (print "Hello, world!"))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello, world!"
@@ -65,7 +65,7 @@ Feature: Import statement
     """
     And a file named "foo/module.cloe" with:
     """
-    (def (hello) (write "Hello, world!"))
+    (def (hello) (print "Hello, world!"))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello, world!"
@@ -79,7 +79,7 @@ Feature: Import statement
     """
     And a file named "foo.cloe" with:
     """
-    (def (hello) (write "Hello, world!"))
+    (def (hello) (print "Hello, world!"))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello, world!"
@@ -93,7 +93,7 @@ Feature: Import statement
     """
     And a file named "foo.cloe" with:
     """
-    (def (hello) (write "Hello, world!"))
+    (def (hello) (print "Hello, world!"))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello, world!"
@@ -116,8 +116,8 @@ Feature: Import statement
     (import "./mod2")
 
     (seq!
-      (write mod1.stdin . end "")
-      (write mod2.stdin . end ""))
+      (print mod1.stdin . end "")
+      (print mod2.stdin . end ""))
     """
     And a file named "mod1.cloe" with:
     """
@@ -147,7 +147,7 @@ Feature: Import statement
     And a file named "cloe-modules/foo.cloe" with:
     """
     (def (hello)
-      (write "Hello, world!"))
+      (print "Hello, world!"))
     """
     And a file named "main.sh" with:
     """

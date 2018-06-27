@@ -28,7 +28,7 @@ func TestLines(t *testing.T) {
 
 func TestLinesWithLinePosition(t *testing.T) {
 	Debug = true
-	t.Log(NewInfo("<none>", 1, 1, "(write (+ 123 456))").Lines())
+	t.Log(NewInfo("<none>", 1, 1, "(print (+ 123 456))").Lines())
 }
 
 func TestInfoLinesEmpty(t *testing.T) {

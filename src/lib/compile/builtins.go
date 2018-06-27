@@ -55,7 +55,7 @@ var goBuiltins = func() environment {
 		"rally": builtins.Rally,
 
 		"read":  builtins.Read,
-		"write": builtins.Write,
+		"print": builtins.Print,
 
 		"error": core.Error,
 		"catch": core.Catch,

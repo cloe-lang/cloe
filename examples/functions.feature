@@ -3,7 +3,7 @@ Feature: Functions
     Given a file named "main.cloe" with:
     """
     (def (f x) x)
-    (write (f 42))
+    (print (f 42))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "42"
@@ -12,7 +12,7 @@ Feature: Functions
     Given a file named "main.cloe" with:
     """
     (def (f x) x)
-    (write (f 123))
+    (print (f 123))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "123"
@@ -21,7 +21,7 @@ Feature: Functions
     Given a file named "main.cloe" with:
     """
     (def (f x y) (+ x y))
-    (write (f 123 456))
+    (print (f 123 456))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "579"
@@ -32,9 +32,9 @@ Feature: Functions
     (def (func . x nil) x)
 
     (seq!
-      (write (func . x nil ..{"x" 42}))
-      (write (func . ..{"x" nil} x 42))
-      (write (func . ..{"x" 42} ..{"x" nil} x 42)))
+      (print (func . x nil ..{"x" 42}))
+      (print (func . ..{"x" nil} x 42))
+      (print (func . ..{"x" 42} ..{"x" nil} x 42)))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
@@ -48,7 +48,7 @@ Feature: Functions
     Given a file named "main.cloe" with:
     """
     (def (f x ..args . foo 4 ..kwargs) (+ x ..args foo))
-    (write (f 1 2 . foo 3))
+    (print (f 1 2 . foo 3))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "6"
@@ -59,7 +59,7 @@ Feature: Functions
     (def (func x1 x2 ..args . y1 0 y2 1 ..kwargs)
          (+ x1 x2 ..args y1 y2))
 
-    (write (func 1 1 1 ..[1 1 1] . y1 1 1 100000000 ..{"y2" 1}))
+    (print (func 1 1 1 ..[1 1 1] . y1 1 1 100000000 ..{"y2" 1}))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "8"
@@ -68,7 +68,7 @@ Feature: Functions
     Given a file named "main.cloe" with:
     """
     (let foo 123)
-    (write foo)
+    (print foo)
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "123"
@@ -78,9 +78,9 @@ Feature: Functions
     """
     (let l [42 ..l])
 
-    (write (l 1))
-    (write (l 2))
-    (write (l 3))
+    (print (l 1))
+    (print (l 2))
+    (print (l 3))
     """
     When I run `cloe main.cloe`
     Then the exit status should not be 0
@@ -92,7 +92,7 @@ Feature: Functions
       (let bar (+ x x))
       bar)
 
-    (write (foo 21))
+    (print (foo 21))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "42"
@@ -105,7 +105,7 @@ Feature: Functions
       (let baz (- x y))
       (* bar baz (+ x y)))
 
-    (write (foo 2 3))
+    (print (foo 2 3))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "-20"
@@ -117,7 +117,7 @@ Feature: Functions
       (def (g y) (+ x y))
       (g 42))
 
-    (write (f 2007))
+    (print (f 2007))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "2049"
@@ -132,7 +132,7 @@ Feature: Functions
         h)
       ((g 456) 789))
 
-    (write (f 123))
+    (print (f 123))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "1368"
@@ -145,7 +145,7 @@ Feature: Functions
       (let x (+ x 1))
       x)
 
-    (write (f 1))
+    (print (f 1))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "3"
@@ -157,7 +157,7 @@ Feature: Functions
       (def (g x) x)
       (g 42))
 
-    (write (f 123456))
+    (print (f 123456))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "42"
@@ -165,7 +165,7 @@ Feature: Functions
   Scenario: Call an anonymous function
     Given a file named "main.cloe" with:
     """
-    (write ((\ (x) x) "Hello, world!"))
+    (print ((\ (x) x) "Hello, world!"))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello, world!"

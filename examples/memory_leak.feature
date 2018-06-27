@@ -36,7 +36,7 @@ Feature: Memory leak
     This test succeeds only with Go 1.8 onward because of argument liveness.
     Given a file named "main.cloe" with:
     """
-    (def (f) [(write 42) ..(f)])
+    (def (f) [(print 42) ..(f)])
     ..(f)
     """
     When I run `sh leak_memory.sh main.cloe`
@@ -50,7 +50,7 @@ Feature: Memory leak
         0 "OK!"
         _ (f (- n 1))))
 
-    (write (f 100000000))
+    (print (f 100000000))
     """
     When I run `sh leak_memory.sh main.cloe`
     Then the exit status should be 0
@@ -60,7 +60,7 @@ Feature: Memory leak
     """
     (def (f) [42 ..(f)])
 
-    ..(map write (f))
+    ..(map print (f))
     """
     When I run `sh leak_memory.sh main.cloe`
     Then the exit status should be 0
@@ -70,7 +70,7 @@ Feature: Memory leak
     """
     (def (f) [map ..(f)])
 
-    ..(map (\ (x) (write (typeOf x))) (f))
+    ..(map (\ (x) (print (typeOf x))) (f))
     """
     When I run `sh leak_memory.sh main.cloe`
     Then the exit status should be 0
@@ -80,7 +80,7 @@ Feature: Memory leak
     """
     (def (f) [42 ..(f)])
 
-    (write (max ..(f)))
+    (print (max ..(f)))
     """
     When I run `sh leak_memory.sh main.cloe`
     Then the exit status should be 0

@@ -12,7 +12,7 @@ Feature: Random number generator
     """
     (import "random")
 
-    (seq! (write (<= 0 (random.number) 1)))
+    (seq! (print (<= 0 (random.number) 1)))
     """
     When I run `cloe main.cloe`
     Then the stdout should contain exactly "true"

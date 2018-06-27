@@ -13,8 +13,8 @@ import (
 
 func TestCompile(t *testing.T) {
 	for _, s := range []string{
-		`(write "Hello, world!")`,
-		`(import "http") (write (http.get "http://httpbin.org"))`,
+		`(print "Hello, world!")`,
+		`(import "http") (print (http.get "http://httpbin.org"))`,
 	} {
 		f, err := ioutil.TempFile("", "")
 		assert.Nil(t, err)
@@ -35,7 +35,7 @@ func TestCompileSourceOfInvalidSyntax(t *testing.T) {
 	f, err := ioutil.TempFile("", "")
 	assert.Nil(t, err)
 
-	f.WriteString(`(write "Hello, world!"`)
+	f.WriteString(`(print "Hello, world!"`)
 
 	err = f.Close()
 	assert.Nil(t, err)
@@ -62,7 +62,7 @@ func TestCompileWithSubModule(t *testing.T) {
 	f, err := ioutil.TempFile("", "")
 	assert.Nil(t, err)
 
-	f.WriteString(fmt.Sprintf(`(import "%v") (write (%v.hello "John"))`, m, path.Base(m)))
+	f.WriteString(fmt.Sprintf(`(import "%v") (print (%v.hello "John"))`, m, path.Base(m)))
 
 	err = f.Close()
 	assert.Nil(t, err)

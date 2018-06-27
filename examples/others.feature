@@ -9,7 +9,7 @@ Feature: Others
   Scenario: Read a source from stdin
     Given a file named "main.cloe" with:
     """
-    (write "Hello, world!")
+    (print "Hello, world!")
     """
     When I run the following script:
     """
@@ -22,7 +22,7 @@ Feature: Others
     """
     #!/usr/bin/env cloe
 
-    (write "Hello, world!")
+    (print "Hello, world!")
     """
     When I successfully run `sh -c ./main.cloe`
     Then the stdout should contain exactly "Hello, world!"

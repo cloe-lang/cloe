@@ -11,11 +11,11 @@ import (
 
 func TestDesugarEmptyCollection(t *testing.T) {
 	for _, s := range []string{
-		`(write [])`,
-		`(write {})`,
-		`(write nil)`,
-		`(write [42 []])`,
-		`(write (read))`,
+		`(print [])`,
+		`(print {})`,
+		`(print nil)`,
+		`(print [42 []])`,
+		`(print (read))`,
 	} {
 		m, err := parse.MainModule("<test>", s)
 		assert.Nil(t, err)

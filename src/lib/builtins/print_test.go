@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestWrite(t *testing.T) {
+func TestPrint(t *testing.T) {
 	for _, a := range []core.Arguments{
 		core.NewPositionalArguments(core.Nil),
 		core.NewPositionalArguments(core.Nil, core.Nil),
@@ -29,11 +29,11 @@ func TestWrite(t *testing.T) {
 			[]core.PositionalArgument{core.NewPositionalArgument(core.Nil, false)},
 			[]core.KeywordArgument{core.NewKeywordArgument("mode", core.NewNumber(0775))}),
 	} {
-		assert.Equal(t, core.Nil, core.EvalImpure(core.App(Write, a)))
+		assert.Equal(t, core.Nil, core.EvalImpure(core.App(Print, a)))
 	}
 }
 
-func TestWriteError(t *testing.T) {
+func TestPrintError(t *testing.T) {
 	d, err := ioutil.TempDir("", "")
 	assert.Nil(t, err)
 	defer os.Remove(d)
@@ -92,7 +92,7 @@ func TestWriteError(t *testing.T) {
 				core.NewKeywordArgument("file", core.NewString(d)),
 			}),
 	} {
-		_, ok := core.EvalImpure(core.App(Write, a)).(*core.ErrorType)
+		_, ok := core.EvalImpure(core.App(Print, a)).(*core.ErrorType)
 		assert.True(t, ok)
 	}
 }

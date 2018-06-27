@@ -36,7 +36,7 @@ Go 1.8+ is required.
 ### Hello, world!
 
 ```
-(write "Hello, world!")
+(print "Hello, world!")
 ```
 
 ### HTTP server

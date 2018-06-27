@@ -20,7 +20,7 @@ func TestSeq(t *testing.T) {
 }
 
 func TestSeqWithEffects(t *testing.T) {
-	w := core.PApp(Write, core.Nil)
+	w := core.PApp(Print, core.Nil)
 
 	for _, ts := range [][]core.Value{
 		{w},
@@ -37,8 +37,8 @@ func TestEffectSeq(t *testing.T) {
 		core.Nil,
 		core.EvalImpure(core.PApp(
 			EffectSeq,
-			core.PApp(Write, core.NewNumber(42)),
-			core.PApp(Write, core.NewString("OK!")))))
+			core.PApp(Print, core.NewNumber(42)),
+			core.PApp(Print, core.NewString("OK!")))))
 }
 
 func TestEffectSeqWithPureValues(t *testing.T) {

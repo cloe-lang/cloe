@@ -17,17 +17,17 @@ func TestRunWithNoThunk(t *testing.T) {
 }
 
 func TestRunWithOneThunk(t *testing.T) {
-	Run([]compile.Effect{compile.NewEffect(core.PApp(builtins.Write, core.NewNumber(42)), false)})
+	Run([]compile.Effect{compile.NewEffect(core.PApp(builtins.Print, core.NewNumber(42)), false)})
 }
 
 func TestRunWithThunks(t *testing.T) {
-	o := compile.NewEffect(core.PApp(builtins.Write, core.NewNumber(42)), false)
+	o := compile.NewEffect(core.PApp(builtins.Print, core.NewNumber(42)), false)
 	Run([]compile.Effect{o, o, o, o, o, o, o, o})
 }
 
 func TestRunWithExpandedList(t *testing.T) {
 	Run([]compile.Effect{compile.NewEffect(
-		core.NewList(core.PApp(builtins.Write, core.True), core.PApp(builtins.Write, core.False)),
+		core.NewList(core.PApp(builtins.Print, core.True), core.PApp(builtins.Print, core.False)),
 		true)})
 }
 

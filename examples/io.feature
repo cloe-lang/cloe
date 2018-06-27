@@ -2,7 +2,7 @@ Feature: I/O
   Scenario: Read stdin
     Given a file named "main.cloe" with:
     """
-    (write (read) . end "")
+    (print (read) . end "")
     """
     And a file named "test.txt" with:
     """
@@ -24,7 +24,7 @@ Feature: I/O
   Scenario: Read a file
     Given a file named "main.cloe" with:
     """
-    (write (read . file "test.txt") . end "")
+    (print (read . file "test.txt") . end "")
     """
     And a file named "test.txt" with:
     """
@@ -40,67 +40,67 @@ Feature: I/O
     baz
     """
 
-  Scenario: Write a string
+  Scenario: Print a string
     Given a file named "main.cloe" with:
     """
-    (write "Hello!")
+    (print "Hello!")
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello!"
 
-  Scenario: Write a string with end argument
+  Scenario: Print a string with end argument
     Given a file named "main.cloe" with:
     """
-    (write "Hello!" . end "!!")
+    (print "Hello!" . end "!!")
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello!!!"
 
-  Scenario: Write multiple strings
+  Scenario: Print multiple strings
     Given a file named "main.cloe" with:
     """
-    (write "Hello," "world!")
+    (print "Hello," "world!")
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello, world!"
 
-  Scenario: Write a number
+  Scenario: Print a number
     Given a file named "main.cloe" with:
     """
-    (write 42)
+    (print 42)
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "42"
 
-  Scenario: Write a nil
+  Scenario: Print a nil
     Given a file named "main.cloe" with:
     """
-    (write nil)
+    (print nil)
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "nil"
 
-  Scenario: Write multiple arguments of different types
+  Scenario: Print multiple arguments of different types
     Given a file named "main.cloe" with:
     """
-    (write "string" 42 nil true)
+    (print "string" 42 nil true)
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "string 42 nil true"
 
-  Scenario: Write a string to stderr
+  Scenario: Print a string to stderr
     Given a file named "main.cloe" with:
     """
-    (write "This is stderr." . file 2)
+    (print "This is stderr." . file 2)
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly ""
     And the stderr should contain exactly "This is stderr."
 
-  Scenario: Write a string to a file
+  Scenario: Print a string to a file
     Given a file named "main.cloe" with:
     """
-    (write "This is content." . file "output.txt")
+    (print "This is content." . file "output.txt")
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly ""
@@ -109,10 +109,10 @@ Feature: I/O
     This is content.
     """
 
-  Scenario: Write with a wrong file argument
+  Scenario: Print with a wrong file argument
     Given a file named "main.cloe" with:
     """
-    (write 42 . file nil)
+    (print 42 . file nil)
     """
     When I run `cloe main.cloe`
     Then the exit status should not be 0

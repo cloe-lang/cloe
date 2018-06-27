@@ -41,7 +41,7 @@ func TestGetRequests(t *testing.T) {
 	testRequest(t, r)
 
 	v = core.PApp(
-		core.PApp(r, core.NewString("respond")),
+		core.PApp(core.Index, r, core.NewString("respond")),
 		core.NewString("Hello, world!"))
 
 	assert.Equal(t, core.Nil, core.EvalImpure(v))
@@ -49,11 +49,15 @@ func TestGetRequests(t *testing.T) {
 }
 
 func testRequest(t *testing.T, v core.Value) {
-	assert.Equal(t, core.NewString(""), core.EvalPure(core.PApp(v, core.NewString("body"))))
-	assert.Equal(t, core.NewString("GET"), core.EvalPure(core.PApp(v, core.NewString("method"))))
+	assert.Equal(t,
+		core.NewString(""),
+		core.EvalPure(core.PApp(core.Index, v, core.NewString("body"))))
+	assert.Equal(t,
+		core.NewString("GET"),
+		core.EvalPure(core.PApp(core.Index, v, core.NewString("method"))))
 	assert.Equal(t,
 		core.NewString("/foo/bar?baz=123"),
-		core.EvalPure(core.PApp(v, core.NewString("url"))))
+		core.EvalPure(core.PApp(core.Index, v, core.NewString("url"))))
 }
 
 func TestGetRequestsWithCustomStatus(t *testing.T) {
@@ -74,7 +78,7 @@ func TestGetRequestsWithCustomStatus(t *testing.T) {
 	}()
 
 	v = core.App(
-		core.PApp(core.PApp(core.First, v), core.NewString("respond")),
+		core.PApp(core.Index, core.PApp(core.First, v), core.NewString("respond")),
 		core.NewArguments(
 			[]core.PositionalArgument{core.NewPositionalArgument(core.NewString(""), false)},
 			[]core.KeywordArgument{

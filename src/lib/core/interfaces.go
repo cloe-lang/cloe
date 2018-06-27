@@ -4,11 +4,6 @@ import (
 	"reflect"
 )
 
-type callable interface {
-	Value
-	call(Arguments) Value // index as function calls
-}
-
 // stringable is an interface for something convertable into StringType.
 // This should be implemented for all types including error type.
 type stringable interface {

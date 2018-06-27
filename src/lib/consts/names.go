@@ -5,11 +5,13 @@ var Names = struct {
 	DictionaryFunction string
 	EmptyDictionary    string
 	EmptyList          string
+	IndexFunction      string
 	ListFunction       string
 }{
 	DictionaryFunction: "$dictionary",
 	EmptyDictionary:    "$emptyDictionary",
 	EmptyList:          "$emptyList",
+	IndexFunction:      "$@",
 	ListFunction:       "$list",
 }
 

@@ -45,7 +45,7 @@ Go 1.8+ is required.
 (import "http")
 
 (def (handler request)
-  ((request "respond") "Hello, world!"))
+  ((@ request "respond") "Hello, world!"))
 
 (let requests (http.getRequests ":8080"))
 

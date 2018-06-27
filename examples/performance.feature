@@ -4,7 +4,7 @@ Feature: Performance
     """
     (import "http")
 
-    ..(map (\ (r) ((r "respond") "Hello, world!")) (http.getRequests ":8080"))
+    ..(map (\ (r) ((@ r "respond") "Hello, world!")) (http.getRequests ":8080"))
     """
     And a file named "main.go" with:
     """

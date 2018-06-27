@@ -71,11 +71,12 @@ func TestCollectionFunctionsError(t *testing.T) {
 func TestIndexChain(t *testing.T) {
 	for _, vs := range [][2]Value{
 		{
-			PApp(NewList(NewList(Nil)), NewNumber(1), NewNumber(1)),
+			PApp(Index, NewList(NewList(Nil)), NewNumber(1), NewNumber(1)),
 			Nil,
 		},
 		{
 			PApp(
+				Index,
 				NewDictionary([]KeyValue{{Nil, NewDictionary([]KeyValue{{True, False}})}}),
 				Nil,
 				True),
@@ -88,18 +89,22 @@ func TestIndexChain(t *testing.T) {
 
 func TestIndexWithInvalidRestArguments(t *testing.T) {
 	e, ok := EvalPure(App(
-		NewList(Nil),
+		Index,
 		NewArguments(
-			[]PositionalArgument{NewPositionalArgument(DummyError, true)},
+			[]PositionalArgument{
+				NewPositionalArgument(NewList(Nil), false),
+				NewPositionalArgument(DummyError, true),
+			},
 			nil))).(*ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "DummyError", e.Name())
 
 	e, ok = EvalPure(App(
-		NewList(Nil),
+		Index,
 		NewArguments(
 			[]PositionalArgument{
+				NewPositionalArgument(NewList(Nil), false),
 				NewPositionalArgument(Nil, false),
 				NewPositionalArgument(DummyError, true),
 			},

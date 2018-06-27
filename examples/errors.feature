@@ -39,7 +39,7 @@ Feature: Errors
   Scenario: Catch an error passed by match expression
     Given a file named "main.cloe" with:
     """
-    (write ((catch (match (error "FooError" "") x (error "BarError" ""))) "name"))
+    (write (@ (catch (match (error "FooError" "") x (error "BarError" ""))) "name"))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain "FooError"

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cloe-lang/cloe/src/lib/ast"
+	"github.com/cloe-lang/cloe/src/lib/consts"
 	"github.com/cloe-lang/cloe/src/lib/debug"
 	"github.com/cloe-lang/cloe/src/lib/gensym"
 )
@@ -49,7 +50,10 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 			recs,
 			ast.NewLetVar(
 				f.Name(),
-				ast.NewPApp(recsList, []interface{}{fmt.Sprint(i + 1)}, f.DebugInfo())))
+				ast.NewPApp(
+					consts.Names.IndexFunction,
+					[]interface{}{recsList, fmt.Sprint(i + 1)},
+					f.DebugInfo())))
 	}
 
 	return append(
@@ -95,7 +99,10 @@ func replaceNames(funcList string, n2i map[string]int, x interface{}, di *debug.
 		switch x := x.(type) {
 		case string:
 			if i, ok := n2i[x]; ok {
-				return ast.NewPApp(funcList, []interface{}{fmt.Sprint(i)}, di)
+				return ast.NewPApp(
+					consts.Names.IndexFunction,
+					[]interface{}{funcList, fmt.Sprint(i)},
+					di)
 			}
 
 			return x

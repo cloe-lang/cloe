@@ -18,10 +18,6 @@ func NewString(s string) StringType {
 	return StringType(s)
 }
 
-func (s StringType) call(args Arguments) Value {
-	return Index.call(NewPositionalArguments(s).Merge(args))
-}
-
 func (s StringType) index(v Value) Value {
 	n, err := checkIndex(v)
 

@@ -40,7 +40,7 @@ func TestStringIndex(t *testing.T) {
 		{NewString("axc"), NewNumber(2)},
 		{NewString("ああaあxbあc"), NewNumber(5)},
 	} {
-		assert.Equal(t, NewString("x"), EvalPure(PApp(vs[0], vs[1:]...)))
+		assert.Equal(t, NewString("x"), EvalPure(PApp(Index, append([]Value{vs[0]}, vs[1:]...)...)))
 	}
 }
 

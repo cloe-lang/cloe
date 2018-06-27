@@ -12,9 +12,11 @@ func TestGet(t *testing.T) {
 	_, ok := core.EvalPure(v).(*core.DictionaryType)
 
 	assert.True(t, ok)
-	assert.Equal(t, core.NewNumber(200), core.EvalPure(core.PApp(v, core.NewString("status"))))
+	assert.Equal(t,
+		core.NewNumber(200),
+		core.EvalPure(core.PApp(core.Index, v, core.NewString("status"))))
 
-	_, ok = core.EvalPure(core.PApp(v, core.NewString("body"))).(core.StringType)
+	_, ok = core.EvalPure(core.PApp(core.Index, v, core.NewString("body"))).(core.StringType)
 
 	assert.True(t, ok)
 }
@@ -53,7 +55,7 @@ func TestGetWithInvalidPathButNoError(t *testing.T) {
 	_, ok := core.EvalPure(v).(*core.DictionaryType)
 	assert.True(t, ok)
 
-	n, err := core.EvalNumber(core.PApp(v, core.NewString("status")))
+	n, err := core.EvalNumber(core.PApp(core.Index, v, core.NewString("status")))
 
 	assert.Equal(t, nil, err)
 	assert.Equal(t, 404.0, float64(n))

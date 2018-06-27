@@ -58,7 +58,10 @@ func convertLetMatch(x interface{}) interface{} {
 
 		for i, n := range ns {
 			ls = append(ls,
-				ast.NewLetVar(n, ast.NewPApp(d, []interface{}{fmt.Sprint(i)}, debug.NewGoInfo(0))))
+				ast.NewLetVar(n, ast.NewPApp(
+					consts.Names.IndexFunction,
+					[]interface{}{d, fmt.Sprint(i)},
+					debug.NewGoInfo(0))))
 		}
 
 		return ls

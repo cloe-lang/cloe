@@ -154,8 +154,8 @@ Feature: Recursion
         (def (odd? n)  (if (= n 0) false (even? (- n 1)))))
       [even? odd?])
 
-    (let even? ((foo) 1))
-    (let odd? ((foo) 2))
+    (let even? (@ (foo) 1))
+    (let odd? (@ (foo) 2))
 
     (seq!
       (write (even? 0))

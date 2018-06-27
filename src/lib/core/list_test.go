@@ -131,7 +131,7 @@ func TestListIndex(t *testing.T) {
 		{NewList(Nil, Nil, Nil, Nil, a), 5},
 		{NewList(Nil, Nil, Nil, a, Nil), 4},
 	} {
-		assert.True(t, testEqual(a, PApp(c.list, NewNumber(c.index))))
+		assert.True(t, testEqual(a, PApp(Index, c.list, NewNumber(c.index))))
 	}
 }
 

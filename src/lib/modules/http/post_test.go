@@ -13,9 +13,11 @@ func TestPost(t *testing.T) {
 
 	t.Log(core.EvalPure(v))
 	assert.True(t, ok)
-	assert.Equal(t, core.NewNumber(200), core.EvalPure(core.PApp(v, core.NewString("status"))))
+	assert.Equal(t,
+		core.NewNumber(200),
+		core.EvalPure(core.PApp(core.Index, v, core.NewString("status"))))
 
-	_, ok = core.EvalPure(core.PApp(v, core.NewString("body"))).(core.StringType)
+	_, ok = core.EvalPure(core.PApp(core.Index, v, core.NewString("body"))).(core.StringType)
 
 	assert.True(t, ok)
 }

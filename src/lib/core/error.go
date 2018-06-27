@@ -126,10 +126,10 @@ func NotStringError(v Value) *ErrorType {
 	return TypeError(v, "string")
 }
 
-// NotCallableError creates an error value for an invalid value which is not a
-// callable.
-func NotCallableError(v Value) *ErrorType {
-	return TypeError(v, "callable value")
+// NotFunctionError creates an error value for an invalid value which is not a
+// function.
+func NotFunctionError(v Value) *ErrorType {
+	return TypeError(v, "function")
 }
 
 // NotCollectionError creates an error value for an invalid value which is not

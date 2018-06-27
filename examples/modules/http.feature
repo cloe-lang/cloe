@@ -12,7 +12,7 @@ Feature: HTTP
     """
     (import "http")
 
-    (write ((http.get "http://httpbin.org") "status"))
+    (write (@ (http.get "http://httpbin.org") "status"))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "200"
@@ -22,7 +22,7 @@ Feature: HTTP
     """
     (import "http")
 
-    (write ((http.post "https://httpbin.org/post" "Hello, world!") "status"))
+    (write (@ (http.post "https://httpbin.org/post" "Hello, world!") "status"))
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "200"
@@ -32,7 +32,7 @@ Feature: HTTP
     """
     (import "http")
 
-    ..(map (\ (r) ((r "respond") "Hello, world!")) (http.getRequests ":8080"))
+    ..(map (\ (r) ((@ r "respond") "Hello, world!")) (http.getRequests ":8080"))
     """
     And a file named "main.sh" with:
     """

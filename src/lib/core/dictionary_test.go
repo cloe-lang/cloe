@@ -59,7 +59,7 @@ func TestDictionaryIndex(t *testing.T) {
 		d := Value(EmptyDictionary)
 
 		for i, kv := range kvs {
-			t.Logf("Insertting a %vth key...\n", i)
+			t.Logf("Inserting a %vth key...\n", i)
 			d = PApp(Insert, d, kv[0], kv[1])
 		}
 
@@ -73,11 +73,11 @@ func TestDictionaryIndex(t *testing.T) {
 
 			t.Log(EvalPure(PApp(ToString, k)))
 
-			if e, ok := EvalPure(PApp(d, k)).(*ErrorType); ok {
+			if e, ok := EvalPure(PApp(Index, d, k)).(*ErrorType); ok {
 				t.Log(e.Lines())
 			}
 
-			assert.True(t, testEqual(PApp(d, k), v))
+			assert.True(t, testEqual(PApp(Index, d, k), v))
 		}
 	}
 }
@@ -134,7 +134,7 @@ func TestDictionaryToList(t *testing.T) {
 			kv := PApp(First, l)
 			k := PApp(First, kv)
 			lv := PApp(First, PApp(Rest, kv))
-			dv := PApp(d, k)
+			dv := PApp(Index, d, k)
 
 			t.Log("Key:", EvalPure(k))
 			t.Log("LIST Value:", EvalPure(lv))
@@ -162,7 +162,7 @@ func TestDictionaryWithDuplicateKeys(t *testing.T) {
 	assert.Equal(t, len(ks), dictionarySize(d))
 
 	for _, k := range ks {
-		assert.True(t, testEqual(PApp(d, k), k))
+		assert.True(t, testEqual(PApp(Index, d, k), k))
 	}
 }
 

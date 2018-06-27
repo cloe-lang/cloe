@@ -59,10 +59,10 @@ var Partial = FunctionType(func(vars Arguments) Value {
 	return NewRawFunction(func(args Arguments) Value {
 		vars := vars
 		v := EvalPure(vars.nextPositional())
-		f, ok := v.(callable)
+		f, ok := v.(FunctionType)
 
 		if !ok {
-			return NotCallableError(v)
+			return NotFunctionError(v)
 		}
 
 		return f.call(vars.Merge(args))

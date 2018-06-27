@@ -1,7 +1,7 @@
 package core
 
 type collection interface {
-	callable
+	Value
 
 	include(Value) Value
 	index(Value) Value

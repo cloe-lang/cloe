@@ -41,6 +41,7 @@ var goBuiltins = func() environment {
 		"toString": core.ToString,
 		"dump":     core.Dump,
 
+		"@":       core.Index,
 		"delete":  core.Delete,
 		"include": core.Include,
 		"insert":  core.Insert,
@@ -178,7 +179,7 @@ func builtinsEnvironment() environment {
 
 			(def (sort list . less <)
 				(let sort (partial sort . less less))
-				(let pivot (list (// (size list) 2)))
+				(let pivot (@ list (// (size list) 2)))
 				(match list
 					[] []
 					[x] [x]

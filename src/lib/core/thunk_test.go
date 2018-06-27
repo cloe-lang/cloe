@@ -12,7 +12,7 @@ var impureFunction = NewLazyFunction(
 		return newEffect(vs[0])
 	})
 
-func TestThunkEvalWithNotCallable(t *testing.T) {
+func TestThunkEvalWithNonFunction(t *testing.T) {
 	assert.Equal(t, "TypeError", EvalPure(PApp(Nil)).(*ErrorType).Name())
 }
 

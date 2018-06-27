@@ -40,10 +40,6 @@ func NewDictionary(kvs []KeyValue) Value {
 	return d
 }
 
-func (d *DictionaryType) call(args Arguments) Value {
-	return Index.call(NewPositionalArguments(d).Merge(args))
-}
-
 func (d *DictionaryType) index(v Value) (result Value) {
 	defer func() {
 		if r := recover(); r != nil {

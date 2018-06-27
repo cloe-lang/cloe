@@ -55,10 +55,10 @@ func (t *Thunk) eval() Value {
 			v := EvalPure(t.function)
 			t.function = nil
 
-			f, ok := v.(callable)
+			f, ok := v.(FunctionType)
 
 			if !ok {
-				t.result = NotCallableError(v)
+				t.result = NotFunctionError(v)
 				t.args = Arguments{}
 				break
 			}

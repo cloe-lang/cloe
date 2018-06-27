@@ -8,7 +8,7 @@ import (
 	"github.com/kr/text"
 )
 
-// DefFunction represents a let-function statement node in ASTs.
+// DefFunction represents a def-function statement node in ASTs.
 type DefFunction struct {
 	name      string
 	signature Signature
@@ -23,28 +23,28 @@ func NewDefFunction(name string, sig Signature, lets []interface{}, expr interfa
 	return DefFunction{name, sig, lets, expr, i}
 }
 
-// Name returns a name of a function defined by the let-function statement.
+// Name returns a name of a function defined by the def-function statement.
 func (f DefFunction) Name() string {
 	return f.name
 }
 
-// Signature returns a signature of a function defined by the let-function statement.
+// Signature returns a signature of a function defined by the def-function statement.
 func (f DefFunction) Signature() Signature {
 	return f.signature
 }
 
-// Lets returns let statements contained in the let-function statement.
+// Lets returns let statements contained in the def-function statement.
 // Returned values should be LetVar or DefFunction.
 func (f DefFunction) Lets() []interface{} {
 	return f.lets
 }
 
-// Body returns a body expression of a function defined by the let-function statement.
+// Body returns a body expression of a function defined by the def-function statement.
 func (f DefFunction) Body() interface{} {
 	return f.body
 }
 
-// DebugInfo returns debug information of a function defined by the let-function statement.
+// DebugInfo returns debug information of a function defined by the def-function statement.
 func (f DefFunction) DebugInfo() *debug.Info {
 	return f.info
 }

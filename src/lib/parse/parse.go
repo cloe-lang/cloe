@@ -100,7 +100,7 @@ func (s *state) let() comb.Parser {
 }
 
 func (s *state) strictLet() comb.Parser {
-	return s.Or(s.letVar(), s.letMatch(), s.letFunction(), s.mutuallyRecursiveDefFunctions())
+	return s.Or(s.letVar(), s.letMatch(), s.defFunction(), s.mutuallyRecursiveDefFunctions())
 }
 
 func (s *state) letVar() comb.Parser {
@@ -117,7 +117,7 @@ func (s *state) letMatch() comb.Parser {
 	}, s.list(s.strippedString(letString), s.Or(s.listLiteral(), s.dictLiteral()), s.expression()))
 }
 
-func (s *state) letFunction() comb.Parser {
+func (s *state) defFunction() comb.Parser {
 	return s.withInfo(
 		s.list(
 			s.strippedString(defString),
@@ -280,7 +280,7 @@ func (s *state) pattern() comb.Parser {
 
 func (s *state) mutuallyRecursiveDefFunctions() comb.Parser {
 	return s.withInfo(
-		s.list(s.strippedString(mutualRecString), s.Many(s.letFunction())),
+		s.list(s.strippedString(mutualRecString), s.Many(s.defFunction())),
 		func(x interface{}, i *debug.Info) (interface{}, error) {
 			xs := x.([]interface{})[1].([]interface{})
 			fs := make([]ast.DefFunction, 0, len(xs))

@@ -101,7 +101,7 @@ func TestDefFunction(t *testing.T) {
 		"(def (foo x y ..args . c 123 d 456 ..kwargs) 123)",
 	} {
 		s := newStateWithoutFile(str)
-		_, err := s.exhaust(s.letFunction())()
+		_, err := s.exhaust(s.defFunction())()
 		assert.Nil(t, err)
 	}
 }

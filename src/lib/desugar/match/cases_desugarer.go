@@ -274,7 +274,7 @@ func (d *casesDesugarer) desugarDictionaryCasesOfSameKey(dict interface{}, cs []
 
 	key := cs[0].Pattern().(ast.App).Arguments().Positionals()[0].Value()
 	value := d.matchedApp(consts.Names.IndexFunction, dict, key)
-	rest := d.matchedApp("delete", dict, key)
+	rest := d.matchedApp("$delete", dict, key)
 	gs := []group{}
 
 	for i, c := range cs {

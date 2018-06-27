@@ -16,8 +16,8 @@ Feature: Data types
     """
     (let x "foo")
     (let x "Hello, world!")
-    (let x "My name is Bob.\\nYour name is not Bob.")
-    (let x "Job:\\tProgrammer?")
+    (let x "My name is Bob.\nYour name is not Bob.")
+    (let x "Job:\tProgrammer?")
     """
     Then I successfully run `cloe main.cloe`
 

@@ -350,7 +350,7 @@ func (d *casesDesugarer) defaultCaseOfGeneralNamePattern(v, p, body, dc interfac
 		return d.ifType(v, "dictionary", body, dc)
 	}
 
-	panic("Unreachable")
+	panic("unreachable")
 }
 
 func (d *casesDesugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {

@@ -114,7 +114,7 @@ func TestLetStatementsToNames(t *testing.T) {
 				case ast.LetVar:
 					name = l.Name()
 				default:
-					panic("Unreachable")
+					panic("unreachable")
 				}
 
 				assert.Equal(t, name, s)

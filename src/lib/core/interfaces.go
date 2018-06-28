@@ -75,7 +75,7 @@ func comparableID(v Value) byte {
 		return 5
 	}
 
-	panic("Unreachable")
+	panic("unreachable")
 }
 
 type ordered interface {

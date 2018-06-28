@@ -122,7 +122,7 @@ func replaceNames(funcList string, n2i map[string]int, x interface{}, di *debug.
 				case ast.LetVar:
 					delete(n2i, l.Name())
 				default:
-					panic("Unreachable")
+					panic("unreachable")
 				}
 
 				ls = append(ls, replaceNames(funcList, n2i, l, x.DebugInfo()))
@@ -160,7 +160,7 @@ func letStatementsToNames(ls []interface{}) []interface{} {
 		case ast.LetVar:
 			ns = append(ns, l.Name())
 		default:
-			panic("Unreachable")
+			panic("unreachable")
 		}
 	}
 

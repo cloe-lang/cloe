@@ -266,5 +266,5 @@ func stringify(x interface{}) string {
 		return strings.Join(ss, "")
 	}
 
-	panic("Unreachable")
+	panic("unreachable")
 }

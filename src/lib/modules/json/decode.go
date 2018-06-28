@@ -57,5 +57,5 @@ func convertToValue(x interface{}) core.Value {
 		return core.NewBoolean(x)
 	}
 
-	panic("Unreachable")
+	panic("unreachable")
 }

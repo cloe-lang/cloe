@@ -73,5 +73,5 @@ func typeOf(vs ...Value) Value {
 		return v
 	}
 
-	panic("Unreachable")
+	panic("unreachable")
 }

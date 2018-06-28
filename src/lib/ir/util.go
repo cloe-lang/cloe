@@ -38,5 +38,5 @@ func interpretExpression(args []core.Value, expr interface{}) core.Value {
 		return interpretExpression(args, x.caseValues[int(*n)])
 	}
 
-	panic("Unreachable")
+	panic("unreachable")
 }

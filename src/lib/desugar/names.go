@@ -76,7 +76,7 @@ func (ns names) findInDefFunction(f ast.DefFunction) names {
 			ns.delete(l.Name())
 			ms.merge(ns.findInDefFunction(l))
 		default:
-			panic("Unreachable")
+			panic("unreachable")
 		}
 	}
 

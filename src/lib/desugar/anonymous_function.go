@@ -28,7 +28,7 @@ func (c *anonymousFunctionConverter) convert(x interface{}) interface{} {
 			c.lets = append(
 				c.lets,
 				desugarAnonymousFunctionsInDefFunction(
-					ast.NewDefFunction(n, x.Signature(), nil, x.Body(), debug.NewGoInfo(0))))
+					ast.NewDefFunction(n, x.Signature(), x.Lets(), x.Body(), debug.NewGoInfo(0))))
 			return n
 		case ast.DefFunction:
 			return desugarAnonymousFunctionsInDefFunction(x)

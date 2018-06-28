@@ -19,14 +19,14 @@ func TestDesugar(t *testing.T) {
 		{
 			ast.NewLetVar(
 				"foo",
-				ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), "123")),
+				ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), nil, "123")),
 		},
 		{
 			ast.NewDefFunction(
 				"foo",
 				ast.NewSignature(nil, "", nil, ""),
 				nil,
-				ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), "123"),
+				ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), nil, "123"),
 				debug.NewGoInfo(0)),
 		},
 		{
@@ -36,7 +36,7 @@ func TestDesugar(t *testing.T) {
 				[]interface{}{
 					ast.NewLetVar(
 						"x",
-						ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), "123")),
+						ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), nil, "123")),
 				},
 				"x",
 				debug.NewGoInfo(0)),

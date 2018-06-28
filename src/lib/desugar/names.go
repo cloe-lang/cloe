@@ -130,5 +130,5 @@ func (ns names) findInExpression(x interface{}) names {
 		return ms
 	}
 
-	panic("Unreachable")
+	panic("unreachable")
 }

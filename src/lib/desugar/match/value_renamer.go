@@ -38,25 +38,34 @@ func (r valueRenamer) rename(v interface{}) interface{} {
 
 		return ast.NewApp(r.rename(x.Function()), ast.NewArguments(ps, ks), x.DebugInfo())
 	case ast.AnonymousFunction:
-		m := map[string]string{}
-		ns := x.Signature().NameToIndex()
+		r := r.copy()
 
-		for k, v := range r.nameMap {
-			if _, ok := ns[k]; !ok {
-				m[k] = v
+		for n := range x.Signature().NameToIndex() {
+			r.delete(n)
+		}
+
+		ls := make([]interface{}, 0, len(x.Lets()))
+
+		for _, l := range x.Lets() {
+			switch x := l.(type) {
+			case ast.LetVar:
+				ls = append(ls, ast.NewLetVar(x.Name(), r.rename(x.Expr())))
+				r.delete(x.Name())
+			default:
+				panic("unreachable")
 			}
 		}
 
-		return ast.NewAnonymousFunction(x.Signature(), newValueRenamer(m).rename(x.Body()))
-	case ast.Match:
-		cs := make([]ast.MatchCase, 0, len(x.Cases()))
+		return ast.NewAnonymousFunction(x.Signature(), ls, r.rename(x.Body()))
+	case ast.Switch:
+		cs := make([]ast.SwitchCase, 0, len(x.Cases()))
 
 		for _, c := range x.Cases() {
-			p, ns := newPatternRenamer().rename(c.Pattern())
-			cs = append(cs, ast.NewMatchCase(p, r.extend(ns).rename(c.Value())))
+			// Switch case patterns are already renamed as match case patterns.
+			cs = append(cs, ast.NewSwitchCase(c.Pattern(), r.rename(c.Value())))
 		}
 
-		return ast.NewMatch(r.rename(x.Value()), cs)
+		return ast.NewSwitch(r.rename(x.Value()), cs, r.rename(x.DefaultCase()))
 	}
 
 	panic(fmt.Errorf("Invalid value: %#v", v))
@@ -72,4 +81,18 @@ func (r valueRenamer) extend(ns map[string]string) valueRenamer {
 	}
 
 	return newValueRenamer(ms)
+}
+
+func (r valueRenamer) copy() valueRenamer {
+	m := make(map[string]string, len(r.nameMap))
+
+	for k, v := range r.nameMap {
+		m[k] = v
+	}
+
+	return newValueRenamer(m)
+}
+
+func (r valueRenamer) delete(s string) {
+	delete(r.nameMap, s)
 }

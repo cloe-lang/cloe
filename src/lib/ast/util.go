@@ -19,7 +19,13 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 	case string:
 		return x
 	case AnonymousFunction:
-		return NewAnonymousFunction(convert(x.Signature()).(Signature), convert(x.Body()))
+		ls := make([]interface{}, 0, len(x.Lets()))
+
+		for _, l := range x.Lets() {
+			ls = append(ls, convert(l))
+		}
+
+		return NewAnonymousFunction(convert(x.Signature()).(Signature), ls, convert(x.Body()))
 	case App:
 		return NewApp(convert(x.Function()), convert(x.Arguments()).(Arguments), x.DebugInfo())
 	case Arguments:

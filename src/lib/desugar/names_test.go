@@ -95,7 +95,7 @@ func TestNamesFindInExpression(t *testing.T) {
 			true,
 		},
 		{
-			ast.NewAnonymousFunction(ast.NewSignature([]string{"x"}, "", nil, ""), "x"),
+			ast.NewAnonymousFunction(ast.NewSignature([]string{"x"}, "", nil, ""), nil, "x"),
 			false,
 		},
 	} {

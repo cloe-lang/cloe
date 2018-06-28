@@ -18,16 +18,14 @@ func newCasesDesugarer() *casesDesugarer {
 	return &casesDesugarer{nil, nil}
 }
 
-func (d *casesDesugarer) Desugar(cs []ast.MatchCase) ast.DefFunction {
+func (d *casesDesugarer) Desugar(cs []ast.MatchCase) ast.AnonymousFunction {
 	arg := gensym.GenSym()
 	body := d.desugarCases(arg, cs, "$matchError")
 
-	return ast.NewDefFunction(
-		gensym.GenSym(),
+	return ast.NewAnonymousFunction(
 		ast.NewSignature([]string{arg}, "", nil, ""),
 		d.takeLets(),
-		app("$if", app("$=", app("$catch", arg), "$nil"), body, arg),
-		debug.NewGoInfo(0))
+		app("$if", app("$=", app("$catch", arg), "$nil"), body, arg))
 }
 
 func (d *casesDesugarer) takeLets() []interface{} {

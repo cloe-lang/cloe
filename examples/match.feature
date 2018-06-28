@@ -215,3 +215,11 @@ Feature: Match expression
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "42"
+
+  Scenario: Use a match expression in an anonymous function
+    Given a file named "main.cloe" with:
+    """
+    (print ((\ (y) (match 123 x y)) 42))
+    """
+    When I successfully run `cloe main.cloe`
+    Then the stdout should contain exactly "42"

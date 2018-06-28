@@ -12,11 +12,9 @@ func TestNewSwitch(t *testing.T) {
 }
 
 func TestNewSwitchNoDefaultCase(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	NewSwitch(0, []Case{}, nil)
+	assert.Panics(t, func() {
+		NewSwitch(0, []Case{}, nil)
+	})
 }
 
 func TestSwitchInFunction(t *testing.T) {

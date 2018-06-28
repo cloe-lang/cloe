@@ -192,17 +192,15 @@ func TestNodeEqual(t *testing.T) {
 	}
 }
 
-func TestNodeRankError(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
+func TestNodeRankPanic(t *testing.T) {
+	assert.Panics(t, func() {
+		n := (*node)(nil).insert(0, compare).insert(1, compare).insert(2, compare)
+		n.dump()
+		n.left.color = red
+		n.dump()
 
-	n := (*node)(nil).insert(0, compare).insert(1, compare).insert(2, compare)
-	n.dump()
-	n.left.color = red
-	n.dump()
-
-	n.rank()
+		n.rank()
+	})
 }
 
 func TestNodeCheckColorsError(t *testing.T) {

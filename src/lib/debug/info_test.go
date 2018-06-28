@@ -13,12 +13,10 @@ func TestNewGoInfo(t *testing.T) {
 }
 
 func TestNewGoInfoWithInvalidSkip(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	Debug = true
-	NewGoInfo(10)
+	assert.Panics(t, func() {
+		Debug = true
+		NewGoInfo(10)
+	})
 }
 
 func TestLines(t *testing.T) {

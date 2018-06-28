@@ -17,11 +17,9 @@ func TestNewEnvironment(t *testing.T) {
 }
 
 func TestEnvironmentGetFail(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	newEnvironment(testFallback).get("foo")
+	assert.Panics(t, func() {
+		newEnvironment(testFallback).get("foo")
+	})
 }
 
 func TestEnvironmentGet(t *testing.T) {

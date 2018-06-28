@@ -33,11 +33,9 @@ func TestDumpError(t *testing.T) {
 }
 
 func TestStrictDumpPanic(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	StrictDump(nil)
+	assert.Panics(t, func() {
+		StrictDump(nil)
+	})
 }
 
 func TestInternalStrictDumpFail(t *testing.T) {

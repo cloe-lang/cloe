@@ -53,16 +53,14 @@ func TestNamesFindInDefFunction(t *testing.T) {
 }
 
 func TestNamesFindInDefFunctionPanic(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	newNames().findInDefFunction(ast.NewDefFunction(
-		"func",
-		ast.NewSignature(nil, "", nil, ""),
-		[]interface{}{nil},
-		"x",
-		debug.NewGoInfo(0)))
+	assert.Panics(t, func() {
+		newNames().findInDefFunction(ast.NewDefFunction(
+			"func",
+			ast.NewSignature(nil, "", nil, ""),
+			[]interface{}{nil},
+			"x",
+			debug.NewGoInfo(0)))
+	})
 }
 
 func TestNamesFindInExpression(t *testing.T) {
@@ -104,9 +102,7 @@ func TestNamesFindInExpression(t *testing.T) {
 }
 
 func TestNamesFindInExpressionPanic(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	newNames().findInExpression(nil)
+	assert.Panics(t, func() {
+		newNames().findInExpression(nil)
+	})
 }

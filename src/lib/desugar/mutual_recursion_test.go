@@ -76,23 +76,19 @@ func TestDesugarMutualRecursion(t *testing.T) {
 }
 
 func TestDesugarMutualRecursionWithOneFunction(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	desugarMutualRecursion(ast.NewMutualRecursion(
-		[]ast.DefFunction{letFooFunction},
-		debug.NewGoInfo(0)))
+	assert.Panics(t, func() {
+		desugarMutualRecursion(ast.NewMutualRecursion(
+			[]ast.DefFunction{letFooFunction},
+			debug.NewGoInfo(0)))
+	})
 }
 
 func TestDesugarMutualRecursionWithFunctionsOfSameName(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	desugarMutualRecursion(ast.NewMutualRecursion(
-		[]ast.DefFunction{letFooFunction, letFooFunction},
-		debug.NewGoInfo(0)))
+	assert.Panics(t, func() {
+		desugarMutualRecursion(ast.NewMutualRecursion(
+			[]ast.DefFunction{letFooFunction, letFooFunction},
+			debug.NewGoInfo(0)))
+	})
 }
 
 func TestLetStatementsToNames(t *testing.T) {

@@ -32,24 +32,20 @@ func TestRunWithExpandedList(t *testing.T) {
 }
 
 func TestEvalEffectListFail(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	wg := sync.WaitGroup{}
-	wg.Add(1)
-	evalEffectList(core.DummyError, &wg, func(err error) { panic(err) })
+	assert.Panics(t, func() {
+		wg := sync.WaitGroup{}
+		wg.Add(1)
+		evalEffectList(core.DummyError, &wg, func(err error) { panic(err) })
+	})
 }
 
 func TestRunEffectFail(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	wg := sync.WaitGroup{}
-	sem <- true
-	wg.Add(1)
-	runEffect(core.Nil, &wg, func(err error) { panic(err) })
+	assert.Panics(t, func() {
+		wg := sync.WaitGroup{}
+		sem <- true
+		wg.Add(1)
+		runEffect(core.Nil, &wg, func(err error) { panic(err) })
+	})
 }
 
 func TestFail(t *testing.T) {
@@ -63,11 +59,9 @@ func TestFail(t *testing.T) {
 }
 
 func TestFailPanic(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	os.Stderr.Close()
-	fail := failWithExit(func(int) {})
-	fail(errors.New("foo"))
+	assert.Panics(t, func() {
+		os.Stderr.Close()
+		fail := failWithExit(func(int) {})
+		fail(errors.New("foo"))
+	})
 }

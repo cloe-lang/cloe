@@ -20,11 +20,9 @@ func TestCompileBuiltinModule(t *testing.T) {
 }
 
 func TestCompileBuiltinModuleWithInvalidSyntax(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	compileBuiltinModule(newEnvironment(testFallback), "", `(def (foo x) x`)
+	assert.Panics(t, func() {
+		compileBuiltinModule(newEnvironment(testFallback), "", `(def (foo x) x`)
+	})
 }
 
 func TestCompileBuiltinModuleWithInvalidSource(t *testing.T) {

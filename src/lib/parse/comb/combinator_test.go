@@ -185,11 +185,9 @@ func TestStringify(t *testing.T) {
 }
 
 func TestStringifyFail(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	stringify(42)
+	assert.Panics(t, func() {
+		stringify(42)
+	})
 }
 
 func TestLazy(t *testing.T) {

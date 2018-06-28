@@ -62,9 +62,7 @@ func newAppWithDummyInfo(f interface{}, args Arguments) App {
 }
 
 func TestInterpretExpressionFail(t *testing.T) {
-	defer func() {
-		assert.NotNil(t, recover())
-	}()
-
-	interpretExpression(nil, "foo")
+	assert.Panics(t, func() {
+		interpretExpression(nil, "foo")
+	})
 }

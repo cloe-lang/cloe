@@ -8,7 +8,7 @@ import (
 )
 
 func TestPost(t *testing.T) {
-	v := core.PApp(post, core.NewString("http://httpbin.org/post"), core.NewString(""))
+	v := core.PApp(post, core.NewString(postURL), core.NewString(""))
 	_, ok := core.EvalPure(v).(*core.DictionaryType)
 
 	t.Log(core.EvalPure(v))
@@ -30,7 +30,7 @@ func TestPostWithInvalidURL(t *testing.T) {
 }
 
 func TestPostWithInvalidBody(t *testing.T) {
-	e, ok := core.EvalPure(core.PApp(post, core.NewString("http://httpbin.org"), core.Nil)).(*core.ErrorType)
+	e, ok := core.EvalPure(core.PApp(post, core.NewString(rootURL), core.Nil)).(*core.ErrorType)
 
 	assert.True(t, ok)
 	assert.Equal(t, "TypeError", e.Name())

@@ -128,8 +128,8 @@ func builtinsEnvironment() environment {
 								(merge "Number of arguments to " name " function must be greater than 1."))
 						[x] x
 						[x y ..xs]
-							(match (if (compare x y) x y)
-								m (seq m (maxOrMin m ..xs)))))
+							(let m (if (compare x y) x y)
+								(seq m (maxOrMin m ..xs)))))
 				maxOrMin)
 
 			(let max (generateMaxOrMinFunction "max" >))

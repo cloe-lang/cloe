@@ -61,6 +61,8 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 			x.DebugInfo())
 	case LetVar:
 		return NewLetVar(x.Name(), convert(x.Expr()))
+	case LetMatch:
+		return NewLetMatch(x.Pattern(), convert(x.Expr()))
 	case Match:
 		cs := make([]MatchCase, 0, len(x.Cases()))
 

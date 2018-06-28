@@ -169,3 +169,20 @@ Feature: Functions
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello, world!"
+
+  Scenario: Use let expressions
+    Given a file named "main.cloe" with:
+    """
+    (def (foo ..xs)
+      (match xs
+        [] nil
+        [x ..xs] (let
+          y (+ ..xs)
+          z (- y 0)
+          (let [v w] xs
+            (+ v w x y z)))))
+
+    (print (foo 2 3 4))
+    """
+    When I successfully run `cloe main.cloe`
+    Then the stdout should contain exactly "23"

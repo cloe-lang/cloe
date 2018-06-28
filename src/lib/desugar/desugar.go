@@ -8,6 +8,7 @@ import (
 func Desugar(ss []interface{}) []interface{} {
 	for _, f := range []func(interface{}) []interface{}{
 		desugarLetMatch,
+		desugarLetExpression,
 		desugarEmptyCollection,
 		desugarDictionaryExpansion,
 		match.Desugar,

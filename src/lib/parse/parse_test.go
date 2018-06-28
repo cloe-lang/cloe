@@ -78,7 +78,7 @@ func TestImportModuleFail(t *testing.T) {
 func TestLetVar(t *testing.T) {
 	for _, str := range []string{"(let foo 123)", "(let foo (f x y))"} {
 		s := newStateWithoutFile(str)
-		_, err := s.exhaust(s.letVar())()
+		_, err := s.exhaust(s.let())()
 		assert.Nil(t, err)
 	}
 }
@@ -89,7 +89,20 @@ func TestLetMatch(t *testing.T) {
 		`(let {"foo" x ..rest} {"foo" 42 "bar" 2049})`,
 	} {
 		s := newStateWithoutFile(str)
-		_, err := s.exhaust(s.letMatch())()
+		_, err := s.exhaust(s.let())()
+		assert.Nil(t, err)
+	}
+}
+
+func TestLetExpression(t *testing.T) {
+	for _, str := range []string{
+		`(let foo 123 foo)`,
+		`(let foo (f x y) foo)`,
+		`(let [123 x 789] [123 456 789] x)`,
+		`(let {"foo" x ..rest} {"foo" 42 "bar" 2049} x)`,
+	} {
+		s := newStateWithoutFile(str)
+		_, err := s.exhaust(s.letExpression())()
 		assert.Nil(t, err)
 	}
 }

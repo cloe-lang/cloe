@@ -54,11 +54,11 @@ func SubModule(file, source string) ([]interface{}, error) {
 }
 
 func (s *state) mainModule() comb.Parser {
-	return s.Prefix(s.Maybe(s.shebang()), s.module(s.importModule(), s.let(), s.effect()))
+	return s.Prefix(s.Maybe(s.shebang()), s.module(s.importModule(), s.definition(), s.effect()))
 }
 
 func (s *state) subModule() comb.Parser {
-	return s.module(s.importModule(), s.let())
+	return s.module(s.importModule(), s.definition())
 }
 
 func (s *state) module(ps ...comb.Parser) comb.Parser {
@@ -95,26 +95,38 @@ func (s *state) importModule() comb.Parser {
 		})
 }
 
+func (s *state) definition() comb.Parser {
+	return s.Lazy(s.strictDefinition)
+}
+
+func (s *state) strictDefinition() comb.Parser {
+	return s.Or(s.let(), s.defFunction(), s.mutuallyRecursiveDefFunctions())
+}
+
 func (s *state) let() comb.Parser {
-	return s.Lazy(s.strictLet)
+	return s.App(func(x interface{}) interface{} {
+		return x.([]interface{})[1]
+	}, s.list(s.strippedString(letString), s.internalLet()))
 }
 
-func (s *state) strictLet() comb.Parser {
-	return s.Or(s.letVar(), s.letMatch(), s.defFunction(), s.mutuallyRecursiveDefFunctions())
-}
-
-func (s *state) letVar() comb.Parser {
+func (s *state) internalLet() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
-		return ast.NewLetVar(xs[1].(string), xs[2])
-	}, s.list(s.strippedString(letString), s.identifier(), s.expression()))
+
+		switch x := xs[0].(type) {
+		case string:
+			return ast.NewLetVar(x, xs[1])
+		default:
+			return ast.NewLetMatch(x, xs[1])
+		}
+	}, s.And(s.Or(s.identifier(), s.listLiteral(), s.dictLiteral()), s.expression()))
 }
 
-func (s *state) letMatch() comb.Parser {
+func (s *state) letExpression() comb.Parser {
 	return s.App(func(x interface{}) interface{} {
 		xs := x.([]interface{})
-		return ast.NewLetMatch(xs[1], xs[2])
-	}, s.list(s.strippedString(letString), s.Or(s.listLiteral(), s.dictLiteral()), s.expression()))
+		return ast.NewLetExpression(xs[1].([]interface{}), xs[2])
+	}, s.list(s.strippedString(letString), s.Many1(s.internalLet()), s.expression()))
 }
 
 func (s *state) defFunction() comb.Parser {
@@ -122,7 +134,7 @@ func (s *state) defFunction() comb.Parser {
 		s.list(
 			s.strippedString(defString),
 			s.list(s.identifier(), s.signature()),
-			s.Many(s.let()),
+			s.Many(s.definition()),
 			s.expression()),
 		func(x interface{}, i *debug.Info) (interface{}, error) {
 			xs := x.([]interface{})
@@ -233,6 +245,7 @@ func (s *state) strictExpression() comb.Parser {
 		s.listLiteral(),
 		s.dictLiteral(),
 		s.anonymousFunction(),
+		s.letExpression(),
 	))
 }
 

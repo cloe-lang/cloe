@@ -363,11 +363,6 @@ func (d *casesDesugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, d
 	return newSwitch(v, ks, dc)
 }
 
-func renameBoundNamesInCase(c ast.MatchCase) ast.MatchCase {
-	p, ns := newPatternRenamer().rename(c.Pattern())
-	return ast.NewMatchCase(p, newValueRenamer(ns).rename(c.Value()))
-}
-
 func equalPatterns(p, q interface{}) bool {
 	switch x := p.(type) {
 	case string:

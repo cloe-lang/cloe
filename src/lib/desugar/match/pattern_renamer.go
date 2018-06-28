@@ -13,16 +13,16 @@ type patternRenamer struct {
 	nameMap map[string]string
 }
 
-func newPatternRenamer() *patternRenamer {
-	return &patternRenamer{map[string]string{}}
+func newPatternRenamer() patternRenamer {
+	return patternRenamer{map[string]string{}}
 }
 
-func (r *patternRenamer) rename(p interface{}) (interface{}, map[string]string) {
-	q := r.renameNames(p)
-	return q, r.nameMap
+func (r patternRenamer) Rename(p interface{}) (interface{}, valueRenamer) {
+	p = r.renameNames(p)
+	return p, newValueRenamer(r.nameMap)
 }
 
-func (r *patternRenamer) renameNames(p interface{}) interface{} {
+func (r patternRenamer) renameNames(p interface{}) interface{} {
 	switch x := p.(type) {
 	case string:
 		if scalar.Defined(x) {

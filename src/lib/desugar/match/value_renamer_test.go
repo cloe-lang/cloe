@@ -28,13 +28,13 @@ func TestValueRenamerRename(t *testing.T) {
 				}),
 			debug.NewGoInfo(0)),
 	} {
-		r.rename(x)
+		r.Rename(x)
 	}
 }
 
-func TestValueRenamerRenameFail(t *testing.T) {
+func TestValueRenamerRenamePanic(t *testing.T) {
 	assert.Panics(t, func() {
-		newValueRenamer(map[string]string{"foo": "bar"}).rename(
+		newValueRenamer(map[string]string{"foo": "bar"}).Rename(
 			ast.NewMatch("nil", []ast.MatchCase{ast.NewMatchCase("nil", "nil")}))
 	})
 }

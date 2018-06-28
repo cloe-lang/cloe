@@ -17,7 +17,7 @@ func TestDesugar(t *testing.T) {
 			nil,
 			ast.NewMatch("n", []ast.MatchCase{
 				ast.NewMatchCase("0", "1"),
-				ast.NewMatchCase("_", papp("*", "n", papp("factorial", papp("-", "n", "1")))),
+				ast.NewMatchCase("_", app("*", "n", app("factorial", app("-", "n", "1")))),
 			}), debug.NewGoInfo(0)),
 		ast.NewMutualRecursion([]ast.DefFunction{
 			ast.NewDefFunction(
@@ -26,7 +26,7 @@ func TestDesugar(t *testing.T) {
 				nil,
 				ast.NewMatch("n", []ast.MatchCase{
 					ast.NewMatchCase("0", "true"),
-					ast.NewMatchCase("_", papp("odd?", papp("-", "n", "1"))),
+					ast.NewMatchCase("_", app("odd?", app("-", "n", "1"))),
 				}), debug.NewGoInfo(0)),
 			ast.NewDefFunction(
 				"odd?",
@@ -34,12 +34,12 @@ func TestDesugar(t *testing.T) {
 				nil,
 				ast.NewMatch("n", []ast.MatchCase{
 					ast.NewMatchCase("0", "true"),
-					ast.NewMatchCase("_", papp("even?", papp("-", "n", "1"))),
+					ast.NewMatchCase("_", app("even?", app("-", "n", "1"))),
 				}), debug.NewGoInfo(0)),
 		}, debug.NewGoInfo(0)),
 		ast.NewLetVar("x", ast.NewMatch("nil", []ast.MatchCase{
-			ast.NewMatchCase(papp(consts.Names.ListFunction, "1", "x"), "x"),
-			ast.NewMatchCase(papp(consts.Names.DictionaryFunction, "1", "x", `"foo"`, "true"), "x"),
+			ast.NewMatchCase(app(consts.Names.ListFunction, "1", "x"), "x"),
+			ast.NewMatchCase(app(consts.Names.DictionaryFunction, "1", "x", `"foo"`, "true"), "x"),
 		})),
 	} {
 		for _, s := range Desugar(s) {
@@ -53,8 +53,4 @@ func TestDesugar(t *testing.T) {
 			}, s)
 		}
 	}
-}
-
-func papp(xs ...interface{}) ast.App {
-	return ast.NewPApp(xs[0], xs[1:], debug.NewGoInfo(1))
 }

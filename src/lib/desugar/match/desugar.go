@@ -18,8 +18,8 @@ func desugarMatch(x interface{}) interface{} {
 		cs := make([]ast.MatchCase, 0, len(m.Cases()))
 
 		for _, c := range m.Cases() {
-			cs = append(cs,
-				renameBoundNamesInCase(ast.NewMatchCase(c.Pattern(), desugarMatch(c.Value()))))
+			p, r := newPatternRenamer().Rename(c.Pattern())
+			cs = append(cs, ast.NewMatchCase(p, r.Rename(desugarMatch(c.Value()))))
 		}
 
 		return app(newCasesDesugarer().Desugar(cs), desugarMatch(m.Value()))

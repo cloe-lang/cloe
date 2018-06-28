@@ -207,3 +207,11 @@ Feature: Match expression
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "[1 1]"
+
+  Scenario: Use an anonymous function in a match case
+    Given a file named "main.cloe" with:
+    """
+    (print (match 42 x ((\ (y) x) 123)))
+    """
+    When I successfully run `cloe main.cloe`
+    Then the stdout should contain exactly "42"

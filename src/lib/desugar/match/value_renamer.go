@@ -37,6 +37,17 @@ func (r valueRenamer) rename(v interface{}) interface{} {
 		}
 
 		return ast.NewApp(r.rename(x.Function()), ast.NewArguments(ps, ks), x.DebugInfo())
+	case ast.AnonymousFunction:
+		m := map[string]string{}
+		ns := x.Signature().NameToIndex()
+
+		for k, v := range r.nameMap {
+			if _, ok := ns[k]; !ok {
+				m[k] = v
+			}
+		}
+
+		return ast.NewAnonymousFunction(x.Signature(), newValueRenamer(m).rename(x.Body()))
 	case ast.Match:
 		cs := make([]ast.MatchCase, 0, len(x.Cases()))
 

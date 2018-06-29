@@ -63,6 +63,14 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 		return NewLetVar(x.Name(), convert(x.Expr()))
 	case LetMatch:
 		return NewLetMatch(x.Pattern(), convert(x.Expr()))
+	case LetExpression:
+		ls := make([]interface{}, 0, len(x.Lets()))
+
+		for _, l := range x.Lets() {
+			ls = append(ls, convert(l))
+		}
+
+		return NewLetExpression(ls, convert(x.Expr()))
 	case Match:
 		cs := make([]MatchCase, 0, len(x.Cases()))
 

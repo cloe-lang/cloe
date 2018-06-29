@@ -40,5 +40,5 @@ func (l LetExpression) String() string {
 		}
 	}
 
-	return fmt.Sprintf("(let %v %v)\n", strings.Join(ss, " "), l.expr)
+	return fmt.Sprintf("(let %v %v)", strings.Join(ss, " "), l.expr)
 }

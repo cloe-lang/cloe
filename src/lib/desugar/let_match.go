@@ -66,20 +66,10 @@ func convertLetMatch(x interface{}) interface{} {
 
 		return ls
 	case ast.DefFunction:
-		ls := make([]interface{}, 0, len(x.Lets()))
-
-		for _, l := range x.Lets() {
-			l = ast.Convert(convertLetMatch, l)
-
-			switch x := l.(type) {
-			case []interface{}:
-				ls = append(ls, x...)
-			default:
-				ls = append(ls, x)
-			}
-		}
-
-		return ast.NewDefFunction(x.Name(), x.Signature(), ls, x.Body(), x.DebugInfo())
+		return ast.NewDefFunction(
+			x.Name(), x.Signature(), convertLets(x.Lets()), x.Body(), x.DebugInfo())
+	case ast.LetExpression:
+		return ast.NewLetExpression(convertLets(x.Lets()), x.Expr())
 	}
 
 	return nil
@@ -93,4 +83,19 @@ func namesToPairsOfIndexAndName(ns []string) []interface{} {
 	}
 
 	return args
+}
+
+func convertLets(ls []interface{}) []interface{} {
+	ns := make([]interface{}, 0, len(ls))
+
+	for _, l := range ls {
+		switch x := ast.Convert(convertLetMatch, l).(type) {
+		case []interface{}:
+			ns = append(ns, x...)
+		default:
+			ns = append(ns, x)
+		}
+	}
+
+	return ns
 }

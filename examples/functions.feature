@@ -170,7 +170,7 @@ Feature: Functions
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "Hello, world!"
 
-  Scenario: Use let expressions
+  Scenario: Use let expressions in functions
     Given a file named "main.cloe" with:
     """
     (def (foo ..xs)
@@ -186,3 +186,28 @@ Feature: Functions
     """
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "23"
+
+  Scenario: Use let expressions in let statements
+    Given a file named "main.cloe" with:
+    """
+    (let x 21)
+    (print
+      (let
+        y x
+        z x
+        (+ y z)))
+    """
+    When I successfully run `cloe main.cloe`
+    Then the stdout should contain exactly "42"
+
+  Scenario: Use patterns in let expressions
+    Given a file named "main.cloe" with:
+    """
+    (print
+      (let
+        xs (map (\ (x) (** x 2)) [1 2 3])
+        [y z _] xs
+        (+ y z ..xs)))
+    """
+    When I successfully run `cloe main.cloe`
+    Then the stdout should contain exactly "19"

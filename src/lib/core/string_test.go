@@ -35,6 +35,21 @@ func TestStringToList(t *testing.T) {
 	assert.True(t, EvalPure(l).(*ListType).Empty())
 }
 
+func TestStringAssign(t *testing.T) {
+	for _, c := range []struct {
+		string Value
+		index  float64
+		value  Value
+		answer Value
+	}{
+		{NewString("a"), 1, NewString("b"), NewString("b")},
+		{NewString("hello"), 2, NewString("a"), NewString("hallo")},
+		{NewString("hello"), 5, NewString("!"), NewString("hell!")},
+	} {
+		assert.True(t, testEqual(c.answer, PApp(Assign, c.string, NewNumber(c.index), c.value)))
+	}
+}
+
 func TestStringIndex(t *testing.T) {
 	for _, vs := range [][2]Value{
 		{NewString("axc"), NewNumber(2)},

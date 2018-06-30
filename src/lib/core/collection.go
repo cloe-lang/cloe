@@ -3,14 +3,51 @@ package core
 type collection interface {
 	Value
 
+	assign(Value, Value) Value
 	include(Value) Value
 	index(Value) Value
-	insert(Value, Value) Value
 	merge(...Value) Value
 	delete(Value) Value
 	toList() Value
 	size() Value
 }
+
+// Assign inserts an element into a sequence.
+var Assign = NewLazyFunction(
+	NewSignature([]string{"collection"}, "keyValuePairs", nil, ""),
+	func(vs ...Value) (result Value) {
+		c, err := evalCollection(vs[0])
+
+		if err != nil {
+			return err
+		}
+
+		l, err := EvalList(vs[1])
+
+		if err != nil {
+			return err
+		}
+
+		for !l.Empty() {
+			k := l.First()
+
+			if l, err = EvalList(l.Rest()); err != nil {
+				return err
+			}
+
+			c, err = evalCollection(c.assign(EvalPure(k), l.First()))
+
+			if err != nil {
+				return err
+			}
+
+			if l, err = EvalList(l.Rest()); err != nil {
+				return err
+			}
+		}
+
+		return c
+	})
 
 // Include returns true if a collection includes an element, or false otherwise.
 var Include = NewStrictFunction(
@@ -48,48 +85,6 @@ var Index = NewStrictFunction(
 
 		return v
 	})
-
-// Insert inserts an element into a collection.
-var Insert FunctionType
-
-func initInsert() FunctionType {
-	return NewLazyFunction(
-		NewSignature([]string{"collection"}, "keyValuePairs", nil, ""),
-		func(vs ...Value) (result Value) {
-			c, err := evalCollection(vs[0])
-
-			if err != nil {
-				return err
-			}
-
-			l, err := EvalList(vs[1])
-
-			if err != nil {
-				return err
-			}
-
-			for !l.Empty() {
-				k := l.First()
-				l, err = EvalList(l.Rest())
-
-				if err != nil {
-					return err
-				}
-
-				c, err = evalCollection(c.insert(EvalPure(k), l.First()))
-
-				if err != nil {
-					return err
-				}
-
-				if l, err = EvalList(l.Rest()); err != nil {
-					return err
-				}
-			}
-
-			return c
-		})
-}
 
 // Merge merges more than 2 collections.
 var Merge FunctionType

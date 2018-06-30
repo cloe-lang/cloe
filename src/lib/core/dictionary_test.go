@@ -24,31 +24,61 @@ var kvss = [][][2]Value{
 	},
 }
 
-func TestDictionaryInsert(t *testing.T) {
+func TestDictionaryAssign(t *testing.T) {
+	for _, c := range []struct {
+		dictionary Value
+		key        Value
+		value      Value
+		answer     Value
+	}{
+		{
+			EmptyDictionary,
+			NewString("foo"),
+			Nil,
+			NewDictionary([]KeyValue{{NewString("foo"), Nil}}),
+		},
+		{
+			NewDictionary([]KeyValue{{NewString("foo"), Nil}}),
+			NewString("bar"),
+			Nil,
+			NewDictionary([]KeyValue{{NewString("foo"), Nil}, {NewString("bar"), Nil}}),
+		},
+		{
+			NewDictionary([]KeyValue{{NewString("foo"), Nil}}),
+			NewString("foo"),
+			True,
+			NewDictionary([]KeyValue{{NewString("foo"), True}}),
+		},
+	} {
+		assert.True(t, testEqual(c.answer, PApp(Assign, c.dictionary, c.key, c.value)))
+	}
+}
+
+func TestDictionaryAssignKeys(t *testing.T) {
 	for _, k := range []Value{
 		True, False, Nil, NewNumber(42), NewString("cloe"),
 	} {
-		d, ok := EvalPure(PApp(Insert, EmptyDictionary, k, Nil)).(*DictionaryType)
+		d, ok := EvalPure(PApp(Assign, EmptyDictionary, k, Nil)).(*DictionaryType)
 		assert.True(t, ok)
 		assert.Equal(t, 1, d.Size())
 	}
 }
 
-func TestDictionaryInsertMultileKeys(t *testing.T) {
+func TestDictionaryAssignMultileKeys(t *testing.T) {
 	d := Value(EmptyDictionary)
 
 	for i, k := range []Value{
 		True, False, Nil, NewNumber(42), NewString("cloe"),
 	} {
-		d = EvalPure(PApp(Insert, d, k, Nil))
+		d = EvalPure(PApp(Assign, d, k, Nil))
 		t.Log(EvalPure(PApp(ToString, d)))
 		assert.Equal(t, i+1, d.(*DictionaryType).Size())
 	}
 }
 
-func TestDictionaryInsertFail(t *testing.T) {
+func TestDictionaryAssignFail(t *testing.T) {
 	l := NewList(DummyError)
-	v := EvalPure(PApp(Insert, PApp(Insert, EmptyDictionary, l, Nil), l, Nil))
+	v := EvalPure(PApp(Assign, PApp(Assign, EmptyDictionary, l, Nil), l, Nil))
 	_, ok := v.(*ErrorType)
 	t.Logf("%#v", v)
 	assert.True(t, ok)
@@ -59,8 +89,8 @@ func TestDictionaryIndex(t *testing.T) {
 		d := Value(EmptyDictionary)
 
 		for i, kv := range kvs {
-			t.Logf("Inserting a %vth key...\n", i)
-			d = PApp(Insert, d, kv[0], kv[1])
+			t.Logf("Assigning a %vth key...\n", i)
+			d = PApp(Assign, d, kv[0], kv[1])
 		}
 
 		assert.Equal(t, len(kvs), dictionarySize(d))
@@ -85,9 +115,9 @@ func TestDictionaryIndex(t *testing.T) {
 func TestDictionaryIndexFail(t *testing.T) {
 	for _, v := range []Value{
 		PApp(EmptyDictionary, Nil),
-		PApp(PApp(Insert, EmptyDictionary, NewList(DummyError), Nil), NewList(Nil)),
+		PApp(PApp(Assign, EmptyDictionary, NewList(DummyError), Nil), NewList(Nil)),
 		PApp(
-			PApp(Insert, EmptyDictionary, NewList(Nil, DummyError), Nil),
+			PApp(Assign, EmptyDictionary, NewList(Nil, DummyError), Nil),
 			NewList(Nil, DummyError)),
 	} {
 		v := EvalPure(v)
@@ -99,7 +129,7 @@ func TestDictionaryIndexFail(t *testing.T) {
 
 func TestDictionaryDelete(t *testing.T) {
 	k := NewNumber(42)
-	v := EvalPure(PApp(Delete, PApp(Insert, EmptyDictionary, k, Nil), k))
+	v := EvalPure(PApp(Delete, PApp(Assign, EmptyDictionary, k, Nil), k))
 	d, ok := v.(*DictionaryType)
 	t.Logf("%#v", v)
 	assert.True(t, ok)
@@ -109,7 +139,7 @@ func TestDictionaryDelete(t *testing.T) {
 func TestDictionaryDeleteFail(t *testing.T) {
 	v := EvalPure(PApp(
 		Delete,
-		PApp(Insert, EmptyDictionary, NewList(DummyError), Nil),
+		PApp(Assign, EmptyDictionary, NewList(DummyError), Nil),
 		NewList(NewNumber(42))))
 	_, ok := v.(*ErrorType)
 	t.Logf("%#v", v)
@@ -122,8 +152,8 @@ func TestDictionaryToList(t *testing.T) {
 		d := Value(EmptyDictionary)
 
 		for i, kv := range kvs {
-			t.Logf("Insertting a %vth key...\n", i)
-			d = PApp(Insert, d, kv[0], kv[1])
+			t.Logf("Assigning a %vth key...\n", i)
+			d = PApp(Assign, d, kv[0], kv[1])
 		}
 
 		assert.Equal(t, len(kvs), dictionarySize(d))
@@ -156,7 +186,7 @@ func TestDictionaryWithDuplicateKeys(t *testing.T) {
 	d := Value(EmptyDictionary)
 
 	for _, i := range []int{0, 1, 2, 2, 7, 3, 0, 4, 6, 1, 1, 4, 5, 6, 0, 2, 8, 8} {
-		d = PApp(Insert, d, ks[i], ks[i])
+		d = PApp(Assign, d, ks[i], ks[i])
 	}
 
 	assert.Equal(t, len(ks), dictionarySize(d))
@@ -182,7 +212,7 @@ func TestDictionaryEqual(t *testing.T) {
 
 	for i := range ds {
 		for _, j := range rand.Perm(len(kvs)) {
-			ds[i] = PApp(Insert, ds[i], kvs[j][0], kvs[j][1])
+			ds[i] = PApp(Assign, ds[i], kvs[j][0], kvs[j][1])
 		}
 	}
 
@@ -200,11 +230,11 @@ func TestDictionaryLess(t *testing.T) {
 
 	for i := range ds {
 		for _, j := range rand.Perm(len(kvs)) {
-			ds[i] = PApp(Insert, ds[i], kvs[j][0], kvs[j][1])
+			ds[i] = PApp(Assign, ds[i], kvs[j][0], kvs[j][1])
 		}
 	}
 
-	ds[1] = PApp(Insert, ds[1], Nil, Nil)
+	ds[1] = PApp(Assign, ds[1], Nil, Nil)
 
 	assert.Equal(t, 2, dictionarySize(ds[0]))
 	assert.Equal(t, 3, dictionarySize(ds[1]))
@@ -217,8 +247,8 @@ func TestDictionaryToString(t *testing.T) {
 		value    Value
 	}{
 		{"{}", EmptyDictionary},
-		{"{true nil}", PApp(Insert, EmptyDictionary, True, Nil)},
-		{"{false nil true nil}", PApp(Insert, PApp(Insert, EmptyDictionary, True, Nil), False, Nil)},
+		{"{true nil}", PApp(Assign, EmptyDictionary, True, Nil)},
+		{"{false nil true nil}", PApp(Assign, PApp(Assign, EmptyDictionary, True, Nil), False, Nil)},
 		{`{"foo" "bar"}`, NewDictionary([]KeyValue{{NewString("foo"), NewString("bar")}})},
 	} {
 		assert.Equal(t, StringType(c.expected), EvalPure(PApp(ToString, c.value)))
@@ -244,8 +274,8 @@ func TestDictionarySize(t *testing.T) {
 		size       NumberType
 	}{
 		{EmptyDictionary, 0},
-		{PApp(Insert, EmptyDictionary, True, Nil), 1},
-		{PApp(Insert, PApp(Insert, EmptyDictionary, True, Nil), False, Nil), 2},
+		{PApp(Assign, EmptyDictionary, True, Nil), 1},
+		{PApp(Assign, PApp(Assign, EmptyDictionary, True, Nil), False, Nil), 2},
 	} {
 		assert.Equal(t, test.size, *EvalPure(PApp(Size, test.dictionary)).(*NumberType))
 	}
@@ -258,9 +288,9 @@ func TestDictionaryInclude(t *testing.T) {
 		answer     BooleanType
 	}{
 		{EmptyDictionary, Nil, false},
-		{PApp(Insert, EmptyDictionary, False, Nil), False, true},
-		{PApp(Insert, PApp(Insert, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(42), true},
-		{PApp(Insert, PApp(Insert, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(2049), false},
+		{PApp(Assign, EmptyDictionary, False, Nil), False, true},
+		{PApp(Assign, PApp(Assign, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(42), true},
+		{PApp(Assign, PApp(Assign, EmptyDictionary, NewNumber(42), Nil), False, Nil), NewNumber(2049), false},
 	} {
 		assert.Equal(t, c.answer, *EvalPure(PApp(Include, c.dictionary, c.key)).(*BooleanType))
 	}
@@ -274,7 +304,7 @@ func TestDictionaryMerge(t *testing.T) {
 		d := Value(EmptyDictionary)
 
 		for _, kv := range kvs {
-			d = PApp(Insert, d, kv[0], kv[1])
+			d = PApp(Assign, d, kv[0], kv[1])
 		}
 
 		d1 = PApp(Merge, d1, d)
@@ -284,7 +314,7 @@ func TestDictionaryMerge(t *testing.T) {
 	d2 := Value(EmptyDictionary)
 
 	for _, kv := range d2kvs {
-		d2 = PApp(Insert, d2, kv[0], kv[1])
+		d2 = PApp(Assign, d2, kv[0], kv[1])
 	}
 
 	assert.True(t, testEqual(d1, d2))
@@ -299,11 +329,11 @@ func TestDictionaryError(t *testing.T) {
 			NewDictionary([]KeyValue{{Nil, Nil}}),
 			DummyError),
 		PApp(
-			Insert,
+			Assign,
 			NewDictionary([]KeyValue{{DummyError, Nil}}),
 			Nil),
 		PApp(
-			Insert,
+			Assign,
 			NewDictionary([]KeyValue{{Nil, Nil}}),
 			DummyError),
 		PApp(

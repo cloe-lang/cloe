@@ -132,6 +132,12 @@ func NotCollectionError(v Value) *ErrorType {
 	return TypeError(v, "collection")
 }
 
+// NotSequenceError creates an error value for an invalid value which is not
+// a sequence.
+func NotSequenceError(v Value) *ErrorType {
+	return TypeError(v, "sequence")
+}
+
 // NotEffectError creates an error value for a pure value which is expected to be an effect value.
 func NotEffectError(v Value) *ErrorType {
 	return TypeError(v, "effect")

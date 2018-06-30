@@ -18,6 +18,36 @@ func NewString(s string) StringType {
 	return StringType(s)
 }
 
+func (s StringType) assign(i, v Value) Value {
+	n, err := checkIndex(i)
+
+	if err != nil {
+		return err
+	}
+
+	rs := []rune(string(s))
+
+	if int(n) > len(rs) {
+		return OutOfRangeError()
+	}
+
+	s, err = EvalString(v)
+
+	if err != nil {
+		return err
+	}
+
+	cs := []rune(string(s))
+
+	if len(cs) != 1 {
+		return ValueError("cannot assign non-character to string")
+	}
+
+	rs[int(n)-1] = cs[0]
+
+	return StringType(rs)
+}
+
 func (s StringType) index(v Value) Value {
 	n, err := checkIndex(v)
 

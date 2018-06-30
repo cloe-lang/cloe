@@ -61,7 +61,7 @@ func (n *node) insertRed(x interface{}, compare func(interface{}, interface{}) i
 	} else if c > 0 {
 		m.right = m.right.insertRed(x, compare)
 	} else {
-		return n
+		m.value = x
 	}
 
 	return m.balance()

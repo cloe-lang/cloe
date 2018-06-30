@@ -117,6 +117,22 @@ func TestListToString(t *testing.T) {
 	}
 }
 
+func TestListAssign(t *testing.T) {
+	for _, c := range []struct {
+		list   Value
+		index  float64
+		value  Value
+		answer Value
+	}{
+		{NewList(Nil), 1, True, NewList(True)},
+		{NewList(True, Nil), 2, False, NewList(True, False)},
+		{NewList(True, False, Nil), 2, NewNumber(42), NewList(True, NewNumber(42), Nil)},
+		{NewList(Nil, Nil, Nil, Nil, Nil), 5, True, NewList(Nil, Nil, Nil, Nil, True)},
+	} {
+		assert.True(t, testEqual(c.answer, PApp(Assign, c.list, NewNumber(c.index), c.value)))
+	}
+}
+
 func TestListIndex(t *testing.T) {
 	a := NewString("I'm the answer.")
 

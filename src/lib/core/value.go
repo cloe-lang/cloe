@@ -71,6 +71,16 @@ func evalCollection(v Value) (collection, Value) {
 	return c, nil
 }
 
+func evalSequence(v Value) (sequence, Value) {
+	s, ok := EvalPure(v).(sequence)
+
+	if !ok {
+		return nil, NotSequenceError(v)
+	}
+
+	return s, nil
+}
+
 // EvalPure evaluates a pure value.
 func EvalPure(v Value) Value {
 	v = v.eval()

@@ -44,6 +44,7 @@ var goBuiltins = func() environment {
 		"@":       core.Index,
 		"delete":  core.Delete,
 		"include": core.Include,
+		"assign":  core.Assign,
 		"insert":  core.Insert,
 		"merge":   core.Merge,
 		"size":    core.Size,
@@ -87,7 +88,7 @@ func builtinsEnvironment() environment {
 			(def (dictionary ..args)
 				(if (= args [])
 					{}
-					(insert
+					(assign
 						(dictionary ..(rest (rest args)))
 						(first args)
 						(first (rest args)))))

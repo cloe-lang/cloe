@@ -34,10 +34,24 @@ func NewDictionary(kvs []KeyValue) Value {
 	d := Value(EmptyDictionary)
 
 	for _, kv := range kvs {
-		d = PApp(Insert, d, kv.Key, kv.Value)
+		d = PApp(Assign, d, kv.Key, kv.Value)
 	}
 
 	return d
+}
+
+func (d *DictionaryType) assign(k Value, v Value) (result Value) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = r.(Value)
+		}
+	}()
+
+	if _, ok := k.(comparable); !ok {
+		return notComparableError(k)
+	}
+
+	return d.Insert(k, v)
 }
 
 func (d *DictionaryType) index(v Value) (result Value) {
@@ -58,20 +72,6 @@ func (d *DictionaryType) index(v Value) (result Value) {
 	}
 
 	return keyNotFoundError(k)
-}
-
-func (d *DictionaryType) insert(k Value, v Value) (result Value) {
-	defer func() {
-		if r := recover(); r != nil {
-			result = r.(Value)
-		}
-	}()
-
-	if _, ok := k.(comparable); !ok {
-		return notComparableError(k)
-	}
-
-	return d.Insert(k, v)
 }
 
 func (d *DictionaryType) toList() (result Value) {

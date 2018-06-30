@@ -23,6 +23,28 @@ Feature: Collections
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly "42"
 
+  Scenario: Assign values to collections
+    Given a file named "main.cloe" with:
+    """
+    (seq! ..(map print [
+      (assign {} "foo" 123)
+      (assign {"bar" 123} "bar" 456)
+      (assign [123] 1 456)
+      (assign [123 456 789] 2 42)
+      (assign "Hallo, world!" 2 "e")
+      (assign "right" 1 "l")]))
+    """
+    When I successfully run `cloe main.cloe`
+    Then the stdout should contain exactly:
+    """
+    {"foo" 123}
+    {"bar" 456}
+    [456]
+    [123 42 789]
+    Hello, world!
+    light
+    """
+
   Scenario: Convert a dictionary to a list
     Given a file named "main.cloe" with:
     """

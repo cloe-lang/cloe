@@ -104,6 +104,18 @@ func initRest() FunctionType {
 		})
 }
 
+func (l *ListType) assign(i, v Value) Value {
+	n, err := checkIndex(i)
+
+	if err != nil {
+		return err
+	} else if n == 1 {
+		return cons(v, l.Rest())
+	}
+
+	return cons(l.First(), PApp(Assign, l.Rest(), NewNumber(float64(n-1)), v))
+}
+
 func (l *ListType) index(v Value) Value {
 	n, err := checkIndex(v)
 

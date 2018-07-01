@@ -26,6 +26,8 @@ func command() error {
 	switch c {
 	case "install":
 		return install(args["<repo>"].(string))
+	case "update":
+		return update()
 	case "clean":
 		return clean()
 	default:
@@ -38,6 +40,7 @@ func getArgs() (string, map[string]interface{}, error) {
 
 Usage:
 	clutil install <repo>
+	clutil update
 	clutil clean
 
 Options:

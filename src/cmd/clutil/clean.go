@@ -1,9 +1,13 @@
 package main
 
-import "os"
+import (
+	"os"
+
+	"github.com/cloe-lang/cloe/src/lib/consts"
+)
 
 func clean() error {
-	d, err := getLanguageDirectory()
+	d, err := consts.GetLanguageDirectory()
 
 	if err != nil {
 		return err

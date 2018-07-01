@@ -18,9 +18,6 @@ var Names = struct {
 // FileExtension is a file extension of the language.
 const FileExtension = ".cloe"
 
-// PathName is the name of the language path where modules are stored.
-const PathName = "CLOE_PATH"
-
 // ModuleFilename is the name of the top level scripts in module directories
 // with no file extension.
 const ModuleFilename = "module"

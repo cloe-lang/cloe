@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+
+	"github.com/cloe-lang/cloe/src/lib/consts"
 )
 
 type installer struct {
@@ -15,7 +17,7 @@ type installer struct {
 }
 
 func newInstaller(s string) (installer, error) {
-	d, err := getLanguageDirectory()
+	d, err := consts.GetLanguageDirectory()
 
 	if err != nil {
 		return installer{}, err

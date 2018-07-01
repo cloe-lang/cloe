@@ -196,15 +196,13 @@ func (c *compiler) importLocalModule(p, d string) (module, error) {
 			return nil, err
 		}
 	} else if !path.IsAbs(p) {
-		q := os.Getenv(consts.PathName)
+		d, err := consts.GetLanguageDirectory()
 
-		if q == "" {
-			return nil, fmt.Errorf("environment variable %s is not set", consts.PathName)
-		} else if !path.IsAbs(q) {
-			return nil, fmt.Errorf("%s is not absolute", consts.PathName)
+		if err != nil {
+			return nil, err
 		}
 
-		p = path.Join(q, p)
+		p = path.Join(d, p)
 	}
 
 	if m, ok := c.cache.Get(p); ok {

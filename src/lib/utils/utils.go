@@ -1,11 +1,12 @@
-package main
+package utils
 
 import (
 	"fmt"
 	"os"
 )
 
-func mkdirp(d string) error {
+// MkdirRecursively works just like mkdir -p.
+func MkdirRecursively(d string) error {
 	if err := os.Mkdir(d, 0700); err != nil && !os.IsExist(err) {
 		return err
 	}

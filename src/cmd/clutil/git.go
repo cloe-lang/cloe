@@ -19,7 +19,13 @@ func gitPull(p string) error {
 		return err
 	}
 
-	return w.Pull(&git.PullOptions{RemoteName: "origin"})
+	err = w.Pull(&git.PullOptions{RemoteName: "origin"})
+
+	if err != nil && err != git.NoErrAlreadyUpToDate {
+		return err
+	}
+
+	return nil
 }
 
 func gitClone(u, p string) error {

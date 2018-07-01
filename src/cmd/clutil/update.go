@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/cloe-lang/cloe/src/lib/consts"
-	git "gopkg.in/src-d/go-git.v4"
 )
 
 func update() error {
@@ -23,7 +22,7 @@ func update() error {
 	}
 
 	for _, r := range rs {
-		if err := gitPull(r); err != nil && err != git.NoErrAlreadyUpToDate {
+		if err := gitPull(r); err != nil {
 			return err
 		}
 	}

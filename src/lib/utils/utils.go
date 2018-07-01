@@ -7,7 +7,7 @@ import (
 
 // MkdirRecursively works just like mkdir -p.
 func MkdirRecursively(d string) error {
-	if err := os.Mkdir(d, 0700); err != nil && !os.IsExist(err) {
+	if err := os.MkdirAll(d, 0700); err != nil && !os.IsExist(err) {
 		return err
 	}
 

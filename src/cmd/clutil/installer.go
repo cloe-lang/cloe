@@ -11,13 +11,13 @@ import (
 )
 
 type installer struct {
-	url               *url.URL
-	languageDirectory string
-	moduleDirectory   string
+	url              *url.URL
+	modulesDirectory string
+	moduleDirectory  string
 }
 
 func newInstaller(s string) (installer, error) {
-	d, err := consts.GetLanguageDirectory()
+	d, err := consts.GetModulesDirectory()
 
 	if err != nil {
 		return installer{}, err
@@ -32,7 +32,7 @@ func newInstaller(s string) (installer, error) {
 	return installer{
 		u,
 		d,
-		filepath.Join(d, "src", u.Hostname(), filepath.FromSlash(u.Path)),
+		filepath.Join(d, u.Hostname(), filepath.FromSlash(u.Path)),
 	}, nil
 }
 
@@ -73,9 +73,9 @@ func (i installer) InstallCommands() error {
 		return err
 	}
 
-	d := filepath.Join(i.languageDirectory, "bin")
+	d, err := consts.GetCommandsDirectory()
 
-	if err = mkdirp(d); err != nil {
+	if err != nil {
 		return err
 	}
 

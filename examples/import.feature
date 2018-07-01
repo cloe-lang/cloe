@@ -144,14 +144,14 @@ Feature: Import statement
     (foo.hello)
     """
     And a directory named "cloe-modules"
-    And a file named "cloe-modules/foo.cloe" with:
+    And a file named ".cloe/src/foo.cloe" with:
     """
     (def (hello)
       (print "Hello, world!"))
     """
     And a file named "main.sh" with:
     """
-    CLOE_PATH=$PWD/cloe-modules cloe main.cloe
+    CLOE_PATH=$PWD/.cloe cloe main.cloe
     """
     When I successfully run `sh main.sh`
     Then the stdout should contain exactly "Hello, world!"

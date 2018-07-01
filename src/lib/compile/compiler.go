@@ -196,7 +196,7 @@ func (c *compiler) importLocalModule(p, d string) (module, error) {
 			return nil, err
 		}
 	} else if !path.IsAbs(p) {
-		d, err := consts.GetLanguageDirectory()
+		d, err := consts.GetModulesDirectory()
 
 		if err != nil {
 			return nil, err

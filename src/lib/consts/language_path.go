@@ -10,9 +10,7 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/utils"
 )
 
-// GetLanguageDirectory gets the language directory of the current user from
-// proper environment variables.
-func GetLanguageDirectory() (string, error) {
+func getLanguageSubDirectory(s string) (string, error) {
 	d := os.Getenv("CLOE_PATH")
 
 	if d == "" {
@@ -29,9 +27,21 @@ func GetLanguageDirectory() (string, error) {
 		return "", fmt.Errorf("language path, %s is not absolute", d)
 	}
 
+	d = filepath.Join(d, s)
+
 	if err := utils.MkdirRecursively(d); err != nil {
 		return "", err
 	}
 
 	return d, nil
+}
+
+// GetModulesDirectory gets a modules directory of the current user.
+func GetModulesDirectory() (string, error) {
+	return getLanguageSubDirectory("src")
+}
+
+// GetCommandsDirectory gets a commands directory of the current user.
+func GetCommandsDirectory() (string, error) {
+	return getLanguageSubDirectory("bin")
 }

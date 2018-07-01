@@ -4,36 +4,29 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sync"
 
 	"github.com/cloe-lang/cloe/src/lib/consts"
+	git "gopkg.in/src-d/go-git.v4"
 )
 
 func update() error {
-	d, err := consts.GetLanguageDirectory()
+	d, err := consts.GetModulesDirectory()
 
 	if err != nil {
 		return err
 	}
 
-	w := sync.WaitGroup{}
-
-	rs, err := listRepositories(filepath.Join(d, "src"))
+	rs, err := listRepositories(d)
 
 	if err != nil {
 		return err
 	}
 
 	for _, r := range rs {
-		w.Add(1)
-		go func(r string) {
-			defer w.Done()
-
-			gitPull(filepath.Join(d, "src", r))
-		}(r)
+		if err := gitPull(r); err != nil && err != git.NoErrAlreadyUpToDate {
+			return err
+		}
 	}
-
-	w.Wait()
 
 	return nil
 }

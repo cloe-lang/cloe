@@ -38,6 +38,11 @@ Feature: clutil command
     """
     Then I run the following commands:
     """
-    ls $PWD/.cloe
+    ls $PWD/.cloe/src
+    """
+    And the exit status should not be 0
+    And I run the following commands:
+    """
+    ls $PWD/.cloe/bin
     """
     And the exit status should not be 0

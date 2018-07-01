@@ -7,11 +7,17 @@ import (
 )
 
 func clean() error {
-	d, err := consts.GetLanguageDirectory()
+	for _, f := range [](func() (string, error)){consts.GetModulesDirectory, consts.GetCommandsDirectory} {
+		d, err := f()
 
-	if err != nil {
-		return err
+		if err != nil {
+			return err
+		}
+
+		if err := os.RemoveAll(d); err != nil {
+			return err
+		}
 	}
 
-	return os.RemoveAll(d)
+	return nil
 }

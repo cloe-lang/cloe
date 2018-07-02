@@ -55,7 +55,6 @@ var goBuiltins = func() environment {
 		"seq!":  builtins.EffectSeq,
 		"rally": builtins.Rally,
 
-		"read":  builtins.Read,
 		"print": builtins.Print,
 
 		"error": core.Error,

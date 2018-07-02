@@ -6,5 +6,6 @@ import "github.com/cloe-lang/cloe/src/lib/core"
 var Module = map[string]core.Value{
 	"createDirectory": createDirectory,
 	"readDirectory":   readDirectory,
+	"readFile":        readFile,
 	"remove":          remove,
 }

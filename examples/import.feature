@@ -127,7 +127,9 @@ Feature: Import statement
     """
     And a file named "mod2.cloe" with:
     """
-    (let stdin (read))
+    (import "os")
+
+    (let stdin (os.readStdin))
     """
     When I successfully run `sh -c 'echo Hello | cloe main.cloe'`
     Then the stdout should contain exactly:

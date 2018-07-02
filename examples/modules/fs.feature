@@ -28,3 +28,24 @@ Feature: File System
     When I successfully run `cloe main.cloe`
     Then I run `ls foo.txt`
     And the exit status should not be 0
+
+  Scenario: Read a file
+    Given a file named "main.cloe" with:
+    """
+    (import "fs")
+
+    (print (fs.readFile "test.txt") . end "")
+    """
+    And a file named "test.txt" with:
+    """
+    foo
+    bar
+    baz
+    """
+    When I successfully run `cloe main.cloe`
+    Then the stdout should contain exactly:
+    """
+    foo
+    bar
+    baz
+    """

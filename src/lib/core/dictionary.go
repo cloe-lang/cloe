@@ -3,12 +3,12 @@ package core
 import (
 	"strings"
 
-	"github.com/cloe-lang/cloe/src/lib/rbt"
+	"github.com/raviqqe/hamt"
 )
 
 // DictionaryType represents a dictionary in the language.
 type DictionaryType struct {
-	rbt.Dictionary
+	hamt.Map
 }
 
 // Eval evaluates a value into a WHNF.
@@ -17,7 +17,7 @@ func (d *DictionaryType) eval() Value {
 }
 
 var (
-	emtpyDictionary = DictionaryType{rbt.NewDictionary(compare)}
+	emtpyDictionary = DictionaryType{hamt.NewMap()}
 
 	// EmptyDictionary is a thunk of an empty dictionary.
 	EmptyDictionary = &emtpyDictionary
@@ -40,47 +40,43 @@ func NewDictionary(kvs []KeyValue) Value {
 	return d
 }
 
-func (d *DictionaryType) assign(k Value, v Value) (result Value) {
-	defer func() {
-		if r := recover(); r != nil {
-			result = r.(Value)
-		}
-	}()
+func (d *DictionaryType) assign(k Value, v Value) Value {
+	e, err := evalEntry(k)
 
-	if _, ok := k.(comparable); !ok {
-		return notComparableError(k)
+	if err != nil {
+		return err
 	}
 
-	return d.Insert(k, v)
+	return &DictionaryType{d.Map.Insert(e, v)}
 }
 
-func (d *DictionaryType) index(v Value) (result Value) {
-	defer func() {
-		if r := recover(); r != nil {
-			result = r.(Value)
-		}
-	}()
+func (d *DictionaryType) index(k Value) Value {
+	v, err := d.find(k)
 
-	k, ok := v.(comparable)
-
-	if !ok {
-		return notComparableError(v)
+	if err != nil {
+		return err
 	}
 
-	if v, ok := d.Search(k); ok {
-		return v
-	}
-
-	return keyNotFoundError(k)
+	return v
 }
 
-func (d *DictionaryType) toList() (result Value) {
-	defer func() {
-		if r := recover(); r != nil {
-			result = r.(Value)
-		}
-	}()
+func (d *DictionaryType) find(k Value) (Value, Value) {
+	e, err := evalEntry(k)
 
+	if err != nil {
+		return nil, err
+	}
+
+	v := d.Map.Find(e)
+
+	if v == nil {
+		return nil, keyNotFoundError(k)
+	}
+
+	return v.(Value), nil
+}
+
+func (d *DictionaryType) toList() Value {
 	k, v, rest := d.FirstRest()
 
 	if k == nil {
@@ -88,17 +84,11 @@ func (d *DictionaryType) toList() (result Value) {
 	}
 
 	return cons(
-		NewList(k, v),
-		PApp(ToList, rest))
+		NewList(k.(Value), v.(Value)),
+		PApp(ToList, &DictionaryType{rest}))
 }
 
-func (d *DictionaryType) merge(vs ...Value) (result Value) {
-	defer func() {
-		if r := recover(); r != nil {
-			result = r.(Value)
-		}
-	}()
-
+func (d *DictionaryType) merge(vs ...Value) Value {
 	for _, v := range vs {
 		dd, err := EvalDictionary(v)
 
@@ -106,46 +96,40 @@ func (d *DictionaryType) merge(vs ...Value) (result Value) {
 			return err
 		}
 
-		d = d.Merge(dd)
+		d = &DictionaryType{d.Merge(dd.Map)}
 	}
 
 	return d
 }
 
-func (d *DictionaryType) delete(v Value) (result Value) {
-	defer func() {
-		if r := recover(); r != nil {
-			result = r.(Value)
-		}
-	}()
+func (d *DictionaryType) delete(k Value) Value {
+	e, err := evalEntry(k)
 
-	return d.Remove(v)
+	if err != nil {
+		return err
+	}
+
+	return &DictionaryType{d.Map.Delete(e)}
 }
 
 func (d *DictionaryType) compare(c comparable) int {
 	return compare(d.toList(), c.(*DictionaryType).toList())
 }
 
-func (d *DictionaryType) string() (result Value) {
-	defer func() {
-		if r := recover(); r != nil {
-			result = r.(Value)
-		}
-	}()
-
+func (d *DictionaryType) string() Value {
 	ss := []string{}
 
-	for !d.Empty() {
-		var k, v Value
-		k, v, d = d.FirstRest()
+	for d.Size() != 0 {
+		k, v, m := d.FirstRest()
+		d = &DictionaryType{m}
 
-		sk, err := StrictDump(k)
+		sk, err := StrictDump(k.(Value))
 
 		if err != nil {
 			return err
 		}
 
-		sv, err := StrictDump(EvalPure(v))
+		sv, err := StrictDump(EvalPure(v.(Value)))
 
 		if err != nil {
 			return err
@@ -161,51 +145,22 @@ func (d *DictionaryType) size() Value {
 	return NewNumber(float64(d.Size()))
 }
 
-func (d *DictionaryType) include(v Value) (result Value) {
-	defer func() {
-		if r := recover(); r != nil {
-			result = r.(Value)
-		}
-	}()
+func (d *DictionaryType) include(k Value) Value {
+	e, err := evalEntry(k)
 
-	_, ok := d.Search(v)
-	return NewBoolean(ok)
+	if err != nil {
+		return err
+	}
+
+	return NewBoolean(d.Include(e))
 }
 
-// Insert wraps rbt.Dictionary.Insert().
-func (d *DictionaryType) Insert(k Value, v Value) *DictionaryType {
-	return &DictionaryType{d.Dictionary.Insert(k, v)}
-}
-
-// Search wraps rbt.Dictionary.Search().
-func (d *DictionaryType) Search(k Value) (Value, bool) {
-	v, ok := d.Dictionary.Search(k)
+func evalEntry(v Value) (hamt.Entry, Value) {
+	e, ok := v.(hamt.Entry)
 
 	if !ok {
-		return nil, false
+		return nil, TypeError(v, "hashable")
 	}
 
-	return v.(Value), true
-}
-
-// Remove wraps rbt.Dictionary.Remove().
-func (d *DictionaryType) Remove(k Value) *DictionaryType {
-	return &DictionaryType{d.Dictionary.Remove(k)}
-}
-
-// FirstRest wraps rbt.Dictionary.FirstRest().
-func (d *DictionaryType) FirstRest() (Value, Value, *DictionaryType) {
-	k, v, rest := d.Dictionary.FirstRest()
-	d = &DictionaryType{rest}
-
-	if k == nil {
-		return nil, nil, d
-	}
-
-	return k.(Value), v.(Value), d
-}
-
-// Merge wraps rbt.Dictionary.Merge().
-func (d *DictionaryType) Merge(dd *DictionaryType) *DictionaryType {
-	return &DictionaryType{d.Dictionary.Merge(dd.Dictionary)}
+	return e, nil
 }

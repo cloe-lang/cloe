@@ -2,7 +2,10 @@ package core
 
 import (
 	"fmt"
+	"hash/fnv"
 	"strings"
+
+	"github.com/raviqqe/hamt"
 )
 
 // StringType represents a string in the language.
@@ -160,4 +163,24 @@ func (s StringType) include(v Value) Value {
 	}
 
 	return NewBoolean(strings.Contains(string(s), string(ss)))
+}
+
+// Hash hashes a string.
+func (s StringType) Hash() uint32 {
+	h := fnv.New32()
+
+	if _, err := h.Write([]byte(string(s))); err != nil {
+		panic(err)
+	}
+
+	return h.Sum32()
+}
+
+// Equal checks equality of strings.
+func (s StringType) Equal(e hamt.Entry) bool {
+	if t, ok := e.(StringType); ok {
+		return s == t
+	}
+
+	return false
 }

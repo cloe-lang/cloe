@@ -53,7 +53,7 @@ Feature: Collections
     When I successfully run `cloe main.cloe`
     Then the stdout should contain exactly:
     """
-    [[123 456] ["foo" "bar"]]
+    [["foo" "bar"] [123 456]]
     """
 
   Scenario: Convert a list to a list

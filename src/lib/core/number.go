@@ -1,6 +1,12 @@
 package core
 
-import "math"
+import (
+	"encoding/binary"
+	"hash/fnv"
+	"math"
+
+	"github.com/raviqqe/hamt"
+)
 
 // NumberType represents a number in the language.
 // It will perhaps be represented by DEC64 in the future release.
@@ -145,6 +151,26 @@ func (n *NumberType) compare(c comparable) int {
 }
 
 func (*NumberType) ordered() {}
+
+// Hash hashes a number.
+func (n *NumberType) Hash() uint32 {
+	h := fnv.New32()
+
+	if err := binary.Write(h, binary.BigEndian, float64(*n)); err != nil {
+		panic(err)
+	}
+
+	return h.Sum32()
+}
+
+// Equal checks equality of numbers.
+func (n *NumberType) Equal(e hamt.Entry) bool {
+	if m, ok := e.(*NumberType); ok {
+		return *n == *m
+	}
+
+	return false
+}
 
 func (n *NumberType) string() Value {
 	return sprint(*n)

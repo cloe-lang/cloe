@@ -39,3 +39,13 @@ func TestArgumentsRestKeywords(t *testing.T) {
 	a := NewArguments(nil, []KeywordArgument{NewKeywordArgument("", DummyError)})
 	assert.Equal(t, "DummyError", EvalPure(a.restKeywords()).(*ErrorType).Name())
 }
+
+func TestArgumentsWithNormalAndRestKeywords(t *testing.T) {
+	vs, e := NewSignature(nil, "", []OptionalParameter{NewOptionalParameter("foo", False)}, "").Bind(
+		NewArguments(
+			nil,
+			[]KeywordArgument{NewKeywordArgument("foo", True), NewKeywordArgument("", EmptyDictionary)}))
+
+	assert.Equal(t, True, EvalPure(vs[0]))
+	assert.Nil(t, e)
+}

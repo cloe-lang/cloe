@@ -1,5 +1,11 @@
 package core
 
+import (
+	"hash/fnv"
+
+	"github.com/raviqqe/hamt"
+)
+
 // BooleanType represents a boolean values in the language.
 type BooleanType bool
 
@@ -69,6 +75,32 @@ func (b *BooleanType) compare(c comparable) int {
 	}
 
 	return -1
+}
+
+// Hash hashes a value.
+func (b *BooleanType) Hash() uint32 {
+	h := fnv.New32()
+
+	if *b {
+		if _, err := h.Write([]byte{1}); err != nil {
+			panic(err)
+		}
+	} else {
+		if _, err := h.Write([]byte{0}); err != nil {
+			panic(err)
+		}
+	}
+
+	return h.Sum32()
+}
+
+// Equal checks equality.
+func (b *BooleanType) Equal(e hamt.Entry) bool {
+	if c, ok := e.(*BooleanType); ok {
+		return *b == *c
+	}
+
+	return false
 }
 
 func (b *BooleanType) string() Value {

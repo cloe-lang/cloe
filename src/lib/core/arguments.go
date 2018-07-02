@@ -103,13 +103,13 @@ func (args *Arguments) searchKeyword(s string) Value {
 
 			k := NewString(s)
 
-			// Using DictionaryType.{Search,Remove} methods is safe here
+			// Using DictionaryType.{index,delete} methods is safe here
 			// because the key is always StringType.
-			if v, ok := d.Search(k); ok {
+			if v, err := d.find(k); err == nil {
 				args.keywords = append(
 					args.keywords[:i],
 					append(
-						[]KeywordArgument{NewKeywordArgument("", d.Remove(k))},
+						[]KeywordArgument{NewKeywordArgument("", d.delete(k))},
 						args.keywords[i+1:]...)...)
 				return v
 			}

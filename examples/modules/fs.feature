@@ -34,9 +34,9 @@ Feature: File System
     """
     (import "fs")
 
-    (print (fs.readFile "test.txt") . end "")
+    (print (fs.readFile "foo.txt") . end "")
     """
-    And a file named "test.txt" with:
+    And a file named "foo.txt" with:
     """
     foo
     bar
@@ -49,3 +49,13 @@ Feature: File System
     bar
     baz
     """
+
+  Scenario: Write a file
+    Given a file named "main.cloe" with:
+    """
+    (import "fs")
+
+    (fs.writeFile "foo.txt" "foo")
+    """
+    When I successfully run `cloe main.cloe`
+    Then the file named "foo.txt" should contain "foo"

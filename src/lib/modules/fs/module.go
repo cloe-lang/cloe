@@ -8,4 +8,5 @@ var Module = map[string]core.Value{
 	"readDirectory":   readDirectory,
 	"readFile":        readFile,
 	"remove":          remove,
+	"writeFile":       writeFile,
 }

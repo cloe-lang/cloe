@@ -34,8 +34,80 @@ func TestCompileBuiltinModuleWithInvalidSource(t *testing.T) {
 	}
 }
 
+func TestListFunction(t *testing.T) {
+	f, err := builtinsEnvironment().get("$list")
+	assert.Nil(t, err)
+
+	b, e := core.EvalBoolean(core.PApp(
+		core.Equal,
+		core.PApp(f, core.True, core.False, core.Nil),
+		core.NewList(core.True, core.False, core.Nil)))
+
+	assert.Nil(t, e)
+	assert.True(t, bool(b))
+}
+
+func TestDictionaryFunction(t *testing.T) {
+	f, err := builtinsEnvironment().get("$dictionary")
+	assert.Nil(t, err)
+
+	b, e := core.EvalBoolean(core.PApp(
+		core.Equal,
+		core.PApp(f, core.NewString("foo"), core.False),
+		core.NewDictionary([]core.KeyValue{{Key: core.NewString("foo"), Value: core.False}})))
+
+	assert.Nil(t, e)
+	assert.True(t, bool(b))
+}
+
+func TestTypeCheckFunctions(t *testing.T) {
+	e := builtinsEnvironment()
+
+	for _, c := range []struct {
+		function string
+		argument core.Value
+	}{
+		{"boolean?", core.True},
+		{"function?", core.If},
+		{"number?", core.NewNumber(42)},
+	} {
+		f, err := e.get(c.function)
+		assert.Nil(t, err)
+
+		b, e := core.EvalBoolean(core.PApp(f, c.argument))
+		assert.Nil(t, e)
+		assert.True(t, bool(b))
+	}
+}
+
+func TestBooleanFunctions(t *testing.T) {
+	e := builtinsEnvironment()
+
+	for _, c := range []struct {
+		function  string
+		arguments []core.Value
+		result    bool
+	}{
+		{"not", []core.Value{core.False}, true},
+		{"and", []core.Value{core.True}, true},
+		{"and", []core.Value{core.True, core.False}, false},
+		{"and", []core.Value{core.True, core.True}, true},
+		{"or", []core.Value{core.True}, true},
+		{"or", []core.Value{core.True, core.False}, true},
+		{"or", []core.Value{core.False, core.True, core.False}, true},
+	} {
+		f, err := e.get(c.function)
+		assert.Nil(t, err)
+
+		b, e := core.EvalBoolean(core.PApp(f, c.arguments...))
+		assert.Nil(t, e)
+		assert.Equal(t, c.result, bool(b))
+	}
+}
+
 func TestReduce(t *testing.T) {
-	f := builtinsEnvironment().get("$reduce")
+	f, err := builtinsEnvironment().get("$reduce")
+	assert.Nil(t, err)
 
 	for _, vs := range [][2]core.Value{
 		{
@@ -53,7 +125,8 @@ func TestReduce(t *testing.T) {
 }
 
 func TestReduceError(t *testing.T) {
-	f := builtinsEnvironment().get("$reduce")
+	f, err := builtinsEnvironment().get("$reduce")
+	assert.Nil(t, err)
 
 	for _, v := range []core.Value{
 		core.PApp(f, core.Add, core.EmptyList),
@@ -65,7 +138,8 @@ func TestReduceError(t *testing.T) {
 }
 
 func TestFilter(t *testing.T) {
-	f := builtinsEnvironment().get("$filter")
+	f, err := builtinsEnvironment().get("$filter")
+	assert.Nil(t, err)
 
 	for _, vs := range [][2]core.Value{
 		{
@@ -91,7 +165,9 @@ func TestFilter(t *testing.T) {
 func BenchmarkFilter(b *testing.B) {
 	go systemt.RunDaemons()
 
-	f := builtinsEnvironment().get("$filter")
+	f, err := builtinsEnvironment().get("$filter")
+	assert.Nil(b, err)
+
 	l := randomNumberList(10000)
 
 	b.ResetTimer()
@@ -156,7 +232,11 @@ func TestSort(t *testing.T) {
 			core.NewList(core.NewNumber(-123), core.NewNumber(1), core.NewNumber(2), core.NewNumber(3)),
 		},
 	} {
-		v := core.PApp(builtinsEnvironment().get("sort"), vs[0])
+		f, err := builtinsEnvironment().get("sort")
+		assert.Nil(t, err)
+
+		v := core.PApp(f, vs[0])
+
 		t.Log(core.EvalPure(core.PApp(core.ToString, v)))
 		assert.True(t, bool(*core.EvalPure(core.PApp(core.Equal, v, vs[1])).(*core.BooleanType)))
 	}
@@ -165,8 +245,11 @@ func TestSort(t *testing.T) {
 func TestSortError(t *testing.T) {
 	go systemt.RunDaemons()
 
+	f, err := builtinsEnvironment().get("$sort")
+	assert.Nil(t, err)
+
 	_, ok := core.EvalPure(core.App(
-		builtinsEnvironment().get("$sort"),
+		f,
 		core.NewArguments(
 			[]core.PositionalArgument{
 				core.NewPositionalArgument(core.NewList(core.NewNumber(42)), false),
@@ -199,7 +282,12 @@ func BenchmarkSort10000(b *testing.B) {
 func benchmarkSort(size, N int, resetTimer func()) {
 	go systemt.RunDaemons()
 
-	f := builtinsEnvironment().get("$sort")
+	f, err := builtinsEnvironment().get("$sort")
+
+	if err != nil {
+		panic(err)
+	}
+
 	l := randomNumberList(size)
 
 	resetTimer()
@@ -216,7 +304,13 @@ func BenchmarkMap(b *testing.B) {
 func benchmarkMap(N int, startTimer, fail func()) {
 	go systemt.RunDaemons()
 
-	v := core.PApp(builtinsEnvironment().get("$map"), identity, many42())
+	f, err := builtinsEnvironment().get("$map")
+
+	if err != nil {
+		panic(err)
+	}
+
+	v := core.PApp(f, identity, many42())
 
 	startTimer()
 

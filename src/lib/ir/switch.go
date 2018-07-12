@@ -1,38 +1,21 @@
 package ir
 
-import (
-	"github.com/cloe-lang/cloe/src/lib/core"
-)
+import "github.com/cloe-lang/cloe/src/lib/core"
 
-// Switch represents a switch expression.
-type Switch struct {
-	matchedValue interface{}
-	caseValues   []interface{}
-	defaultCase  interface{}
-	dict         core.Value
+type switchData struct {
+	Cases       []caseData
+	DefaultCase int
 }
 
-// NewSwitch creates a switch expression.
-func NewSwitch(m interface{}, cs []Case, d interface{}) Switch {
-	if d == nil {
-		panic("Default cases must be provided in switch expressions")
-	}
-
-	vs := make([]interface{}, 0, len(cs))
-
-	for _, c := range cs {
-		vs = append(vs, c.value)
-	}
-
-	return Switch{m, vs, d, compileCasesToDictionary(cs)}
+func newSwitchData(cs []caseData, dc int) switchData {
+	return switchData{cs, dc}
 }
 
-func compileCasesToDictionary(cs []Case) core.Value {
-	kvs := make([]core.KeyValue, 0, len(cs))
+type caseData struct {
+	Value         core.Value
+	VariableIndex int
+}
 
-	for i, c := range cs {
-		kvs = append(kvs, core.KeyValue{Key: c.pattern, Value: core.NewNumber(float64(i))})
-	}
-
-	return core.EvalPure(core.NewDictionary(kvs))
+func newCaseData(v core.Value, i int) caseData {
+	return caseData{v, i}
 }

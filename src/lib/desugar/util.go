@@ -5,7 +5,7 @@ import "github.com/cloe-lang/cloe/src/lib/ast"
 func signatureToNames(s ast.Signature) names {
 	ns := newNames()
 
-	for n := range s.NameToIndex() {
+	for _, n := range s.Names() {
 		ns.add(n)
 	}
 

@@ -45,7 +45,7 @@ func Convert(name string) (core.Value, error) {
 		return core.NewString(s), nil
 	}
 
-	return nil, fmt.Errorf("the name, %s not found", name)
+	return nil, fmt.Errorf("name, %s not found", name)
 }
 
 // Defined checks if a given name is a defined scalar value or not.

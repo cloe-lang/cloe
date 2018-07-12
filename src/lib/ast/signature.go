@@ -36,15 +36,9 @@ func (s Signature) RestKeywords() string {
 	return s.keywords.rest
 }
 
-// NameToIndex converts an argument name into an index in arguments inside a signature.
-func (s Signature) NameToIndex() map[string]int {
-	m := map[string]int{}
-
-	for i, n := range append(s.positionals.names(), s.keywords.names()...) {
-		m[n] = i
-	}
-
-	return m
+// Names returns names used in a signature.
+func (s Signature) Names() []string {
+	return append(s.positionals.names(), s.keywords.names()...)
 }
 
 func (s Signature) String() string {

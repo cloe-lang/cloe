@@ -16,15 +16,15 @@ func TestNewEnvironment(t *testing.T) {
 	newEnvironment(testFallback)
 }
 
-func TestEnvironmentGetFail(t *testing.T) {
-	assert.Panics(t, func() {
-		newEnvironment(testFallback).get("foo")
-	})
-}
-
 func TestEnvironmentGet(t *testing.T) {
 	e := newEnvironment(testFallback)
 	e.set("foo", core.Nil)
-	v := e.get("foo")
+	v, err := e.get("foo")
+	assert.Nil(t, err)
 	assert.Equal(t, core.Nil, core.EvalPure(v))
+}
+
+func TestEnvironmentGetError(t *testing.T) {
+	_, err := newEnvironment(testFallback).get("foo")
+	assert.NotNil(t, err)
 }

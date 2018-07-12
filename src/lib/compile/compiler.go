@@ -32,29 +32,35 @@ func (c *compiler) compileModule(m []interface{}, d string) ([]Effect, error) {
 	for _, s := range m {
 		switch x := s.(type) {
 		case ast.LetVar:
-			c.env.set(x.Name(), c.exprToThunk(x.Expr()))
-		case ast.DefFunction:
-			sig := x.Signature()
-			ls := x.Lets()
+			v, err := c.expressionToValue(x.Expr())
 
-			vars := make([]interface{}, 0, len(ls))
-			varToIndex := sig.NameToIndex()
-			nargs := len(varToIndex)
-
-			for i, l := range ls {
-				v := l.(ast.LetVar)
-				vars = append(vars, c.exprToIR(varToIndex, v.Expr()))
-				varToIndex[v.Name()] = nargs + i
+			if err != nil {
+				return nil, err
 			}
 
-			c.env.set(
-				x.Name(),
-				ir.CompileFunction(
-					c.compileSignature(sig),
-					vars,
-					c.exprToIR(varToIndex, x.Body())))
+			c.env.set(x.Name(), v)
+		case ast.DefFunction:
+			s, err := c.compileSignature(x.Signature())
+
+			if err != nil {
+				return nil, err
+			}
+
+			f, err := ir.CreateFunction(s, x.Signature().Names(), x.Lets(), x.Body(), c.env.get)
+
+			if err != nil {
+				return nil, err
+			}
+
+			c.env.set(x.Name(), f)
 		case ast.Effect:
-			es = append(es, NewEffect(c.exprToThunk(x.Expr()), x.Expanded()))
+			v, err := c.expressionToValue(x.Expr())
+
+			if err != nil {
+				return nil, err
+			}
+
+			es = append(es, NewEffect(v, x.Expanded()))
 		case ast.Import:
 			if c.cache == nil {
 				return nil, errors.New("import statement is unavailable")
@@ -88,102 +94,112 @@ func (c *compiler) compileModule(m []interface{}, d string) ([]Effect, error) {
 	return es, nil
 }
 
-func (c *compiler) compileSubModule(p string) (module, error) {
-	if i, err := os.Stat(p); err == nil && i.IsDir() {
-		p = path.Join(p, consts.ModuleFilename)
-	}
-
-	bs, err := ioutil.ReadFile(filepath.FromSlash(p + consts.FileExtension))
-
-	if err != nil {
-		return nil, err
-	}
-
-	m, err := parse.SubModule(p, string(bs))
-
-	if err != nil {
-		return nil, err
-	}
-
-	cc := newCompiler(builtinsEnvironment(), c.cache)
-	c = &cc
-	_, err = c.compileModule(desugar.Desugar(m), path.Dir(p))
-
-	if err != nil {
-		return nil, err
-	}
-
-	return c.env.toMap(), nil
-}
-
-func (c *compiler) exprToThunk(expr interface{}) core.Value {
-	return core.PApp(ir.CompileFunction(
-		core.NewSignature(nil, "", nil, ""),
-		nil,
-		c.exprToIR(nil, expr)))
-}
-
-func (c *compiler) compileSignature(s ast.Signature) core.Signature {
-	return core.NewSignature(
-		s.Positionals(), s.RestPositionals(),
-		c.compileOptionalParameters(s.Keywords()), s.RestKeywords(),
-	)
-}
-
-func (c *compiler) compileOptionalParameters(os []ast.OptionalParameter) []core.OptionalParameter {
-	ps := make([]core.OptionalParameter, 0, len(os))
-
-	for _, o := range os {
-		ps = append(ps, core.NewOptionalParameter(o.Name(), c.exprToThunk(o.DefaultValue())))
-	}
-
-	return ps
-}
-
-func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interface{} {
-	switch x := expr.(type) {
+func (c *compiler) expressionToValue(x interface{}) (core.Value, error) {
+	switch x := x.(type) {
 	case string:
-		if i, ok := varToIndex[x]; ok {
-			return i
-		}
-
 		return c.env.get(x)
 	case ast.App:
-		args := x.Arguments()
+		a := x.Arguments()
+		ps := make([]core.PositionalArgument, 0, len(a.Positionals()))
+		ks := make([]core.KeywordArgument, 0, len(a.Keywords()))
 
-		ps := make([]ir.PositionalArgument, 0, len(args.Positionals()))
-		for _, p := range args.Positionals() {
-			ps = append(ps, ir.NewPositionalArgument(c.exprToIR(varToIndex, p.Value()), p.Expanded()))
+		for _, p := range a.Positionals() {
+			v, err := c.expressionToValue(p.Value())
+
+			if err != nil {
+				return nil, err
+			}
+
+			ps = append(ps, core.NewPositionalArgument(v, p.Expanded()))
 		}
 
-		ks := make([]ir.KeywordArgument, 0, len(args.Keywords()))
-		for _, k := range args.Keywords() {
-			ks = append(ks, ir.NewKeywordArgument(k.Name(), c.exprToIR(varToIndex, k.Value())))
+		for _, k := range a.Keywords() {
+			v, err := c.expressionToValue(k.Value())
+
+			if err != nil {
+				return nil, err
+			}
+
+			ks = append(ks, core.NewKeywordArgument(k.Name(), v))
 		}
 
-		return ir.NewApp(
-			c.exprToIR(varToIndex, x.Function()),
-			ir.NewArguments(ps, ks),
-			x.DebugInfo())
+		f, err := c.expressionToValue(x.Function())
+
+		if err != nil {
+			return nil, err
+		}
+
+		return core.AppWithInfo(f, core.NewArguments(ps, ks), x.DebugInfo()), nil
 	case ast.Switch:
-		cs := make([]ir.Case, 0, len(x.Cases()))
+		kvs := make([]core.KeyValue, 0, len(x.Cases()))
 
-		for _, k := range x.Cases() {
-			cs = append(cs, ir.NewCase(
-				c.env.get(k.Pattern()),
-				c.exprToIR(varToIndex, k.Value())))
+		for _, cs := range x.Cases() {
+			k, err := c.env.get(cs.Pattern())
+
+			if err != nil {
+				return nil, err
+			}
+
+			v, err := c.expressionToValue(cs.Value())
+
+			if err != nil {
+				return nil, err
+			}
+
+			kvs = append(kvs, core.KeyValue{Key: k, Value: v})
 		}
 
-		d := interface{}(nil)
+		v, err := c.expressionToValue(x.Value())
 
-		if x.DefaultCase() != nil {
-			d = c.exprToIR(varToIndex, x.DefaultCase())
+		if err != nil {
+			return nil, err
 		}
 
-		return ir.NewSwitch(c.exprToIR(varToIndex, x.Value()), cs, d)
+		d, err := c.expressionToValue(core.NewDictionary(kvs))
+
+		if err != nil {
+			return nil, err
+		}
+
+		dc, err := c.expressionToValue(x.DefaultCase())
+
+		if err != nil {
+			return nil, err
+		}
+
+		return core.PApp(
+			core.NewLazyFunction(
+				core.NewSignature(nil, "", nil, ""),
+				func(...core.Value) core.Value {
+					b, err := core.EvalBoolean(core.PApp(core.Include, d, v))
+
+					if err != nil {
+						return err
+					} else if !b {
+						return dc
+					}
+
+					return core.PApp(core.Index, d, v)
+				})), nil
 	}
 
-	panic(fmt.Errorf("Invalid type: %#v", expr))
+	panic(fmt.Sprintf("Invalid type: %#v", x))
+}
+
+func (c *compiler) compileSignature(s ast.Signature) (core.Signature, error) {
+	os := make([]core.OptionalParameter, 0, len(s.Keywords()))
+
+	for _, o := range s.Keywords() {
+		v, err := c.expressionToValue(o.DefaultValue())
+
+		if err != nil {
+			return core.Signature{}, err
+		}
+
+		os = append(os, core.NewOptionalParameter(o.Name(), v))
+	}
+
+	return core.NewSignature(s.Positionals(), s.RestPositionals(), os, s.RestKeywords()), nil
 }
 
 func (c *compiler) importLocalModule(p, d string) (module, error) {
@@ -220,4 +236,32 @@ func (c *compiler) importLocalModule(p, d string) (module, error) {
 	}
 
 	return m, nil
+}
+
+func (c *compiler) compileSubModule(p string) (module, error) {
+	if i, err := os.Stat(p); err == nil && i.IsDir() {
+		p = path.Join(p, consts.ModuleFilename)
+	}
+
+	bs, err := ioutil.ReadFile(filepath.FromSlash(p + consts.FileExtension))
+
+	if err != nil {
+		return nil, err
+	}
+
+	m, err := parse.SubModule(p, string(bs))
+
+	if err != nil {
+		return nil, err
+	}
+
+	cc := newCompiler(builtinsEnvironment(), c.cache)
+	c = &cc
+	_, err = c.compileModule(desugar.Desugar(m), path.Dir(p))
+
+	if err != nil {
+		return nil, err
+	}
+
+	return c.env.toMap(), nil
 }

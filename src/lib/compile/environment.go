@@ -12,28 +12,25 @@ type environment struct {
 }
 
 func newEnvironment(fallback func(string) (core.Value, error)) environment {
-	return environment{
-		me:       module{},
-		fallback: fallback,
-	}
+	return environment{module{}, fallback}
 }
 
 func (e *environment) set(s string, t core.Value) {
 	e.me[s] = t
 }
 
-func (e environment) get(s string) core.Value {
-	if t, ok := e.me[s]; ok {
-		return t
+func (e environment) get(s string) (core.Value, error) {
+	if v, ok := e.me[s]; ok {
+		return v, nil
 	}
 
-	t, err := e.fallback(s)
+	v, err := e.fallback(s)
 
 	if err == nil {
-		return t
+		return v, nil
 	}
 
-	panic(fmt.Errorf("The name, %s is not found", s))
+	return nil, fmt.Errorf("name, %s not found", s)
 }
 
 func (e environment) toMap() module {

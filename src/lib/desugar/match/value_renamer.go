@@ -40,7 +40,7 @@ func (r valueRenamer) Rename(v interface{}) interface{} {
 	case ast.AnonymousFunction:
 		r := r.copy()
 
-		for n := range x.Signature().NameToIndex() {
+		for _, n := range x.Signature().Names() {
 			r.delete(n)
 		}
 

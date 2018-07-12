@@ -83,5 +83,7 @@ Options:
 }
 
 func printToStderr(s string) {
-	fmt.Fprintf(os.Stderr, strings.TrimSpace(s)+"\n")
+	if _, err := fmt.Fprintf(os.Stderr, strings.TrimSpace(s)+"\n"); err != nil {
+		panic(err)
+	}
 }

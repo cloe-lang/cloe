@@ -5,13 +5,13 @@ import (
 )
 
 const (
-	expandedKeywordArgument = -1
-	switchExpression        = -1
+	expandedKeywordArgument = 255
+	switchExpression        = 255
 )
 
 // Interpreter represents an IR byte code interpreter.
 type Interpreter struct {
-	code      []int
+	code      []byte
 	switches  []switchData
 	names     []string
 	index     int
@@ -19,8 +19,8 @@ type Interpreter struct {
 }
 
 // NewInterpreter creates a new interpreter.
-func NewInterpreter(c []int, ss []switchData, ns []string, vs []core.Value) Interpreter {
-	return Interpreter{c, ss, ns, 0, vs}
+func NewInterpreter(bs []byte, ss []switchData, ns []string, vs []core.Value) Interpreter {
+	return Interpreter{bs, ss, ns, 0, vs}
 }
 
 // Interpret interprets byte code and returns a result value.
@@ -60,11 +60,11 @@ func (j *Interpreter) Interpret() core.Value {
 					return dc
 				}))
 		default:
-			x = core.App(j.getVariableWithIndex(c), j.getArguments())
+			x = core.App(j.getVariableWithIndex(int(c)), j.getArguments())
 		}
 
-		if c := j.readCode(); c < len(j.variables) {
-			j.variables[c] = x
+		if b := j.readCode(); int(b) < len(j.variables) {
+			j.variables[b] = x
 		} else {
 			j.variables = append(j.variables, x)
 		}
@@ -81,7 +81,7 @@ func (j *Interpreter) getPositionalArguments() []core.PositionalArgument {
 	ps := []core.PositionalArgument{}
 	n := j.readCode()
 
-	for i := 0; i < n; i++ {
+	for i := 0; i < int(n); i++ {
 		b := false
 
 		if j.readCode() != 0 {
@@ -98,8 +98,8 @@ func (j *Interpreter) getKeywordArguments() []core.KeywordArgument {
 	ks := []core.KeywordArgument{}
 	n := j.readCode()
 
-	for i := 0; i < n; i++ {
-		if b := j.readCode(); b == expandedKeywordArgument {
+	for i := 0; i < int(n); i++ {
+		if b := j.readCode(); int(b) == expandedKeywordArgument {
 			ks = append(ks, core.NewKeywordArgument("", j.getVariable()))
 		} else {
 			ks = append(ks, core.NewKeywordArgument(j.names[b], j.getVariable()))
@@ -117,8 +117,8 @@ func (j *Interpreter) getVariableWithIndex(i int) core.Value {
 	return j.variables[i]
 }
 
-func (j *Interpreter) readCode() int {
-	i := j.code[j.index]
+func (j *Interpreter) readCode() byte {
+	b := j.code[j.index]
 	j.index++
-	return i
+	return b
 }

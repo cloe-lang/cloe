@@ -21,16 +21,16 @@ func TestInterpreterInterpret(t *testing.T) {
 			core.Nil,
 		},
 		{
-			NewInterpreter([]int{0, 0, 0, 0}, nil, nil, []core.Value{core.Add}),
+			NewInterpreter([]byte{0, 0, 0, 0}, nil, nil, []core.Value{core.Add}),
 			core.NewNumber(0),
 		},
 		{
-			NewInterpreter([]int{0, 0, 0, 1, 0, 1, 0, 1, 0, 0}, nil, nil, []core.Value{core.Add}),
+			NewInterpreter([]byte{0, 0, 0, 1, 0, 1, 0, 1, 0, 0}, nil, nil, []core.Value{core.Add}),
 			core.NewNumber(0),
 		},
 		{
 			NewInterpreter(
-				[]int{0, 1, 0, 1, 0, 0},
+				[]byte{0, 1, 0, 1, 0, 0},
 				nil,
 				nil,
 				[]core.Value{core.Add, core.NewNumber(1)}),
@@ -38,7 +38,7 @@ func TestInterpreterInterpret(t *testing.T) {
 		},
 		{
 			NewInterpreter(
-				[]int{0, 2, 0, 1, 0, 2, 0, 0},
+				[]byte{0, 2, 0, 1, 0, 2, 0, 0},
 				nil,
 				nil,
 				[]core.Value{core.Add, core.NewNumber(1), core.NewNumber(2)}),
@@ -46,7 +46,7 @@ func TestInterpreterInterpret(t *testing.T) {
 		},
 		{
 			NewInterpreter(
-				[]int{0, 2, 0, 1, 0, 2, 0, 0},
+				[]byte{0, 2, 0, 1, 0, 2, 0, 0},
 				nil,
 				nil,
 				[]core.Value{core.Add, core.NewNumber(1), core.NewNumber(2)}),
@@ -54,7 +54,7 @@ func TestInterpreterInterpret(t *testing.T) {
 		},
 		{
 			NewInterpreter(
-				[]int{0, 1, 1, 1, 0, 0},
+				[]byte{0, 1, 1, 1, 0, 0},
 				nil,
 				nil,
 				[]core.Value{core.Add, core.NewList(core.NewNumber(1), core.NewNumber(2))}),
@@ -62,7 +62,7 @@ func TestInterpreterInterpret(t *testing.T) {
 		},
 		{
 			NewInterpreter(
-				[]int{0, 0, 1, 0, 1, 0},
+				[]byte{0, 0, 1, 0, 1, 0},
 				nil,
 				[]string{"foo"},
 				[]core.Value{testFunction, core.True}),
@@ -70,7 +70,7 @@ func TestInterpreterInterpret(t *testing.T) {
 		},
 		{
 			NewInterpreter(
-				[]int{0, 0, 1, expandedKeywordArgument, 1, 0},
+				[]byte{0, 0, 1, expandedKeywordArgument, 1, 0},
 				nil,
 				nil,
 				[]core.Value{
@@ -81,7 +81,7 @@ func TestInterpreterInterpret(t *testing.T) {
 		},
 		{
 			NewInterpreter(
-				[]int{switchExpression, 1, 0, 0},
+				[]byte{switchExpression, 1, 0, 0},
 				[]switchData{newSwitchData([]caseData{newCaseData(core.NewString("foo"), 2)}, 0)},
 				nil,
 				[]core.Value{core.DummyError, core.NewString("foo"), core.True}),
@@ -98,12 +98,12 @@ func TestInterpreterInterpret(t *testing.T) {
 func TestInterpreterInterpretError(t *testing.T) {
 	for _, c := range []Interpreter{
 		NewInterpreter(
-			[]int{switchExpression, 1, 0, 0},
+			[]byte{switchExpression, 1, 0, 0},
 			[]switchData{newSwitchData([]caseData{newCaseData(core.NewString("foo"), 0)}, 0)},
 			nil,
 			[]core.Value{core.DummyError, core.NewString("foo")}),
 		NewInterpreter(
-			[]int{switchExpression, 1, 0, 0},
+			[]byte{switchExpression, 1, 0, 0},
 			[]switchData{newSwitchData([]caseData{newCaseData(core.DummyError, 1)}, 1)},
 			nil,
 			[]core.Value{core.DummyError, core.NewString("foo")}),

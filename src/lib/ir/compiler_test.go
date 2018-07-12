@@ -134,10 +134,10 @@ func TestCompilerCompile(t *testing.T) {
 		},
 	} {
 		c := newCompiler(scalar.Convert)
-		bs, cs, scs, ns, err := c.Compile(k.parameters, k.lets, k.body)
+		is, cs, scs, ns, err := c.Compile(k.parameters, k.lets, k.body)
 		assert.Nil(t, err)
 
-		i := NewInterpreter(bs, scs, ns, append(cs, k.arguments...))
+		i := NewInterpreter(intCodeToByteCode(is), scs, ns, append(cs, k.arguments...))
 		b, e := core.EvalBoolean(core.PApp(core.Equal, k.result, i.Interpret()))
 
 		assert.Nil(t, e)

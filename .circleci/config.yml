@@ -16,9 +16,6 @@ jobs:
       - run:
           name: Dependencies
           command: rake deps
-
-      - run:
-          name: Lint
           command: rake lint
 
       - run:

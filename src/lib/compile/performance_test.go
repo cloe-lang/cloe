@@ -1,4 +1,4 @@
-// +build performance
+//go:build performance
 
 package compile
 

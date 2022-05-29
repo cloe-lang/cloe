@@ -11,7 +11,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
       - uses: actions/setup-go@v3
-      - run: rake deps
       - run: rake build
       - run: rake lint
       - run: rake unit_test

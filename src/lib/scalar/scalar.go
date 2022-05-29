@@ -10,9 +10,9 @@ import (
 
 var predefined = func() map[string]core.Value {
 	m := map[string]core.Value{
-		"true":  core.True,
-		"false": core.False,
-		"nil":   core.Nil,
+		"true":                       core.True,
+		"false":                      core.False,
+		"nil":                        core.Nil,
 		consts.Names.EmptyList:       core.EmptyList,
 		consts.Names.EmptyDictionary: core.EmptyDictionary,
 	}

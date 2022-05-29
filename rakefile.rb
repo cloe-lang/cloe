@@ -1,17 +1,6 @@
 TOTAL_COVERAGE_FILE = 'coverage.txt'.freeze # This path is specified by codecov.
 BIN_PATH = File.absolute_path 'bin'
 
-task :deps do
-  sh %w[go get -u
-        github.com/alecthomas/gometalinter
-        github.com/mattn/goveralls
-        github.com/raviqqe/liche
-        github.com/raviqqe/rpm].join ' '
-  sh 'gometalinter --install'
-  sh 'go get -d -t ./...'
-  sh 'gem install rake rubocop'
-end
-
 task :build do
   %w[cloe clutil].each do |command|
     sh "go build -o bin/#{command} ./src/cmd/#{command}"
@@ -84,7 +73,7 @@ task :lint do
         --enable misspell
         ./...].join ' '
   sh 'rubocop'
-  sh "liche -v #{Dir.glob('**/*.md').join ' '}"
+  sh "go run github.com/raviqqe/liche -v #{Dir.glob('**/*.md').join ' '}"
 end
 
 task install: %i[deps test build] do

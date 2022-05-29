@@ -16,6 +16,9 @@ jobs:
       - run: rake unit_test
       - run: rake command_test
       - run: rake data_race_test
+      - uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: true
       - run: rake bench
       - run: rake install
   spell_check:

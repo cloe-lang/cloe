@@ -1,9 +1,13 @@
 {
   "words": [
+    "benchmem",
     "builtins",
     "cloe",
     "clutil",
+    "codecov",
     "consts",
+    "covermode",
+    "coverprofile",
     "docopt",
     "gofmt",
     "goimports",

@@ -69,7 +69,6 @@ end
 task :lint do
   sh 'gem install rubocop'
   sh 'rubocop'
-  sh "go run github.com/raviqqe/liche -v #{Dir.glob('**/*.md').join ' '}"
 end
 
 task install: %i[test build] do

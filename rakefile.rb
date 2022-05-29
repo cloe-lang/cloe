@@ -1,4 +1,6 @@
-TOTAL_COVERAGE_FILE = 'coverage.txt'.freeze # This path is specified by codecov.
+# frozen_string_literal: true
+
+TOTAL_COVERAGE_FILE = 'coverage.txt' # This path is specified by codecov.
 BIN_PATH = File.absolute_path 'bin'
 
 task :build do
@@ -45,6 +47,7 @@ end
 
 task :data_race_test do
   raise 'Architecture is not amd64' unless `uname -m` =~ /x86_64/
+
   sh 'go test -race ./...'
 end
 

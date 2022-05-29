@@ -64,14 +64,7 @@ task :format do
 end
 
 task :lint do
-  sh %w[gometalinter
-        --deadline 2m
-        --disable gocyclo
-        --disable vetshadow
-        --enable gofmt
-        --enable goimports
-        --enable misspell
-        ./...].join ' '
+  sh 'golangci-lint run ./...'
   sh 'rubocop'
   sh "go run github.com/raviqqe/liche -v #{Dir.glob('**/*.md').join ' '}"
 end

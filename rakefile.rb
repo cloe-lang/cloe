@@ -64,7 +64,7 @@ task :format do
 end
 
 task :lint do
-  sh 'golangci-lint run ./...'
+  sh 'GO111MODULE=off golangci-lint run ./...'
   sh 'rubocop'
   sh "go run github.com/raviqqe/liche -v #{Dir.glob('**/*.md').join ' '}"
 end

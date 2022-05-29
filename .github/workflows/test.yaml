@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-go@v3
       - run: rake build
       - run: rake lint
-      - run: rake format && git diff --exit-code origin/master
+      - run: rake format && git diff --exit-code main
       - run: rake unit_test
       - run: rake command_test
       - run: rake data_race_test

@@ -15,7 +15,6 @@ jobs:
       - run: rake lint
       - run: rake unit_test
       - run: rake command_test
-      - run: rake performance_test
       - run: rake data_race_test
       - run: rake bench
       - run: rake install

@@ -1,16 +1,7 @@
-TOTAL_COVERAGE_FILE = 'coverage.txt'.freeze # This path is specified by codecov.
-BIN_PATH = File.absolute_path 'bin'
+# frozen_string_literal: true
 
-task :deps do
-  sh %w[go get -u
-        github.com/alecthomas/gometalinter
-        github.com/mattn/goveralls
-        github.com/raviqqe/liche
-        github.com/raviqqe/rpm].join ' '
-  sh 'gometalinter --install'
-  sh 'go get -d -t ./...'
-  sh 'gem install rake rubocop'
-end
+TOTAL_COVERAGE_FILE = 'coverage.txt' # This path is specified by codecov.
+BIN_PATH = File.absolute_path 'bin'
 
 task :build do
   %w[cloe clutil].each do |command|
@@ -56,6 +47,7 @@ end
 
 task :data_race_test do
   raise 'Architecture is not amd64' unless `uname -m` =~ /x86_64/
+
   sh 'go test -race ./...'
 end
 
@@ -75,19 +67,11 @@ task :format do
 end
 
 task :lint do
-  sh %w[gometalinter
-        --deadline 2m
-        --disable gocyclo
-        --disable vetshadow
-        --enable gofmt
-        --enable goimports
-        --enable misspell
-        ./...].join ' '
+  sh 'gem install rubocop'
   sh 'rubocop'
-  sh "liche -v #{Dir.glob('**/*.md').join ' '}"
 end
 
-task install: %i[deps test build] do
+task install: %i[test build] do
   sh 'go get ./...'
 end
 

@@ -7,7 +7,7 @@ import (
 )
 
 func clean() error {
-	for _, f := range [](func() (string, error)){consts.GetModulesDirectory, consts.GetCommandsDirectory} {
+	for _, f := range []func() (string, error){consts.GetModulesDirectory, consts.GetCommandsDirectory} {
 		d, err := f()
 
 		if err != nil {

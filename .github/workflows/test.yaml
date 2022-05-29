@@ -1,0 +1,30 @@
+name: test
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+      - uses: actions/setup-go@v3
+      - run: rake build
+      - run: rake lint
+      - run: rake unit_test
+      - run: rake command_test
+      - run: rake data_race_test
+      - uses: codecov/codecov-action@v2
+        with:
+          fail_ci_if_error: true
+      - run: rake bench
+      - run: rake install
+  spell_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: streetsidesoftware/cspell-action@main
+        with:
+          files: "**/*.{go,md,rb}"

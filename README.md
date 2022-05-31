@@ -17,7 +17,7 @@ It aims to be simple and practical.
 - Functional programming
 - Immutable data
 - Lazy evaluation
-- Implicit parallelism, concurrency, and reactiveness
+- Implicit parallelism, concurrency, and reactivity
 
 ## Installation
 

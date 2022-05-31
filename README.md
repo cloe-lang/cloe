@@ -9,7 +9,7 @@
   <img src="https://raw.githubusercontent.com/cloe-lang/icon/master/spaced.png" alt="logo"/>
 </div>
 
-Cloe is the *timeless* functional programming language.
+Cloe is the _timeless_ functional programming language.
 It aims to be simple and practical.
 
 ## Features
@@ -17,7 +17,7 @@ It aims to be simple and practical.
 - Functional programming
 - Immutable data
 - Lazy evaluation
-- Implicit parallelism, concurrency, and reactiveness
+- Implicit parallelism, concurrency, and reactivity
 
 ## Installation
 

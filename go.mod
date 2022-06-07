@@ -7,7 +7,7 @@ require (
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
 	github.com/kr/text v0.2.0
 	github.com/raviqqe/hamt v0.0.0-20210418010747-50f92f925855
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.7.2
 	gopkg.in/src-d/go-git.v4 v4.13.1
 )
 
@@ -29,5 +29,5 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/src-d/go-billy.v4 v4.3.2 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

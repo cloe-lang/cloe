@@ -1,6 +1,6 @@
 # Cloe
 
-[![GitHub Action](https://img.shields.io/github/workflow/status/cloe-lang/cloe/test?style=flat-square)](https://github.com/cloe-lang/cloe/actions)
+[![GitHub Action](https://img.shields.io/github/actions/workflow/status/cloe-lang/cloe/test.yaml?branch=main&style=flat-square)](https://github.com/cloe-lang/cloe/actions)
 [![Coveralls](https://img.shields.io/coveralls/cloe-lang/cloe/master.svg?style=flat-square)](https://coveralls.io/github/cloe-lang/cloe)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cloe-lang/cloe?style=flat-square)](https://goreportcard.com/report/github.com/cloe-lang/cloe)
 [![License](https://img.shields.io/github/license/cloe-lang/cloe.svg?style=flat-square)](https://opensource.org/licenses/MIT)

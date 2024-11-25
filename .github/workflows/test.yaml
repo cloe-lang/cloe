@@ -17,7 +17,7 @@ jobs:
       - run: rake unit_test
       - run: rake command_test
       - run: rake data_race_test
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: true
       - run: rake bench

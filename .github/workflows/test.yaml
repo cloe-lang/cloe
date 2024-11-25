@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ruby/setup-ruby@v1
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v5
       - run: rake build
       - run: rake lint
       - run: rake format && git diff --exit-code

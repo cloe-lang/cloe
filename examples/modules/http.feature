@@ -8,23 +8,55 @@ Feature: HTTP
     Then the stdout should contain exactly ""
 
   Scenario: Send GET request
-    Given a file named "main.cloe" with:
+    Given a file named "server.cloe" with:
     """
     (import "http")
 
-    (print (@ (http.get "http://httpbin.org") "status"))
+    ..(map (\ (r) ((@ r "respond") "Hello, world!")) (http.getRequests ":8081"))
     """
-    When I successfully run `cloe main.cloe`
+    And a file named "main.cloe" with:
+    """
+    (import "http")
+
+    (print (@ (http.get "http://127.0.0.1:8081") "status"))
+    """
+    And a file named "main.sh" with:
+    """
+    set -e
+
+    cloe server.cloe &
+    pid=$!
+    sleep 1
+    cloe main.cloe
+    kill $pid
+    """
+    When I successfully run `sh ./main.sh`
     Then the stdout should contain exactly "200"
 
   Scenario: Send POST request
-    Given a file named "main.cloe" with:
+    Given a file named "server.cloe" with:
     """
     (import "http")
 
-    (print (@ (http.post "https://httpbin.org/post" "Hello, world!") "status"))
+    ..(map (\ (r) ((@ r "respond") "Hello, world!")) (http.getRequests ":8082"))
     """
-    When I successfully run `cloe main.cloe`
+    And a file named "main.cloe" with:
+    """
+    (import "http")
+
+    (print (@ (http.post "http://127.0.0.1:8082" "Hello, world!") "status"))
+    """
+    And a file named "main.sh" with:
+    """
+    set -e
+
+    cloe server.cloe &
+    pid=$!
+    sleep 1
+    cloe main.cloe
+    kill $pid
+    """
+    When I successfully run `sh ./main.sh`
     Then the stdout should contain exactly "200"
 
   Scenario: Run a server
@@ -36,10 +68,12 @@ Feature: HTTP
     """
     And a file named "main.sh" with:
     """
+    set -e
+
     cloe main.cloe &
     pid=$!
-    sleep 1 &&
-    curl http://127.0.0.1:8080 &&
+    sleep 1
+    curl http://127.0.0.1:8080
     kill $pid
     """
     When I successfully run `sh ./main.sh`

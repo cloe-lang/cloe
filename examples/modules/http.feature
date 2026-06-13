@@ -8,24 +8,40 @@ Feature: HTTP
     Then the stdout should contain exactly ""
 
   Scenario: Send GET request
-    Given a file named "main.cloe" with:
+    Given a file named "server.cloe" with:
     """
     (import "http")
 
-    (print (@ (http.get "http://httpbin.org") "status"))
+    ..(map (\ (r) ((@ r "respond") "Hello, world!")) (http.getRequests ":8081"))
     """
-    When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly "200"
+    And a file named "main.cloe" with:
+    """
+    (import "http")
+
+    (print (@ (http.get "http://127.0.0.1:8081") "status"))
+    """
+    And I wait 1 second for the command to start up
+    When I run `cloe server.cloe` in the background
+    And I successfully run `cloe main.cloe`
+    Then the stdout from "cloe main.cloe" should contain "200"
 
   Scenario: Send POST request
-    Given a file named "main.cloe" with:
+    Given a file named "server.cloe" with:
     """
     (import "http")
 
-    (print (@ (http.post "https://httpbin.org/post" "Hello, world!") "status"))
+    ..(map (\ (r) ((@ r "respond") "Hello, world!")) (http.getRequests ":8082"))
     """
-    When I successfully run `cloe main.cloe`
-    Then the stdout should contain exactly "200"
+    And a file named "main.cloe" with:
+    """
+    (import "http")
+
+    (print (@ (http.post "http://127.0.0.1:8082" "Hello, world!") "status"))
+    """
+    And I wait 1 second for the command to start up
+    When I run `cloe server.cloe` in the background
+    And I successfully run `cloe main.cloe`
+    Then the stdout from "cloe main.cloe" should contain "200"
 
   Scenario: Run a server
     Given a file named "main.cloe" with:
@@ -34,13 +50,7 @@ Feature: HTTP
 
     ..(map (\ (r) ((@ r "respond") "Hello, world!")) (http.getRequests ":8080"))
     """
-    And a file named "main.sh" with:
-    """
-    cloe main.cloe &
-    pid=$!
-    sleep 1 &&
-    curl http://127.0.0.1:8080 &&
-    kill $pid
-    """
-    When I successfully run `sh ./main.sh`
-    Then the stdout should contain exactly "Hello, world!"
+    And I wait 1 second for the command to start up
+    When I run `cloe main.cloe` in the background
+    And I successfully run `curl http://127.0.0.1:8080`
+    Then the stdout from "curl http://127.0.0.1:8080" should contain "Hello, world!"

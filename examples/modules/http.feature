@@ -23,7 +23,7 @@ Feature: HTTP
     And I wait 1 second for the command to start up
     When I run `cloe server.cloe` in the background
     And I successfully run `cloe main.cloe`
-    Then the stdout from `cloe main.cloe` should contain "200"
+    Then the stdout from "cloe main.cloe" should contain "200"
 
   Scenario: Send POST request
     Given a file named "server.cloe" with:
@@ -41,7 +41,7 @@ Feature: HTTP
     And I wait 1 second for the command to start up
     When I run `cloe server.cloe` in the background
     And I successfully run `cloe main.cloe`
-    Then the stdout from `cloe main.cloe` should contain "200"
+    Then the stdout from "cloe main.cloe" should contain "200"
 
   Scenario: Run a server
     Given a file named "main.cloe" with:
@@ -53,4 +53,4 @@ Feature: HTTP
     And I wait 1 second for the command to start up
     When I run `cloe main.cloe` in the background
     And I successfully run `curl http://127.0.0.1:8080`
-    Then the stdout from `curl http://127.0.0.1:8080` should contain "Hello, world!"
+    Then the stdout from "curl http://127.0.0.1:8080" should contain "Hello, world!"

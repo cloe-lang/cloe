@@ -50,7 +50,7 @@ Feature: HTTP
 
     ..(map (\ (r) ((@ r "respond") "Hello, world!")) (http.getRequests ":8080"))
     """
-    When I run `cloe main.cloe` in the background
     And I wait 1 second for the command to start up
+    When I run `cloe main.cloe` in the background
     And I successfully run `curl http://127.0.0.1:8080`
     Then the stdout from "curl http://127.0.0.1:8080" should contain "Hello, world!"

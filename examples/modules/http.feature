@@ -20,8 +20,8 @@ Feature: HTTP
 
     (print (@ (http.get "http://127.0.0.1:8081") "status"))
     """
-    And I wait 1 second for the command to start up
     When I run `cloe server.cloe` in the background
+    And I wait 1 second for the command to start up
     And I successfully run `cloe main.cloe`
     Then the stdout from "cloe main.cloe" should contain "200"
 

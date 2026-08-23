@@ -35,10 +35,7 @@ end
 
 task command_test: :build do
   sh 'bundler install'
-  sh %W[bundler exec cucumber
-        -r examples/aruba.rb
-        PATH=#{BIN_PATH}:$PATH
-        examples].join ' '
+  sh "bundler exec cucumber PATH=#{BIN_PATH}:$PATH"
 end
 
 task :performance_test do

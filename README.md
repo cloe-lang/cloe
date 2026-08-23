@@ -51,7 +51,7 @@ Go 1.8+ is required.
 ..(map handler requests)
 ```
 
-See [examples](examples) directory for more.
+See [features](features) directory for more examples.
 
 ## License
 

@@ -35,9 +35,7 @@ end
 
 task command_test: :build do
   sh 'bundler install'
-  sh %W[bundler exec cucumber
-        PATH=#{BIN_PATH}:$PATH
-        features].join ' '
+  sh "bundler exec cucumber PATH=#{BIN_PATH}:$PATH"
 end
 
 task :performance_test do

@@ -6,19 +6,19 @@ import (
 
 // Switch represents a switch expression.
 type Switch struct {
-	matchedValue interface{}
-	caseValues   []interface{}
-	defaultCase  interface{}
+	matchedValue any
+	caseValues   []any
+	defaultCase  any
 	dict         core.Value
 }
 
 // NewSwitch creates a switch expression.
-func NewSwitch(m interface{}, cs []Case, d interface{}) Switch {
+func NewSwitch(m any, cs []Case, d any) Switch {
 	if d == nil {
 		panic("Default cases must be provided in switch expressions")
 	}
 
-	vs := make([]interface{}, 0, len(cs))
+	vs := make([]any, 0, len(cs))
 
 	for _, c := range cs {
 		vs = append(vs, c.value)

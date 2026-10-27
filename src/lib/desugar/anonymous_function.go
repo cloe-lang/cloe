@@ -6,22 +6,22 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/gensym"
 )
 
-func desugarAnonymousFunctions(x interface{}) []interface{} {
+func desugarAnonymousFunctions(x any) []any {
 	c := newAnonymousFunctionConverter()
 	x = c.convert(x)
 	return append(c.lets, x)
 }
 
 type anonymousFunctionConverter struct {
-	lets []interface{}
+	lets []any
 }
 
 func newAnonymousFunctionConverter() anonymousFunctionConverter {
 	return anonymousFunctionConverter{}
 }
 
-func (c *anonymousFunctionConverter) convert(x interface{}) interface{} {
-	return ast.Convert(func(x interface{}) interface{} {
+func (c *anonymousFunctionConverter) convert(x any) any {
+	return ast.Convert(func(x any) any {
 		switch x := x.(type) {
 		case ast.AnonymousFunction:
 			n := gensym.GenSym()
@@ -39,7 +39,7 @@ func (c *anonymousFunctionConverter) convert(x interface{}) interface{} {
 }
 
 func desugarAnonymousFunctionsInDefFunction(f ast.DefFunction) ast.DefFunction {
-	ls := make([]interface{}, 0, len(f.Lets()))
+	ls := make([]any, 0, len(f.Lets()))
 
 	for _, l := range f.Lets() {
 		ls = append(ls, desugarAnonymousFunctions(l)...)

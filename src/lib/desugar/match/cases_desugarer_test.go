@@ -11,7 +11,7 @@ func TestEqualPatterns(t *testing.T) {
 	dictionary := consts.Names.DictionaryFunction
 	list := consts.Names.ListFunction
 
-	for _, p := range []interface{}{
+	for _, p := range []any{
 		"42",
 		"foo",
 		app(list),
@@ -24,7 +24,7 @@ func TestEqualPatterns(t *testing.T) {
 		assert.True(t, equalPatterns(p, p))
 	}
 
-	for _, ps := range [][2]interface{}{
+	for _, ps := range [][2]any{
 		{"42", "2049"},
 		{"foo", "bar"},
 		{app(list), app(dictionary)},

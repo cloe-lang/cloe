@@ -27,13 +27,13 @@ func decodeString(s string) core.Value {
 	return convertToValue(j.Data())
 }
 
-func convertToValue(x interface{}) core.Value {
+func convertToValue(x any) core.Value {
 	if x == nil {
 		return core.Nil
 	}
 
 	switch x := x.(type) {
-	case []interface{}:
+	case []any:
 		ts := []core.Value{}
 
 		for _, y := range x {
@@ -41,7 +41,7 @@ func convertToValue(x interface{}) core.Value {
 		}
 
 		return core.NewList(ts...)
-	case map[string]interface{}:
+	case map[string]any:
 		kvs := make([]core.KeyValue, 0, len(x))
 
 		for k, v := range x {

@@ -4,17 +4,17 @@ import "fmt"
 
 // Effect represents effects of programs.
 type Effect struct {
-	expr     interface{}
+	expr     any
 	expanded bool
 }
 
 // NewEffect creates an Effect.
-func NewEffect(expr interface{}, expanded bool) Effect {
+func NewEffect(expr any, expanded bool) Effect {
 	return Effect{expr, expanded}
 }
 
 // Expr returns an expression of the effect.
-func (o Effect) Expr() interface{} {
+func (o Effect) Expr() any {
 	return o.expr
 }
 

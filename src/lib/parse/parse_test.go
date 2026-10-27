@@ -42,13 +42,13 @@ func TestSubModuleFail(t *testing.T) {
 	}
 }
 
-func checkSuccessfulResult(t *testing.T, x interface{}, err error) {
+func checkSuccessfulResult(t *testing.T, x any, err error) {
 	t.Log("Result:", x)
 	t.Log("Error:", err)
 	assert.Nil(t, err)
 }
 
-func checkFailedResult(t *testing.T, x interface{}, err error) {
+func checkFailedResult(t *testing.T, x any, err error) {
 	t.Log("Result:", x)
 	t.Log("Error:", err)
 	assert.NotNil(t, err)

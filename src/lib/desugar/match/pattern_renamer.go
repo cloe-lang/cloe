@@ -17,12 +17,12 @@ func newPatternRenamer() patternRenamer {
 	return patternRenamer{map[string]string{}}
 }
 
-func (r patternRenamer) Rename(p interface{}) (interface{}, valueRenamer) {
+func (r patternRenamer) Rename(p any) (any, valueRenamer) {
 	p = r.renameNames(p)
 	return p, newValueRenamer(r.nameMap)
 }
 
-func (r patternRenamer) renameNames(p interface{}) interface{} {
+func (r patternRenamer) renameNames(p any) any {
 	switch x := p.(type) {
 	case string:
 		if scalar.Defined(x) {

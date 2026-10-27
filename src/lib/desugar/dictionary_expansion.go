@@ -5,8 +5,8 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/consts"
 )
 
-func desugarDictionaryExpansion(x interface{}) []interface{} {
-	return []interface{}{ast.Convert(func(x interface{}) interface{} {
+func desugarDictionaryExpansion(x any) []any {
+	return []any{ast.Convert(func(x any) any {
 		a, ok := x.(ast.App)
 
 		if !ok || a.Function() != consts.Names.DictionaryFunction {
@@ -14,8 +14,8 @@ func desugarDictionaryExpansion(x interface{}) []interface{} {
 		}
 
 		ps := a.Arguments().Positionals()
-		args := make([]interface{}, 0, len(ps))
-		dicts := make([]interface{}, 0, len(ps))
+		args := make([]any, 0, len(ps))
+		dicts := make([]any, 0, len(ps))
 
 		for _, p := range ps {
 			if p.Expanded() {
@@ -25,6 +25,6 @@ func desugarDictionaryExpansion(x interface{}) []interface{} {
 			}
 		}
 
-		return ast.NewPApp("$merge", append([]interface{}{ast.NewPApp(a.Function(), args, a.DebugInfo())}, dicts...), a.DebugInfo())
+		return ast.NewPApp("$merge", append([]any{ast.NewPApp(a.Function(), args, a.DebugInfo())}, dicts...), a.DebugInfo())
 	}, x)}
 }

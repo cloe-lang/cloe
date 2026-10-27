@@ -14,7 +14,7 @@ func newValueRenamer(m map[string]string) valueRenamer {
 	return valueRenamer{m}
 }
 
-func (r valueRenamer) Rename(v interface{}) interface{} {
+func (r valueRenamer) Rename(v any) any {
 	switch x := v.(type) {
 	case string:
 		if n, ok := r.nameMap[x]; ok {
@@ -44,7 +44,7 @@ func (r valueRenamer) Rename(v interface{}) interface{} {
 			r.delete(n)
 		}
 
-		ls := make([]interface{}, 0, len(x.Lets()))
+		ls := make([]any, 0, len(x.Lets()))
 
 		for _, l := range x.Lets() {
 			switch x := l.(type) {

@@ -20,7 +20,7 @@ func (e *ErrorType) eval() Value {
 }
 
 // NewError creates an error value from its name and a formatted message.
-func NewError(n, m string, xs ...interface{}) *ErrorType {
+func NewError(n, m string, xs ...any) *ErrorType {
 	return &ErrorType{n, fmt.Sprintf(m, xs...), nil}
 }
 
@@ -69,7 +69,7 @@ func (e ErrorType) Error() string {
 }
 
 // ValueError creates an error value for some invalid value detected at runtime.
-func ValueError(m string, xs ...interface{}) *ErrorType {
+func ValueError(m string, xs ...any) *ErrorType {
 	return NewError("ValueError", m, xs...)
 }
 
@@ -175,7 +175,7 @@ func impureFunctionError() *ErrorType {
 	return NewError("ImpureFunctionError", "impure function is called in pure context")
 }
 
-func argumentError(m string, xs ...interface{}) *ErrorType {
+func argumentError(m string, xs ...any) *ErrorType {
 	return NewError("ArgumentError", m, xs...)
 }
 

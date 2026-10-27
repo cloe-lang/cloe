@@ -32,25 +32,25 @@ var reserveds = map[string]bool{
 }
 
 // MainModule parses a main module file into an AST.
-func MainModule(file, source string) ([]interface{}, error) {
+func MainModule(file, source string) ([]any, error) {
 	m, err := newState(file, source).mainModule()()
 
 	if err != nil {
 		return nil, err
 	}
 
-	return m.([]interface{}), nil
+	return m.([]any), nil
 }
 
 // SubModule parses a sub module file into an AST.
-func SubModule(file, source string) ([]interface{}, error) {
+func SubModule(file, source string) ([]any, error) {
 	m, err := newState(file, source).subModule()()
 
 	if err != nil {
 		return nil, err
 	}
 
-	return m.([]interface{}), nil
+	return m.([]any), nil
 }
 
 func (s *state) mainModule() comb.Parser {
@@ -62,9 +62,9 @@ func (s *state) subModule() comb.Parser {
 }
 
 func (s *state) module(ps ...comb.Parser) comb.Parser {
-	return s.exhaust(s.Prefix(s.blank(), s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
-		return append(xs[0].([]interface{}), xs[1].([]interface{})...)
+	return s.exhaust(s.Prefix(s.blank(), s.App(func(x any) any {
+		xs := x.([]any)
+		return append(xs[0].([]any), xs[1].([]any)...)
 	}, s.And(s.Many(s.importModule()), s.Many(s.Or(ps...))))))
 }
 
@@ -74,8 +74,8 @@ func (s *state) importModule() comb.Parser {
 			s.strippedString(importString),
 			s.Maybe(s.Or(s.identifier(), s.strippedString("."))),
 			s.stringLiteral()),
-		func(x interface{}, i *debug.Info) (interface{}, error) {
-			xs := x.([]interface{})
+		func(x any, i *debug.Info) (any, error) {
+			xs := x.([]any)
 
 			p, err := strconv.Unquote(xs[2].(string))
 
@@ -104,14 +104,14 @@ func (s *state) strictDefinition() comb.Parser {
 }
 
 func (s *state) let() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		return x.([]interface{})[1]
+	return s.App(func(x any) any {
+		return x.([]any)[1]
 	}, s.list(s.strippedString(letString), s.internalLet()))
 }
 
 func (s *state) internalLet() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
 
 		switch x := xs[0].(type) {
 		case string:
@@ -123,9 +123,9 @@ func (s *state) internalLet() comb.Parser {
 }
 
 func (s *state) letExpression() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
-		return ast.NewLetExpression(xs[1].([]interface{}), xs[2])
+	return s.App(func(x any) any {
+		xs := x.([]any)
+		return ast.NewLetExpression(xs[1].([]any), xs[2])
 	}, s.list(s.strippedString(letString), s.Many1(s.internalLet()), s.expression()))
 }
 
@@ -136,16 +136,16 @@ func (s *state) defFunction() comb.Parser {
 			s.list(s.identifier(), s.signature()),
 			s.Many(s.definition()),
 			s.expression()),
-		func(x interface{}, i *debug.Info) (interface{}, error) {
-			xs := x.([]interface{})
-			ys := xs[1].([]interface{})
-			return ast.NewDefFunction(ys[0].(string), ys[1].(ast.Signature), xs[2].([]interface{}), xs[3], i), nil
+		func(x any, i *debug.Info) (any, error) {
+			xs := x.([]any)
+			ys := xs[1].([]any)
+			return ast.NewDefFunction(ys[0].(string), ys[1].(ast.Signature), xs[2].([]any), xs[3], i), nil
 		})
 }
 
 func (s *state) optionalParameter() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
 		return ast.NewOptionalParameter(xs[0].(string), xs[1])
 	}, s.strip(s.And(s.identifier(), s.expression())))
 }
@@ -155,9 +155,9 @@ func (s *state) expandedArgument() comb.Parser {
 }
 
 func (s *state) positionalParameters() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
-		ys := xs[0].([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
+		ys := xs[0].([]any)
 
 		ss := make([]string, 0, len(ys))
 
@@ -171,14 +171,14 @@ func (s *state) positionalParameters() comb.Parser {
 			s = xs[1].(string)
 		}
 
-		return [2]interface{}{ss, s}
+		return [2]any{ss, s}
 	}, s.And(s.Many(s.identifier()), s.Maybe(s.expandedArgument())))
 }
 
 func (s *state) keywordParameters() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
-		ys := xs[0].([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
+		ys := xs[0].([]any)
 
 		os := make([]ast.OptionalParameter, 0, len(ys))
 
@@ -192,20 +192,20 @@ func (s *state) keywordParameters() comb.Parser {
 			s = xs[1].(string)
 		}
 
-		return [2]interface{}{os, s}
+		return [2]any{os, s}
 	}, s.And(s.Many(s.optionalParameter()), s.Maybe(s.expandedArgument())))
 }
 
 func (s *state) signature() comb.Parser {
 
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
 
-		pas := xs[0].([2]interface{})
-		kas, ok := xs[1].([2]interface{})
+		pas := xs[0].([2]any)
+		kas, ok := xs[1].([2]any)
 
 		if !ok {
-			kas = [2]interface{}{[]ast.OptionalParameter(nil), ""}
+			kas = [2]any{[]ast.OptionalParameter(nil), ""}
 		}
 
 		return ast.NewSignature(
@@ -216,8 +216,8 @@ func (s *state) signature() comb.Parser {
 }
 
 func (s *state) effect() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
 		expanded := false
 
 		if xs[0] != nil {
@@ -258,21 +258,21 @@ func (s *state) dictLiteral() comb.Parser {
 }
 
 func (s *state) anonymousFunction() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
-		return ast.NewAnonymousFunction(xs[1].([]interface{})[0].(ast.Signature), nil, xs[2])
+	return s.App(func(x any) any {
+		xs := x.([]any)
+		return ast.NewAnonymousFunction(xs[1].([]any)[0].(ast.Signature), nil, xs[2])
 	}, s.list(s.strippedString("\\"), s.list(s.signature()), s.expression()))
 }
 
 func (s *state) match() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
-		ks := xs[2].([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
+		ks := xs[2].([]any)
 
 		cs := make([]ast.MatchCase, 0, len(ks))
 
 		for _, k := range ks {
-			xs := k.([]interface{})
+			xs := k.([]any)
 			cs = append(cs, ast.NewMatchCase(xs[0], xs[1]))
 		}
 
@@ -294,8 +294,8 @@ func (s *state) pattern() comb.Parser {
 func (s *state) mutuallyRecursiveDefFunctions() comb.Parser {
 	return s.withInfo(
 		s.list(s.strippedString(mutualRecString), s.Many(s.defFunction())),
-		func(x interface{}, i *debug.Info) (interface{}, error) {
-			xs := x.([]interface{})[1].([]interface{})
+		func(x any, i *debug.Info) (any, error) {
+			xs := x.([]any)[1].([]any)
 			fs := make([]ast.DefFunction, 0, len(xs))
 
 			for _, l := range xs {
@@ -309,23 +309,23 @@ func (s *state) mutuallyRecursiveDefFunctions() comb.Parser {
 func (s *state) app() comb.Parser {
 	return s.appWithInfo(
 		s.list(s.expression(), s.arguments()),
-		func(x interface{}) (interface{}, ast.Arguments) {
-			xs := x.([]interface{})
+		func(x any) (any, ast.Arguments) {
+			xs := x.([]any)
 			return xs[0], xs[1].(ast.Arguments)
 		})
 }
 
-func (s *state) appWithInfo(p comb.Parser, f func(interface{}) (interface{}, ast.Arguments)) comb.Parser {
+func (s *state) appWithInfo(p comb.Parser, f func(any) (any, ast.Arguments)) comb.Parser {
 	return s.withInfo(
 		p,
-		func(x interface{}, i *debug.Info) (interface{}, error) {
+		func(x any, i *debug.Info) (any, error) {
 			f, args := f(x)
 			return ast.NewApp(f, args, i), nil
 		})
 }
 
-func (s *state) withInfo(p comb.Parser, f func(interface{}, *debug.Info) (interface{}, error)) comb.Parser {
-	return func() (interface{}, error) {
+func (s *state) withInfo(p comb.Parser, f func(any, *debug.Info) (any, error)) comb.Parser {
+	return func() (any, error) {
 		i := s.debugInfo()
 		x, err := p()
 
@@ -338,8 +338,8 @@ func (s *state) withInfo(p comb.Parser, f func(interface{}, *debug.Info) (interf
 }
 
 func (s *state) arguments() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
 
 		ks := []ast.KeywordArgument(nil)
 
@@ -354,8 +354,8 @@ func (s *state) arguments() comb.Parser {
 }
 
 func (s *state) positionalArguments() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
 		ps := make([]ast.PositionalArgument, 0, len(xs))
 
 		for _, x := range xs {
@@ -367,11 +367,11 @@ func (s *state) positionalArguments() comb.Parser {
 }
 
 func (s *state) positionalArgument() comb.Parser {
-	unexpanded := s.App(func(x interface{}) interface{} {
+	unexpanded := s.App(func(x any) any {
 		return ast.NewPositionalArgument(x, false)
 	}, s.expression())
 
-	expanded := s.App(func(x interface{}) interface{} {
+	expanded := s.App(func(x any) any {
 		return ast.NewPositionalArgument(x, true)
 	}, s.expanded(s.expression()))
 
@@ -379,8 +379,8 @@ func (s *state) positionalArgument() comb.Parser {
 }
 
 func (s *state) keywordArguments() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
 		ks := make([]ast.KeywordArgument, 0, len(xs))
 
 		for _, x := range xs {
@@ -397,8 +397,8 @@ func (s *state) keywordArguments() comb.Parser {
 }
 
 func (s *state) keywordArgument() comb.Parser {
-	return s.App(func(x interface{}) interface{} {
-		xs := x.([]interface{})
+	return s.App(func(x any) any {
+		xs := x.([]any)
 		return ast.NewKeywordArgument(xs[0].(string), xs[1])
 	}, s.And(s.identifier(), s.expression()))
 }
@@ -407,7 +407,7 @@ func (s *state) identifier() comb.Parser {
 	cs := string(commentChar) + invalidChars + spaceChars + specialChars
 	p := s.strip(s.Stringify(s.And(s.NotChars(cs+"."), s.Stringify(s.Many(s.NotChars(cs))))))
 
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		x, err := p()
 
 		if err != nil {
@@ -442,7 +442,7 @@ func (s *state) list(ps ...comb.Parser) comb.Parser {
 }
 
 func (s *state) sequence(l, r string) comb.Parser {
-	return s.App(func(x interface{}) interface{} {
+	return s.App(func(x any) any {
 		return ast.NewArguments(x.([]ast.PositionalArgument), nil)
 	}, s.stringWrap(l, s.positionalArguments(), r))
 }
@@ -454,7 +454,7 @@ func (s *state) stringWrap(l string, p comb.Parser, r string) comb.Parser {
 func (s *state) appFunc(ident string, p comb.Parser) comb.Parser {
 	return s.appWithInfo(
 		p,
-		func(x interface{}) (interface{}, ast.Arguments) {
+		func(x any) (any, ast.Arguments) {
 			return ident, x.(ast.Arguments)
 		})
 }

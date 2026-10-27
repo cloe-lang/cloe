@@ -10,7 +10,7 @@ import (
 )
 
 func TestDesugar(t *testing.T) {
-	for _, s := range []interface{}{
+	for _, s := range []any{
 		ast.NewDefFunction(
 			"factorial",
 			ast.NewSignature([]string{"n"}, "", nil, ""),
@@ -45,7 +45,7 @@ func TestDesugar(t *testing.T) {
 		for _, s := range Desugar(s) {
 			t.Logf("%#v", s)
 
-			ast.Convert(func(x interface{}) interface{} {
+			ast.Convert(func(x any) any {
 				_, ok := x.(ast.Match)
 				assert.False(t, ok)
 

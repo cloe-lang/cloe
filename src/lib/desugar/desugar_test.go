@@ -10,11 +10,11 @@ import (
 )
 
 func TestDesugar(t *testing.T) {
-	for _, ss := range [][]interface{}{
+	for _, ss := range [][]any{
 		{
 			ast.NewLetVar(
 				"foo",
-				ast.NewPApp("+", []interface{}{"42", "foo"}, debug.NewGoInfo(0))),
+				ast.NewPApp("+", []any{"42", "foo"}, debug.NewGoInfo(0))),
 		},
 		{
 			ast.NewLetVar(
@@ -33,7 +33,7 @@ func TestDesugar(t *testing.T) {
 			ast.NewDefFunction(
 				"foo",
 				ast.NewSignature(nil, "", nil, ""),
-				[]interface{}{
+				[]any{
 					ast.NewLetVar(
 						"x",
 						ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), nil, "123")),
@@ -51,9 +51,9 @@ func TestDesugar(t *testing.T) {
 					ast.NewMatchCase(
 						"_",
 						ast.NewPApp("*",
-							[]interface{}{"n", ast.NewPApp(
+							[]any{"n", ast.NewPApp(
 								"factorial",
-								[]interface{}{ast.NewPApp("-", []interface{}{"n", "1"}, debug.NewGoInfo(0))},
+								[]any{ast.NewPApp("-", []any{"n", "1"}, debug.NewGoInfo(0))},
 								debug.NewGoInfo(0))},
 							debug.NewGoInfo(0))),
 				}), debug.NewGoInfo(0)),
@@ -81,24 +81,24 @@ func TestDesugar(t *testing.T) {
 		},
 		{
 			ast.NewLetMatch(
-				ast.NewPApp(consts.Names.ListFunction, []interface{}{"123", "nil", "x"}, debug.NewGoInfo(0)),
+				ast.NewPApp(consts.Names.ListFunction, []any{"123", "nil", "x"}, debug.NewGoInfo(0)),
 				"y"),
 		},
 		{
 			ast.NewLetMatch(
-				ast.NewPApp(consts.Names.DictionaryFunction, []interface{}{"123", "x", "nil", "x"}, debug.NewGoInfo(0)),
+				ast.NewPApp(consts.Names.DictionaryFunction, []any{"123", "x", "nil", "x"}, debug.NewGoInfo(0)),
 				"y"),
 		},
 		{
 			ast.NewDefFunction(
 				"factorial",
 				ast.NewSignature([]string{"n"}, "", nil, ""),
-				[]interface{}{
+				[]any{
 					ast.NewLetMatch(
-						ast.NewPApp(consts.Names.ListFunction, []interface{}{"123", "nil", "x"}, debug.NewGoInfo(0)),
+						ast.NewPApp(consts.Names.ListFunction, []any{"123", "nil", "x"}, debug.NewGoInfo(0)),
 						"y"),
 					ast.NewLetMatch(
-						ast.NewPApp(consts.Names.DictionaryFunction, []interface{}{"123", "x", "nil", "x"}, debug.NewGoInfo(0)),
+						ast.NewPApp(consts.Names.DictionaryFunction, []any{"123", "x", "nil", "x"}, debug.NewGoInfo(0)),
 						"y"),
 				},
 				ast.NewMatch("n", []ast.MatchCase{
@@ -106,9 +106,9 @@ func TestDesugar(t *testing.T) {
 					ast.NewMatchCase(
 						"_",
 						ast.NewPApp("*",
-							[]interface{}{"n", ast.NewPApp(
+							[]any{"n", ast.NewPApp(
 								"factorial",
-								[]interface{}{ast.NewPApp("-", []interface{}{"n", "1"}, debug.NewGoInfo(0))},
+								[]any{ast.NewPApp("-", []any{"n", "1"}, debug.NewGoInfo(0))},
 								debug.NewGoInfo(0))},
 							debug.NewGoInfo(0))),
 				}), debug.NewGoInfo(0)),
@@ -117,7 +117,7 @@ func TestDesugar(t *testing.T) {
 		t.Logf("%#v", ss)
 
 		for _, s := range Desugar(ss) {
-			ast.Convert(func(x interface{}) interface{} {
+			ast.Convert(func(x any) any {
 				switch x := x.(type) {
 				case ast.AnonymousFunction:
 					t.Fail()

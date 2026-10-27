@@ -26,7 +26,7 @@ func newCompiler(e environment, c modulesCache) compiler {
 	return compiler{e, c}
 }
 
-func (c *compiler) compileModule(m []interface{}, d string) ([]Effect, error) {
+func (c *compiler) compileModule(m []any, d string) ([]Effect, error) {
 	es := []Effect{}
 
 	for _, s := range m {
@@ -37,7 +37,7 @@ func (c *compiler) compileModule(m []interface{}, d string) ([]Effect, error) {
 			sig := x.Signature()
 			ls := x.Lets()
 
-			vars := make([]interface{}, 0, len(ls))
+			vars := make([]any, 0, len(ls))
 			varToIndex := sig.NameToIndex()
 			nargs := len(varToIndex)
 
@@ -116,7 +116,7 @@ func (c *compiler) compileSubModule(p string) (module, error) {
 	return c.env.toMap(), nil
 }
 
-func (c *compiler) exprToThunk(expr interface{}) core.Value {
+func (c *compiler) exprToThunk(expr any) core.Value {
 	return core.PApp(ir.CompileFunction(
 		core.NewSignature(nil, "", nil, ""),
 		nil,
@@ -140,7 +140,7 @@ func (c *compiler) compileOptionalParameters(os []ast.OptionalParameter) []core.
 	return ps
 }
 
-func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interface{} {
+func (c *compiler) exprToIR(varToIndex map[string]int, expr any) any {
 	switch x := expr.(type) {
 	case string:
 		if i, ok := varToIndex[x]; ok {
@@ -174,7 +174,7 @@ func (c *compiler) exprToIR(varToIndex map[string]int, expr interface{}) interfa
 				c.exprToIR(varToIndex, k.Value())))
 		}
 
-		d := interface{}(nil)
+		d := any(nil)
 
 		if x.DefaultCase() != nil {
 			d = c.exprToIR(varToIndex, x.DefaultCase())

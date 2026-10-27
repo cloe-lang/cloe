@@ -5,11 +5,11 @@ import "fmt"
 // OptionalParameter represents an optional argument defined in a function.
 type OptionalParameter struct {
 	name         string
-	defaultValue interface{}
+	defaultValue any
 }
 
 // NewOptionalParameter creates an optional argument.
-func NewOptionalParameter(n string, v interface{}) OptionalParameter {
+func NewOptionalParameter(n string, v any) OptionalParameter {
 	return OptionalParameter{n, v}
 }
 
@@ -19,7 +19,7 @@ func (o OptionalParameter) Name() string {
 }
 
 // DefaultValue returns a default value of an optional argument.
-func (o OptionalParameter) DefaultValue() interface{} {
+func (o OptionalParameter) DefaultValue() any {
 	return o.defaultValue
 }
 

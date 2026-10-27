@@ -6,12 +6,12 @@ import (
 
 // Convert converts an AST with a given function.
 // This function visits all expressions and statements at least.
-func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
+func Convert(f func(any) any, x any) any {
 	if y := f(x); y != nil {
 		return y
 	}
 
-	convert := func(x interface{}) interface{} {
+	convert := func(x any) any {
 		return Convert(f, x)
 	}
 
@@ -19,7 +19,7 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 	case string:
 		return x
 	case AnonymousFunction:
-		ls := make([]interface{}, 0, len(x.Lets()))
+		ls := make([]any, 0, len(x.Lets()))
 
 		for _, l := range x.Lets() {
 			ls = append(ls, convert(l))
@@ -47,7 +47,7 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 	case KeywordArgument:
 		return NewKeywordArgument(x.Name(), convert(x.Value()))
 	case DefFunction:
-		ls := make([]interface{}, 0, len(x.Lets()))
+		ls := make([]any, 0, len(x.Lets()))
 
 		for _, l := range x.Lets() {
 			ls = append(ls, convert(l))
@@ -64,7 +64,7 @@ func Convert(f func(interface{}) interface{}, x interface{}) interface{} {
 	case LetMatch:
 		return NewLetMatch(x.Pattern(), convert(x.Expr()))
 	case LetExpression:
-		ls := make([]interface{}, 0, len(x.Lets()))
+		ls := make([]any, 0, len(x.Lets()))
 
 		for _, l := range x.Lets() {
 			ls = append(ls, convert(l))

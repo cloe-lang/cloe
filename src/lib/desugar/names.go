@@ -90,7 +90,7 @@ func (ns names) findInLetVar(l ast.LetVar) names {
 	return ns.findInExpression(l.Expr())
 }
 
-func (ns names) findInExpression(x interface{}) names {
+func (ns names) findInExpression(x any) names {
 	switch x := x.(type) {
 	case string:
 		if ns.include(x) {

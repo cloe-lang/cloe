@@ -10,22 +10,22 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/scalar"
 )
 
-func desugarLetMatch(x interface{}) []interface{} {
+func desugarLetMatch(x any) []any {
 	x = ast.Convert(convertLetMatch, x)
 
-	if ls, ok := x.([]interface{}); ok {
+	if ls, ok := x.([]any); ok {
 		return ls
 	}
 
-	return []interface{}{x}
+	return []any{x}
 }
 
-func convertLetMatch(x interface{}) interface{} {
+func convertLetMatch(x any) any {
 	switch x := x.(type) {
 	case ast.LetMatch:
 		ns := []string{}
 
-		ast.Convert(func(x interface{}) interface{} {
+		ast.Convert(func(x any) any {
 			n, ok := x.(string)
 
 			if !ok {
@@ -41,7 +41,7 @@ func convertLetMatch(x interface{}) interface{} {
 
 		d := gensym.GenSym()
 
-		ls := []interface{}{
+		ls := []any{
 			ast.NewLetVar(
 				d,
 				ast.NewMatch(
@@ -60,7 +60,7 @@ func convertLetMatch(x interface{}) interface{} {
 			ls = append(ls,
 				ast.NewLetVar(n, ast.NewPApp(
 					consts.Names.IndexFunction,
-					[]interface{}{d, fmt.Sprint(i)},
+					[]any{d, fmt.Sprint(i)},
 					debug.NewGoInfo(0))))
 		}
 
@@ -75,8 +75,8 @@ func convertLetMatch(x interface{}) interface{} {
 	return nil
 }
 
-func namesToPairsOfIndexAndName(ns []string) []interface{} {
-	args := make([]interface{}, 0, 2*len(ns))
+func namesToPairsOfIndexAndName(ns []string) []any {
+	args := make([]any, 0, 2*len(ns))
 
 	for i, n := range ns {
 		args = append(args, fmt.Sprint(i), n)
@@ -85,12 +85,12 @@ func namesToPairsOfIndexAndName(ns []string) []interface{} {
 	return args
 }
 
-func convertLets(ls []interface{}) []interface{} {
-	ns := make([]interface{}, 0, len(ls))
+func convertLets(ls []any) []any {
+	ns := make([]any, 0, len(ls))
 
 	for _, l := range ls {
 		switch x := ast.Convert(convertLetMatch, l).(type) {
-		case []interface{}:
+		case []any:
 			ns = append(ns, x...)
 		default:
 			ns = append(ns, x)

@@ -5,11 +5,11 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/debug"
 )
 
-func app(f interface{}, args ...interface{}) interface{} {
+func app(f any, args ...any) any {
 	return ast.NewPApp(f, args, debug.NewGoInfo(1))
 }
 
-func newSwitch(v interface{}, cs []ast.SwitchCase, d interface{}) interface{} {
+func newSwitch(v any, cs []ast.SwitchCase, d any) any {
 	if len(cs) == 0 {
 		return d
 	}

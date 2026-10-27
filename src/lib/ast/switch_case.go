@@ -5,11 +5,11 @@ import "fmt"
 // SwitchCase represents a case of a pattern and corrensponding value.
 type SwitchCase struct {
 	pattern string
-	value   interface{}
+	value   any
 }
 
 // NewSwitchCase creates a case in a switch expression.
-func NewSwitchCase(p string, v interface{}) SwitchCase {
+func NewSwitchCase(p string, v any) SwitchCase {
 	return SwitchCase{p, v}
 }
 
@@ -19,7 +19,7 @@ func (c SwitchCase) Pattern() string {
 }
 
 // Value returns a value corrensponding to a pattern in a switch expression.
-func (c SwitchCase) Value() interface{} {
+func (c SwitchCase) Value() any {
 	return c.value
 }
 

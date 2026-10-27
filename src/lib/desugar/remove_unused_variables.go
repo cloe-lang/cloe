@@ -4,15 +4,15 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/ast"
 )
 
-func removeUnusedVariables(x interface{}) []interface{} {
-	return []interface{}{ast.Convert(func(x interface{}) interface{} {
+func removeUnusedVariables(x any) []any {
+	return []any{ast.Convert(func(x any) any {
 		f, ok := x.(ast.DefFunction)
 
 		if !ok {
 			return nil
 		}
 
-		ls := make([]interface{}, 0, len(f.Lets()))
+		ls := make([]any, 0, len(f.Lets()))
 
 		for _, l := range reverseSlice(f.Lets()) {
 			for _, e := range append(letVarsToExpressions(ls), f.Body()) {
@@ -27,8 +27,8 @@ func removeUnusedVariables(x interface{}) []interface{} {
 	}, x)}
 }
 
-func letVarsToExpressions(ls []interface{}) []interface{} {
-	es := make([]interface{}, 0, len(ls))
+func letVarsToExpressions(ls []any) []any {
+	es := make([]any, 0, len(ls))
 
 	for _, l := range ls {
 		es = append(es, l.(ast.LetVar).Expr())

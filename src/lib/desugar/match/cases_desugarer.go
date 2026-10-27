@@ -11,7 +11,7 @@ import (
 )
 
 type casesDesugarer struct {
-	letBoundNames, lets []interface{}
+	letBoundNames, lets []any
 }
 
 func newCasesDesugarer() *casesDesugarer {
@@ -28,20 +28,20 @@ func (d *casesDesugarer) Desugar(cs []ast.MatchCase) ast.AnonymousFunction {
 		app("$if", app("$=", app("$catch", arg), "$nil"), body, arg))
 }
 
-func (d *casesDesugarer) takeLets() []interface{} {
+func (d *casesDesugarer) takeLets() []any {
 	ls := append(d.letBoundNames, d.lets...)
 	d.letBoundNames = nil
 	d.lets = nil
 	return ls
 }
 
-func (d *casesDesugarer) letTempVar(v interface{}) string {
+func (d *casesDesugarer) letTempVar(v any) string {
 	s := gensym.GenSym()
 	d.lets = append(d.lets, ast.NewLetVar(s, v))
 	return s
 }
 
-func (d *casesDesugarer) bindName(p interface{}, v interface{}) string {
+func (d *casesDesugarer) bindName(p any, v any) string {
 	s := generalNamePatternToName(p)
 	d.letBoundNames = append(d.letBoundNames, ast.NewLetVar(s, v))
 	return s
@@ -49,17 +49,17 @@ func (d *casesDesugarer) bindName(p interface{}, v interface{}) string {
 
 // matchedApp applies a function to arguments and creates a matched value of
 // match expression.
-func (d *casesDesugarer) matchedApp(f interface{}, args ...interface{}) string {
+func (d *casesDesugarer) matchedApp(f any, args ...any) string {
 	return d.bindName(gensym.GenSym(), app(f, args...))
 }
 
 // resultApp applies a function to arguments and creates a result value of match
 // expression.
-func (d *casesDesugarer) resultApp(f interface{}, args ...interface{}) string {
+func (d *casesDesugarer) resultApp(f any, args ...any) string {
 	return d.letTempVar(app(f, args...))
 }
 
-func (d *casesDesugarer) desugarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarCases(v any, cs []ast.MatchCase, dc any) any {
 	css := groupCases(cs)
 
 	if cs, ok := css[namePattern]; ok {
@@ -101,7 +101,7 @@ func groupCases(cs []ast.MatchCase) map[patternType][]ast.MatchCase {
 	return css
 }
 
-func getPatternType(p interface{}) patternType {
+func getPatternType(p any) patternType {
 	switch x := p.(type) {
 	case string:
 		if scalar.Defined(x) {
@@ -121,7 +121,7 @@ func getPatternType(p interface{}) patternType {
 	panic(fmt.Errorf("Invalid pattern: %#v", p))
 }
 
-func isGeneralNamePattern(p interface{}) bool {
+func isGeneralNamePattern(p any) bool {
 	switch x := p.(type) {
 	case string:
 		if scalar.Defined(x) {
@@ -144,16 +144,16 @@ func isGeneralNamePattern(p interface{}) bool {
 	panic(fmt.Errorf("Invalid pattern: %#v", p))
 }
 
-func (d *casesDesugarer) desugarListCases(list interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarListCases(list any, cs []ast.MatchCase, dc any) any {
 	type group struct {
-		first interface{}
+		first any
 		cases []ast.MatchCase
 	}
 
 	gs := []group{}
 	first := d.matchedApp("$first", list)
 	rest := d.matchedApp("$rest", list)
-	emptyCase := interface{}(nil)
+	emptyCase := any(nil)
 
 	for i, c := range cs {
 		ps := c.Pattern().(ast.App).Arguments().Positionals()
@@ -214,13 +214,13 @@ func (d *casesDesugarer) desugarListCases(list interface{}, cs []ast.MatchCase, 
 	return d.resultApp("$if", app("$=", list, consts.Names.EmptyList), emptyCase, r)
 }
 
-func (d *casesDesugarer) ifType(v interface{}, t string, then, els interface{}) interface{} {
+func (d *casesDesugarer) ifType(v any, t string, then, els any) any {
 	return d.resultApp("$if", app("$=", app("$typeOf", v), "\""+t+"\""), then, els)
 }
 
-func (d *casesDesugarer) desugarDictionaryCases(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarDictionaryCases(dict any, cs []ast.MatchCase, dc any) any {
 	type group struct {
-		key   interface{}
+		key   any
 		cases []ast.MatchCase
 	}
 
@@ -264,9 +264,9 @@ func (d *casesDesugarer) desugarDictionaryCases(dict interface{}, cs []ast.Match
 	return dc
 }
 
-func (d *casesDesugarer) desugarDictionaryCasesOfSameKey(dict interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarDictionaryCasesOfSameKey(dict any, cs []ast.MatchCase, dc any) any {
 	type group struct {
-		value interface{}
+		value any
 		cases []ast.MatchCase
 	}
 
@@ -317,10 +317,10 @@ func (d *casesDesugarer) desugarDictionaryCasesOfSameKey(dict interface{}, cs []
 }
 
 func (d *casesDesugarer) handleGeneralNamePattern(
-	p, v interface{}, cs []ast.MatchCase, c ast.MatchCase, i int,
-	dc, original, rest interface{},
-	desugarRestCases, desugarCollectionCases func(interface{}, []ast.MatchCase, interface{}) interface{},
-) (interface{}, bool) {
+	p, v any, cs []ast.MatchCase, c ast.MatchCase, i int,
+	dc, original, rest any,
+	desugarRestCases, desugarCollectionCases func(any, []ast.MatchCase, any) any,
+) (any, bool) {
 	if isGeneralNamePattern(p) {
 		d.bindName(p, v)
 
@@ -340,7 +340,7 @@ func (d *casesDesugarer) handleGeneralNamePattern(
 	return dc, false
 }
 
-func (d *casesDesugarer) defaultCaseOfGeneralNamePattern(v, p, body, dc interface{}) interface{} {
+func (d *casesDesugarer) defaultCaseOfGeneralNamePattern(v, p, body, dc any) any {
 	switch getPatternType(p) {
 	case namePattern:
 		return body
@@ -353,7 +353,7 @@ func (d *casesDesugarer) defaultCaseOfGeneralNamePattern(v, p, body, dc interfac
 	panic("unreachable")
 }
 
-func (d *casesDesugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, dc interface{}) interface{} {
+func (d *casesDesugarer) desugarScalarCases(v any, cs []ast.MatchCase, dc any) any {
 	ks := []ast.SwitchCase{}
 
 	for _, c := range cs {
@@ -363,7 +363,7 @@ func (d *casesDesugarer) desugarScalarCases(v interface{}, cs []ast.MatchCase, d
 	return newSwitch(v, ks, dc)
 }
 
-func equalPatterns(p, q interface{}) bool {
+func equalPatterns(p, q any) bool {
 	switch x := p.(type) {
 	case string:
 		y, ok := q.(string)
@@ -397,7 +397,7 @@ func equalPatterns(p, q interface{}) bool {
 	panic(fmt.Errorf("Invalid pattern: %#v, %#v", p, q))
 }
 
-func generalNamePatternToName(p interface{}) string {
+func generalNamePatternToName(p any) string {
 	switch x := p.(type) {
 	case string:
 		return x

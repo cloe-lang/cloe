@@ -7,22 +7,22 @@ import (
 
 // LetExpression represents a let expression node in ASTs.
 type LetExpression struct {
-	lets []interface{}
-	expr interface{}
+	lets []any
+	expr any
 }
 
 // NewLetExpression creates a let expression.
-func NewLetExpression(lets []interface{}, expr interface{}) LetExpression {
+func NewLetExpression(lets []any, expr any) LetExpression {
 	return LetExpression{lets, expr}
 }
 
 // Lets returns let-match statements used in the let expression.
-func (l LetExpression) Lets() []interface{} {
+func (l LetExpression) Lets() []any {
 	return l.lets
 }
 
 // Expr returns an expression of the let expression.
-func (l LetExpression) Expr() interface{} {
+func (l LetExpression) Expr() any {
 	return l.expr
 }
 

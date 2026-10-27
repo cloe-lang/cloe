@@ -7,13 +7,13 @@ import (
 
 // App represents an application of a function to arguments.
 type App struct {
-	function interface{}
+	function any
 	args     Arguments
 	info     *debug.Info
 }
 
 // NewApp creates an App from a function and arguments of expressions in IR.
-func NewApp(f interface{}, args Arguments, info *debug.Info) App {
+func NewApp(f any, args Arguments, info *debug.Info) App {
 	return App{f, args, info}
 }
 

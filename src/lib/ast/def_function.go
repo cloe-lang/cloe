@@ -12,14 +12,14 @@ import (
 type DefFunction struct {
 	name      string
 	signature Signature
-	lets      []interface{}
-	body      interface{}
+	lets      []any
+	body      any
 	info      *debug.Info
 }
 
 // NewDefFunction creates a DefFunction from its function name, signature,
 // internal let statements, and a body expression.
-func NewDefFunction(name string, sig Signature, lets []interface{}, expr interface{}, i *debug.Info) DefFunction {
+func NewDefFunction(name string, sig Signature, lets []any, expr any, i *debug.Info) DefFunction {
 	return DefFunction{name, sig, lets, expr, i}
 }
 
@@ -35,12 +35,12 @@ func (f DefFunction) Signature() Signature {
 
 // Lets returns let statements contained in the def-function statement.
 // Returned values should be LetVar or DefFunction.
-func (f DefFunction) Lets() []interface{} {
+func (f DefFunction) Lets() []any {
 	return f.lets
 }
 
 // Body returns a body expression of a function defined by the def-function statement.
-func (f DefFunction) Body() interface{} {
+func (f DefFunction) Body() any {
 	return f.body
 }
 

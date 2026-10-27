@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func sprint(s interface{}) StringType {
+func sprint(s any) StringType {
 	return NewString(fmt.Sprint(s))
 }
 

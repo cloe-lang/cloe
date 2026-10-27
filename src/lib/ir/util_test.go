@@ -36,7 +36,7 @@ func TestCompileFunctionWithVars(t *testing.T) {
 			[]string{"f", "x1", "x2", "x3"}, "",
 			nil, "",
 		),
-		[]interface{}{newAppWithDummyInfo(0, newPositionalArguments(2, 3))},
+		[]any{newAppWithDummyInfo(0, newPositionalArguments(2, 3))},
 		newAppWithDummyInfo(0, newPositionalArguments(1, 4)))
 
 	x1 := *core.NewNumber(math.Pow(n1, math.Pow(n2, n3)))
@@ -47,7 +47,7 @@ func TestCompileFunctionWithVars(t *testing.T) {
 	assert.Equal(t, x1, x2)
 }
 
-func newPositionalArguments(xs ...interface{}) Arguments {
+func newPositionalArguments(xs ...any) Arguments {
 	ps := make([]PositionalArgument, 0, len(xs))
 
 	for _, x := range xs {
@@ -57,7 +57,7 @@ func newPositionalArguments(xs ...interface{}) Arguments {
 	return NewArguments(ps, nil)
 }
 
-func newAppWithDummyInfo(f interface{}, args Arguments) App {
+func newAppWithDummyInfo(f any, args Arguments) App {
 	return NewApp(f, args, debug.NewGoInfo(0))
 }
 

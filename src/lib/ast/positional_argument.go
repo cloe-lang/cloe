@@ -4,17 +4,17 @@ import "fmt"
 
 // PositionalArgument represents a positional argument passed to a function.
 type PositionalArgument struct {
-	value    interface{}
+	value    any
 	expanded bool
 }
 
 // NewPositionalArgument creates a positional argument.
-func NewPositionalArgument(value interface{}, expanded bool) PositionalArgument {
+func NewPositionalArgument(value any, expanded bool) PositionalArgument {
 	return PositionalArgument{value, expanded}
 }
 
 // Value returns a value of a positional argument.
-func (p PositionalArgument) Value() interface{} {
+func (p PositionalArgument) Value() any {
 	return p.value
 }
 

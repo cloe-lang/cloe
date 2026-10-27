@@ -5,12 +5,12 @@ import "github.com/cloe-lang/cloe/src/lib/core"
 // PositionalArgument represents a positional argument passed to a function.
 // It can be a list value and expanded into multiple arguments.
 type PositionalArgument struct {
-	value    interface{}
+	value    any
 	expanded bool
 }
 
 // NewPositionalArgument creates a positional argument.
-func NewPositionalArgument(v interface{}, expanded bool) PositionalArgument {
+func NewPositionalArgument(v any, expanded bool) PositionalArgument {
 	return PositionalArgument{v, expanded}
 }
 

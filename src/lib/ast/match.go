@@ -7,12 +7,12 @@ import (
 
 // Match represents a match expression.
 type Match struct {
-	value interface{}
+	value any
 	cases []MatchCase
 }
 
 // NewMatch creates a match expression.
-func NewMatch(v interface{}, cs []MatchCase) Match {
+func NewMatch(v any, cs []MatchCase) Match {
 	if len(cs) == 0 {
 		panic("MatchCases in a match expression must be more than 0.")
 	}
@@ -21,7 +21,7 @@ func NewMatch(v interface{}, cs []MatchCase) Match {
 }
 
 // Value returns a value which will be matched with patterns in a match expression.
-func (m Match) Value() interface{} {
+func (m Match) Value() any {
 	return m.value
 }
 

@@ -11,9 +11,9 @@ import (
 func TestValueRenamerRename(t *testing.T) {
 	r := newValueRenamer(map[string]string{"foo": "bar"})
 
-	for _, x := range []interface{}{
+	for _, x := range []any{
 		"foo",
-		ast.NewPApp("foo", []interface{}{"bar"}, debug.NewGoInfo(0)),
+		ast.NewPApp("foo", []any{"bar"}, debug.NewGoInfo(0)),
 		ast.NewSwitch("123", []ast.SwitchCase{
 			ast.NewSwitchCase("456", "false"),
 			ast.NewSwitchCase("123", "true"),

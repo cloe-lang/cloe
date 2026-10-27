@@ -4,15 +4,15 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/ast"
 )
 
-func removeAliases(x interface{}) []interface{} {
-	return []interface{}{ast.Convert(func(x interface{}) interface{} {
+func removeAliases(x any) []any {
+	return []any{ast.Convert(func(x any) any {
 		f, ok := x.(ast.DefFunction)
 
 		if !ok {
 			return nil
 		}
 
-		ls := make([]interface{}, 0, len(f.Lets()))
+		ls := make([]any, 0, len(f.Lets()))
 		b := f.Body()
 
 		for _, l := range reverseSlice(f.Lets()) {

@@ -5,11 +5,11 @@ import "fmt"
 // LetVar represents a let-variable statement node in ASTs.
 type LetVar struct {
 	name string
-	expr interface{}
+	expr any
 }
 
 // NewLetVar creates a LetVar from a variable name and its value of an expression.
-func NewLetVar(name string, expr interface{}) LetVar {
+func NewLetVar(name string, expr any) LetVar {
 	return LetVar{name, expr}
 }
 
@@ -19,7 +19,7 @@ func (v LetVar) Name() string {
 }
 
 // Expr returns an expression of a variable value""
-func (v LetVar) Expr() interface{} {
+func (v LetVar) Expr() any {
 	return v.expr
 }
 

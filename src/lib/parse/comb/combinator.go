@@ -7,7 +7,7 @@ import (
 
 // Char creates a parser parsing a character.
 func (s *State) Char(r rune) Parser {
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		if s.currentRune() != r {
 			return nil, fmt.Errorf("invalid character, '%c'", s.currentRune())
 		}
@@ -39,7 +39,7 @@ func (s *State) String(str string) Parser {
 func (s *State) Chars(cs string) Parser {
 	rs := stringToRuneSet(cs)
 
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		if _, ok := rs[s.currentRune()]; ok {
 			defer s.increment()
 			return s.currentRune(), nil
@@ -53,7 +53,7 @@ func (s *State) Chars(cs string) Parser {
 func (s *State) NotChars(str string) Parser {
 	rs := stringToRuneSet(str)
 
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		if _, ok := rs[s.currentRune()]; !ok {
 			defer s.increment()
 			return s.currentRune(), nil
@@ -76,10 +76,10 @@ func (s *State) Prefix(pre, p Parser) Parser {
 }
 
 func second(p Parser) Parser {
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		results, err := p()
 
-		if results, ok := results.([]interface{}); ok {
+		if results, ok := results.([]any); ok {
 			return results[1], err
 		}
 
@@ -89,11 +89,11 @@ func second(p Parser) Parser {
 
 // Many creates a parser of more than or equal to 0 reptation of a given parser.
 func (s *State) Many(p Parser) Parser {
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		results, err := s.Many1(p)()
 
 		if err != nil {
-			return []interface{}{}, nil
+			return []any{}, nil
 		}
 
 		return results, nil
@@ -102,8 +102,8 @@ func (s *State) Many(p Parser) Parser {
 
 // Many1 creates a parser of more than 0 reptation of a given parser.
 func (s *State) Many1(p Parser) Parser {
-	return func() (interface{}, error) {
-		var results []interface{}
+	return func() (any, error) {
+		var results []any
 
 		for i := 0; ; i++ {
 			old := *s
@@ -128,12 +128,12 @@ func (s *State) Many1(p Parser) Parser {
 
 // Or creates a selectional parser from given parsers.
 func (s *State) Or(ps ...Parser) Parser {
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		var err error
 		old := *s
 
 		for _, p := range ps {
-			var result interface{}
+			var result any
 
 			result, err = p()
 
@@ -150,8 +150,8 @@ func (s *State) Or(ps ...Parser) Parser {
 
 // And creates a parser combining given parsers sequentially.
 func (s *State) And(ps ...Parser) Parser {
-	return func() (interface{}, error) {
-		results := make([]interface{}, 0, len(ps))
+	return func() (any, error) {
+		results := make([]any, 0, len(ps))
 		old := *s
 
 		for _, p := range ps {
@@ -174,7 +174,7 @@ func (s *State) And(ps ...Parser) Parser {
 func (s *State) Lazy(f func() Parser) Parser {
 	p := Parser(nil)
 
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		if p == nil {
 			p = f()
 		}
@@ -185,7 +185,7 @@ func (s *State) Lazy(f func() Parser) Parser {
 
 // Void creates a parser whose result is always nil from a given parser.
 func (State) Void(p Parser) Parser {
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		_, err := p()
 		return nil, err
 	}
@@ -194,7 +194,7 @@ func (State) Void(p Parser) Parser {
 // Exhaust creates a parser which fails when a source string is not exhausted
 // after running a given parser.
 func (s *State) Exhaust(p Parser, f func(State) error) Parser {
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		result, err := p()
 
 		if err != nil {
@@ -208,8 +208,8 @@ func (s *State) Exhaust(p Parser, f func(State) error) Parser {
 }
 
 // App applies a function to results of a given parser.
-func (s *State) App(f func(interface{}) interface{}, p Parser) Parser {
-	return func() (interface{}, error) {
+func (s *State) App(f func(any) any, p Parser) Parser {
+	return func() (any, error) {
 		result, err := p()
 
 		if err == nil {
@@ -232,7 +232,7 @@ func stringToRuneSet(s string) map[rune]bool {
 
 // None creates a parser which parses nothing and succeeds always.
 func (s *State) None() Parser {
-	return func() (interface{}, error) {
+	return func() (any, error) {
 		return nil, nil
 	}
 }
@@ -247,16 +247,16 @@ func (s *State) Maybe(p Parser) Parser {
 // a given parser. The result of a given parser must be a rune, a string or a
 // sequence of them in []interface{}.
 func (s *State) Stringify(p Parser) Parser {
-	return s.App(func(x interface{}) interface{} { return stringify(x) }, p)
+	return s.App(func(x any) any { return stringify(x) }, p)
 }
 
-func stringify(x interface{}) string {
+func stringify(x any) string {
 	switch x := x.(type) {
 	case string:
 		return x
 	case rune:
 		return string(x)
-	case []interface{}:
+	case []any:
 		ss := make([]string, 0, len(x))
 
 		for _, s := range x {

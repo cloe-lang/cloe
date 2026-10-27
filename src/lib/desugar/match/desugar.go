@@ -3,12 +3,12 @@ package match
 import "github.com/cloe-lang/cloe/src/lib/ast"
 
 // Desugar desugars match expressions in a statement.
-func Desugar(s interface{}) []interface{} {
-	return []interface{}{desugarMatch(s)}
+func Desugar(s any) []any {
+	return []any{desugarMatch(s)}
 }
 
-func desugarMatch(x interface{}) interface{} {
-	return ast.Convert(func(x interface{}) interface{} {
+func desugarMatch(x any) any {
+	return ast.Convert(func(x any) any {
 		m, ok := x.(ast.Match)
 
 		if !ok {

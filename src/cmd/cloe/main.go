@@ -57,7 +57,7 @@ func main() {
 	run.Run(es)
 }
 
-func getArgs() map[string]interface{} {
+func getArgs() map[string]any {
 	usage := `Cloe interpreter
 
 Usage:

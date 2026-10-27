@@ -1,0 +1,30 @@
+{
+  "words": [
+    "benchmem",
+    "builtins",
+    "cloe",
+    "clutil",
+    "codecov",
+    "consts",
+    "covermode",
+    "coverprofile",
+    "desugarer",
+    "desugars",
+    "docopt",
+    "gensym",
+    "gofmt",
+    "goimports",
+    "jeffail",
+    "kwargs",
+    "nargs",
+    "renamer",
+    "reserveds",
+    "stretchr",
+    "stringable",
+    "strs",
+    "unrec",
+    "unrecs",
+    "unrecursive",
+    "whnf"
+  ]
+}

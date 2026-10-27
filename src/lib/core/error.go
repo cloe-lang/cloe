@@ -24,7 +24,7 @@ func NewError(n, m string, xs ...any) *ErrorType {
 	return &ErrorType{n, fmt.Sprintf(m, xs...), nil}
 }
 
-// Catch returns a dictionary containing a name and message of a catched error,
+// Catch returns a dictionary containing a name and message of a caught error,
 // or nil otherwise.
 var Catch = NewLazyFunction(
 	NewSignature([]string{"error"}, "", nil, ""),
@@ -184,7 +184,7 @@ var DummyError = NewError("DummyError", "DummyMessage")
 
 // Error creates an error value with an error name and message.
 var Error = NewLazyFunction(
-	NewSignature([]string{"name", "messasge"}, "", nil, ""),
+	NewSignature([]string{"name", "message"}, "", nil, ""),
 	func(vs ...Value) Value {
 		n, err := EvalString(vs[0])
 

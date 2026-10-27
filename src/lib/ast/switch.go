@@ -26,7 +26,7 @@ func (s Switch) Value() any {
 	return s.value
 }
 
-// Cases returns pairs of a pattern and corrensponding value in a match expression.
+// Cases returns pairs of a pattern and corresponding value in a match expression.
 func (s Switch) Cases() []SwitchCase {
 	return s.cases
 }

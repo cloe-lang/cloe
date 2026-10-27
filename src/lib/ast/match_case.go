@@ -2,7 +2,7 @@ package ast
 
 import "fmt"
 
-// MatchCase represents a case of a pattern and corrensponding value.
+// MatchCase represents a case of a pattern and corresponding value.
 type MatchCase struct {
 	pattern any
 	value   any
@@ -18,7 +18,7 @@ func (c MatchCase) Pattern() any {
 	return c.pattern
 }
 
-// Value returns a value corrensponding to a pattern in a match expression.
+// Value returns a value corresponding to a pattern in a match expression.
 func (c MatchCase) Value() any {
 	return c.value
 }

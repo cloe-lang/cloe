@@ -25,7 +25,7 @@ func (m Match) Value() any {
 	return m.value
 }
 
-// Cases returns pairs of a pattern and corrensponding value in a match expression.
+// Cases returns pairs of a pattern and corresponding value in a match expression.
 func (m Match) Cases() []MatchCase {
 	return m.cases
 }

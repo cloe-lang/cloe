@@ -63,8 +63,8 @@ func (s *State) NotChars(str string) Parser {
 	}
 }
 
-// Wrap wraps a parser with parsers which parse something on the leftside and
-// rightside of it and creates a new parser. Its parsing result will be m's.
+// Wrap wraps a parser with parsers which parse something on the left side and
+// right side of it and creates a new parser. Its parsing result will be m's.
 func (s *State) Wrap(l, m, r Parser) Parser {
 	return second(s.And(l, m, r))
 }
@@ -87,7 +87,7 @@ func second(p Parser) Parser {
 	}
 }
 
-// Many creates a parser of more than or equal to 0 reptation of a given parser.
+// Many creates a parser of more than or equal to 0 repetitions of a given parser.
 func (s *State) Many(p Parser) Parser {
 	return func() (any, error) {
 		results, err := s.Many1(p)()
@@ -100,7 +100,7 @@ func (s *State) Many(p Parser) Parser {
 	}
 }
 
-// Many1 creates a parser of more than 0 reptation of a given parser.
+// Many1 creates a parser of more than 0 repetitions of a given parser.
 func (s *State) Many1(p Parser) Parser {
 	return func() (any, error) {
 		var results []any

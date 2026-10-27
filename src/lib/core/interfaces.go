@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-// stringable is an interface for something convertable into StringType.
+// stringable is an interface for something convertible into StringType.
 // This should be implemented for all types including error type.
 type stringable interface {
 	Value

@@ -193,7 +193,7 @@ func TestExpression(t *testing.T) {
 	strs := []string{
 		"ident",
 		"ident  ",
-		"(foo ; (this is) comment \n bar)  \t ; lsdfj\n ",
+		"(foo ; (this is) comment \n bar)  \t ; comment\n ",
 	}
 
 	for _, str := range strs {
@@ -278,7 +278,7 @@ func TestIdentifierFail(t *testing.T) {
 }
 
 func TestBlank(t *testing.T) {
-	for _, str := range []string{"", "   ", "\t", "\n\n", " ; laskdjf \n \t "} {
+	for _, str := range []string{"", "   ", "\t", "\n\n", " ; comment \n \t "} {
 		s := newStateWithoutFile(str)
 		result, err := s.exhaust(s.blank())()
 

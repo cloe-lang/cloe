@@ -22,7 +22,7 @@ func TestDesugarEmptyCollection(t *testing.T) {
 
 		for _, s := range m {
 			for _, s := range desugarEmptyCollection(s) {
-				ast.Convert(func(x interface{}) interface{} {
+				ast.Convert(func(x any) any {
 					a, ok := x.(ast.App)
 
 					if !ok {

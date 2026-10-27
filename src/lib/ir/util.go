@@ -3,7 +3,7 @@ package ir
 import "github.com/cloe-lang/cloe/src/lib/core"
 
 // CompileFunction compiles a function in IR into a thunk.
-func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) core.Value {
+func CompileFunction(s core.Signature, vars []any, expr any) core.Value {
 	// TODO: Compile everything into bytecode here.
 
 	return core.NewLazyFunction(
@@ -19,7 +19,7 @@ func CompileFunction(s core.Signature, vars []interface{}, expr interface{}) cor
 		})
 }
 
-func interpretExpression(args []core.Value, expr interface{}) core.Value {
+func interpretExpression(args []core.Value, expr any) core.Value {
 	switch x := expr.(type) {
 	case int:
 		return args[x]

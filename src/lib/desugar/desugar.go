@@ -5,8 +5,8 @@ import (
 )
 
 // Desugar desugars a module of statements in AST.
-func Desugar(ss []interface{}) []interface{} {
-	for _, f := range []func(interface{}) []interface{}{
+func Desugar(ss []any) []any {
+	for _, f := range []func(any) []any{
 		desugarLetMatch,
 		desugarLetExpression,
 		desugarEmptyCollection,
@@ -19,7 +19,7 @@ func Desugar(ss []interface{}) []interface{} {
 		removeUnusedVariables,
 		removeAliases,
 	} {
-		new := make([]interface{}, 0, 2*len(ss))
+		new := make([]any, 0, 2*len(ss))
 
 		for _, s := range ss {
 			new = append(new, f(s)...)

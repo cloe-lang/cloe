@@ -9,11 +9,11 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/gensym"
 )
 
-func desugarMutualRecursionStatement(x interface{}) []interface{} {
-	y := ast.Convert(func(x interface{}) interface{} {
+func desugarMutualRecursionStatement(x any) []any {
+	y := ast.Convert(func(x any) any {
 		switch x := x.(type) {
 		case ast.DefFunction:
-			ls := make([]interface{}, 0, len(x.Lets()))
+			ls := make([]any, 0, len(x.Lets()))
 
 			for _, l := range x.Lets() {
 				ls = append(ls, desugarMutualRecursionStatement(l)...)
@@ -27,23 +27,23 @@ func desugarMutualRecursionStatement(x interface{}) []interface{} {
 		return nil
 	}, x)
 
-	if ys, ok := y.([]interface{}); ok {
+	if ys, ok := y.([]any); ok {
 		return ys
 	}
 
-	return []interface{}{y}
+	return []any{y}
 }
 
-func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
+func desugarMutualRecursion(mr ast.MutualRecursion) []any {
 	fs := mr.DefFunctions()
-	unrecs := make([]interface{}, 0, len(fs))
+	unrecs := make([]any, 0, len(fs))
 
 	for _, f := range fs {
 		unrecs = append(unrecs, createUnrecursiveFunction(indexDefFunctions(fs...), f))
 	}
 
 	recsList := gensym.GenSym()
-	recs := make([]interface{}, 0, len(fs))
+	recs := make([]any, 0, len(fs))
 
 	for i, f := range fs {
 		recs = append(
@@ -52,14 +52,14 @@ func desugarMutualRecursion(mr ast.MutualRecursion) []interface{} {
 				f.Name(),
 				ast.NewPApp(
 					consts.Names.IndexFunction,
-					[]interface{}{recsList, fmt.Sprint(i + 1)},
+					[]any{recsList, fmt.Sprint(i + 1)},
 					f.DebugInfo())))
 	}
 
 	return append(
 		unrecs,
 		append(
-			[]interface{}{ast.NewLetVar(
+			[]any{ast.NewLetVar(
 				recsList,
 				ast.NewPApp("$ys", letStatementsToNames(unrecs), mr.DebugInfo()))},
 			recs...)...)
@@ -94,14 +94,14 @@ func indexDefFunctions(fs ...ast.DefFunction) map[string]int {
 	return n2i
 }
 
-func replaceNames(funcList string, n2i map[string]int, x interface{}, di *debug.Info) interface{} {
-	return ast.Convert(func(x interface{}) interface{} {
+func replaceNames(funcList string, n2i map[string]int, x any, di *debug.Info) any {
+	return ast.Convert(func(x any) any {
 		switch x := x.(type) {
 		case string:
 			if i, ok := n2i[x]; ok {
 				return ast.NewPApp(
 					consts.Names.IndexFunction,
-					[]interface{}{funcList, fmt.Sprint(i)},
+					[]any{funcList, fmt.Sprint(i)},
 					di)
 			}
 
@@ -113,7 +113,7 @@ func replaceNames(funcList string, n2i map[string]int, x interface{}, di *debug.
 				delete(n2i, n)
 			}
 
-			ls := make([]interface{}, 0, len(x.Lets()))
+			ls := make([]any, 0, len(x.Lets()))
 
 			for _, l := range x.Lets() {
 				switch l := l.(type) {
@@ -150,8 +150,8 @@ func copyNameToIndex(n2i map[string]int) map[string]int {
 	return new
 }
 
-func letStatementsToNames(ls []interface{}) []interface{} {
-	ns := make([]interface{}, 0, len(ls))
+func letStatementsToNames(ls []any) []any {
+	ns := make([]any, 0, len(ls))
 
 	for _, l := range ls {
 		switch l := l.(type) {

@@ -5,11 +5,11 @@ import "fmt"
 // KeywordArgument represents a keyword argument passed to a function.
 type KeywordArgument struct {
 	name  string
-	value interface{}
+	value any
 }
 
 // NewKeywordArgument creates a keyword argument from a bound name and its value.
-func NewKeywordArgument(name string, value interface{}) KeywordArgument {
+func NewKeywordArgument(name string, value any) KeywordArgument {
 	return KeywordArgument{name, value}
 }
 
@@ -19,7 +19,7 @@ func (k KeywordArgument) Name() string {
 }
 
 // Value returns a value of a keyword argument.
-func (k KeywordArgument) Value() interface{} {
+func (k KeywordArgument) Value() any {
 	return k.value
 }
 

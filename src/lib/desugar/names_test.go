@@ -33,7 +33,7 @@ func TestNamesFindInDefFunction(t *testing.T) {
 			ast.NewDefFunction(
 				n,
 				ast.NewSignature(nil, "", nil, ""),
-				[]interface{}{ast.NewLetVar(n, "y")},
+				[]any{ast.NewLetVar(n, "y")},
 				n,
 				debug.NewGoInfo(0)),
 			false,
@@ -42,7 +42,7 @@ func TestNamesFindInDefFunction(t *testing.T) {
 			ast.NewDefFunction(
 				n,
 				ast.NewSignature(nil, "", nil, ""),
-				[]interface{}{ast.NewLetVar(n, "x")},
+				[]any{ast.NewLetVar(n, "x")},
 				"42",
 				debug.NewGoInfo(0)),
 			true,
@@ -57,7 +57,7 @@ func TestNamesFindInDefFunctionPanic(t *testing.T) {
 		newNames().findInDefFunction(ast.NewDefFunction(
 			"func",
 			ast.NewSignature(nil, "", nil, ""),
-			[]interface{}{nil},
+			[]any{nil},
 			"x",
 			debug.NewGoInfo(0)))
 	})
@@ -67,7 +67,7 @@ func TestNamesFindInExpression(t *testing.T) {
 	n := "x"
 
 	for _, c := range []struct {
-		expression interface{}
+		expression any
 		answer     bool
 	}{
 		{
@@ -75,7 +75,7 @@ func TestNamesFindInExpression(t *testing.T) {
 			true,
 		},
 		{
-			ast.NewPApp("f", []interface{}{"x"}, debug.NewGoInfo(0)),
+			ast.NewPApp("f", []any{"x"}, debug.NewGoInfo(0)),
 			true,
 		},
 		{

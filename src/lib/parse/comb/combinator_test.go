@@ -71,7 +71,7 @@ func TestMany(t *testing.T) {
 func TestManyFail(t *testing.T) {
 	for _, str := range []string{"="} {
 		s := NewState(str)
-		x, err := s.Exhaust(s.Many(func() (interface{}, error) {
+		x, err := s.Exhaust(s.Many(func() (any, error) {
 			x, err := s.String("=")()
 
 			if err != nil {
@@ -92,7 +92,7 @@ func TestManyFail(t *testing.T) {
 	}
 }
 
-func testMany1Space(str string) (interface{}, error) {
+func testMany1Space(str string) (any, error) {
 	s := NewState(str)
 	return s.Many1(s.Char(' '))()
 }
@@ -125,7 +125,7 @@ func TestMany1Nest(t *testing.T) {
 	assert.Nil(t, err)
 }
 
-func testOr(str string) (interface{}, error) {
+func testOr(str string) (any, error) {
 	s := NewState(str)
 	return s.Or(s.Char('a'), s.Char('b'))()
 }

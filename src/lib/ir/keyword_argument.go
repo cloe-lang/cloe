@@ -5,11 +5,11 @@ import "github.com/cloe-lang/cloe/src/lib/core"
 // KeywordArgument represents a keyword argument passed to a function.
 type KeywordArgument struct {
 	name  string
-	value interface{}
+	value any
 }
 
 // NewKeywordArgument creates a keyword argument from a bound name and its value.
-func NewKeywordArgument(n string, v interface{}) KeywordArgument {
+func NewKeywordArgument(n string, v any) KeywordArgument {
 	return KeywordArgument{n, v}
 }
 

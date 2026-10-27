@@ -5,8 +5,8 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/consts"
 )
 
-func desugarEmptyCollection(x interface{}) []interface{} {
-	return []interface{}{ast.Convert(func(x interface{}) interface{} {
+func desugarEmptyCollection(x any) []any {
+	return []any{ast.Convert(func(x any) any {
 		a, ok := x.(ast.App)
 
 		if !ok {

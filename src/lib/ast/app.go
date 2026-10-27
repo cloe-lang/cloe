@@ -8,18 +8,18 @@ import (
 
 // App represents an application of a function to arguments.
 type App struct {
-	function interface{}
+	function any
 	args     Arguments
 	info     *debug.Info
 }
 
 // NewApp creates an App from a function and arguments with debug information.
-func NewApp(f interface{}, args Arguments, info *debug.Info) App {
+func NewApp(f any, args Arguments, info *debug.Info) App {
 	return App{f, args, info}
 }
 
 // NewPApp don't creates PPap but PApp.
-func NewPApp(f interface{}, args []interface{}, info *debug.Info) App {
+func NewPApp(f any, args []any, info *debug.Info) App {
 	ps := make([]PositionalArgument, 0, len(args))
 
 	for _, arg := range args {
@@ -30,7 +30,7 @@ func NewPApp(f interface{}, args []interface{}, info *debug.Info) App {
 }
 
 // Function returns a function of an application.
-func (a App) Function() interface{} {
+func (a App) Function() any {
 	return a.function
 }
 

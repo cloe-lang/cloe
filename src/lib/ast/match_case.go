@@ -2,24 +2,24 @@ package ast
 
 import "fmt"
 
-// MatchCase represents a case of a pattern and corrensponding value.
+// MatchCase represents a case of a pattern and corresponding value.
 type MatchCase struct {
-	pattern interface{}
-	value   interface{}
+	pattern any
+	value   any
 }
 
 // NewMatchCase creates a case in a match expression.
-func NewMatchCase(p interface{}, v interface{}) MatchCase {
+func NewMatchCase(p any, v any) MatchCase {
 	return MatchCase{p, v}
 }
 
 // Pattern returns a pattern of a case in a match expression.
-func (c MatchCase) Pattern() interface{} {
+func (c MatchCase) Pattern() any {
 	return c.pattern
 }
 
-// Value returns a value corrensponding to a pattern in a match expression.
-func (c MatchCase) Value() interface{} {
+// Value returns a value corresponding to a pattern in a match expression.
+func (c MatchCase) Value() any {
 	return c.value
 }
 

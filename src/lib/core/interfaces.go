@@ -4,7 +4,7 @@ import (
 	"reflect"
 )
 
-// stringable is an interface for something convertable into StringType.
+// stringable is an interface for something convertible into StringType.
 // This should be implemented for all types including error type.
 type stringable interface {
 	Value
@@ -33,7 +33,7 @@ type comparable interface {
 	compare(comparable) int // can panic
 }
 
-func compare(x1, x2 interface{}) int {
+func compare(x1, x2 any) int {
 	v1, v2 := x1.(Value), x2.(Value)
 	o1, ok := v1.(comparable)
 

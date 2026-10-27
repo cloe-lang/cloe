@@ -7,13 +7,13 @@ import (
 
 // Switch represents a switch expression.
 type Switch struct {
-	value       interface{}
+	value       any
 	cases       []SwitchCase
-	defaultCase interface{}
+	defaultCase any
 }
 
 // NewSwitch creates a match expression.
-func NewSwitch(v interface{}, cs []SwitchCase, d interface{}) Switch {
+func NewSwitch(v any, cs []SwitchCase, d any) Switch {
 	if len(cs) == 0 && d == nil {
 		panic("Cases in a match expression must be more than 0.")
 	}
@@ -22,17 +22,17 @@ func NewSwitch(v interface{}, cs []SwitchCase, d interface{}) Switch {
 }
 
 // Value returns a value which will be matched with patterns in a match expression.
-func (s Switch) Value() interface{} {
+func (s Switch) Value() any {
 	return s.value
 }
 
-// Cases returns pairs of a pattern and corrensponding value in a match expression.
+// Cases returns pairs of a pattern and corresponding value in a match expression.
 func (s Switch) Cases() []SwitchCase {
 	return s.cases
 }
 
 // DefaultCase returns a default case in a switch expression.
-func (s Switch) DefaultCase() interface{} {
+func (s Switch) DefaultCase() any {
 	return s.defaultCase
 }
 

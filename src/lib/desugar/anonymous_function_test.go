@@ -9,7 +9,7 @@ import (
 )
 
 func TestDesugarAnonymousFunctions(t *testing.T) {
-	for _, s := range []interface{}{
+	for _, s := range []any{
 		ast.NewLetVar(
 			"foo",
 			ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), nil, "123")),
@@ -22,7 +22,7 @@ func TestDesugarAnonymousFunctions(t *testing.T) {
 		ast.NewDefFunction(
 			"foo",
 			ast.NewSignature(nil, "", nil, ""),
-			[]interface{}{
+			[]any{
 				ast.NewLetVar(
 					"x",
 					ast.NewAnonymousFunction(ast.NewSignature(nil, "", nil, ""), nil, "123")),
@@ -33,7 +33,7 @@ func TestDesugarAnonymousFunctions(t *testing.T) {
 		t.Logf("%#v", s)
 
 		for _, s := range desugarAnonymousFunctions(s) {
-			ast.Convert(func(x interface{}) interface{} {
+			ast.Convert(func(x any) any {
 				_, ok := x.(ast.AnonymousFunction)
 				assert.False(t, ok)
 

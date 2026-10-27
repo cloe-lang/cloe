@@ -18,9 +18,9 @@ func prependPositionalsToSig(ns []string, s ast.Signature) ast.Signature {
 		s.Keywords(), s.RestKeywords())
 }
 
-func renamer(a, b string) func(x interface{}) interface{} {
-	return func(x interface{}) interface{} {
-		return ast.Convert(func(x interface{}) interface{} {
+func renamer(a, b string) func(x any) any {
+	return func(x any) any {
+		return ast.Convert(func(x any) any {
 			s, ok := x.(string)
 
 			if !ok || s != a {
@@ -32,8 +32,8 @@ func renamer(a, b string) func(x interface{}) interface{} {
 	}
 }
 
-func reverseSlice(xs []interface{}) []interface{} {
-	ys := make([]interface{}, 0, len(xs))
+func reverseSlice(xs []any) []any {
+	ys := make([]any, 0, len(xs))
 
 	for i := range xs {
 		ys = append(ys, xs[len(xs)-i-1])

@@ -33,7 +33,7 @@ func command() error {
 	}
 }
 
-func getArgs() (string, map[string]interface{}, error) {
+func getArgs() (string, map[string]any, error) {
 	usage := `Cloe utility
 
 Usage:

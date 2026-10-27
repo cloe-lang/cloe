@@ -7,17 +7,17 @@ import (
 	"github.com/cloe-lang/cloe/src/lib/gensym"
 )
 
-func flattenStatement(s interface{}) []interface{} {
+func flattenStatement(s any) []any {
 	switch s := s.(type) {
 	case ast.DefFunction:
 		return flattenDefFunction(s)
 	default:
-		return []interface{}{s}
+		return []any{s}
 	}
 }
 
-func flattenStatements(old []interface{}) []interface{} {
-	new := make([]interface{}, 0)
+func flattenStatements(old []any) []any {
+	new := make([]any, 0)
 
 	for _, s := range old {
 		new = append(new, flattenStatement(s)...)
@@ -26,11 +26,11 @@ func flattenStatements(old []interface{}) []interface{} {
 	return new
 }
 
-func flattenDefFunction(f ast.DefFunction) []interface{} {
+func flattenDefFunction(f ast.DefFunction) []any {
 	f = flattenInnerStatements(f)
 
-	ss := make([]interface{}, 0)
-	ls := make([]interface{}, 0)
+	ss := make([]any, 0)
+	ls := make([]any, 0)
 	ns := signatureToNames(f.Signature())
 
 	for _, l := range f.Lets() {

@@ -38,13 +38,13 @@ func TestDesugarMutualRecursion(t *testing.T) {
 					"foo",
 					ast.NewSignature([]string{"x"}, "", nil, ""),
 					nil,
-					ast.NewPApp("bar", []interface{}{"x"}, debug.NewGoInfo(0)),
+					ast.NewPApp("bar", []any{"x"}, debug.NewGoInfo(0)),
 					debug.NewGoInfo(0)),
 				ast.NewDefFunction(
 					"bar",
 					ast.NewSignature([]string{"x"}, "", nil, ""),
 					nil,
-					ast.NewPApp("foo", []interface{}{"x"}, debug.NewGoInfo(0)),
+					ast.NewPApp("foo", []any{"x"}, debug.NewGoInfo(0)),
 					debug.NewGoInfo(0)),
 			}, debug.NewGoInfo(0)),
 		ast.NewMutualRecursion(
@@ -52,22 +52,22 @@ func TestDesugarMutualRecursion(t *testing.T) {
 				ast.NewDefFunction(
 					"foo",
 					ast.NewSignature([]string{"x"}, "", nil, ""),
-					[]interface{}{
+					[]any{
 						ast.NewDefFunction(
 							"f",
 							ast.NewSignature([]string{"x"}, "", nil, ""),
 							nil,
-							ast.NewPApp("bar", []interface{}{"x"}, debug.NewGoInfo(0)),
+							ast.NewPApp("bar", []any{"x"}, debug.NewGoInfo(0)),
 							debug.NewGoInfo(0)),
 						ast.NewLetVar("g", "f"),
 					},
-					ast.NewPApp("g", []interface{}{"x"}, debug.NewGoInfo(0)),
+					ast.NewPApp("g", []any{"x"}, debug.NewGoInfo(0)),
 					debug.NewGoInfo(0)),
 				ast.NewDefFunction(
 					"bar",
 					ast.NewSignature([]string{"x"}, "", nil, ""),
 					nil,
-					ast.NewPApp("foo", []interface{}{"x"}, debug.NewGoInfo(0)),
+					ast.NewPApp("foo", []any{"x"}, debug.NewGoInfo(0)),
 					debug.NewGoInfo(0)),
 			}, debug.NewGoInfo(0)),
 	} {
@@ -93,7 +93,7 @@ func TestDesugarMutualRecursionWithFunctionsOfSameName(t *testing.T) {
 
 func TestLetStatementsToNames(t *testing.T) {
 	for i := 0; i < 100; i++ {
-		for _, ls := range [][]interface{}{
+		for _, ls := range [][]any{
 			{},
 			{ast.NewLetVar("foo", "bar")},
 			{ast.NewLetVar("foo", "nil"), ast.NewLetVar("bar", "nil")},

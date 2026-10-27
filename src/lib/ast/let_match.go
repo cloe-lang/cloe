@@ -4,22 +4,22 @@ import "fmt"
 
 // LetMatch represents a let-match statement in ASTs.
 type LetMatch struct {
-	pattern interface{}
-	expr    interface{}
+	pattern any
+	expr    any
 }
 
 // NewLetMatch creates a let-match statement from a pattern and an expression.
-func NewLetMatch(pattern interface{}, expr interface{}) LetMatch {
+func NewLetMatch(pattern any, expr any) LetMatch {
 	return LetMatch{pattern, expr}
 }
 
 // Pattern returns a pattern matched with a value of the let-match statement.
-func (m LetMatch) Pattern() interface{} {
+func (m LetMatch) Pattern() any {
 	return m.pattern
 }
 
 // Expr returns an expression of a variable value""
-func (m LetMatch) Expr() interface{} {
+func (m LetMatch) Expr() any {
 	return m.expr
 }
 

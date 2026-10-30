@@ -2,4 +2,5 @@
 
 source 'https://rubygems.org'
 
-gem 'aruba', '~> 2.4'
+gem 'aruba', '~> 3.0'
+gem 'cucumber', '~> 12.0'

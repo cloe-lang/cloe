@@ -9,21 +9,53 @@ GEM
       rspec-expectations (>= 3.4, < 5.0)
       tempfile (~> 0.3.1)
       thor (~> 1.0)
+    base64 (0.3.0)
+    bigdecimal (4.1.3)
+    builder (3.3.0)
     contracts (0.17.3)
+    cucumber (12.0.1)
+      base64 (~> 0.2)
+      builder (~> 3.2)
+      cucumber-ci-environment (> 9, < 14)
+      cucumber-core (>= 20, < 21)
+      cucumber-cucumber-expressions (> 17, < 21)
+      cucumber-html-formatter (> 21, < 25)
+      cucumber-query (~> 16.1)
+      diff-lcs (>= 1.5, < 3.0)
+      logger (~> 1.6)
+      mini_mime (~> 1.1)
+      multi_test (> 1, < 4)
+      sys-uname (~> 1.5)
+    cucumber-ci-environment (13.0.0)
     cucumber-core (20.0.0)
       cucumber-gherkin (> 36, < 43)
       cucumber-messages (> 31, < 35)
       cucumber-tag-expressions (> 6, < 12)
+    cucumber-cucumber-expressions (20.1.0)
+      bigdecimal
     cucumber-gherkin (42.0.1)
       cucumber-messages (>= 34, < 35)
+    cucumber-html-formatter (24.2.0)
+      cucumber-messages (> 23, < 35)
     cucumber-messages (34.2.1)
+    cucumber-query (16.1.1)
+      cucumber-messages (>= 34.1, < 36)
     cucumber-tag-expressions (11.0.1)
     diff-lcs (1.6.2)
+    ffi (1.17.4)
+    ffi (1.17.4-arm64-darwin)
+    logger (1.7.0)
     marcel (2.1.0)
+    memoist3 (1.0.0)
+    mini_mime (1.1.5)
+    multi_test (2.0.0)
     rspec-expectations (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-support (3.13.7)
+    sys-uname (1.5.1)
+      ffi (~> 1.1)
+      memoist3 (~> 1.0.0)
     tempfile (0.3.2)
     thor (1.5.0)
 
@@ -33,21 +65,37 @@ PLATFORMS
 
 DEPENDENCIES
   aruba (~> 3.0)
+  cucumber (~> 12.0)
 
 CHECKSUMS
   aruba (3.0.1) sha256=73bed71f8b5f7f8ace2a2ad3d8bbae3369fdcd1dd677978db9db02192913c2bd
-  bundler (4.0.14) sha256=d09a0a965cf772266a7e49e83610be7c2f4e49e61134c42a56804bb383cc24b8
+  base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
+  bigdecimal (4.1.3) sha256=61ebe1e5e559bdc3cc6f2c0ee7f427321fc838f59611c294356eb04d6e21cf66
+  builder (3.3.0) sha256=497918d2f9dca528fdca4b88d84e4ef4387256d984b8154e9d5d3fe5a9c8835f
+  bundler (4.0.23) sha256=407ba8a1d928f412847f819aa5f8b6aef7c59fb51feb517112af8a165487287b
   contracts (0.17.3) sha256=e72e626413ea47099becb7b5683beb1c2ea902c69f5bad55c9258fe2b48314d7
+  cucumber (12.0.1) sha256=21a2da0763280c97cdd706b2f5be3c1631fe97da5cedc8e0aea40f1b0fa34c8c
+  cucumber-ci-environment (13.0.0) sha256=f1c110943e07f72124b43c50c98d96016a77141a4bd45ebee0b8c877d8c264fb
   cucumber-core (20.0.0) sha256=15034c5f268e5311342d59679fb6310584db7e06e1c7a922c9138cd028dae292
+  cucumber-cucumber-expressions (20.1.0) sha256=6cc4b5880ba1c3991292579d0451af0f44814f5a1a13d7823317a09705eb15d4
   cucumber-gherkin (42.0.1) sha256=427efa1996770fd91a6e860e3f2e8b644108682256f4189db494fe85f4595e2f
+  cucumber-html-formatter (24.2.0) sha256=6edc50730e459f9bfea0b0dadfaf4f4066d7083094382ac0d703926414c9cce0
   cucumber-messages (34.2.1) sha256=1de715dfeaa237939b8ab008987d3fbf3118ba32a86d844fd1503396ecc5bf7e
+  cucumber-query (16.1.1) sha256=96f75ee07c892d21046ac699fb3879abab0686991af1a10a6f73ef0565b7134f
   cucumber-tag-expressions (11.0.1) sha256=ead62a1c6bb613de1f5469975a9dd11ba2ced7322a6c8837cdde9db33dcbeac5
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
+  ffi (1.17.4) sha256=bcd1642e06f0d16fc9e09ac6d49c3a7298b9789bcb58127302f934e437d60acf
+  ffi (1.17.4-arm64-darwin) sha256=19071aaf1419251b0a46852abf960e77330a3b334d13a4ab51d58b31a937001b
+  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
   marcel (2.1.0) sha256=f8b0327111dc7e516331eeefe052e981ce50e2bd826c1042a53cdf047fcc3512
+  memoist3 (1.0.0) sha256=686e42402cf150a362050c23143dc57b0ef88f8c344943ff8b7845792b50d56f
+  mini_mime (1.1.5) sha256=8681b7e2e4215f2a159f9400b5816d85e9d8c6c6b491e96a12797e798f8bccef
+  multi_test (2.0.0) sha256=5fe1bf72a3b6f65ebeb0ee5c62c6fbd4cf4e180f06e7213f02ac60847ca094e7
   rspec-expectations (3.13.5) sha256=33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836
   rspec-support (3.13.7) sha256=0640e5570872aafefd79867901deeeeb40b0c9875a36b983d85f54fb7381c47c
+  sys-uname (1.5.1) sha256=784d7e6491b0393c25cbbe5ac38324ac7be9fda083a6094832648af669386d7b
   tempfile (0.3.2) sha256=5c35f90a620e429fb948ef54decf774dc26d36c2d63d285a2914884c42d80482
   thor (1.5.0) sha256=e3a9e55fe857e44859ce104a84675ab6e8cd59c650a49106a05f55f136425e73
 
 BUNDLED WITH
-  4.0.14
+  4.0.23

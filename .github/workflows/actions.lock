@@ -8,7 +8,7 @@ workflows:
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-go@v7.1.0'
         - 'codecov/codecov-action@v7.1.1'
-        - 'ruby/setup-ruby@v1.343.0'
+        - 'ruby/setup-ruby@v1.344.0'
         - 'streetsidesoftware/cspell-action@v9.2.0'
 dependencies:
     'actions/checkout@v7.0.1':
@@ -33,9 +33,9 @@ dependencies:
         repo_id: 200299178
         uses:
             - 'actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd'
-    'ruby/setup-ruby@v1.343.0':
-        ref: 'v1.343.0'
-        commit: 'sha1-be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18'
+    'ruby/setup-ruby@v1.344.0':
+        ref: 'v1.344.0'
+        commit: 'sha1-78c62f2208e480ce3d5ae4dfd9b9e181acf48b63'
         owner_id: 210414
         repo_id: 231208785
     'streetsidesoftware/cspell-action@v9.2.0':
